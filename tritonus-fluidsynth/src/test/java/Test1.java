@@ -4,26 +4,21 @@
  * Programmed by Naohide Sano
  */
 
-
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.concurrent.CountDownLatch;
-import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MetaEventListener;
-import javax.sound.midi.MidiMessage;
 import javax.sound.midi.MidiSystem;
-import javax.sound.midi.Receiver;
 import javax.sound.midi.Sequence;
 import javax.sound.midi.Sequencer;
 import javax.sound.midi.Synthesizer;
-import javax.sound.midi.SysexMessage;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.tritonus.midi.device.fluidsynth.FluidSynthesizer;
 import org.tritonus.share.TDebug;
-import sun.util.logging.resources.logging;
+import vavi.sound.midi.MidiUtil;
 import vavi.util.Debug;
 import vavi.util.properties.annotation.Property;
 import vavi.util.properties.annotation.PropsEntity;
@@ -51,7 +46,9 @@ public class Test1 {
     String midi = "../tritonus-midishare/src/test/resources/sounds/trippygaia1.mid";
 
     @Property(name = "tritonus.fluidsynth.defaultsoundbank")
-    String sf = "/usr/local/Cellar/fluid-synth/2.3.0/share/soundfonts/default.sf2";
+    String sf = "/usr/local/Cellar/fluid-synth/3.2.2/share/soundfonts/default.sf2";
+
+    static final float volume = Float.parseFloat(System.getProperty("vavi.test.volume",  "0.2"));
 
     @BeforeEach
     void setup() throws Exception {
@@ -78,11 +75,11 @@ Debug.println("soundfont: " + sf);
 Debug.println("midi: " + args[0]);
 
         Sequence sequence = MidiSystem.getSequence(file);
-System.err.println("sequence: " + sequence);
+Debug.println("sequence: " + sequence);
 
         Synthesizer synthesizer = MidiSystem.getSynthesizer();
         synthesizer.open();
-System.err.println("synthesizer: " + synthesizer);
+Debug.println("synthesizer: " + synthesizer);
         if (synthesizer instanceof FluidSynthesizer) {
             float gain = 0.2f;
             ((FluidSynthesizer) synthesizer).setGain(gain);
@@ -95,13 +92,13 @@ Debug.println("set gain: " + gain);
         // the sequencer uses a synthesizer created by MidiSystem instead of yours.
         Sequencer sequencer = MidiSystem.getSequencer(false);
         sequencer.open();
-System.err.println("sequencer: " + sequencer);
+Debug.println("sequencer: " + sequencer);
         // tell the sequencer to use your synthesizer instance which volume is downed
         sequencer.getTransmitter().setReceiver(synthesizer.getReceiver());
 
         CountDownLatch countDownLatch = new CountDownLatch(1);
         MetaEventListener mel = meta -> {
-            System.err.println("META: " + meta.getType());
+Debug.println("META: " + meta.getType());
             if (meta.getType() == 47) {
                 countDownLatch.countDown();
             }
@@ -110,7 +107,8 @@ System.err.println("sequencer: " + sequencer);
         sequencer.setSequence(sequence);
         sequencer.addMetaEventListener(mel);
         sequencer.start();
-System.err.println("START");
+        MidiUtil.volume(synthesizer.getReceiver(), volume);
+Debug.println("START");
 if (!System.getProperty("vavi.test", "").equals("ide")) {
  Thread.sleep(5 * 1000);
  sequencer.stop();
@@ -118,18 +116,10 @@ if (!System.getProperty("vavi.test", "").equals("ide")) {
 } else {
         countDownLatch.await();
 }
-System.err.println("END");
+Debug.println("END");
         sequencer.stop();
         sequencer.removeMetaEventListener(mel);
         sequencer.close();
-    }
-
-    /** TODO doesn't work? */
-    static void volume(Receiver receiver, float volume) throws InvalidMidiDataException {
-        int value = (int) (16383 * volume);
-        byte[] data = { (byte) 0xf0, 0x7f, 0x7f, 0x04, 0x01, (byte) (value & 0x7f), (byte) ((value >> 7) & 0x7f), (byte) 0xf7 };
-        MidiMessage sysex = new SysexMessage(data, data.length);
-        receiver.send(sysex, -1);
     }
 }
 

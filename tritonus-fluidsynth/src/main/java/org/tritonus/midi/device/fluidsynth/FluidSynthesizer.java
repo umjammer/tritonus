@@ -38,10 +38,16 @@ import javax.sound.midi.Soundbank;
 import javax.sound.midi.Synthesizer;
 import javax.sound.midi.VoiceStatus;
 
+import com.sun.jna.Pointer;
+import com.sun.jna.ptr.IntByReference;
+import com.sun.jna.ptr.PointerByReference;
 import org.tritonus.midi.sb.fluidsynth.FluidSoundbank;
 import org.tritonus.share.TDebug;
 import org.tritonus.share.midi.TDirectSynthesizer;
 import org.tritonus.share.midi.TMidiChannel;
+import vavi.sound.midi.fluidsynth.jna.audio.AudioLibrary;
+import vavi.sound.midi.fluidsynth.jna.settings.SettingsLibrary;
+import vavi.sound.midi.fluidsynth.jna.synth.SynthLibrary;
 
 
 /*
@@ -56,32 +62,13 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
 
     private int defaultbankSfontID;
 
-    // native pointers 64 bit maximum
-    private long settingsPtr;
-    private long synthPtr;
-    private long audioDriverPtr;
+    // native pointers
+    private PointerByReference /* fluid_settings_t */ settings;
+    private PointerByReference /* fluid_synth_t */ synth;
+    private PointerByReference /* fluid_audio_driver_t */ audioDriver;
 
-    static {
-        loadNativeLibrary();
-    }
-
-    /**
-     * Load the native library for fluidsynth.
-     */
-    private static void loadNativeLibrary() {
-        if (TDebug.TraceFluidNative)
-            TDebug.out("FluidSynthesizer.loadNativeLibrary(): loading native library tritonusfluid");
-        try {
-            System.loadLibrary("tritonusfluid");
-            // only reached if no exception occures
-            setTrace(TDebug.TraceFluidNative);
-        } catch (Error e) {
-            if (TDebug.TraceFluidNative || TDebug.TraceAllExceptions) {
-                TDebug.out(e);
-            }
-            // throw e;
-        }
-        if (TDebug.TraceFluidNative) TDebug.out("FluidSynthesizer.loadNativeLibrary(): loaded");
+    public PointerByReference getSynthesizer() {
+        return synth;
     }
 
     /**
@@ -91,12 +78,9 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
         super(info);
     }
 
-    protected void openImpl()
-            throws MidiUnavailableException {
-        if (newSynth() < 0) {
-            throw new MidiUnavailableException("Low-level initialization of the synthesizer failed");
-        }
-        if (TDebug.TraceSynthesizer) TDebug.out("FluidSynthesizer: " + Long.toHexString(synthPtr));
+    protected void openImpl() throws MidiUnavailableException {
+        newSynth();
+        if (TDebug.TraceSynthesizer) TDebug.out("FluidSynthesizer: " + Long.toHexString(Pointer.nativeValue(synth.getValue())));
 
         channels = new MidiChannel[16];
         for (int i = 0; i < 16; i++) {
@@ -115,7 +99,7 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
     }
 
     protected void closeImpl() {
-        if (TDebug.TraceSynthesizer) TDebug.out("FluidSynthesizer.closeImpl(): " + Long.toHexString(synthPtr));
+        if (TDebug.TraceSynthesizer) TDebug.out("FluidSynthesizer.closeImpl(): " + Long.toHexString(Pointer.nativeValue(synth.getValue())));
         deleteSynth();
         super.closeImpl();
     }
@@ -126,27 +110,92 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
     }
 
     protected void finalize() {
-        if (TDebug.TraceSynthesizer) TDebug.out("finalize: " + Long.toHexString(synthPtr));
+        if (TDebug.TraceSynthesizer) TDebug.out("finalize: " + Long.toHexString(Pointer.nativeValue(synth.getValue())));
         close();
     }
 
-    public native int loadSoundFont(String filename);
+    public int loadSoundFont(String filename) {
+        int sfont_id;
+        if (synth == null) {
+            sfont_id = -1;
+        } else {
+            sfont_id = SynthLibrary.INSTANCE.fluid_synth_sfload(synth, filename, 1);
+        }
 
-    public native void setBankOffset(int sfontID, int offset);
+        return sfont_id;
+    }
 
-    public native void setGain(float gain);
+    public void setBankOffset(int sfontID, int offset){
+        SynthLibrary.INSTANCE.fluid_synth_set_bank_offset(synth, sfontID, offset);
+    }
+
+    public void setGain(float gain){
+        SynthLibrary.INSTANCE.fluid_synth_set_gain(synth, (float) gain);
+    }
 
     /**
      * $$mp: currently not functional because fluid_synth_set_reverb_preset()
      * is not present in fluidsynth 1.0.6.
      */
-    public native void setReverbPreset(int reverbPreset);
+    public void setReverbPreset(int reverbPreset) {
+        // $$mp: currently not functional because fluid_synth_set_reverb_preset() is not
+        // present in fluidsynth 1.0.6
+        //fluid_synth_set_reverb_preset(synth, (int) reverbPreset);
+    }
 
     public native int getMaxPolyphony();
 
-    protected native int newSynth();
+    protected void newSynth() throws MidiUnavailableException {
+        if (synth == null) {
+            this.settings = SettingsLibrary.INSTANCE.new_fluid_settings();
+            if (settings == null) {
+                fluid_jni_delete_synth();
+                throw new MidiUnavailableException("Low-level initialization of the settings failed");
+            }
 
-    protected native void deleteSynth();
+            this.synth = SynthLibrary.INSTANCE.new_fluid_synth(settings);
+            if (synth == null) {
+                fluid_jni_delete_synth();
+                throw new MidiUnavailableException("Low-level initialization of the synthesizer failed");
+            }
+
+            if (TDebug.TraceFluidNative) {
+                System.err.printf("newSynth: synth: %s\n", synth);
+                System.err.flush();
+            }
+
+            this.audioDriver = AudioLibrary.INSTANCE.new_fluid_audio_driver(settings, synth);
+            if (audioDriver == null) {
+                fluid_jni_delete_synth();
+                throw new MidiUnavailableException("Low-level initialization of the audioDriver failed");
+            }
+        }
+    }
+
+    protected void deleteSynth(){
+
+        if (TDebug.TraceFluidNative) {
+            System.err.printf("deleteSynth: synth: %s\n", synth);
+            System.err.flush();
+        }
+
+        fluid_jni_delete_synth();
+    }
+
+    void fluid_jni_delete_synth() {
+        if (audioDriver != null) {
+            AudioLibrary.INSTANCE.delete_fluid_audio_driver(audioDriver);
+            this.audioDriver = null;
+        }
+        if (synth != null) {
+            SynthLibrary.INSTANCE.delete_fluid_synth(synth);
+            this.synth = null;
+        }
+        if (settings != null) {
+            SettingsLibrary.INSTANCE.delete_fluid_settings(settings);
+            this.settings = null;
+        }
+    }
 
     /**
      * Turns a note on.
@@ -157,7 +206,11 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
      * @param nNoteNumber the note
      * @param nVelocity   the velocity
      */
-    native void noteOn(int nChannel, int nNoteNumber, int nVelocity);
+    void noteOn(int nChannel, int nNoteNumber, int nVelocity) {
+        if (synth != null) {
+            SynthLibrary.INSTANCE.fluid_synth_noteon(synth, nChannel, nNoteNumber, nVelocity);
+        }
+    }
 
     /**
      * Turns a note off.
@@ -168,7 +221,13 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
      * @param nNoteNumber the note
      * @param nVelocity   the velocity
      */
-    native void noteOff(int nChannel, int nNoteNumber, int nVelocity);
+    void noteOff(int nChannel, int nNoteNumber, int nVelocity) {
+        if (synth != null) {
+            // There is no method noteoff that takes a velocity param.
+            //fluid_synth_noteoff(synth, channel, key, velocity);
+            SynthLibrary.INSTANCE.fluid_synth_noteoff(synth, nChannel, nNoteNumber);
+        }
+    }
 
     /**
      * Changes a controller on the synthesizer.
@@ -179,7 +238,11 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
      * @param nController the controller number
      * @param nValue      the controller value
      */
-    native void controlChange(int nChannel, int nController, int nValue);
+    void controlChange(int nChannel, int nController, int nValue) {
+        if (synth != null) {
+            SynthLibrary.INSTANCE.fluid_synth_cc(synth, nChannel, nController, nValue);
+        }
+    }
 
     /**
      * Obtains the value of a controller.
@@ -190,7 +253,13 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
      * @param nController the controller number
      * @return the controller value
      */
-    native int getController(int nChannel, int nController);
+    int getController(int nChannel, int nController){
+        IntByReference value = new IntByReference();
+        if (synth != null) {
+            SynthLibrary.INSTANCE.fluid_synth_get_cc(synth, nChannel, nController, value);
+        }
+        return value.getValue();
+    }
 
     /**
      * Sets the program for a channel.
@@ -200,7 +269,11 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
      * @param nChannel the channel
      * @param nProgram the program number
      */
-    native void programChange(int nChannel, int nProgram);
+    void programChange(int nChannel, int nProgram) {
+        if (synth != null) {
+            SynthLibrary.INSTANCE.fluid_synth_program_change(synth, nChannel, nProgram);
+        }
+    }
 
     /**
      * Obtains the program set for a channel.
@@ -210,7 +283,15 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
      * @param nChannel the channel
      * @return the program number set for this channel
      */
-    native int getProgram(int nChannel);
+    int getProgram(int nChannel) {
+        IntByReference sfont = new IntByReference();
+        IntByReference bank = new IntByReference();
+        IntByReference program = new IntByReference();
+        if (synth != null) {
+            SynthLibrary.INSTANCE.fluid_synth_get_program(synth, nChannel, sfont, bank, program);
+        }
+        return program.getValue();
+    }
 
     /**
      * Sets the pitch bend for a channel.
@@ -220,7 +301,11 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
      * @param nChannel the channel
      * @param nBend    the pitch bend value
      */
-    native void setPitchBend(int nChannel, int nBend);
+    void setPitchBend(int nChannel, int nBend) {
+        if (synth != null) {
+            SynthLibrary.INSTANCE.fluid_synth_pitch_bend(synth, nChannel, nBend);
+        }
+    }
 
     /**
      * Obtains the pitch bend for a channel.
@@ -230,16 +315,13 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
      * @param nChannel the channel
      * @return the pitch bend value.
      */
-    native int getPitchBend(int nChannel);
-
-    /**
-     * Sets tracing in the native code.
-     * Note that this method can either be called directly or (recommended)
-     * the system property "tritonus.TraceFluidNative" can be set to true.
-     *
-     * @see org.tritonus.share.TDebug
-     */
-    public static native void setTrace(boolean bTrace);
+    int getPitchBend(int nChannel){
+        IntByReference bend = new IntByReference();
+        if (synth != null) {
+            SynthLibrary.INSTANCE.fluid_synth_get_pitch_bend(synth, nChannel, bend);
+        }
+        return bend.getValue();
+    }
 
     public boolean isSoundbankSupported(Soundbank soundbank) {
         return (soundbank instanceof FluidSoundbank);

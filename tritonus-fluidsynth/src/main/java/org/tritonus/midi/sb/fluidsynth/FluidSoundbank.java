@@ -33,7 +33,11 @@ import javax.sound.midi.Patch;
 import javax.sound.midi.Soundbank;
 import javax.sound.midi.SoundbankResource;
 
+import com.sun.jna.ptr.PointerByReference;
 import org.tritonus.midi.device.fluidsynth.FluidSynthesizer;
+import org.tritonus.share.TDebug;
+import vavi.sound.midi.fluidsynth.jna.sfont.SfontLibrary;
+import vavi.sound.midi.fluidsynth.jna.synth.SynthLibrary;
 
 
 /**
@@ -69,7 +73,51 @@ public class FluidSoundbank implements Soundbank {
         instruments = nGetInstruments(sfontID);
     }
 
-    public native FluidInstrument[] nGetInstruments(int sfontID);
+    public FluidInstrument[] nGetInstruments(int sfontID){
+
+        PointerByReference /* fluid_synth_t */ synth = this.synth.getSynthesizer();
+
+        if (TDebug.TraceFluidNative) {
+            TDebug.out(String.format("nGetInstruments: synth: %s\n", synth));
+        }
+
+        if (synth != null) {
+
+            PointerByReference /* fluid_sfont_t */ sfont = SynthLibrary.INSTANCE.fluid_synth_get_sfont_by_id(synth, sfontID);
+            PointerByReference /* fluid_preset_t */ preset;
+
+            int count = 0;
+            if (sfont != null) {
+                SfontLibrary.INSTANCE.fluid_sfont_iteration_start(sfont);
+
+                while ((preset = SfontLibrary.INSTANCE.fluid_sfont_iteration_next(sfont)) != null) {
+                    count++;
+                }
+            }
+
+            FluidInstrument[] instruments = new FluidInstrument[count];
+
+            sfont = SynthLibrary.INSTANCE.fluid_synth_get_sfont_by_id(synth, sfontID);
+            int offset = SynthLibrary.INSTANCE.fluid_synth_get_bank_offset(synth, sfontID);
+
+            if (sfont == null)
+                return null;
+
+            SfontLibrary.INSTANCE.fluid_sfont_iteration_start(sfont);
+
+            int i = 0;
+            while ((preset = SfontLibrary.INSTANCE.fluid_sfont_iteration_next(sfont)) != null) {
+                String instrname = SfontLibrary.INSTANCE.fluid_preset_get_name(preset);
+                FluidInstrument instrument = new FluidInstrument(
+                    SfontLibrary.INSTANCE.fluid_preset_get_banknum(preset) + offset,
+                    SfontLibrary.INSTANCE.fluid_preset_get_num(preset),
+                    instrname);
+                instruments[i++] = instrument;
+            }
+            return instruments;
+        } else
+            return null;
+    }
 
     public Instrument getInstrument(Patch patch) {
         return null;
