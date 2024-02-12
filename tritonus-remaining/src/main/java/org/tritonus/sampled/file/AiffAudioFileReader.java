@@ -89,11 +89,16 @@ public class AiffAudioFileReader extends TAudioFileReader {
         }
         AudioFormat.Encoding encoding = AudioFormat.Encoding.PCM_SIGNED;
         int nRead = 18;
+        boolean isLittleEndian = false;
         if (chunkLength > nRead) {
             int nEncoding = dataInputStream.readInt();
             nRead += 4;
-            if (nEncoding == AiffTool.AIFF_COMM_PCM) {
-                // PCM - nothing to do
+            if (nEncoding == AiffTool.AIFF_COMM_PCM
+                    || nEncoding == AiffTool.AIFF_COMM_TWOS
+                    || nEncoding == AiffTool.AIFF_COMM_SOWT) {
+                // PCM
+                // Check for little-endian
+                isLittleEndian = nEncoding == AiffTool.AIFF_COMM_SOWT;
             } else if (nEncoding == AiffTool.AIFF_COMM_ULAW) {
                 // ULAW
                 encoding = AudioFormat.Encoding.ULAW;
@@ -125,7 +130,7 @@ public class AiffAudioFileReader extends TAudioFileReader {
                 nNumChannels,
                 nFrameSize,
                 fSampleRate,
-                nSampleSize > 8);
+                nSampleSize > 8 && !isLittleEndian);
         return format;
     }
 
