@@ -48,6 +48,8 @@ public class AiffTool {
     public static final int AIFF_FVER_MAGIC = 0x46564552;
     public static final int AIFF_COMM_UNSPECIFIED = 0x00000000; // "0000"
     public static final int AIFF_COMM_PCM = 0x4E4F4E45;       // "NONE"
+    public static final int AIFF_COMM_TWOS = 0x74776f73;       // "twos"
+    public static final int AIFF_COMM_SOWT = 0x736f7774;       // "sowt"
     public static final int AIFF_COMM_ULAW = 0x756C6177;       // "ulaw"
     public static final int AIFF_COMM_IMA_ADPCM = 0x696D6134;   // "ima4"
     public static final int AIFF_FVER_TIME_STAMP = 0xA2805140;  // May 23, 1990, 2:40pm
