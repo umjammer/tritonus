@@ -43,12 +43,14 @@ import org.tritonus.share.sampled.file.THeaderlessAudioFileWriter;
  */
 public class MpegAudioFileWriter extends THeaderlessAudioFileWriter {
 
+    public static final AudioFileFormat.Type MP3 = new AudioFileFormat.Type("MP3", "mp3");
+    public static final AudioFileFormat.Type MP2 = new AudioFileFormat.Type("MP2", "mp2");
+
     private static final AudioFileFormat.Type[] FILE_TYPES = {
             //new AudioFileFormat.Type("MPEG", "mpeg"),
             // workaround for the fixed extension problem in AudioFileFormat.Type
             // see org.tritonus.share.sampled.AudioFileTypes.java
-            new AudioFileFormat.Type("MP3", "mp3"),
-            new AudioFileFormat.Type("MP2", "mp2"),
+            MP3, MP2,
     };
 
     public static final AudioFormat.Encoding MPEG1L3 = new AudioFormat.Encoding("MPEG1L3");

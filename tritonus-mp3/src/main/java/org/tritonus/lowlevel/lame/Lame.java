@@ -18,12 +18,16 @@
 
 package org.tritonus.lowlevel.lame;
 
-import java.nio.charset.StandardCharsets;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.ShortBuffer;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import javax.sound.sampled.AudioFormat;
 
 import org.tritonus.share.TDebug;
+import vavi.util.Debug;
 
 import static javax.sound.sampled.AudioSystem.NOT_SPECIFIED;
 
@@ -37,13 +41,10 @@ import static javax.sound.sampled.AudioSystem.NOT_SPECIFIED;
  */
 public class Lame {
 
-    public static final AudioFormat.Encoding MPEG1L3 = new AudioFormat.Encoding(
-            "MPEG1L3");
+    public static final AudioFormat.Encoding MPEG1L3 = new AudioFormat.Encoding("MPEG1L3");
     // Lame converts automagically to MPEG2 or MPEG2.5, if necessary.
-    public static final AudioFormat.Encoding MPEG2L3 = new AudioFormat.Encoding(
-            "MPEG2L3");
-    public static final AudioFormat.Encoding MPEG2DOT5L3 = new AudioFormat.Encoding(
-            "MPEG2DOT5L3");
+    public static final AudioFormat.Encoding MPEG2L3 = new AudioFormat.Encoding("MPEG2L3");
+    public static final AudioFormat.Encoding MPEG2DOT5L3 = new AudioFormat.Encoding("MPEG2DOT5L3");
 
     // property constants
     /**
@@ -104,41 +105,23 @@ public class Lame {
     // suggested maximum buffer size for an mpeg frame
     private static final int DEFAULT_PCM_BUFFER_SIZE = 2048 * 16;
 
-    // frame size=576 for MPEG2 and MPEG2.5
-    // =576*2 for MPEG1
-    private static boolean libAvailable = false;
-    private static String linkError = "";
-
     private static int DEFAULT_QUALITY = QUALITY_MIDDLE;
     private static int DEFAULT_BITRATE = BITRATE_AUTO;
     private static int DEFAULT_CHANNEL_MODE = CHANNEL_MODE_AUTO;
     // in VBR mode, bitrate is ignored.
     private static boolean DEFAULT_VBR = false;
 
-    private static final int OUT_OF_MEMORY = -300;
-    private static final int NOT_INITIALIZED = -301;
+    public static final int OUT_OF_MEMORY = -300;
+    public static final int NOT_INITIALIZED = -301;
     private static final int LAME_ENC_NOT_FOUND = -302;
 
     private static final String PROPERTY_PREFIX = "tritonus.lame.";
 
-    static {
-        try {
-            System.loadLibrary("lametritonus");
-            libAvailable = true;
-        } catch (UnsatisfiedLinkError e) {
-            if (TDebug.TraceAllExceptions) {
-                TDebug.out(e);
-            }
-            linkError = e.getMessage();
-        }
-    }
-
     /**
-     * Holds LameConf This field is long because on 64 bit architectures, the
+     * Holds LameApi This field is long because on 64 bit architectures, the
      * native size of ints may be 64 bit.
      */
-    // used from native
-    private long m_lNativeGlobalFlags;
+    private LameApi lameApi;
 
     // encoding values
     private int quality = DEFAULT_QUALITY;
@@ -150,7 +133,7 @@ public class Lame {
     // values.
     private int effQuality;
     private int effBitRate;
-    private int effVbr;
+    private boolean effVbr;
     private int effChMode;
     private int effSampleRate;
     private int effEncoding;
@@ -167,10 +150,6 @@ public class Lame {
             throw new OutOfMemoryError("out of memory");
         } else if (resultCode == NOT_INITIALIZED) {
             throw new RuntimeException("not initialized");
-        } else if (resultCode == LAME_ENC_NOT_FOUND) {
-            libAvailable = false;
-            linkError = "lame_enc.dll not found";
-            throw new IllegalArgumentException(linkError);
         }
     }
 
@@ -179,8 +158,7 @@ public class Lame {
      * encoding parameters are used, see DEFAULT_BITRATE, DEFAULT_CHANNEL_MODE,
      * DEFAULT_QUALITY, and DEFAULT_VBR.
      *
-     * @throws IllegalArgumentException when parameters are not supported by
-     *                                  LAME.
+     * @throws IllegalArgumentException when parameters are not supported by LAME.
      */
     public Lame(AudioFormat sourceFormat) {
         readParams(sourceFormat, null);
@@ -194,8 +172,7 @@ public class Lame {
      * tritonus compatibility. Last, parameters will use the default values
      * DEFAULT_BITRATE, DEFAULT_CHANNEL_MODE, DEFAULT_QUALITY, and DEFAULT_VBR.
      *
-     * @throws IllegalArgumentException when parameters are not supported by
-     *                                  LAME.
+     * @throws IllegalArgumentException when parameters are not supported by LAME.
      */
     public Lame(AudioFormat sourceFormat, AudioFormat targetFormat) {
         readParams(sourceFormat, targetFormat.properties());
@@ -206,15 +183,13 @@ public class Lame {
      * Initializes the encoder, overriding any parameters set in the audio
      * format's properties or in the system properties.
      *
-     * @throws IllegalArgumentException when parameters are not supported by
-     *                                  LAME.
+     * @throws IllegalArgumentException when parameters are not supported by LAME.
      */
-    public Lame(AudioFormat sourceFormat, int bitRate, int channelMode,
-                int quality, boolean VBR) {
+    public Lame(AudioFormat sourceFormat, int bitRate, int channelMode, int quality, boolean vbr) {
         this.bitRate = bitRate;
         this.chMode = channelMode;
         this.quality = quality;
-        this.vbr = VBR;
+        this.vbr = vbr;
         initParams(sourceFormat);
     }
 
@@ -235,8 +210,7 @@ public class Lame {
             bitRate = 160;
         }
         if (TDebug.TraceAudioConverter) {
-            String br = bitRate < 0 ? "auto" : (bitRate
-                    + "KBit/s");
+            String br = bitRate < 0 ? "auto" : (bitRate + "KBit/s");
             TDebug.out("LAME parameters: channels="
                     + sourceFormat.getChannels() + "  sample rate="
                     + (Math.round(sourceFormat.getSampleRate()) + "Hz")
@@ -251,13 +225,10 @@ public class Lame {
                 quality, vbr, sourceFormat.isBigEndian());
         if (result < 0) {
             handleNativeException(result);
-            throw new IllegalArgumentException(
-                    "parameters not supported by LAME (returned " + result
-                            + ")");
+            throw new IllegalArgumentException("parameters not supported by LAME (returned " + result + ")");
         }
         if (TDebug.TraceAudioConverter) {
-            TDebug.out("LAME effective quality=" + effQuality + " ("
-                    + quality2string(effQuality) + ")");
+            TDebug.out("LAME effective quality=" + effQuality + " (" + quality2string(effQuality) + ")");
         }
         // legacy provide effective parameters to user by way of system
         // properties
@@ -270,47 +241,80 @@ public class Lame {
      * Initializes the lame encoder. Throws IllegalArgumentException when
      * parameters are not supported by LAME.
      */
-    private native int nInitParams(int channels, int sampleRate, int bitrate,
-                                   int mode, int quality, boolean VBR, boolean bigEndian);
+    private int nInitParams(int channels, int sampleRate, int bitrate,
+                            int mode, int quality, boolean vbr, boolean bigEndian) {
+        int result;
 
-    /**
-     * returns -1 if string is too short or returns one of the exception
-     * constants if everything OK, returns the length of the string
-     */
-    private native int nGetEncoderVersion(byte[] string);
+        TDebug.out("initParams: ");
+        TDebug.out(String.format("   %d channels, %d Hz, %d KBit/s, mode %d, quality=%d VBR=%s bigEndian=%s",
+                channels, sampleRate, bitrate, mode, quality, vbr, bigEndian));
+
+        this.lameApi = new LameApi();
+        ByteOrder platformEndianness = ByteOrder.nativeOrder();
+        if ((bigEndian && platformEndianness == ByteOrder.LITTLE_ENDIAN) ||
+                (!bigEndian && platformEndianness == ByteOrder.BIG_ENDIAN)) {
+            // swap samples
+            lameApi.swapbytes = true;
+        }
+Debug.println(Level.FINE, "bigEndian: " + bigEndian + ", platformEndianness: " + platformEndianness + ", lameApi.swapbytes: " + lameApi.swapbytes);
+        lameApi.channels = channels;
+        lameApi.sampleRate = sampleRate;
+        lameApi.bitrate = bitrate;
+        lameApi.mode = mode;
+        lameApi.quality = quality;
+        lameApi.vbr = vbr;
+        lameApi.mpegVersion = 0;
+
+        result = lameApi.doInit();
+        if (result < 0) {
+            lameApi = null;
+            return result;
+        }
+
+        // update the Lame instance with the effective values
+        this.effSampleRate = lameApi.sampleRate;
+        this.effBitRate = lameApi.bitrate;
+        this.effChMode = lameApi.mode;
+        this.effQuality = lameApi.quality;
+        this.effVbr = lameApi.vbr;
+        this.effEncoding = lameApi.mpegVersion;
+
+        return result;
+    }
 
     public String getEncoderVersion() {
-        byte[] string = new byte[300];
-        int res = nGetEncoderVersion(string);
+        String[] string = new String[1];
+        int res = this.lameApi.doGetEncoderVersion(string, 300);
         if (res < 0) {
             if (res == -1) {
-                throw new RuntimeException(
-                        "Unexpected error in Lame.getEncoderVersion()");
+                throw new IllegalStateException("Unexpected error in Lame.getEncoderVersion()");
             }
             handleNativeException(res);
         }
         String sRes = "";
         if (res > 0) {
-            sRes = new String(string, 0, res, StandardCharsets.ISO_8859_1);
+            sRes = string[0];
         }
+Debug.println(Level.FINE, "getEncoderVersion: " + sRes);
         return sRes;
     }
 
-    private native int nGetPCMBufferSize(int suggested);
+    private int nGetPCMBufferSize(int suggested) {
+        return lameApi.doGetPCMBufferSize(suggested);
+    }
 
     /**
      * Returns the buffer needed pcm buffer size. The passed parameter is a
      * wished buffer size. The implementation of the encoder may return a lower
      * or higher buffer size. The encoder must be initialized (i.e. not closed)
-     * at this point. A return value of <0 denotes an error.
+     * at this point.
+     * @return value of <0 denotes an error.
      */
     public int getPCMBufferSize() {
         int ret = nGetPCMBufferSize(DEFAULT_PCM_BUFFER_SIZE);
         if (ret < 0) {
             handleNativeException(ret);
-            throw new RuntimeException(
-                    "Unknown error in Lame.nGetPCMBufferSize(). Resultcode="
-                            + ret);
+            throw new IllegalArgumentException("Unknown error in Lame.nGetPCMBufferSize(). Resultcode=" + ret);
         }
         return ret;
     }
@@ -320,30 +324,72 @@ public class Lame {
         return getPCMBufferSize() / 2 + 1024;
     }
 
-    private native int nEncodeBuffer(byte[] pcm, int offset, int length,
-                                     byte[] encoded);
+    /**
+     * @return result of lame_encode_buffer:
+     * return code     number of bytes output in mp3buf. Can be 0
+     *                 -1:  mp3buf was too small
+     *                 -2:  malloc() problem
+     *                 -3:  lame_init_params() not called
+     *                 -4:  psycho acoustic problems
+     *                 -5:  ogg cleanup encoding error
+     *                 -6:  ogg frame encoding error
+     */
+    private int nEncodeBuffer(byte[] pcm, int length, byte[] encoded) {
+        int result;
+        int pcmLengthInFrames;
+
+        // todo: consistency check for pcm array ?
+        int encodedArrayByteSize = encoded.length;
+
+        int pcmArrayByteSize = pcm.length;
+        TDebug.out("Lame#nEncodeBuffer: ");
+        TDebug.out(String.format("   length:%d", length));
+        TDebug.out(String.format("   %d bytes in PCM array", pcmArrayByteSize));
+        TDebug.out(String.format("   %d bytes in to-be-encoded array", encodedArrayByteSize));
+
+        pcmLengthInFrames = length / (lameApi.channels * Short.BYTES); // always 16 bit
+        if (lameApi.swapbytes) {
+Debug.println("@@@ SWAP");
+            swapSamples(pcm, length / Short.BYTES);
+        }
+
+        TDebug.out(String.format("   Encoding %d frames into buffer of size %d bytes.",
+                pcmLengthInFrames, encodedArrayByteSize));
+        //TDebug.out("   Sample1=%d Sample2=%d", pcmSamples[0], pcmSamples[1]);
+
+        result = lameApi.doEncode(pcm, pcmLengthInFrames, encoded, encodedArrayByteSize);
+        //TDebug.out("   MP3-1=%d MP3-2=%d", (int) encodedBytes[0], (int) encodedBytes[1]);
+
+        return result;
+    }
+
+    private static void swapSamples(byte[] samples, int count) {
+        for (int i = 0; i < count; i++) {
+            samples[i * 2 + 1] = samples[i * 2];
+            samples[i * 2] = samples[i * 2 + 1];
+        }
+    }
 
     /**
-     * Encode a block of data. Throws IllegalArgumentException when parameters
-     * are wrong. When the <code>encoded</code> array is too small, an
-     * ArrayIndexOutOfBoundsException is thrown. <code>length</code> should be
-     * the value returned by getPCMBufferSize.
+     * Encode a block of data.
      *
      * @return the number of bytes written to <code>encoded</code>. May be 0.
+     * @throws IllegalArgumentException       when parameters are wrong.
+     * @throws ArrayIndexOutOfBoundsException When the <code>encoded</code> array is too small,
+     *                                        <code>length</code> should be
+     *                                        the value returned by getPCMBufferSize.
      */
-    public int encodeBuffer(byte[] pcm, int offset, int length, byte[] encoded)
-            throws ArrayIndexOutOfBoundsException {
-        if (length < 0 || (offset + length) > pcm.length) {
+    public int encodeBuffer(byte[] pcm, int length, byte[] encoded) {
+        if (length < 0 || length > pcm.length) {
             throw new IllegalArgumentException("inconsistent parameters");
         }
-        int result = nEncodeBuffer(pcm, offset, length, encoded);
+        int result = nEncodeBuffer(pcm, length, encoded);
         if (result < 0) {
             if (result == -1) {
-                throw new ArrayIndexOutOfBoundsException(
-                        "Encode buffer too small");
+                throw new ArrayIndexOutOfBoundsException("Encode buffer too small");
             }
             handleNativeException(result);
-            throw new RuntimeException("crucial error in encodeBuffer.");
+            throw new IllegalStateException("crucial error in encodeBuffer.");
         }
         return result;
     }
@@ -353,30 +399,35 @@ public class Lame {
      *
      * @return the number of bytes written to <code>encoded</code>
      */
-    private native int nEncodeFinish(byte[] encoded);
-
     public int encodeFinish(byte[] encoded) {
-        return nEncodeFinish(encoded);
+        int result = 0;
+
+        //jsize length=(*env).GetArrayLength(env, buffer);
+        TDebug.out("encodeFinish: ");
+        //TDebug.out("   %d bytes in the array", (int) length);
+
+        ByteBuffer charBuffer = ByteBuffer.allocateDirect(encoded.length);
+        result = lameApi.doEncodeFinish(charBuffer, encoded.length);
+        charBuffer.get(encoded);
+
+        lameApi.doClose();
+
+        TDebug.out(String.format("   %d bytes returned", result));
+
+        return result;
     }
 
     /*
      * Deallocates resources used by the native library. *MUST* be called !
      */
-    private native void nClose();
-
     public void close() {
-        nClose();
-    }
 
-    /*
-     * Returns whether the libraries are installed correctly.
-     */
-    public static boolean isLibAvailable() {
-        return libAvailable;
-    }
+        TDebug.out("close. ");
 
-    public static String getLinkError() {
-        return linkError;
+        if (lameApi != null) {
+            lameApi.doClose();
+            lameApi = null;
+        }
     }
 
     // properties
@@ -387,8 +438,7 @@ public class Lame {
         } else if (q instanceof Integer) {
             quality = (Integer) q;
         } else if (q != null) {
-            throw new IllegalArgumentException(
-                    "illegal type of quality property: " + q);
+            throw new IllegalArgumentException("illegal type of quality property: " + q);
         }
         q = props.get(P_BITRATE);
         if (q instanceof String) {
@@ -396,15 +446,13 @@ public class Lame {
         } else if (q instanceof Integer) {
             bitRate = (Integer) q;
         } else if (q != null) {
-            throw new IllegalArgumentException(
-                    "illegal type of bitrate property: " + q);
+            throw new IllegalArgumentException("illegal type of bitrate property: " + q);
         }
         q = props.get(P_CHMODE);
         if (q instanceof String) {
             chMode = string2chmode(((String) q).toLowerCase(), chMode);
         } else if (q != null) {
-            throw new IllegalArgumentException(
-                    "illegal type of chmode property: " + q);
+            throw new IllegalArgumentException("illegal type of chmode property: " + q);
         }
         q = props.get(P_VBR);
         if (q instanceof String) {
@@ -412,8 +460,7 @@ public class Lame {
         } else if (q instanceof Boolean) {
             vbr = (Boolean) q;
         } else if (q != null) {
-            throw new IllegalArgumentException("illegal type of vbr property: "
-                    + q);
+            throw new IllegalArgumentException("illegal type of vbr property: " + q);
         }
     }
 
@@ -472,7 +519,7 @@ public class Lame {
     }
 
     public boolean getEffectiveVBR() {
-        return effVbr != 0;
+        return effVbr;
     }
 
     public int getEffectiveSampleRate() {
@@ -507,11 +554,8 @@ public class Lame {
                     String.valueOf(getEffectiveVBR()));
             System.setProperty(PROPERTY_PREFIX + "effective" + "."
                     + P_SAMPLERATE, String.valueOf(getEffectiveSampleRate()));
-            System.setProperty(
-                    PROPERTY_PREFIX + "effective" + "." + P_ENCODING,
-                    getEffectiveEncoding().toString());
-            System.setProperty(PROPERTY_PREFIX + "encoder.version",
-                    getEncoderVersion());
+            System.setProperty(PROPERTY_PREFIX + "effective" + "." + P_ENCODING, getEffectiveEncoding().toString());
+            System.setProperty(PROPERTY_PREFIX + "encoder.version", getEncoderVersion());
         } catch (Throwable t) {
             if (TDebug.TraceAllExceptions) {
                 TDebug.out(t);
@@ -533,14 +577,10 @@ public class Lame {
         if (hadSystemProps) {
             // set the parameters back so that user program can verify them
             try {
-                System.setProperty(PROPERTY_PREFIX + P_QUALITY,
-                        quality2string(DEFAULT_QUALITY));
-                System.setProperty(PROPERTY_PREFIX + P_BITRATE,
-                        String.valueOf(DEFAULT_BITRATE));
-                System.setProperty(PROPERTY_PREFIX + P_CHMODE,
-                        chmode2string(DEFAULT_CHANNEL_MODE));
-                System.setProperty(PROPERTY_PREFIX + P_VBR,
-                        String.valueOf(DEFAULT_VBR));
+                System.setProperty(PROPERTY_PREFIX + P_QUALITY, quality2string(DEFAULT_QUALITY));
+                System.setProperty(PROPERTY_PREFIX + P_BITRATE, String.valueOf(DEFAULT_BITRATE));
+                System.setProperty(PROPERTY_PREFIX + P_CHMODE, chmode2string(DEFAULT_CHANNEL_MODE));
+                System.setProperty(PROPERTY_PREFIX + P_VBR, String.valueOf(DEFAULT_VBR));
             } catch (Throwable t) {
                 if (TDebug.TraceAllExceptions) {
                     TDebug.out(t);
@@ -685,7 +725,7 @@ public class Lame {
             String s = System.getProperty(strPropertyName);
             if (s != null && s.length() > 0) {
                 hadSystemProps = true;
-                value = new Integer(s);
+                value = Integer.parseInt(s);
             }
         } catch (Throwable e) {
             if (TDebug.TraceAllExceptions) {

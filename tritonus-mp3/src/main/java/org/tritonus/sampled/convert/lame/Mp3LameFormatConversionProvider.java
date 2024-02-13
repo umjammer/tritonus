@@ -180,13 +180,6 @@ public class Mp3LameFormatConversionProvider extends
      */
     public Mp3LameFormatConversionProvider() {
         super(Arrays.asList(INPUT_FORMATS), Arrays.asList(OUTPUT_FORMATS));
-        if (!Lame.isLibAvailable()) {
-            disable();
-            if (TDebug.TraceAudioConverter) {
-                TDebug.out("******* Error initializing LAME mp3 encoder: "
-                        + Lame.getLinkError());
-            }
-        }
     }
 
     public AudioInputStream getAudioInputStream(AudioFormat targetFormat,
@@ -211,7 +204,7 @@ public class Mp3LameFormatConversionProvider extends
         if (isConversionSupported(targetEncoding, sourceFormat)) {
             AudioFormatSet result = new AudioFormatSet();
             for (AudioFormat targetFormat : getCollectionTargetFormats()) {
-                //                if (TDebug.TraceAudioConverter) {
+//                if (TDebug.TraceAudioConverter) {
 //                    TDebug.out("-checking target format " + targetFormat);
 //                }
                 if (doMatch(targetFormat.getSampleRate(),
@@ -257,8 +250,7 @@ public class Mp3LameFormatConversionProvider extends
         if ((!allowNotSpecified && targetSampleRate == AudioSystem.NOT_SPECIFIED)
                 || (targetSampleRate != AudioSystem.NOT_SPECIFIED
                 && sourceFormat.getSampleRate() != AudioSystem.NOT_SPECIFIED && targetSampleRate != sourceFormat.getSampleRate())) {
-            throw new IllegalArgumentException("Illegal sample rate ("
-                    + targetSampleRate + ") !");
+            throw new IllegalArgumentException("Illegal sample rate (" + targetSampleRate + ") !");
         }
         int targetChannels = targetFormat.getChannels();
         if (targetChannels == AudioSystem.NOT_SPECIFIED) {
@@ -267,8 +259,7 @@ public class Mp3LameFormatConversionProvider extends
         if ((!allowNotSpecified && targetChannels == AudioSystem.NOT_SPECIFIED)
                 || (targetChannels != AudioSystem.NOT_SPECIFIED
                 && sourceFormat.getChannels() != AudioSystem.NOT_SPECIFIED && targetChannels != sourceFormat.getChannels())) {
-            throw new IllegalArgumentException("Illegal number of channels ("
-                    + targetChannels + ") !");
+            throw new IllegalArgumentException("Illegal number of channels (" + targetChannels + ") !");
         }
         AudioFormat newTargetFormat = new AudioFormat(
                 targetFormat.getEncoding(), targetSampleRate,
@@ -292,16 +283,15 @@ public class Mp3LameFormatConversionProvider extends
         return MPEG_FRAME_RATE;
     }
 
-    public static class EncodedMpegAudioInputStream extends
-            TAsynchronousFilteredAudioInputStream {
+    public static class EncodedMpegAudioInputStream extends TAsynchronousFilteredAudioInputStream {
+
         private InputStream pcmStream;
         private Lame encoder;
 
         private byte[] pcmBuffer;
         private byte[] encodedBuffer;
 
-        public EncodedMpegAudioInputStream(AudioFormat targetFormat,
-                                           AudioInputStream sourceStream) {
+        public EncodedMpegAudioInputStream(AudioFormat targetFormat, AudioInputStream sourceStream) {
             super(targetFormat, -1);
             pcmStream = sourceStream;
             encoder = new Lame(sourceStream.getFormat(), targetFormat);
@@ -325,13 +315,11 @@ public class Mp3LameFormatConversionProvider extends
                     int readBytes = pcmStream.read(pcmBuffer);
                     // what to do in case of readBytes==0 ?
                     if (readBytes > 0) {
-                        encodedBytes = encoder.encodeBuffer(pcmBuffer, 0,
-                                readBytes, encodedBuffer);
+                        encodedBytes = encoder.encodeBuffer(pcmBuffer, readBytes, encodedBuffer);
                         buffer = encodedBuffer;
                     } else {
                         // take the larger buffer for the remaining frame(s)
-                        buffer = encodedBuffer.length > pcmBuffer.length ? encodedBuffer
-                                : pcmBuffer;
+                        buffer = encodedBuffer.length > pcmBuffer.length ? encodedBuffer : pcmBuffer;
                         encodedBytes = encoder.encodeFinish(buffer);
                         encoder.close();
                         encoder = null;
@@ -354,7 +342,7 @@ public class Mp3LameFormatConversionProvider extends
             super.close();
             pcmStream.close();
             if (encoder != null) {
-                encoder.encodeFinish(null);
+                encoder.encodeFinish(new byte[0]);
                 encoder.close();
                 encoder = null;
             }
