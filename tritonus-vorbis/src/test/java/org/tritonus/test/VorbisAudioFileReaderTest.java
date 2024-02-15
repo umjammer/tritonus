@@ -1,5 +1,5 @@
 /*
- * VorbisAudioFileReaderTestCase.java
+ * VorbisAudioFileReaderTest.java
  */
 
 /*
@@ -21,13 +21,12 @@
 package org.tritonus.test;
 
 
-public class VorbisAudioFileReaderTestCase
-        extends BaseAudioFileReaderTestCase {
-    public VorbisAudioFileReaderTestCase() {
+public class VorbisAudioFileReaderTest extends BaseAudioFileReaderTestCase {
+
+    public VorbisAudioFileReaderTest() {
         setResourcePrefix("vorbis");
         setCheckRealLengths(false);
     }
 }
 
-
-/* VorbisAudioFileReaderTestCase.java */
+/* VorbisAudioFileReaderTest.java */

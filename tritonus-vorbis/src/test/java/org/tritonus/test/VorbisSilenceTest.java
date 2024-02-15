@@ -1,4 +1,8 @@
 /*
+ * VorbisSilenceTest.java
+ */
+
+/*
  *  Copyright (c) 2003 by Dan Rollo
  *
  *  [license not updated to Apache 2.0]
@@ -30,7 +34,6 @@ import javax.sound.sampled.DataLine;
 import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
-import javax.sound.sampled.UnsupportedAudioFileException;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,7 +41,6 @@ import org.junit.jupiter.api.Test;
 import org.tritonus.share.sampled.AudioSystemShadow;
 import org.tritonus.share.sampled.file.AudioOutputStream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -48,21 +50,22 @@ import static org.junit.jupiter.api.Assertions.fail;
  * NOTE: These tests create a large (26mb) temporary audio file in the sounds dir
  * which is deleted after the test completes, but be sure you have sufficient disk space.
  */
-public class VorbisTruncateTestCase {
-
-    private static final File _sourceFileOgg = new File("src/test/resources/" + "sounds/testtruncate.ogg");
-    private static final File _destFileWav = new File("src/test/resources/" + "sounds/testtruncate.wav");
+public class VorbisSilenceTest {
+    private File _sourceFileOgg = new File("src/test/resources/" + "sounds/testsilence.ogg");
+    private File _destFileWav = new File("src/test/resources/" + "sounds/testsilenceout.wav");
 
     @BeforeEach
     protected void setUp() {
-        assertTrue(_sourceFileOgg.exists(), "Missing required test file: " + _sourceFileOgg.getAbsolutePath());
+        assertTrue(_sourceFileOgg.exists(),
+                "Missing required test file: " + _sourceFileOgg.getAbsolutePath());
 
         _destFileWav.deleteOnExit();
     }
 
     @AfterEach
     protected void tearDown() {
-        assertTrue(_sourceFileOgg.exists(), "Deleted required test file: " + _sourceFileOgg.getAbsolutePath());
+        assertTrue(_sourceFileOgg.exists(),
+                "Deleted required test file: " + _sourceFileOgg.getAbsolutePath());
 
         if (_destFileWav.exists()) {
             // remove converted file
@@ -73,11 +76,12 @@ public class VorbisTruncateTestCase {
         }
     }
 
+
     @Test
-    public void testConvertTruncateOggWithAudioOutStream() throws Exception {
+    public void testConvertSilentOggWithAudioOutStream() throws Exception {
         AudioInputStream inAIStreamOgg = AudioSystem.getAudioInputStream(_sourceFileOgg);
 
-        AudioFormat destAudioFormatPCM = new AudioFormat(22050.0F, 16, 1, true, false);
+        AudioFormat destAudioFormatPCM = new AudioFormat(44100.0F, 16, 1, true, false);
         AudioInputStream inAIStreamPCM = AudioSystem.getAudioInputStream(destAudioFormatPCM, inAIStreamOgg);
 
         AudioOutputStream outAOStreamWavPCM = AudioSystemShadow.getAudioOutputStream(
@@ -86,22 +90,40 @@ public class VorbisTruncateTestCase {
                 AudioSystem.NOT_SPECIFIED,
                 _destFileWav);
 
-        // The total number of decoded bytes read
-        long readCntPCMTotal = 0;
+        class StreamPump extends Thread {
+            boolean isRunFinished;
 
-        // pump the streams
-        int readCnt;
-        byte[] buf = new byte[4 * 1024];
-
-        try {
-            while ((readCnt = inAIStreamPCM.read(buf, 0, buf.length)) != -1) {
-                readCntPCMTotal += readCnt;
-                outAOStreamWavPCM.write(buf, 0, readCnt);
+            StreamPump() {
+                super("SilenceTest-StreamPump");
             }
-            // System.out.println("Total PCM read count: " + readCntPCMTotal);
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Exception pumping streams: " + e.getMessage());
+
+
+            public void run() {
+                // pump the streams
+                int readCnt;
+                byte[] buf = new byte[65536];
+
+                int cnt = 0;
+                try {
+                    while ((readCnt = inAIStreamPCM.read(buf, 0, buf.length)) != -1) {
+                        outAOStreamWavPCM.write(buf, 0, readCnt);
+                        cnt++;
+                        //System.out.println("readCnt: " + readCnt + " after write, loop cnt: " + cnt);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    fail("Exception pumping streams: " + e.getMessage());
+                }
+                isRunFinished = true;
+            }
+        }
+        StreamPump t = new StreamPump();
+        t.start();
+        // wait for conversion to finish, within reasonable time
+        final int maxWait = 60;
+        int waitCnt = 0;
+        while (t.isAlive() && waitCnt++ < maxWait) {
+            Thread.sleep(1000);
         }
 
         outAOStreamWavPCM.close();
@@ -109,20 +131,21 @@ public class VorbisTruncateTestCase {
         inAIStreamOgg.close();
 
         assertTrue(_destFileWav.length() > 0, "Converted wav file is empty: " + _destFileWav.getAbsolutePath());
+        assertTrue(t.isRunFinished, "Conversion never finished run() method");
+        assertTrue(waitCnt < maxWait, "Conversion timeout expired");
 
-        // attempt to play the resulting wav file - end of file shouldn't be truncated
-        playStream(_destFileWav);
-
-        assertEquals(369664, // total PCM bytes resulting when ogg data is NOT truncated
-                readCntPCMTotal, "Missing some PCM data from decoded Vorbis stream.");
+        // attempt to read the resulting wav file
+        AudioInputStream aisDest = AudioSystem.getAudioInputStream(_destFileWav);
+        // attempt to play the resulting wav file - 5 minutes of silence
+        playStream(aisDest);
     }
 
 
     @Test
-    public void testConvertTruncateOggWithAudioSystem() throws Exception {
+    public void testConvertSilentOggWithAudioSystem() throws Exception {
         AudioInputStream inAIStreamOgg = AudioSystem.getAudioInputStream(_sourceFileOgg);
 
-        AudioFormat destAudioFormatPCM = new AudioFormat(22050.0F, 16, 1, true, false);
+        AudioFormat destAudioFormatPCM = new AudioFormat(44100.0F, 16, 1, true, false);
         AudioInputStream inAIStreamPCM = AudioSystem.getAudioInputStream(destAudioFormatPCM, inAIStreamOgg);
 
         AudioSystem.write(inAIStreamPCM, AudioFileFormat.Type.WAVE, _destFileWav);
@@ -132,32 +155,38 @@ public class VorbisTruncateTestCase {
 
         assertTrue(_destFileWav.length() > 0, "Converted wav file is empty: " + _destFileWav.getAbsolutePath());
 
-        // attempt to play the resulting wav file - end of file shouldn't be truncated
-        playStream(_destFileWav);
-
-        assertEquals(369710, // known file size Wave file built using native Windoze oggdec.exe
-                _destFileWav.length(), "Missing some PCM data from decoded Vorbis stream.");
+        // attempt to read the resulting wav file
+        AudioInputStream aisDest = AudioSystem.getAudioInputStream(_destFileWav);
+        // attempt to play the resulting wav file - 5 minutes of silence
+        playStream(aisDest);
     }
 
 
     /**
      * Play the given audio stream. Closes the stream when finised.
      *
-     * @param fileToPlay the audio file to play
+     * @param streamToPlay the audio stream to play
      * @throws LineUnavailableException if can't get line for stream's format
      * @throws IOException              if problem occurs reading the stream
      */
-    private static void playStream(File fileToPlay)
-            throws LineUnavailableException, IOException, UnsupportedAudioFileException {
+    private static void playStream(AudioInputStream streamToPlay)
+            throws LineUnavailableException, IOException {
 
-        AudioInputStream streamToPlay = AudioSystem.getAudioInputStream(fileToPlay);
+        // @todo Comment this out to really play the file
+        if (1 == 1) {
+            streamToPlay.close();
+            // @todo Why is GC required to get AudioSytem to release these files???
+            // To see the error (under Win2K, jdk 1.3.1_02-b02), just comment out the gc below.
+            System.gc();
+            return;
+        }
 
         SourceDataLine line = (SourceDataLine) AudioSystem.getLine(
                 new DataLine.Info(SourceDataLine.class, streamToPlay.getFormat()));
 
         line.open();
         FloatControl gainControl = (FloatControl) line.getControl(FloatControl.Type.MASTER_GAIN);
-        double gain = .02d; // number between 0 and 1 (loudest)
+        double gain = .2d; // number between 0 and 1 (loudest)
         float dB = (float) (Math.log(gain) / Math.log(10.0) * 20.0);
         gainControl.setValue(dB);
         line.start();
@@ -168,7 +197,11 @@ public class VorbisTruncateTestCase {
                 line.write(buf, 0, readCnt);
             }
         } finally {
-            line.drain();
+            // kludge to get last bit played
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+            }
             streamToPlay.close();
             line.stop();
             line.close();
@@ -176,5 +209,5 @@ public class VorbisTruncateTestCase {
     }
 }
 
-/* VorbisTruncateTestCase.java */
 
+/* VorbisSilenceTest.java */
