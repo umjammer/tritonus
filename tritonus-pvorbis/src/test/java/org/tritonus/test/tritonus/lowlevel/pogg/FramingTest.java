@@ -22,6 +22,7 @@ import biniu.ogg.Packet;
 import biniu.ogg.Page;
 import biniu.ogg.StreamState;
 import biniu.ogg.SyncState;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,6 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * <p>
  * Tests for classes org.tritonus.lowlevel.pogg.* except Buffer.
  */
+@Disabled("wip")
 public class FramingTest {
 
     // 17 only

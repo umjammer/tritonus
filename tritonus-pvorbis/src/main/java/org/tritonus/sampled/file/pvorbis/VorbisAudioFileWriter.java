@@ -27,11 +27,12 @@
 
 package org.tritonus.sampled.file.pvorbis;
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.util.Arrays;
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioFormat;
 
-import org.tritonus.share.TDebug;
 import org.tritonus.share.sampled.file.THeaderlessAudioFileWriter;
 
 
@@ -41,31 +42,24 @@ import org.tritonus.share.sampled.file.THeaderlessAudioFileWriter;
  * @author Florian Bomers
  * @author Matthias Pfisterer
  */
-public class VorbisAudioFileWriter
-        extends THeaderlessAudioFileWriter {
-    private static final AudioFileFormat.Type[] FILE_TYPES =
-            {
-                    new AudioFileFormat.Type("Vorbis", "ogg")
-            };
+public class VorbisAudioFileWriter extends THeaderlessAudioFileWriter {
 
-    private static final AudioFormat[] AUDIO_FORMATS =
-            {
-                    new AudioFormat(new AudioFormat.Encoding("VORBIS"), ALL, ALL, ALL, ALL, ALL, false),
-                    new AudioFormat(new AudioFormat.Encoding("VORBIS"), ALL, ALL, ALL, ALL, ALL, true),
-            };
+    private static final Logger logger = System.getLogger("TraceAudioFileWriter");
 
+    public static final AudioFileFormat.Type VORBIS = new AudioFileFormat.Type("Vorbis", "ogg");
+
+    private static final AudioFileFormat.Type[] FILE_TYPES = {
+            VORBIS
+    };
+
+    private static final AudioFormat[] AUDIO_FORMATS = {
+            new AudioFormat(new AudioFormat.Encoding("VORBIS"), ALL, ALL, ALL, ALL, ALL, false),
+            new AudioFormat(new AudioFormat.Encoding("VORBIS"), ALL, ALL, ALL, ALL, ALL, true),
+    };
 
     public VorbisAudioFileWriter() {
-        super(Arrays.asList(FILE_TYPES),
-                Arrays.asList(AUDIO_FORMATS));
-        if (TDebug.TraceAudioFileWriter) {
-            TDebug.out("VorbisAudioFileWriter.<init>(): begin");
-        }
-        if (TDebug.TraceAudioFileWriter) {
-            TDebug.out("VorbisAudioFileWriter.<init>(): end");
-        }
+        super(Arrays.asList(FILE_TYPES), Arrays.asList(AUDIO_FORMATS));
+        logger.log(Level.TRACE, "VorbisAudioFileWriter.<init>(): begin");
+        logger.log(Level.TRACE,  "VorbisAudioFileWriter.<init>(): end");
     }
 }
-
-
-/* VorbisAudioFileWriter.java */
