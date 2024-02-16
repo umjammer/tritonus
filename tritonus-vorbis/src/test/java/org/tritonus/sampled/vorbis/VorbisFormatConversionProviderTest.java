@@ -22,7 +22,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
 import org.tritonus.sampled.convert.vorbis.VorbisFormatConversionProvider;
 import org.tritonus.share.TDebug;
 import vavi.util.Debug;
@@ -36,7 +35,7 @@ import static org.tritonus.sampled.file.vorbis.VorbisAudioFileWriter.OGG;
 
 /**
  * VorbisFormatConversionProviderTest.
- *
+ * <p>
  * TODO result is not consistent
  *
  * @author <a href="mailto:umjammer@gmail.com">Naohide Sano</a> (umjammer)
@@ -75,7 +74,7 @@ class VorbisFormatConversionProviderTest {
     void test1() throws Exception {
         AudioInputStream ais = AudioSystem.getAudioInputStream(new BufferedInputStream(Files.newInputStream(Path.of(wav))));
         AudioFormat inFormat = ais.getFormat();
-Debug.println(inFormat);
+        Debug.println(inFormat);
 
         Map<String, Object> props = new HashMap<>();
         props.put("vorbis.test", true);
@@ -90,7 +89,7 @@ Debug.println(inFormat);
                 inFormat.getSampleRate(),
                 false,
                 props);
-Debug.println(outFormat);
+        Debug.println(outFormat);
         AudioInputStream aout = AudioSystem.getAudioInputStream(outFormat, ais);
 
         Path out = Paths.get("tmp", "out6.ogg");
@@ -112,10 +111,10 @@ Debug.println(outFormat);
     @Test
     @DisplayName("writer")
     void test4() throws Exception {
-Debug.println(wav);
+        Debug.println(wav);
         AudioInputStream ais = AudioSystem.getAudioInputStream(new BufferedInputStream(Files.newInputStream(Path.of(wav))));
         AudioFormat inFormat = ais.getFormat();
-Debug.println(inFormat);
+        Debug.println(inFormat);
 
         Map<String, Object> props = new HashMap<>();
         props.put("vorbis.test", true);
@@ -130,7 +129,7 @@ Debug.println(inFormat);
                 inFormat.getFrameRate(),
                 false,
                 props);
-Debug.println(outFormat);
+        Debug.println(outFormat);
         AudioInputStream aout = AudioSystem.getAudioInputStream(outFormat, ais);
 
         Path out2 = Paths.get("tmp", "out7.ogg");
@@ -144,7 +143,7 @@ Debug.println(outFormat);
     void test3() throws Exception {
         AudioInputStream ais = AudioSystem.getAudioInputStream(new BufferedInputStream(Files.newInputStream(Path.of(ogg))));
         AudioFormat inFormat = ais.getFormat();
-Debug.println(inFormat);
+        Debug.println(inFormat);
 
         Map<String, Object> props = new HashMap<>();
         props.put("vorbis.test", true);
@@ -160,7 +159,7 @@ Debug.println(inFormat);
                 inFormat.getFrameRate(),
                 inFormat.isBigEndian(),
                 props);
-Debug.println(outFormat);
+        Debug.println(outFormat);
         AudioInputStream aout = AudioSystem.getAudioInputStream(outFormat, ais);
 
         Path out2 = Paths.get("tmp", "out8.ogg");

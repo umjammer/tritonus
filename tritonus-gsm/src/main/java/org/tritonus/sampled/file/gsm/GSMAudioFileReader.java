@@ -49,6 +49,7 @@ import org.tritonus.share.sampled.file.TAudioFileReader;
  */
 public class GSMAudioFileReader
         extends TAudioFileReader {
+
     private static final int GSM_MAGIC = 0xD0;
     private static final int GSM_MAGIC_MASK = 0xF0;
 

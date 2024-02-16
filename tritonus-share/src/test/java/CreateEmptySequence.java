@@ -35,6 +35,7 @@ import javax.sound.midi.Track;
  * Creates a Sequence with only a end-of-track message.
  */
 public class CreateEmptySequence {
+
     public static void main(String[] args) {
         if (args.length != 4) {
             out("usage:");

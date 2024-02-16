@@ -31,6 +31,7 @@ package org.tritonus.lowlevel.esd;
 
 public class EsdSample
         extends Esd {
+
     /**
      * Holds socket fd to EsounD.
      * This variable is only used by native code.

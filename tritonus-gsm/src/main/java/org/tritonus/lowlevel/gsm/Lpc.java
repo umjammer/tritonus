@@ -21,6 +21,7 @@
 package org.tritonus.lowlevel.gsm;
 
 public class Lpc {
+
     private int[] L_ACF = new int[9];
 
     public void Gsm_LPC_Analysis(short[] so, /* 0..159 signals IN/OUT */
@@ -289,11 +290,12 @@ public class Lpc {
 
     /**
      * The following scaling for r[..] and LAR[..] has been used:
-     *
+     * <p>
      * r[..] = integer( real_r[..]*32768. ); -1 <= real_r < 1. LAR[..] =
      * integer( real_LAR[..] * 16384 ); with -1.625 <= real_LAR <= 1.625
-     * @since 4.2.6
+     *
      * @param r IN/OUT 0..7
+     * @since 4.2.6
      */
     private void Transformation_to_Log_Area_Ratios(short[] r) throws IllegalArgumentException {
 
@@ -331,7 +333,7 @@ public class Lpc {
 
             if (r[i] == Gsm_Def.MIN_WORD) {
                 throw new IllegalArgumentException("Transformation_to_Log_Area_Ratios: r[" + i + "] = "
-                                + r[i] + " should not be = " + Gsm_Def.MIN_WORD);
+                        + r[i] + " should not be = " + Gsm_Def.MIN_WORD);
             }
         }
     }
@@ -339,12 +341,13 @@ public class Lpc {
     /**
      * This procedure needs four tables; the following equations give the
      * optimum scaling for the constants:
-     *
+     * <p>
      * A[0..7] = integer( real_A[0..7] * 1024 ) B[0..7] = integer( real_B[0..7]
      * * 512 ) MAC[0..7] = maximum of the LARc[0..7] MIC[0..7] = minimum of the
      * LARc[0..7]
-     * @since 4.2.7
+     *
      * @param LAR IN/OUT [0..7]
+     * @since 4.2.7
      */
     private void Quantization_and_coding(short[] LAR) {
         int index = 0;

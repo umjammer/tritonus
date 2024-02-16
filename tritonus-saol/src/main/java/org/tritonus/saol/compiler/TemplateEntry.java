@@ -30,6 +30,7 @@ import org.tritonus.saol.sablecc.node.ATemplatedeclTemplatedecl;
 
 
 public class TemplateEntry {
+
     private String m_strTemplateName;
     private ATemplatedeclTemplatedecl m_startNode;
 

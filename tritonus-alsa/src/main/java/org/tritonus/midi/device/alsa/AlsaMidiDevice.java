@@ -49,6 +49,7 @@ import org.tritonus.share.midi.TMidiDevice;
 public class AlsaMidiDevice
         extends TMidiDevice
         implements AlsaMidiIn.AlsaMidiInListener {
+
     /**
      * ALSA client id of the physical port.
      */
@@ -339,6 +340,7 @@ public class AlsaMidiDevice
 
     private class AlsaMidiDeviceTransmitter
             extends TTransmitter {
+
         private boolean m_bReceiverSubscribed;
 
 

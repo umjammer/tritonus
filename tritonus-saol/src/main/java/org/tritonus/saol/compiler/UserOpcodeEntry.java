@@ -34,6 +34,7 @@ import org.tritonus.saol.sablecc.node.AOpcodedeclOpcodedecl;
  * This class is used for entries in the opcode table.
  */
 public class UserOpcodeEntry {
+
     private String m_strOpcodeName;
     private AOpcodedeclOpcodedecl m_startNode;
 

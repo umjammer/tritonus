@@ -34,6 +34,7 @@ import org.tritonus.share.sampled.mixer.TMixerProvider;
 
 public class AlsaPortMixerProvider
         extends TMixerProvider {
+
     private static boolean sm_bInitialized = false;
 
 

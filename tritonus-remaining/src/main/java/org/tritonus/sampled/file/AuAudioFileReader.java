@@ -51,6 +51,7 @@ import org.tritonus.share.sampled.file.TAudioFileReader;
  * @author Matthias Pfisterer
  */
 public class AuAudioFileReader extends TAudioFileReader {
+
     private static final int READ_LIMIT = 1000;
 
 

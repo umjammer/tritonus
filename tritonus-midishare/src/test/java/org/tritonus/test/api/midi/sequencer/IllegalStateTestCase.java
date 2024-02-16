@@ -39,6 +39,7 @@ import org.junit.jupiter.api.Assertions;
  */
 public class IllegalStateTestCase
         extends BaseSequencerTestCase {
+
     protected void checkSequencer(Sequencer seq)
             throws Exception {
         // Sequencer is closed
@@ -232,6 +233,7 @@ public class IllegalStateTestCase
 
     private static class DummyMetaEventListener
             implements MetaEventListener {
+
         public void meta(MetaMessage meta) {
             // DO NOTHING
         }
@@ -240,6 +242,7 @@ public class IllegalStateTestCase
 
     private static class DummyControllerEventListener
             implements ControllerEventListener {
+
         public void controlChange(ShortMessage event) {
             // DO NOTHING
         }

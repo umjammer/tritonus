@@ -1310,6 +1310,7 @@ public class AlsaSeq {
 
     private class ClientInfoIterator
             implements Iterator {
+
         private int m_nClient;
         private AlsaSeqClientInfo m_clientInfo;
 
@@ -1365,6 +1366,7 @@ public class AlsaSeq {
 
     private class PortInfoIterator
             implements Iterator {
+
         private int m_nClient;
         private int m_nPort;
         private AlsaSeqPortInfo m_portInfo;

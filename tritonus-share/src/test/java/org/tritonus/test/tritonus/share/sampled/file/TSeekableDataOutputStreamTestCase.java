@@ -29,6 +29,7 @@ import org.tritonus.test.Util;
 
 public class TSeekableDataOutputStreamTestCase
         extends BaseDataOutputStreamTestCase {
+
     private File m_file;
 
 

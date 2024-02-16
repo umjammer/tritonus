@@ -33,6 +33,7 @@ import org.junit.jupiter.api.Test;
  */
 @Disabled
 public abstract class BaseSynthesizerTestCase {
+
     private static final boolean IGNORE_SUN_SYNTHESIZER = false;
 
 

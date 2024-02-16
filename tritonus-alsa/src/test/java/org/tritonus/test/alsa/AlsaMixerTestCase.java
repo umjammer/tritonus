@@ -30,6 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 public class AlsaMixerTestCase {
+
     private static final boolean DEBUG = true;
 
 

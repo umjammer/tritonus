@@ -28,6 +28,7 @@ import javax.sound.sampled.Mixer;
  * Base class for tests of javax.sound.sampled.Mixer.
  */
 public abstract class BaseMixerTestCase {
+
     /**
      * Iterate over all available Mixers.
      */
@@ -51,6 +52,7 @@ public abstract class BaseMixerTestCase {
 
 
     protected interface Check {
+
         void check(Mixer mixer)
                 throws Exception;
     }

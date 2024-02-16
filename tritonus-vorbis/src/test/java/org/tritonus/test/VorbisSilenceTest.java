@@ -51,6 +51,7 @@ import static org.junit.jupiter.api.Assertions.fail;
  * which is deleted after the test completes, but be sure you have sufficient disk space.
  */
 public class VorbisSilenceTest {
+
     private File _sourceFileOgg = new File("src/test/resources/" + "sounds/testsilence.ogg");
     private File _destFileWav = new File("src/test/resources/" + "sounds/testsilenceout.wav");
 
@@ -91,6 +92,7 @@ public class VorbisSilenceTest {
                 _destFileWav);
 
         class StreamPump extends Thread {
+
             boolean isRunFinished;
 
             StreamPump() {

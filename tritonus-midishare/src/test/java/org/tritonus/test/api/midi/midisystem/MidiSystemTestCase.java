@@ -25,7 +25,6 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 
 /*
@@ -73,6 +72,7 @@ public class MidiSystemTestCase {
     }
 
     private static class TestInfo extends MidiDevice.Info {
+
         public TestInfo(String name, String vendor, String description, String version) {
             super(name, vendor, description, version);
         }

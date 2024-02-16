@@ -56,6 +56,7 @@ import org.tritonus.share.sampled.AudioFormats;
 
 public abstract class TSimpleFormatConversionProvider
         extends TFormatConversionProvider {
+
     private Collection<AudioFormat.Encoding> m_sourceEncodings;
     private Collection<AudioFormat.Encoding> m_targetEncodings;
     private Collection<AudioFormat> m_sourceFormats;

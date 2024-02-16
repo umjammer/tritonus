@@ -50,6 +50,7 @@ import javax.sound.midi.Synthesizer;
 public abstract class TDirectSynthesizer
         extends TMidiDevice
         implements Synthesizer {
+
     /**
      * Initialize this class.
      * This sets the info from the passed one, sets the open status

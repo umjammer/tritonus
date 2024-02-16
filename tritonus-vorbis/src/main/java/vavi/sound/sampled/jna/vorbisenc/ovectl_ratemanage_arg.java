@@ -1,9 +1,13 @@
 package vavi.sound.sampled.jna.vorbisenc;
+
+import java.util.Arrays;
+import java.util.List;
+
 import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
-import java.util.Arrays;
-import java.util.List;
+
+
 /**
  * \deprecated This is a deprecated interface. Please use vorbis_encode_ctl()<br>
  * with the \ref ovectl_ratemanage2_arg struct and \ref<br>
@@ -19,90 +23,101 @@ import java.util.List;
  * For help, please visit <a href="http://nativelibs4java.googlecode.com/">NativeLibs4Java</a> , <a href="http://rococoa.dev.java.net/">Rococoa</a>, or <a href="http://jna.dev.java.net/">JNA</a>.
  */
 public class ovectl_ratemanage_arg extends Structure {
-	/** < nonzero if bitrate management is active */
-	public int management_active;
-	/**
-	 * hard lower limit (in kilobits per second) below which the stream bitrate<br>
-	 * will never be allowed for any given bitrate_hard_window seconds of time.
-	 */
-	public NativeLong bitrate_hard_min;
-	/**
-	 * hard upper limit (in kilobits per second) above which the stream bitrate<br>
-	 * will never be allowed for any given bitrate_hard_window seconds of time.
-	 */
-	public NativeLong bitrate_hard_max;
-	/**
-	 * the window period (in seconds) used to regulate the hard bitrate minimum<br>
-	 * and maximum
-	 */
-	public double bitrate_hard_window;
-	/**
-	 * soft lower limit (in kilobits per second) below which the average bitrate<br>
-	 * tracker will start nudging the bitrate higher.
-	 */
-	public NativeLong bitrate_av_lo;
-	/**
-	 * soft upper limit (in kilobits per second) above which the average bitrate<br>
-	 * tracker will start nudging the bitrate lower.
-	 */
-	public NativeLong bitrate_av_hi;
-	/**
-	 * the window period (in seconds) used to regulate the average bitrate<br>
-	 * minimum and maximum.
-	 */
-	public double bitrate_av_window;
-	/**
-	 * Regulates the relative centering of the average and hard windows; in<br>
-	 * libvorbis 1.0 and 1.0.1, the hard window regulation overlapped but<br>
-	 * followed the average window regulation. In libvorbis 1.1 a bit-reservoir<br>
-	 * interface replaces the old windowing interface; the older windowing<br>
-	 * interface is simulated and this field has no effect.
-	 */
-	public double bitrate_av_window_center;
-	public ovectl_ratemanage_arg() {
-		super();
-	}
-	protected List<String> getFieldOrder() {
-		return Arrays.asList("management_active", "bitrate_hard_min", "bitrate_hard_max", "bitrate_hard_window", "bitrate_av_lo", "bitrate_av_hi", "bitrate_av_window", "bitrate_av_window_center");
-	}
-	/**
-	 * @param management_active < nonzero if bitrate management is active<br>
-	 * @param bitrate_hard_min hard lower limit (in kilobits per second) below which the stream bitrate<br>
-	 * will never be allowed for any given bitrate_hard_window seconds of time.<br>
-	 * @param bitrate_hard_max hard upper limit (in kilobits per second) above which the stream bitrate<br>
-	 * will never be allowed for any given bitrate_hard_window seconds of time.<br>
-	 * @param bitrate_hard_window the window period (in seconds) used to regulate the hard bitrate minimum<br>
-	 * and maximum<br>
-	 * @param bitrate_av_lo soft lower limit (in kilobits per second) below which the average bitrate<br>
-	 * tracker will start nudging the bitrate higher.<br>
-	 * @param bitrate_av_hi soft upper limit (in kilobits per second) above which the average bitrate<br>
-	 * tracker will start nudging the bitrate lower.<br>
-	 * @param bitrate_av_window the window period (in seconds) used to regulate the average bitrate<br>
-	 * minimum and maximum.<br>
-	 * @param bitrate_av_window_center Regulates the relative centering of the average and hard windows; in<br>
-	 * libvorbis 1.0 and 1.0.1, the hard window regulation overlapped but<br>
-	 * followed the average window regulation. In libvorbis 1.1 a bit-reservoir<br>
-	 * interface replaces the old windowing interface; the older windowing<br>
-	 * interface is simulated and this field has no effect.
-	 */
-	public ovectl_ratemanage_arg(int management_active, NativeLong bitrate_hard_min, NativeLong bitrate_hard_max, double bitrate_hard_window, NativeLong bitrate_av_lo, NativeLong bitrate_av_hi, double bitrate_av_window, double bitrate_av_window_center) {
-		super();
-		this.management_active = management_active;
-		this.bitrate_hard_min = bitrate_hard_min;
-		this.bitrate_hard_max = bitrate_hard_max;
-		this.bitrate_hard_window = bitrate_hard_window;
-		this.bitrate_av_lo = bitrate_av_lo;
-		this.bitrate_av_hi = bitrate_av_hi;
-		this.bitrate_av_window = bitrate_av_window;
-		this.bitrate_av_window_center = bitrate_av_window_center;
-	}
-	public ovectl_ratemanage_arg(Pointer peer) {
-		super(peer);
-	}
-	public static class ByReference extends ovectl_ratemanage_arg implements Structure.ByReference {
-		
-	};
-	public static class ByValue extends ovectl_ratemanage_arg implements Structure.ByValue {
-		
-	};
+
+    /** < nonzero if bitrate management is active */
+    public int management_active;
+    /**
+     * hard lower limit (in kilobits per second) below which the stream bitrate<br>
+     * will never be allowed for any given bitrate_hard_window seconds of time.
+     */
+    public NativeLong bitrate_hard_min;
+    /**
+     * hard upper limit (in kilobits per second) above which the stream bitrate<br>
+     * will never be allowed for any given bitrate_hard_window seconds of time.
+     */
+    public NativeLong bitrate_hard_max;
+    /**
+     * the window period (in seconds) used to regulate the hard bitrate minimum<br>
+     * and maximum
+     */
+    public double bitrate_hard_window;
+    /**
+     * soft lower limit (in kilobits per second) below which the average bitrate<br>
+     * tracker will start nudging the bitrate higher.
+     */
+    public NativeLong bitrate_av_lo;
+    /**
+     * soft upper limit (in kilobits per second) above which the average bitrate<br>
+     * tracker will start nudging the bitrate lower.
+     */
+    public NativeLong bitrate_av_hi;
+    /**
+     * the window period (in seconds) used to regulate the average bitrate<br>
+     * minimum and maximum.
+     */
+    public double bitrate_av_window;
+    /**
+     * Regulates the relative centering of the average and hard windows; in<br>
+     * libvorbis 1.0 and 1.0.1, the hard window regulation overlapped but<br>
+     * followed the average window regulation. In libvorbis 1.1 a bit-reservoir<br>
+     * interface replaces the old windowing interface; the older windowing<br>
+     * interface is simulated and this field has no effect.
+     */
+    public double bitrate_av_window_center;
+
+    public ovectl_ratemanage_arg() {
+        super();
+    }
+
+    protected List<String> getFieldOrder() {
+        return Arrays.asList("management_active", "bitrate_hard_min", "bitrate_hard_max", "bitrate_hard_window", "bitrate_av_lo", "bitrate_av_hi", "bitrate_av_window", "bitrate_av_window_center");
+    }
+
+    /**
+     * @param management_active        < nonzero if bitrate management is active<br>
+     * @param bitrate_hard_min         hard lower limit (in kilobits per second) below which the stream bitrate<br>
+     *                                 will never be allowed for any given bitrate_hard_window seconds of time.<br>
+     * @param bitrate_hard_max         hard upper limit (in kilobits per second) above which the stream bitrate<br>
+     *                                 will never be allowed for any given bitrate_hard_window seconds of time.<br>
+     * @param bitrate_hard_window      the window period (in seconds) used to regulate the hard bitrate minimum<br>
+     *                                 and maximum<br>
+     * @param bitrate_av_lo            soft lower limit (in kilobits per second) below which the average bitrate<br>
+     *                                 tracker will start nudging the bitrate higher.<br>
+     * @param bitrate_av_hi            soft upper limit (in kilobits per second) above which the average bitrate<br>
+     *                                 tracker will start nudging the bitrate lower.<br>
+     * @param bitrate_av_window        the window period (in seconds) used to regulate the average bitrate<br>
+     *                                 minimum and maximum.<br>
+     * @param bitrate_av_window_center Regulates the relative centering of the average and hard windows; in<br>
+     *                                 libvorbis 1.0 and 1.0.1, the hard window regulation overlapped but<br>
+     *                                 followed the average window regulation. In libvorbis 1.1 a bit-reservoir<br>
+     *                                 interface replaces the old windowing interface; the older windowing<br>
+     *                                 interface is simulated and this field has no effect.
+     */
+    public ovectl_ratemanage_arg(int management_active, NativeLong bitrate_hard_min, NativeLong bitrate_hard_max, double bitrate_hard_window, NativeLong bitrate_av_lo, NativeLong bitrate_av_hi, double bitrate_av_window, double bitrate_av_window_center) {
+        super();
+        this.management_active = management_active;
+        this.bitrate_hard_min = bitrate_hard_min;
+        this.bitrate_hard_max = bitrate_hard_max;
+        this.bitrate_hard_window = bitrate_hard_window;
+        this.bitrate_av_lo = bitrate_av_lo;
+        this.bitrate_av_hi = bitrate_av_hi;
+        this.bitrate_av_window = bitrate_av_window;
+        this.bitrate_av_window_center = bitrate_av_window_center;
+    }
+
+    public ovectl_ratemanage_arg(Pointer peer) {
+        super(peer);
+    }
+
+    public static class ByReference extends ovectl_ratemanage_arg implements Structure.ByReference {
+
+    }
+
+    ;
+
+    public static class ByValue extends ovectl_ratemanage_arg implements Structure.ByValue {
+
+    }
+
+    ;
 }

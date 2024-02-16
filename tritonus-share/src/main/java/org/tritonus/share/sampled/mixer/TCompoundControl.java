@@ -40,6 +40,7 @@ import org.tritonus.share.TDebug;
 public class TCompoundControl
         extends CompoundControl
         implements TControllable {
+
     private TControlController m_controller;
 
 

@@ -45,7 +45,7 @@ import org.tritonus.share.sampled.convert.TEncodingFormatConversionProvider;
  * ConversionProvider for ogg vorbis encoding.
  * This FormatConversionProvider uses the native libraries libogg,
  * libvorbis and libvorbisenc to implement encoding to ogg vorbis.
- *
+ * <p>
  * This file is part of Tritonus: http://www.tritonus.org/
  *
  * @author Matthias Pfisterer
@@ -139,17 +139,24 @@ public class VorbisFormatConversionProvider extends TEncodingFormatConversionPro
         targetFormat = getDefaultTargetFormat(targetFormat, audioInputStream.getFormat());
         if (isConversionSupported(targetFormat, audioInputStream.getFormat())) {
             if (targetFormat.getEncoding().equals(VORBIS)) {
-                if (TDebug.TraceAudioConverter) TDebug.out("conversion supported; trying to create EncodedVorbisAudioInputStream");
+                if (TDebug.TraceAudioConverter)
+                    TDebug.out("conversion supported; trying to create EncodedVorbisAudioInputStream");
                 convertedAudioInputStream = new EncodedVorbisAudioInputStream(targetFormat, audioInputStream);
             } else {
-                if (TDebug.TraceAudioConverter) { TDebug.out("conversion supported; trying to create DecodedVorbisAudioInputStream"); }
+                if (TDebug.TraceAudioConverter) {
+                    TDebug.out("conversion supported; trying to create DecodedVorbisAudioInputStream");
+                }
                 convertedAudioInputStream = new DecodedVorbisAudioInputStream(targetFormat, audioInputStream);
             }
         } else {
-            if (TDebug.TraceAudioConverter) { TDebug.out("<conversion not supported; throwing IllegalArgumentException"); }
+            if (TDebug.TraceAudioConverter) {
+                TDebug.out("<conversion not supported; throwing IllegalArgumentException");
+            }
             throw new IllegalArgumentException("conversion not supported");
         }
-        if (TDebug.TraceAudioConverter) { TDebug.out("<VorbisFormatConversionProvider.getAudioInputStream(): end"); }
+        if (TDebug.TraceAudioConverter) {
+            TDebug.out("<VorbisFormatConversionProvider.getAudioInputStream(): end");
+        }
         return convertedAudioInputStream;
     }
 
@@ -201,6 +208,7 @@ public class VorbisFormatConversionProvider extends TEncodingFormatConversionPro
      * of maintaining buffers and calling the encoder.
      */
     public static class EncodedVorbisAudioInputStream extends TAsynchronousFilteredAudioInputStream {
+
         /**
          * How many PCM frames to encode at once.
          */
@@ -307,7 +315,7 @@ public class VorbisFormatConversionProvider extends TEncodingFormatConversionPro
             Random random;
             property = outputFormat.getProperty("vorbis.test");
             if (property instanceof Boolean test && test) {
-TDebug.out("use test random seed");
+                TDebug.out("use test random seed");
                 random = new Random(314159265358979L);
             } else {
                 random = new Random(System.currentTimeMillis());
@@ -491,9 +499,9 @@ TDebug.out("use test random seed");
      * AudioSystem.getAudioInputStream(AudioFormat, AudioInputStream)
      * to decode an ogg/vorbis stream. This class contains the logic
      * of maintaining buffers and calling the decoder.
-     *
+     * <p>
      * TODO Class should be private, but is public due to a bug (?) in the
-	 *      aspectj compiler.
+     *      aspectj compiler.
      */
     /* private */ public static class DecodedVorbisAudioInputStream extends TAsynchronousFilteredAudioInputStream {
 
@@ -608,9 +616,9 @@ TDebug.out("use test random seed");
             }
             if (m_oggPacket.isEos()) {
                 if (TDebug.TraceAudioConverter) TDebug.out("end of vorbis stream reached");
-				// The end of the vorbis stream is reached.
-				// So we shut down the logical bitstream and
-				// vorbis structures.
+                // The end of the vorbis stream is reached.
+                // So we shut down the logical bitstream and
+                // vorbis structures.
                 m_oggStreamState.clear();
                 m_vorbisBlock.clear();
                 m_vorbisDspState.clear();
@@ -873,12 +881,12 @@ TDebug.out("use test random seed");
             return m_oggBitStream.read(buffer, nStart, nLength);
         }
 
-        /** */
+        /**  */
         private int getSampleSizeInBytes() {
             return getFormat().getFrameSize() / getFormat().getChannels();
         }
 
-        /** */
+        /**  */
         private int getFrameSize() {
             return getFormat().getFrameSize();
         }

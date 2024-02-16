@@ -20,6 +20,7 @@ package org.tritonus.share;
 
 
 public class TCircularBuffer {
+
     private boolean m_bBlockingRead;
     private boolean m_bBlockingWrite;
     private byte[] m_abData;
@@ -184,6 +185,7 @@ public class TCircularBuffer {
     }
 
     public interface Trigger {
+
         void execute();
     }
 }

@@ -30,6 +30,7 @@ import org.junit.jupiter.api.Assertions;
  */
 public class IllegalStateTestCase
         extends BaseSynthesizerTestCase {
+
     protected void checkSynthesizer(Synthesizer synth)
             throws Exception {
         // Synthesizer is closed

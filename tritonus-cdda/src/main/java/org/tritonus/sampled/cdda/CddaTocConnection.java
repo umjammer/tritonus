@@ -38,6 +38,7 @@ import org.tritonus.share.TDebug;
 
 public class CddaTocConnection
         extends URLConnection {
+
     /**
      * The cdda device name to read from.
      */

@@ -29,7 +29,7 @@ import static org.tritonus.sampled.convert.vorbis.VorbisFormatConversionProvider
 
 /**
  * Class for writing Vorbis streams
- *
+ * <p>
  * This file is part of Tritonus: http://www.tritonus.org/
  *
  * @author Florian Bomers
@@ -50,8 +50,12 @@ public class VorbisAudioFileWriter extends THeaderlessAudioFileWriter {
 
     public VorbisAudioFileWriter() {
         super(Arrays.asList(FILE_TYPES), Arrays.asList(AUDIO_FORMATS));
-        if (TDebug.TraceAudioFileWriter) { TDebug.out("VorbisAudioFileWriter.<init>(): begin"); }
-        if (TDebug.TraceAudioFileWriter) { TDebug.out("VorbisAudioFileWriter.<init>(): end"); }
+        if (TDebug.TraceAudioFileWriter) {
+            TDebug.out("VorbisAudioFileWriter.<init>(): begin");
+        }
+        if (TDebug.TraceAudioFileWriter) {
+            TDebug.out("VorbisAudioFileWriter.<init>(): end");
+        }
     }
 }
 

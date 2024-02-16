@@ -29,6 +29,7 @@ import javax.sound.midi.Sequencer;
  * Base class for testsof javax.sound.midi.Sequencer.
  */
 public abstract class BaseSequencerTestCase {
+
     private static final boolean IGNORE_SUN_SEQUENCER = true;
 
 

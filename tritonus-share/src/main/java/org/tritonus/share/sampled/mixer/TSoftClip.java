@@ -44,6 +44,7 @@ import org.tritonus.share.TDebug;
 public class TSoftClip
         extends TClip
         implements Runnable {
+
     //$$fb the following field is never used
     //private static final Class[] CONTROL_CLASSES = {/*GainControl.class*/};
     private static final int BUFFER_SIZE = 16384;

@@ -26,7 +26,6 @@ import org.tritonus.lowlevel.vorbis.Block;
 import org.tritonus.lowlevel.vorbis.Comment;
 import org.tritonus.lowlevel.vorbis.DspState;
 import org.tritonus.lowlevel.vorbis.Info;
-import org.tritonus.sampled.convert.vorbis.VorbisFormatConversionProvider;
 import org.tritonus.share.TDebug;
 import vavi.util.Debug;
 import vavi.util.properties.annotation.Property;
@@ -52,7 +51,7 @@ public class VorbisEncoder {
         return Files.exists(Paths.get("local.properties"));
     }
 
-    static final double volume = Double.parseDouble(System.getProperty("vavi.test.volume",  "0.2"));
+    static final double volume = Double.parseDouble(System.getProperty("vavi.test.volume", "0.2"));
 
     @Property(name = "wav")
     String wav = "src/test/resources/test.wav";
@@ -94,7 +93,7 @@ public class VorbisEncoder {
         encode(Path.of(playWav), out);
 
         AudioInputStream ais = AudioSystem.getAudioInputStream(new BufferedInputStream(Files.newInputStream(out)));
-Debug.println(ais.getFormat());
+        Debug.println(ais.getFormat());
 
         AudioFormat lineFormat = new AudioFormat(
                 AudioFormat.Encoding.PCM_SIGNED,
@@ -175,7 +174,7 @@ Debug.println(ais.getFormat());
         // (quality mode .4: 44kHz stereo coupled, roughly 128kbps VBR)
         vi.init();
 
-Debug.println(format);
+        Debug.println(format);
         vi.encodeInitVBR(format.getChannels(),
                 (int) format.getSampleRate(),
                 0.1F); // max compression
@@ -189,7 +188,7 @@ Debug.println(format);
         vb.init(vd);
 
         // set up our packet->stream encoder
-		// pick a random serial number; that way we can more likely build
+        // pick a random serial number; that way we can more likely build
         // chained streams just by concatenation
         Random random = new Random(314159265358979L); // fixed seed for test
         os.init(random.nextInt());
@@ -232,7 +231,7 @@ Debug.println(format);
                 // the last frame and mark end of stream in the output properly
                 vd.write(null, 0);
                 if (bytes == -1) {
-Debug.println("EOF");
+                    Debug.println("EOF");
                     break;
                 }
 
@@ -257,7 +256,7 @@ Debug.println("EOF");
                 vd.write(buffer, bytes / 4);
             }
 
-			// vorbis does some data preanalysis, then divvies up blocks for
+            // vorbis does some data preanalysis, then divvies up blocks for
             // more involved (potentially parallel) processing.  Get a single
             // block for encoding now
             while (vd.blockOut(vb) == 1) {
@@ -278,8 +277,8 @@ Debug.println("EOF");
                         output.write(og.getHeader());
                         output.write(og.getBody());
 
-						// this could be set above, but for illustrative purposes, I do
-						// it here (to show that vorbis does know where the stream ends)
+                        // this could be set above, but for illustrative purposes, I do
+                        // it here (to show that vorbis does know where the stream ends)
 
                         if (og.isEos()) {
                             eos = true;
@@ -299,8 +298,8 @@ Debug.println("EOF");
         output.flush();
         output.close();
 
-		// ogg_page and ogg_packet structs always point to storage in
-		// libvorbis. They're never freed or manipulated directly
+        // ogg_page and ogg_packet structs always point to storage in
+        // libvorbis. They're never freed or manipulated directly
         Debug.println("Done.");
     }
 

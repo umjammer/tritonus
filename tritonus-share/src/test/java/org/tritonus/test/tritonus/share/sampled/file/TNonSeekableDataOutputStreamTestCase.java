@@ -28,6 +28,7 @@ import org.tritonus.share.sampled.file.TNonSeekableDataOutputStream;
 
 public class TNonSeekableDataOutputStreamTestCase
         extends BaseDataOutputStreamTestCase {
+
     ByteArrayOutputStream m_baos;
 
 

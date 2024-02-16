@@ -10,6 +10,7 @@ import javax.sound.midi.SysexMessage;
 
 
 public class MidiMessageTest {
+
     public static void main(String[] args) {
         String strType = args[0];
         switch (strType) {
@@ -183,6 +184,7 @@ public class MidiMessageTest {
 
     public static class TestMessage
             extends MidiMessage {
+
         /*
           This constructor passes null to the superclass constructor.
           This can be used to test the behaviour if the message

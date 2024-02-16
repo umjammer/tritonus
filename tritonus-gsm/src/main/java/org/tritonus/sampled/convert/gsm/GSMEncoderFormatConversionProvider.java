@@ -55,6 +55,7 @@ public class GSMEncoderFormatConversionProvider extends
         TSimpleFormatConversionProvider
 // extends TEncodingFormatConversionProvider
         implements GsmConstants {
+
     private static final AudioFormat[] SOURCE_FORMATS = {
             new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 8000.0F, 16, 1, 2,
                     8000.0F, false),
@@ -142,6 +143,7 @@ public class GSMEncoderFormatConversionProvider extends
      */
     private static class EncodedGSMAudioInputStream extends
             TAsynchronousFilteredAudioInputStream {
+
         private AudioInputStream m_decodedStream;
         private GsmFrameFormat gsmFrameFormat;
         private Encoder m_encoder;

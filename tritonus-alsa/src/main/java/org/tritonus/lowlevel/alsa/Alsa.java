@@ -39,6 +39,7 @@ import org.tritonus.share.TDebug;
  * Currently, there is only one function remaining.
  */
 public class Alsa {
+
     private static boolean sm_bIsLibraryAvailable = false;
 
 

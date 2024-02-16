@@ -20,7 +20,6 @@ package org.tritonus.lowlevel.lame;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.ShortBuffer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -256,7 +255,7 @@ public class Lame {
             // swap samples
             lameApi.swapbytes = true;
         }
-Debug.println(Level.FINE, "bigEndian: " + bigEndian + ", platformEndianness: " + platformEndianness + ", lameApi.swapbytes: " + lameApi.swapbytes);
+        Debug.println(Level.FINE, "bigEndian: " + bigEndian + ", platformEndianness: " + platformEndianness + ", lameApi.swapbytes: " + lameApi.swapbytes);
         lameApi.channels = channels;
         lameApi.sampleRate = sampleRate;
         lameApi.bitrate = bitrate;
@@ -295,7 +294,7 @@ Debug.println(Level.FINE, "bigEndian: " + bigEndian + ", platformEndianness: " +
         if (res > 0) {
             sRes = string[0];
         }
-Debug.println(Level.FINE, "getEncoderVersion: " + sRes);
+        Debug.println(Level.FINE, "getEncoderVersion: " + sRes);
         return sRes;
     }
 
@@ -308,6 +307,7 @@ Debug.println(Level.FINE, "getEncoderVersion: " + sRes);
      * wished buffer size. The implementation of the encoder may return a lower
      * or higher buffer size. The encoder must be initialized (i.e. not closed)
      * at this point.
+     *
      * @return value of <0 denotes an error.
      */
     public int getPCMBufferSize() {
@@ -327,12 +327,12 @@ Debug.println(Level.FINE, "getEncoderVersion: " + sRes);
     /**
      * @return result of lame_encode_buffer:
      * return code     number of bytes output in mp3buf. Can be 0
-     *                 -1:  mp3buf was too small
-     *                 -2:  malloc() problem
-     *                 -3:  lame_init_params() not called
-     *                 -4:  psycho acoustic problems
-     *                 -5:  ogg cleanup encoding error
-     *                 -6:  ogg frame encoding error
+     * -1:  mp3buf was too small
+     * -2:  malloc() problem
+     * -3:  lame_init_params() not called
+     * -4:  psycho acoustic problems
+     * -5:  ogg cleanup encoding error
+     * -6:  ogg frame encoding error
      */
     private int nEncodeBuffer(byte[] pcm, int length, byte[] encoded) {
         int result;
@@ -349,7 +349,7 @@ Debug.println(Level.FINE, "getEncoderVersion: " + sRes);
 
         pcmLengthInFrames = length / (lameApi.channels * Short.BYTES); // always 16 bit
         if (lameApi.swapbytes) {
-Debug.println("@@@ SWAP");
+            Debug.println("@@@ SWAP");
             swapSamples(pcm, length / Short.BYTES);
         }
 

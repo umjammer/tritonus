@@ -54,7 +54,7 @@ import static org.tritonus.sampled.file.pvorbis.VorbisAudioFileWriter.OGG;
 public class VorbisAudioFileReader extends TAudioFileReader {
 
     private static final Logger logger = getLogger("TraceAudioFileReader");
-    
+
     private static final int INITAL_READ_LENGTH = 4096;
     private static final int MARK_LIMIT = INITAL_READ_LENGTH + 1;
 

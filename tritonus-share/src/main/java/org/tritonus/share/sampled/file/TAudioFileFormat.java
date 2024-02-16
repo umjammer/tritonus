@@ -45,6 +45,7 @@ import javax.sound.sampled.AudioFormat;
  */
 public class TAudioFileFormat
         extends AudioFileFormat {
+
     private Map<String, Object> m_properties;
     private Map<String, Object> m_unmodifiableProperties;
 

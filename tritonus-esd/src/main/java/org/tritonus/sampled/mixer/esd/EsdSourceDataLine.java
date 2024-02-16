@@ -46,6 +46,7 @@ import org.tritonus.share.sampled.mixer.TMixer;
 public class EsdSourceDataLine
         extends TBaseDataLine
         implements SourceDataLine {
+
     private EsdStream m_esdStream;
     private boolean m_bSwapBytes;
     private byte[] m_abSwapBuffer;
@@ -292,6 +293,7 @@ public class EsdSourceDataLine
     // IDEA: move inner classes to TBaseDataLine
     public class EsdSourceDataLineGainControl
             extends FloatControl {
+
         /*
          *	These variables should be static. However, Java 1.1
          *	doesn't allow this. So they aren't.
@@ -334,6 +336,7 @@ public class EsdSourceDataLine
     // IDEA: move inner classes to TBaseDataLine
     public class EsdSourceDataLinePanControl
             extends FloatControl {
+
         /*package*/ EsdSourceDataLinePanControl() {
             super(FloatControl.Type.PAN,
                     -1.0F,    // MIN_GAIN,
@@ -366,6 +369,7 @@ public class EsdSourceDataLine
 
     public class EsdSourceDataLineMuteControl
             extends BooleanControl {
+
         /*package*/ EsdSourceDataLineMuteControl() {
             super(BooleanControl.Type.MUTE,
                     false,

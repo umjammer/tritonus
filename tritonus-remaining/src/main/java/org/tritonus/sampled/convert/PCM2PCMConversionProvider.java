@@ -405,6 +405,7 @@ public class PCM2PCMConversionProvider extends TSimpleFormatConversionProvider {
      * rxpanding of channels.
      */
     static class PCM2PCMStream extends TSynchronousFilteredAudioInputStream {
+
         private int conversionType;
         private boolean needExpandChannels;
         private boolean needMixDown;

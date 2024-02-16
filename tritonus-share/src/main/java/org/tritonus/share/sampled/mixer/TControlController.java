@@ -36,6 +36,7 @@ import org.tritonus.share.TDebug;
  */
 public class TControlController
         implements TControllable {
+
     /**
      * The parent (compound) control.
      * In case this control is part of a compound control, the parentControl

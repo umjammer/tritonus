@@ -23,6 +23,7 @@ package org.tritonus.test;
 
 public class Mp3AudioFileReaderTestCase
         extends BaseAudioFileReaderTestCase {
+
     public Mp3AudioFileReaderTestCase() {
         setResourcePrefix("mp3");
         setCheckRealLengths(false);

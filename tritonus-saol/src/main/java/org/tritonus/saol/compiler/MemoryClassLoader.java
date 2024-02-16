@@ -32,6 +32,7 @@ import java.io.FileInputStream;
 
 public class MemoryClassLoader
         extends ClassLoader {
+
     public Class findClass(String strName,
                            byte[] classData) {
         Class<?> cls = defineClass(strName, classData, 0, classData.length);

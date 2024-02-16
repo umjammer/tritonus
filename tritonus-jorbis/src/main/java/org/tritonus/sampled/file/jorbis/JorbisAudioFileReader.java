@@ -48,6 +48,7 @@ import org.tritonus.share.sampled.file.TAudioFileReader;
  */
 public class JorbisAudioFileReader
         extends TAudioFileReader {
+
     private static final int INITAL_READ_LENGTH = 4096;
     private static final int MARK_LIMIT = INITAL_READ_LENGTH + 1;
 

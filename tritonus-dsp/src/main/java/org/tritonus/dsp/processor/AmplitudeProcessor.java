@@ -34,6 +34,7 @@ import org.tritonus.share.sampled.FloatSampleBuffer;
  * Change amplitude of audio data.
  */
 public class AmplitudeProcessor implements FloatSampleProcessor {
+
     /**
      * The amplitude to use if none is set explicitly.
      * This amplitude is used before the first call to

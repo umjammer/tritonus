@@ -33,6 +33,7 @@ import org.tritonus.share.TDebug;
  * TODO:
  */
 public class AlsaCtlCardInfo {
+
     /**
      * Holds the pointer to snd_ctl_card_info_t.
      * for the native code.

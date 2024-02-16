@@ -23,6 +23,7 @@ package org.tritonus.test;
 
 public class SampleRateConversionProviderTestCase
         extends BaseFormatConversionProviderTestCase {
+
     public SampleRateConversionProviderTestCase() {
         setResourcePrefix("samplerate");
     }

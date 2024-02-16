@@ -29,6 +29,7 @@ import org.tritonus.share.sampled.TConversionTool;
 
 
 public final class GSMDecoder {
+
     private static final byte GSM_MAGIC = 0x0d;
 
     private static final int[] FAC = {18431, 20479, 22527, 24575, 26623,

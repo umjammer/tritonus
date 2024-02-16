@@ -31,6 +31,7 @@ package org.tritonus.lowlevel.dsp;
  * Helper methods used for filter design.
  */
 public class Util {
+
     /**
      * Modified Bessel function of first kind and 0th order.
      */

@@ -29,6 +29,7 @@ package org.tritonus.saol.compiler;
 
 public class TemplateSemanticsCheck
         extends IOTCommonSemanticsCheck {
+
     private static final boolean DEBUG = true;
     // TODO: verify
     private static final int[] LEGAL_VARIABLE_TYPES = new int[]

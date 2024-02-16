@@ -30,6 +30,7 @@ import org.tritonus.share.sampled.FloatSampleBuffer;
 
 
 public interface FloatSampleReader {
+
     void read(FloatSampleBuffer buffer);
 }
 

@@ -33,6 +33,7 @@ import org.tritonus.share.TDebug;
  * TODO:
  */
 public class AlsaPcm {
+
     public static final int SND_PCM_STREAM_PLAYBACK = 0;
     /** Capture stream */
     public static final int SND_PCM_STREAM_CAPTURE = 1;

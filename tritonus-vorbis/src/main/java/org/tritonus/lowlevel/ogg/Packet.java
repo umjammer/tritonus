@@ -43,48 +43,72 @@ public class Packet {
      */
     private ogg_packet handle;
 
-    public ogg_packet getHandle() { return handle; }
+    public ogg_packet getHandle() {
+        return handle;
+    }
 
     public Packet() {
-        if (TDebug.TraceOggNative) { TDebug.out("<init>: begin"); }
+        if (TDebug.TraceOggNative) {
+            TDebug.out("<init>: begin");
+        }
         int nReturn = malloc();
         if (nReturn < 0) {
             throw new RuntimeException("malloc of ogg_packet failed");
         }
-        if (TDebug.TraceOggNative) { TDebug.out("<init>: end"); }
+        if (TDebug.TraceOggNative) {
+            TDebug.out("<init>: end");
+        }
     }
 
     private int malloc() {
-        if (TDebug.TraceOggNative) { TDebug.out("malloc: begin"); }
+        if (TDebug.TraceOggNative) {
+            TDebug.out("malloc: begin");
+        }
         handle = new ogg_packet();
-        if (TDebug.TraceOggNative) { TDebug.out(String.format("malloc: handle: %s", handle)); }
-        if (TDebug.TraceOggNative) { TDebug.out("malloc: end"); }
+        if (TDebug.TraceOggNative) {
+            TDebug.out(String.format("malloc: handle: %s", handle));
+        }
+        if (TDebug.TraceOggNative) {
+            TDebug.out("malloc: end");
+        }
         return 0;
     }
 
     public void free() {
-        if (TDebug.TraceOggNative) { TDebug.out("free: begin"); }
+        if (TDebug.TraceOggNative) {
+            TDebug.out("free: begin");
+        }
         handle = null;
-        if (TDebug.TraceOggNative) { TDebug.out("free: end"); }
+        if (TDebug.TraceOggNative) {
+            TDebug.out("free: end");
+        }
     }
 
     /**
      * Calls ogg_packet_clear().
      */
     public void clear() {
-        if (TDebug.TraceOggNative) { TDebug.out("clear: begin"); }
+        if (TDebug.TraceOggNative) {
+            TDebug.out("clear: begin");
+        }
         OggLibrary.INSTANCE.ogg_packet_clear(handle);
-        if (TDebug.TraceOggNative) { TDebug.out("clear: end"); }
+        if (TDebug.TraceOggNative) {
+            TDebug.out("clear: end");
+        }
     }
 
     /**
      * Accesses packet and bytes.
      */
     public byte[] getData() {
-        if (TDebug.TraceOggNative) { TDebug.out("getData: begin"); }
+        if (TDebug.TraceOggNative) {
+            TDebug.out("getData: begin");
+        }
         byte[] abData = new byte[handle.bytes.intValue()];
         handle.packet.read(0, abData, 0, handle.bytes.intValue());
-        if (TDebug.TraceOggNative) { TDebug.out("getData: end"); }
+        if (TDebug.TraceOggNative) {
+            TDebug.out("getData: end");
+        }
         return abData;
     }
 
@@ -92,10 +116,16 @@ public class Packet {
      * Accesses b_o_s.
      */
     public boolean isBos() {
-        if (TDebug.TraceOggNative) { TDebug.out("isBos: begin"); }
-        if (TDebug.TraceOggNative) { TDebug.out(String.format("isBos: b_o_s: %d", handle.b_o_s.intValue())); }
+        if (TDebug.TraceOggNative) {
+            TDebug.out("isBos: begin");
+        }
+        if (TDebug.TraceOggNative) {
+            TDebug.out(String.format("isBos: b_o_s: %d", handle.b_o_s.intValue()));
+        }
         boolean bReturn = handle.b_o_s.intValue() != 0;
-        if (TDebug.TraceOggNative) { TDebug.out("isBos: end"); }
+        if (TDebug.TraceOggNative) {
+            TDebug.out("isBos: end");
+        }
         return bReturn;
     }
 
@@ -103,9 +133,13 @@ public class Packet {
      * Accesses e_o_s.
      */
     public boolean isEos() {
-        if (TDebug.TraceOggNative) { TDebug.out("isEos: begin"); }
+        if (TDebug.TraceOggNative) {
+            TDebug.out("isEos: begin");
+        }
         boolean bReturn = handle.e_o_s.intValue() != 0;
-        if (TDebug.TraceOggNative) { TDebug.out("isEos: end"); }
+        if (TDebug.TraceOggNative) {
+            TDebug.out("isEos: end");
+        }
         return bReturn;
     }
 }

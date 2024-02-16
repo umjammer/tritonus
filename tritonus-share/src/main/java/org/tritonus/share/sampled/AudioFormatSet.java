@@ -57,6 +57,7 @@ import org.tritonus.share.ArraySet;
  */
 
 public class AudioFormatSet extends ArraySet<AudioFormat> {
+
     private static final long serialVersionUID = 1;
 
     protected static final AudioFormat[] EMPTY_FORMAT_ARRAY = new AudioFormat[0];

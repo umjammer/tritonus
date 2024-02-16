@@ -30,6 +30,7 @@ package org.tritonus.lowlevel.dsp;
  * An implementation of the Rectangular window.
  */
 public class RectangularWindow implements FIRWindow {
+
     /** {@inheritDoc} */
     @Override
     public double[] getWindow(int nOrder) {

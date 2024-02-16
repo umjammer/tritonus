@@ -128,6 +128,7 @@ public class LawDecoder extends TEncodingFormatConversionProvider {
     }
 
     static class FromUlawStream extends TSynchronousFilteredAudioInputStream {
+
         private int convertType;
 
         public FromUlawStream(AudioInputStream sourceStream,
@@ -197,6 +198,7 @@ public class LawDecoder extends TEncodingFormatConversionProvider {
     }
 
     static class FromAlawStream extends TSynchronousFilteredAudioInputStream {
+
         private int convertType;
 
         public FromAlawStream(AudioInputStream sourceStream,

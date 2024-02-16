@@ -34,6 +34,7 @@ import org.tritonus.lowlevel.esd.Esd;
 
 
 public class EsdUtils {
+
     public static int getEsdFormat(AudioFormat audioFormat) {
         int nChannels = audioFormat.getChannels();
         AudioFormat.Encoding encoding = audioFormat.getEncoding();

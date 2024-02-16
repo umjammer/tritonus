@@ -35,6 +35,7 @@ import org.tritonus.lowlevel.cdda.cdparanoia.CdparanoiaMidLevel;
  * Gets the preferred CDDA implementation.
  */
 public class CddaUtils {
+
     // TODO: use some automatic lookup mechanism.
     public static CddaMidLevel getCddaMidLevel() {
         CddaMidLevel cddaMidLevel = new CdparanoiaMidLevel();

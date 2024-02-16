@@ -53,7 +53,7 @@ public class VorbisDecoder {
         return Files.exists(Paths.get("local.properties"));
     }
 
-    static final double volume = Double.parseDouble(System.getProperty("vavi.test.volume",  "0.2"));
+    static final double volume = Double.parseDouble(System.getProperty("vavi.test.volume", "0.2"));
 
     @Property(name = "ogg")
     String ogg = "src/test/resources/test.ogg";
@@ -80,7 +80,7 @@ public class VorbisDecoder {
 
         decode(Path.of(ogg), out);
 
-Debug.println(Checksum.getChecksum(out) + ", " + Checksum.getChecksum(Paths.get(pcm)));
+        Debug.println(Checksum.getChecksum(out) + ", " + Checksum.getChecksum(Paths.get(pcm)));
         assertEquals(Checksum.getChecksum(out), Checksum.getChecksum(Paths.get(pcm)));
     }
 
@@ -161,7 +161,7 @@ Debug.println(Checksum.getChecksum(out) + ", " + Checksum.getChecksum(Paths.get(
         byte[] buffer;
         int bytes;
 
-Debug.println("inputFile: " + ogg);
+        Debug.println("inputFile: " + ogg);
         InputStream inputStream = new BufferedInputStream(Files.newInputStream(ogg));
         OutputStream outputStream = new BufferedOutputStream(Files.newOutputStream(wav));
 
@@ -182,14 +182,14 @@ Debug.println("inputFile: " + ogg);
             // submit a 4k block to libvorbis' Ogg layer
             bytes = inputStream.read(buffer);
             if (bytes == -1) {
-Debug.println(Level.FINE, "EOF");
+                Debug.println(Level.FINE, "EOF");
                 break;
             }
             oy.write(buffer, bytes);
 
             // Get the first page.
             int r = oy.pageOut(og);
-Debug.println(Level.FINE, "pageOut: " + r);
+            Debug.println(Level.FINE, "pageOut: " + r);
             if (r != 1) {
                 // have we simply run out of data?  If so, we're done.
                 if (bytes < 4096) {
@@ -229,9 +229,9 @@ Debug.println(Level.FINE, "pageOut: " + r);
                 throw new IllegalStateException("This Ogg bitstream does not contain Vorbis audio data.");
             }
 
-			// At this point, we're sure we're Vorbis.  We've set up the logical
-			// (Ogg) bitstream decoder.  Get the comment and codebook headers and
-			// set up the Vorbis decoder
+            // At this point, we're sure we're Vorbis.  We've set up the logical
+            // (Ogg) bitstream decoder.  Get the comment and codebook headers and
+            // set up the Vorbis decoder
 
             // The next two packets in order are the comment and codebook headers.
             // They're likely large and may span multiple pages.  Thus we reead
@@ -246,8 +246,8 @@ Debug.println(Level.FINE, "pageOut: " + r);
                     if (result == 0) {
                         break; // Need more data
                     }
-					// Don't complain about missing or corrupt data yet.  We'll
-					// catch it at the packet output phase
+                    // Don't complain about missing or corrupt data yet.  We'll
+                    // catch it at the packet output phase
                     if (result == 1) {
                         // we can ignore any errors here
                         // as they'll also become apparent
@@ -259,7 +259,7 @@ Debug.println(Level.FINE, "pageOut: " + r);
                                 break;
                             }
                             if (result < 0) {
-								// Uh oh; data at some point was corrupted or missing!
+                                // Uh oh; data at some point was corrupted or missing!
                                 // We can't tolerate that in a header. Die.
                                 throw new IllegalStateException("Corrupt secondary header. Exiting.");
                             }
@@ -278,7 +278,7 @@ Debug.println(Level.FINE, "pageOut: " + r);
                 }
             }
 
-			// Throw the comments plus a few lines about the bitstream we're decoding
+            // Throw the comments plus a few lines about the bitstream we're decoding
             {
                 String[] astrComments = vc.getUserComments();
                 for (i = 0; i < astrComments.length; i++) {
@@ -291,7 +291,7 @@ Debug.println(Level.FINE, "pageOut: " + r);
             int nChannels = vi.getChannels();
             convsize = 4096 / nChannels;
 
-			// OK, got and parsed all three headers. Initialize the Vorbis
+            // OK, got and parsed all three headers. Initialize the Vorbis
             // packet->PCM decoder.
             vd.initSynthesis(vi); // central decode state TODO
             // local state for most of the decode so multiple block decodes can
@@ -336,7 +336,7 @@ Debug.println(Level.FINE, "pageOut: " + r);
                                     boolean clipflag = false;
                                     int bout = Math.min(samples, convsize);
 
-									// convert floats to 16 bit signed ints (host order) and interleave
+                                    // convert floats to 16 bit signed ints (host order) and interleave
                                     for (i = 0; i < nChannels; i++) {
                                         int ptr = i;
                                         //float *mono = pcm[i];
@@ -395,12 +395,12 @@ Debug.println(Level.FINE, "pageOut: " + r);
                 }
             }
 
-			// clean up this logical bitstream; before exit we see if we're
+            // clean up this logical bitstream; before exit we see if we're
             // followed by another [chained]
 
             os.clear();
 
-			// ogg_page and ogg_packet structs always point to storage in
+            // ogg_page and ogg_packet structs always point to storage in
             // libvorbis. They're never freed or manipulated directly
             vb.clear();
             vd.clear();

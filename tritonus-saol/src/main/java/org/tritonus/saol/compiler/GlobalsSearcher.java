@@ -23,7 +23,7 @@ import org.tritonus.saol.sablecc.node.TInteger;
 
 /**
  * GlobalsSearcher.java
- *
+ * <p>
  * This file is part of Tritonus: http://www.tritonus.org/
  */
 public class GlobalsSearcher extends DepthFirstAdapter {

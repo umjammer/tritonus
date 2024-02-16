@@ -27,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 public class TMidiChannelTestCase {
+
     @Test
     public void testChannelNumber() {
         int CHANNEL = 19;
@@ -128,6 +129,7 @@ public class TMidiChannelTestCase {
 
     private static class TestMidiChannel
             extends TMidiChannel {
+
         private int m_nNoteOffKey;
         private int m_nNoteOffVelocity;
         private int m_nSetControllerNumber;

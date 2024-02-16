@@ -34,6 +34,7 @@ import org.tritonus.share.TDebug;
  * This file is part of Tritonus: http://www.tritonus.org/
  */
 public class Main {
+
     public static void main(String[] args) throws IOException {
         File saolFile = new File(args[0]);
         File saslFile = new File(args[1]);

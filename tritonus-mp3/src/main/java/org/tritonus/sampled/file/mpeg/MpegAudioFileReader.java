@@ -36,6 +36,7 @@ import org.tritonus.share.sampled.file.TAudioFileReader;
  */
 public class MpegAudioFileReader
         extends TAudioFileReader {
+
     private static final int SYNC = 0xFFE00000;
 
     private static final AudioFormat.Encoding[][] sm_aEncodings = {

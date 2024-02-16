@@ -44,6 +44,7 @@ import org.tritonus.share.TDebug;
 public abstract class TDataLine
         extends TLine
         implements DataLine {
+
     private static final int DEFAULT_BUFFER_SIZE = 128000;
 
     private AudioFormat m_format;

@@ -21,6 +21,7 @@ package org.tritonus.test;
  * JorbisFormatConversionProviderTestCase.java
  */
 public class JorbisFormatConversionProviderTestCase extends BaseFormatConversionProviderTestCase {
+
     public JorbisFormatConversionProviderTestCase() {
         setResourcePrefix("jorbis");
     }

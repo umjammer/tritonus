@@ -42,8 +42,9 @@ import vavi.sound.midi.fluidsynth.jna.synth.SynthLibrary;
 
 /**
  * FluidSoundbank.java
- *
+ * <p>
  * This file is part of Tritonus: http://www.tritonus.org/
+ *
  * @author Manson
  */
 public class FluidSoundbank implements Soundbank {
@@ -54,6 +55,7 @@ public class FluidSoundbank implements Soundbank {
 
     // $$mp: needs to be public for native code now
     public class FluidInstrument extends Instrument {
+
         public FluidInstrument(int bank, int program, String name) {
             super(FluidSoundbank.this, new Patch(bank, program), name, null);
         }
@@ -74,7 +76,7 @@ public class FluidSoundbank implements Soundbank {
         instruments = nGetInstruments(sfontID);
     }
 
-    public FluidInstrument[] nGetInstruments(int sfontID){
+    public FluidInstrument[] nGetInstruments(int sfontID) {
 
         PointerByReference /* fluid_synth_t */ synth = this.synth.getSynthesizer();
 
@@ -110,9 +112,9 @@ public class FluidSoundbank implements Soundbank {
             while ((preset = SfontLibrary.INSTANCE.fluid_sfont_iteration_next(sfont)) != null) {
                 String instrname = SfontLibrary.INSTANCE.fluid_preset_get_name(preset);
                 FluidInstrument instrument = new FluidInstrument(
-                    SfontLibrary.INSTANCE.fluid_preset_get_banknum(preset) + offset,
-                    SfontLibrary.INSTANCE.fluid_preset_get_num(preset),
-                    instrname);
+                        SfontLibrary.INSTANCE.fluid_preset_get_banknum(preset) + offset,
+                        SfontLibrary.INSTANCE.fluid_preset_get_num(preset),
+                        instrname);
                 instruments[i++] = instrument;
             }
             return instruments;

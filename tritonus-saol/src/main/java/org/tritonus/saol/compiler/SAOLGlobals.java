@@ -28,6 +28,7 @@ package org.tritonus.saol.compiler;
 
 
 public class SAOLGlobals {
+
     private static final int DEFAULT_ARATE = 32000;
     private static final int DEFAULT_KRATE = 100;
     private static final int DEFAULT_INCHANNELS = 0; /*?? TODO: */

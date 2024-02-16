@@ -36,6 +36,7 @@ import org.tritonus.share.TDebug;
  * snd_seq_event_t.
  */
 public class AlsaSeqEvent {
+
     static {
         Alsa.loadNativeLibrary();
         if (TDebug.TraceAlsaSeqNative) {

@@ -53,6 +53,7 @@ import org.tritonus.share.midi.TMidiFileFormat;
  */
 public class StandardMidiFileReader
         extends MidiFileReader {
+
     /**
      * TODO:
      */

@@ -6,6 +6,7 @@
 
 
 public class MeasureThreadSleep {
+
     public static void main(String[] args) {
         if (args.length == 0 || args.length > 2) {
             printUsageAndExit();

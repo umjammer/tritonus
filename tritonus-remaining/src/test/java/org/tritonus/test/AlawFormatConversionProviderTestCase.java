@@ -26,6 +26,7 @@ import org.junit.jupiter.api.Disabled;
 @Disabled
 public class AlawFormatConversionProviderTestCase
         extends BaseFormatConversionProviderTestCase {
+
     public AlawFormatConversionProviderTestCase() {
         setResourcePrefix("alaw");
     }

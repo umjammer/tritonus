@@ -35,6 +35,7 @@ import org.tritonus.lowlevel.alsa.AlsaSeq;
  * A representation of a physical MIDI port based on the ALSA sequencer.
  */
 public class AlsaQueueHolder {
+
     /**
      * The object interfacing to the ALSA sequencer.
      */

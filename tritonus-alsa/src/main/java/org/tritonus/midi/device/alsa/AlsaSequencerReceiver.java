@@ -30,6 +30,7 @@ package org.tritonus.midi.device.alsa;
 
 
 public interface AlsaSequencerReceiver {
+
     boolean subscribeTo(int nClient, int nPort);
 }
 

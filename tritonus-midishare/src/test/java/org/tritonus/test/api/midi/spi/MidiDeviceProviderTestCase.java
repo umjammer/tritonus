@@ -33,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * Tests for class javax.sound.midi.spi.MidiDeviceProvider.
  */
 public class MidiDeviceProviderTestCase {
+
     @Test
     public void testIsDeviceSupported()
             throws Exception {
@@ -61,6 +62,7 @@ public class MidiDeviceProviderTestCase {
      */
     private static class TestMidiDeviceProvider
             extends MidiDeviceProvider {
+
         MidiDevice.Info[] m_aSupportedInfos;
 
 
@@ -86,6 +88,7 @@ public class MidiDeviceProviderTestCase {
      */
     private static class TestInfo
             extends MidiDevice.Info {
+
         public TestInfo(String name, String vendor, String description,
                         String version) {
             super(name, vendor, description, version);

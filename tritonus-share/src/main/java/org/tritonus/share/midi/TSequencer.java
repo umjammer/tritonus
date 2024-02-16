@@ -50,6 +50,7 @@ import org.tritonus.share.TDebug;
 public abstract class TSequencer
         extends TMidiDevice
         implements Sequencer {
+
     private static final float MPQ_BPM_FACTOR = 6.0E7F;
     // This is for use in Collection.toArray(Object[]).
     private static final SyncMode[] EMPTY_SYNCMODE_ARRAY = new SyncMode[0];

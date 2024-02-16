@@ -37,6 +37,7 @@ import org.tritonus.share.TDebug;
 
 public class SaslParser
         implements Runnable {
+
     private RTSystem m_rtSystem;
     private boolean m_bRunning;
     private BufferedReader m_bufferedReader;

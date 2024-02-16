@@ -48,7 +48,7 @@ public class Test1 {
     @Property(name = "tritonus.fluidsynth.defaultsoundbank")
     String sf = "/usr/local/Cellar/fluid-synth/3.2.2/share/soundfonts/default.sf2";
 
-    static final float volume = Float.parseFloat(System.getProperty("vavi.test.volume",  "0.2"));
+    static final float volume = Float.parseFloat(System.getProperty("vavi.test.volume", "0.2"));
 
     @BeforeEach
     void setup() throws Exception {
@@ -57,7 +57,7 @@ public class Test1 {
         }
 
         System.setProperty("tritonus.fluidsynth.defaultsoundbank", sf);
-Debug.println("soundfont: " + sf);
+        Debug.println("soundfont: " + sf);
 
         TDebug.TraceMidiDeviceProvider = true;
     }
@@ -72,18 +72,18 @@ Debug.println("soundfont: " + sf);
      */
     public static void main(String[] args) throws Exception {
         File file = new File(args[0]);
-Debug.println("midi: " + args[0]);
+        Debug.println("midi: " + args[0]);
 
         Sequence sequence = MidiSystem.getSequence(file);
-Debug.println("sequence: " + sequence);
+        Debug.println("sequence: " + sequence);
 
         Synthesizer synthesizer = MidiSystem.getSynthesizer();
         synthesizer.open();
-Debug.println("synthesizer: " + synthesizer);
+        Debug.println("synthesizer: " + synthesizer);
         if (synthesizer instanceof FluidSynthesizer) {
             float gain = 0.2f;
             ((FluidSynthesizer) synthesizer).setGain(gain);
-Debug.println("set gain: " + gain);
+            Debug.println("set gain: " + gain);
         } else {
             throw new IllegalStateException("this is FluidSynthesizer test");
         }
@@ -92,13 +92,13 @@ Debug.println("set gain: " + gain);
         // the sequencer uses a synthesizer created by MidiSystem instead of yours.
         Sequencer sequencer = MidiSystem.getSequencer(false);
         sequencer.open();
-Debug.println("sequencer: " + sequencer);
+        Debug.println("sequencer: " + sequencer);
         // tell the sequencer to use your synthesizer instance which volume is downed
         sequencer.getTransmitter().setReceiver(synthesizer.getReceiver());
 
         CountDownLatch countDownLatch = new CountDownLatch(1);
         MetaEventListener mel = meta -> {
-Debug.println("META: " + meta.getType());
+            Debug.println("META: " + meta.getType());
             if (meta.getType() == 47) {
                 countDownLatch.countDown();
             }
@@ -108,15 +108,15 @@ Debug.println("META: " + meta.getType());
         sequencer.addMetaEventListener(mel);
         sequencer.start();
         MidiUtil.volume(synthesizer.getReceiver(), volume);
-Debug.println("START");
-if (!System.getProperty("vavi.test", "").equals("ide")) {
- Thread.sleep(5 * 1000);
- sequencer.stop();
- Debug.println("STOP");
-} else {
-        countDownLatch.await();
-}
-Debug.println("END");
+        Debug.println("START");
+        if (!System.getProperty("vavi.test", "").equals("ide")) {
+            Thread.sleep(5 * 1000);
+            sequencer.stop();
+            Debug.println("STOP");
+        } else {
+            countDownLatch.await();
+        }
+        Debug.println("END");
         sequencer.stop();
         sequencer.removeMetaEventListener(mel);
         sequencer.close();

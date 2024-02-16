@@ -47,6 +47,7 @@ import org.tritonus.share.TDebug;
  */
 public class THeaderlessAudioFileWriter
         extends TAudioFileWriter {
+
     protected THeaderlessAudioFileWriter(Collection<AudioFileFormat.Type> fileTypes,
                                          Collection<AudioFormat> audioFormats) {
         super(fileTypes, audioFormats);

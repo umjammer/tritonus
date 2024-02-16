@@ -53,6 +53,7 @@ import java.util.Collection;
  */
 
 public class StringHashedSet<E> extends ArraySet<E> {
+
     private static final long serialVersionUID = 1;
 
     public StringHashedSet() {

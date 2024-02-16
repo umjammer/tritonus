@@ -11,6 +11,7 @@ import javax.sound.sampled.SourceDataLine;
 
 public class SourceDataLineOutputStream
         extends OutputStream {
+
     private static final boolean DEBUG = true;
 
     private SourceDataLine m_line;

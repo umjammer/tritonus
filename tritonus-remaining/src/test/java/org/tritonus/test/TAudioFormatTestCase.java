@@ -35,6 +35,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 
 public class TAudioFormatTestCase {
+
     @Test
     public void testEmptyMap() {
         Map<String, Object> prop = new HashMap<>();

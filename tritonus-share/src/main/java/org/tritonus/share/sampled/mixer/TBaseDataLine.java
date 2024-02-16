@@ -40,6 +40,7 @@ import org.tritonus.share.TDebug;
  */
 public abstract class TBaseDataLine
         extends TDataLine {
+
     public TBaseDataLine(TMixer mixer,
                          DataLine.Info info) {
         super(mixer,

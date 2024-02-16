@@ -47,6 +47,7 @@ import org.tritonus.share.midi.TMidiDevice;
 public class AlsaSynthesizer
         extends AlsaMidiDevice
         implements Synthesizer {
+
     private static final MidiChannel[] EMPTY_MIDICHANNEL_ARRAY = new MidiChannel[0];
     private static final VoiceStatus[] EMPTY_VOICESTATUS_ARRAY = new VoiceStatus[0];
 

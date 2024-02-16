@@ -47,6 +47,7 @@ import org.tritonus.share.midi.TSequencer;
 public class JavaSequencer
         extends TSequencer
         implements Runnable {
+
     private static final SyncMode[] MASTER_SYNC_MODES = {SyncMode.INTERNAL_CLOCK};
     private static final SyncMode[] SLAVE_SYNC_MODES = {SyncMode.NO_SYNC};
 
@@ -553,6 +554,7 @@ public class JavaSequencer
      * Interface for sequencer clocks.
      */
     public interface Clock {
+
         long getMicroseconds();
     }
 }

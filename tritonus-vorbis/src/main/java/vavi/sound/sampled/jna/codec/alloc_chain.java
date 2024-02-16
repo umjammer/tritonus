@@ -1,8 +1,12 @@
 package vavi.sound.sampled.jna.codec;
-import com.sun.jna.Pointer;
-import com.sun.jna.Structure;
+
 import java.util.Arrays;
 import java.util.List;
+
+import com.sun.jna.Pointer;
+import com.sun.jna.Structure;
+
+
 /**
  * vorbis_block is a single block of data to be processed as part of<br>
  * the analysis/synthesis stream; it belongs to a specific logical<br>
@@ -14,32 +18,43 @@ import java.util.List;
  * For help, please visit <a href="http://nativelibs4java.googlecode.com/">NativeLibs4Java</a> , <a href="http://rococoa.dev.java.net/">Rococoa</a>, or <a href="http://jna.dev.java.net/">JNA</a>.
  */
 public class alloc_chain extends Structure {
-	/** C type : void* */
-	public Pointer ptr;
-	/** C type : alloc_chain* */
-	public Pointer next;
-	public alloc_chain() {
-		super();
-	}
-	protected List<String> getFieldOrder() {
-		return Arrays.asList("ptr", "next");
-	}
-	/**
-	 * @param ptr C type : void*<br>
-	 * @param next C type : alloc_chain*
-	 */
-	public alloc_chain(Pointer ptr, Pointer next) {
-		super();
-		this.ptr = ptr;
-		this.next = next;
-	}
-	public alloc_chain(Pointer peer) {
-		super(peer);
-	}
-	public static class ByReference extends alloc_chain implements Structure.ByReference {
-		
-	};
-	public static class ByValue extends alloc_chain implements Structure.ByValue {
-		
-	};
+
+    /** C type : void* */
+    public Pointer ptr;
+    /** C type : alloc_chain* */
+    public Pointer next;
+
+    public alloc_chain() {
+        super();
+    }
+
+    protected List<String> getFieldOrder() {
+        return Arrays.asList("ptr", "next");
+    }
+
+    /**
+     * @param ptr  C type : void*<br>
+     * @param next C type : alloc_chain*
+     */
+    public alloc_chain(Pointer ptr, Pointer next) {
+        super();
+        this.ptr = ptr;
+        this.next = next;
+    }
+
+    public alloc_chain(Pointer peer) {
+        super(peer);
+    }
+
+    public static class ByReference extends alloc_chain implements Structure.ByReference {
+
+    }
+
+    ;
+
+    public static class ByValue extends alloc_chain implements Structure.ByValue {
+
+    }
+
+    ;
 }

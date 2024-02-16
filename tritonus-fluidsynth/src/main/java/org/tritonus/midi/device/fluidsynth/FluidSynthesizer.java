@@ -81,7 +81,8 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
     @Override
     protected void openImpl() throws MidiUnavailableException {
         newSynth();
-        if (TDebug.TraceSynthesizer) TDebug.out("FluidSynthesizer: " + Long.toHexString(Pointer.nativeValue(synth.getValue())));
+        if (TDebug.TraceSynthesizer)
+            TDebug.out("FluidSynthesizer: " + Long.toHexString(Pointer.nativeValue(synth.getValue())));
 
         channels = new MidiChannel[16];
         for (int i = 0; i < 16; i++) {
@@ -101,7 +102,8 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
 
     @Override
     protected void closeImpl() {
-        if (TDebug.TraceSynthesizer) TDebug.out("FluidSynthesizer.closeImpl(): " + Long.toHexString(Pointer.nativeValue(synth.getValue())));
+        if (TDebug.TraceSynthesizer)
+            TDebug.out("FluidSynthesizer.closeImpl(): " + Long.toHexString(Pointer.nativeValue(synth.getValue())));
         deleteSynth();
         super.closeImpl();
     }
@@ -128,11 +130,11 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
         return sfont_id;
     }
 
-    public void setBankOffset(int sfontID, int offset){
+    public void setBankOffset(int sfontID, int offset) {
         SynthLibrary.INSTANCE.fluid_synth_set_bank_offset(synth, sfontID, offset);
     }
 
-    public void setGain(float gain){
+    public void setGain(float gain) {
         SynthLibrary.INSTANCE.fluid_synth_set_gain(synth, (float) gain);
     }
 
@@ -178,7 +180,7 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
         }
     }
 
-    protected void deleteSynth(){
+    protected void deleteSynth() {
 
         if (TDebug.TraceFluidNative) {
             System.err.printf("deleteSynth: synth: %s\n", synth);
@@ -259,7 +261,7 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
      * @param nController the controller number
      * @return the controller value
      */
-    int getController(int nChannel, int nController){
+    int getController(int nChannel, int nController) {
         IntByReference value = new IntByReference();
         if (synth != null) {
             SynthLibrary.INSTANCE.fluid_synth_get_cc(synth, nChannel, nController, value);
@@ -321,7 +323,7 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
      * @param nChannel the channel
      * @return the pitch bend value.
      */
-    int getPitchBend(int nChannel){
+    int getPitchBend(int nChannel) {
         IntByReference bend = new IntByReference();
         if (synth != null) {
             SynthLibrary.INSTANCE.fluid_synth_get_pitch_bend(synth, nChannel, bend);

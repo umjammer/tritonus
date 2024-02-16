@@ -58,6 +58,7 @@ http://www.abel.co.uk/~maxim/
  */
 public class PinkNoise
         implements Source {
+
     private Source m_whiteNoiseSource;
     private float m_b0, m_b1, m_b2, m_b3, m_b4, m_b5, m_b6;
 

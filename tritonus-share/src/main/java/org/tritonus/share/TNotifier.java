@@ -38,7 +38,9 @@ import javax.sound.sampled.LineListener;
 
 public class TNotifier
         extends Thread {
+
     public static class NotifyEntry {
+
         private EventObject m_event;
         private List<LineListener> m_listeners;
 

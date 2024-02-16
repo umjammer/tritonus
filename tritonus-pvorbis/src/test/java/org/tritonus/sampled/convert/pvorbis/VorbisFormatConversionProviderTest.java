@@ -70,7 +70,7 @@ class VorbisFormatConversionProviderTest {
     void test1() throws Exception {
         AudioInputStream ais = AudioSystem.getAudioInputStream(new BufferedInputStream(Files.newInputStream(Path.of(wav))));
         AudioFormat inFormat = ais.getFormat();
-Debug.println(inFormat);
+        Debug.println(inFormat);
 
         Map<String, Object> props = new HashMap<>();
         props.put("vorbis.test", true);
@@ -85,7 +85,7 @@ Debug.println(inFormat);
                 -1f,
                 false,
                 props);
-Debug.println(outFormat);
+        Debug.println(outFormat);
         AudioInputStream aout = AudioSystem.getAudioInputStream(outFormat, ais);
 
         Path out = Paths.get("tmp", "out.ogg");
@@ -109,7 +109,7 @@ Debug.println(outFormat);
     void test4() throws Exception {
         AudioInputStream ais = AudioSystem.getAudioInputStream(new BufferedInputStream(Files.newInputStream(Path.of(wav))));
         AudioFormat inFormat = ais.getFormat();
-Debug.println(inFormat);
+        Debug.println(inFormat);
 
         Map<String, Object> props = new HashMap<>();
         props.put("vorbis.test", true);
@@ -124,7 +124,7 @@ Debug.println(inFormat);
                 -1f,
                 false,
                 props);
-Debug.println(outFormat);
+        Debug.println(outFormat);
         AudioInputStream aout = AudioSystem.getAudioInputStream(outFormat, ais);
 
         Path out2 = Paths.get("tmp", "out2.ogg");
@@ -138,7 +138,7 @@ Debug.println(outFormat);
     void test3() throws Exception {
         AudioInputStream ais = AudioSystem.getAudioInputStream(new BufferedInputStream(Files.newInputStream(Path.of(ogg))));
         AudioFormat inFormat = ais.getFormat();
-Debug.println(inFormat);
+        Debug.println(inFormat);
 
         Map<String, Object> props = new HashMap<>();
         props.put("vorbis.test", true);
@@ -154,7 +154,7 @@ Debug.println(inFormat);
                 inFormat.getFrameRate(),
                 inFormat.isBigEndian(),
                 props);
-Debug.println(outFormat);
+        Debug.println(outFormat);
         AudioInputStream aout = AudioSystem.getAudioInputStream(outFormat, ais);
 
         Path out2 = Paths.get("tmp", "out2.ogg");

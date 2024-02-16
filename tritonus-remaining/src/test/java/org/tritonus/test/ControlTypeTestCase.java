@@ -33,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
  * Tests for class javax.sound.sampled.Control.
  */
 public class ControlTypeTestCase {
+
     /**
      * Checks the constructor().
      * The test checks if the constructor does not throw an
@@ -111,6 +112,7 @@ public class ControlTypeTestCase {
      */
     private static class TestControlType
             extends Control.Type {
+
         public TestControlType(String strName) {
             super(strName);
         }

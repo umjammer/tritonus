@@ -32,6 +32,7 @@ package org.tritonus.lowlevel.dsp;
  * Examples of such sources are noise generators and waveform generators.
  */
 public interface Source {
+
     /**
      * Returns one sample of the source.
      * Samples are normally in the range [-1.0 .. +1.0].

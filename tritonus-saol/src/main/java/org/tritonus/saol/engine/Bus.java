@@ -38,6 +38,7 @@ package org.tritonus.saol.engine;
  */
 public class Bus
         implements Output {
+
     private float[] m_afValues;
 
 

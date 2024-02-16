@@ -39,6 +39,7 @@ import org.tritonus.saol.compiler.WidthAndRate;
  * instantiated once per orchestra rendering.
  */
 public final class PitchOpcodes {
+
     private static final float DEFAULT_TUNE = 440.0F;
 
     private float m_fTune;

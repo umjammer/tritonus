@@ -36,6 +36,7 @@ import org.tritonus.share.sampled.file.AudioOutputStream;
 public class AudioOutputStreamOutput
         extends Bus
         implements SystemOutput {
+
     private AudioOutputStream m_audioOutputStream;
     private byte[] m_abBuffer;
 

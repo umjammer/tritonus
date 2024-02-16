@@ -36,6 +36,7 @@ import org.tritonus.share.TDebug;
  * snd_seq_system_info_t.
  */
 public class AlsaSeqSystemInfo {
+
     static {
         Alsa.loadNativeLibrary();
         if (TDebug.TraceAlsaSeqNative) {

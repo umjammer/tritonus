@@ -28,6 +28,7 @@ package org.tritonus.share.sampled;
 
 
 public class TVolumeUtils {
+
     private static final double FACTOR1 = 20.0 / Math.log(10.0);
     private static final double FACTOR2 = 1 / 20.0;
 

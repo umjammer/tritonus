@@ -47,6 +47,7 @@ import org.tritonus.share.sampled.convert.TAsynchronousFilteredAudioInputStream;
 
 public class CookedIoctlMidLevel
         implements CddaMidLevel {
+
     private static int PCM_FRAMES_PER_CDDA_FRAME = 588;
     private static AudioFormat CDDA_FORMAT = new AudioFormat(
             AudioFormat.Encoding.PCM_SIGNED,
@@ -133,6 +134,7 @@ public class CookedIoctlMidLevel
 
     private static class CddaAudioInputStream
             extends TAsynchronousFilteredAudioInputStream {
+
         private static final int BUFFER_SIZE = CddaMidLevel.FRAME_SIZE;
 
 

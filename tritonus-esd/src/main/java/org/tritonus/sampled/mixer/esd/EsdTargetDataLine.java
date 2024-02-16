@@ -191,6 +191,7 @@ public class EsdTargetDataLine
 
     public class EsdTargetDataLineGainControl
             extends FloatControl {
+
         /*
          * These variables should be static. However, Java 1.1
          * doesn't allow this. So they aren't.

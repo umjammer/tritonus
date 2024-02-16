@@ -40,6 +40,7 @@ import javax.sound.midi.Receiver;
  */
 public interface AlsaReceiver
         extends Receiver {
+
     /**
      * Establish the subscription.
      * Calling this method establishes a subscription between a

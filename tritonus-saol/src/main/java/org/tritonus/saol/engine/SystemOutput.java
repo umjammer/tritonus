@@ -40,6 +40,7 @@ import java.io.IOException;
  */
 public interface SystemOutput
         extends Output {
+
     /**
      * Writes the accumulated sample values to the output media.
      * This method must be called by the engine after all

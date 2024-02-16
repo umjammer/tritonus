@@ -33,6 +33,7 @@ import java.util.logging.Logger;
 
 
 public class TDebug {
+
     public static boolean SHOW_ACCESS_CONTROL_EXCEPTIONS = false;
     private static final String PROPERTY_PREFIX = "tritonus.";
     // The stream we output to
@@ -142,6 +143,7 @@ public class TDebug {
 
     public static class AssertException
             extends RuntimeException {
+
         private static final long serialVersionUID = 1;
 
         public AssertException() {

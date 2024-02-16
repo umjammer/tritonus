@@ -34,6 +34,7 @@ import org.tritonus.share.TDebug;
  * TODO:
  */
 public class AlsaSeqRemoveEvents {
+
     static {
         Alsa.loadNativeLibrary();
         if (TDebug.TraceAlsaSeqNative) {

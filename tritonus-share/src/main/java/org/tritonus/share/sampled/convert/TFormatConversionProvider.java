@@ -44,6 +44,7 @@ import org.tritonus.share.sampled.AudioFormats;
  */
 public abstract class TFormatConversionProvider
         extends FormatConversionProvider {
+
     protected static final AudioFormat.Encoding[] EMPTY_ENCODING_ARRAY = new AudioFormat.Encoding[0];
     protected static final AudioFormat[] EMPTY_FORMAT_ARRAY = new AudioFormat[0];
 

@@ -8,6 +8,7 @@ import org.tritonus.saol.engine.RTSystem;
 
 public class Instrument_tone
         extends AbstractInstrument {
+
     private float a;
     private float x;
     private float y;

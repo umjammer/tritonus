@@ -33,6 +33,7 @@ import org.tritonus.share.TDebug;
  * Object carrying a snd_mixer_t.
  */
 public class AlsaMixer {
+
     /*
       not private because needed to be accessed by AlsaMixerElement.
       (Better solution: inner classes)

@@ -29,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 public abstract class BaseDataOutputStreamTestCase {
+
     private boolean m_bSeekable;
 
 

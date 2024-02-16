@@ -12,6 +12,7 @@ import org.tritonus.lowlevel.gsm.GsmFrameFormat;
  * @author Matthias Pfisterer
  */
 public interface GsmEncodings {
+
     /**
      * Encoding for the "toast" frame format. Corresponds to
      * {@link GsmFrameFormat#TOAST}.

@@ -21,6 +21,7 @@
 package org.tritonus.lowlevel.gsm;
 
 public class Gsm_State {
+
     private short[] m_dp0;
     private short z1; /* preprocessing, Offset_com. */
     private int L_z2; /* Offset_com. */

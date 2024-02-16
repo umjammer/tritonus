@@ -48,6 +48,7 @@ import org.tritonus.share.TDebug;
  */
 public abstract class TMidiDevice
         implements MidiDevice {
+
     /**
      * The Info object for a certain instance of MidiDevice.
      */
@@ -364,6 +365,7 @@ public abstract class TMidiDevice
      * TMidiDevice.getReceiver().
      */
     public class TReceiver implements Receiver {
+
         private boolean m_bOpen;
 
         public TReceiver() {
@@ -401,6 +403,7 @@ public abstract class TMidiDevice
     }
 
     public class TTransmitter implements Transmitter {
+
         private boolean m_bOpen;
         private Receiver m_receiver;
 
@@ -448,6 +451,7 @@ public abstract class TMidiDevice
      */
     public static class Info
             extends MidiDevice.Info {
+
         public Info(String a, String b, String c, String d) {
             super(a, b, c, d);
         }

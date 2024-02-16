@@ -74,17 +74,17 @@ public class LameApi {
 
         // return effective values
         this.sampleRate = INSTANCE.lame_get_out_samplerate(this.gf);
-Debug.println(Level.FINE, "sampleRate: " + sampleRate);
+        Debug.println(Level.FINE, "sampleRate: " + sampleRate);
         this.bitrate = INSTANCE.lame_get_brate(this.gf);
-Debug.println(Level.FINE, "bitrate: " + bitrate);
+        Debug.println(Level.FINE, "bitrate: " + bitrate);
         this.mode = INSTANCE.lame_get_mode(this.gf);
-Debug.println(Level.FINE, "mode: " + mode);
+        Debug.println(Level.FINE, "mode: " + mode);
         this.vbr = INSTANCE.lame_get_VBR(this.gf) != 0;
-Debug.println(Level.FINE, "vbr: " + vbr);
+        Debug.println(Level.FINE, "vbr: " + vbr);
         this.quality = this.vbr ? INSTANCE.lame_get_VBR_q(this.gf) : INSTANCE.lame_get_quality(this.gf);
-Debug.println(Level.FINE, "quality: " + quality);
+        Debug.println(Level.FINE, "quality: " + quality);
         this.mpegVersion = INSTANCE.lame_get_version(this.gf);
-Debug.println(Level.FINE, "mpegVersion: " + mpegVersion);
+        Debug.println(Level.FINE, "mpegVersion: " + mpegVersion);
 
         return result;
     }

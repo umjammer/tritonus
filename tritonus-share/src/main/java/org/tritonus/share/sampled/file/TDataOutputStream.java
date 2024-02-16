@@ -41,6 +41,7 @@ import java.io.IOException;
  */
 public interface TDataOutputStream
         extends DataOutput {
+
     boolean supportsSeek();
 
 

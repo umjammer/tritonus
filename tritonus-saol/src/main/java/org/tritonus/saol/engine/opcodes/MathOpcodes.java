@@ -33,6 +33,7 @@ import org.tritonus.saol.compiler.WidthAndRate;
  * The Math Opcodes (Section 5.9.4).
  */
 public class MathOpcodes {
+
     private static final float LOG_10 = (float) Math.log(10.0);
 
 

@@ -23,6 +23,7 @@ package org.tritonus.test;
 
 public class VorbisFormatConversionProviderTest
         extends BaseFormatConversionProviderTestCase {
+
     public VorbisFormatConversionProviderTest() {
         setResourcePrefix("vorbis");
     }

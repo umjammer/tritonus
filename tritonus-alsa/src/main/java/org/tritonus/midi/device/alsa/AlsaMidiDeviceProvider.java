@@ -41,6 +41,7 @@ import org.tritonus.share.TDebug;
 
 public class AlsaMidiDeviceProvider
         extends MidiDeviceProvider {
+
     // perhaps move to superclass
     private static final MidiDevice.Info[] EMPTY_INFO_ARRAY = new MidiDevice.Info[0];
     private static final int READ_CAPABILITY = AlsaSeq.SND_SEQ_PORT_CAP_READ | AlsaSeq.SND_SEQ_PORT_CAP_SUBS_READ;

@@ -38,6 +38,7 @@ import javax.sound.sampled.AudioInputStream;
  * Mid-level interface definition for reading CDs
  */
 public interface CddaMidLevel {
+
     /**
      * Size of a cdda frame in bytes.
      */

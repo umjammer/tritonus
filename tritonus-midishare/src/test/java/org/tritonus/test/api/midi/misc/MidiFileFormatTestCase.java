@@ -36,6 +36,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 
 public class MidiFileFormatTestCase {
+
     private static final float DELTA = 1E-9F;
 
 

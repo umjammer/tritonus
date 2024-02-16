@@ -31,6 +31,7 @@ import org.tritonus.share.TDebug;
 
 
 public class AlsaSeqPortSubscribe {
+
     static {
         Alsa.loadNativeLibrary();
         if (TDebug.TraceAlsaSeqNative) {

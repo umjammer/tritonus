@@ -35,6 +35,7 @@ import org.tritonus.share.TDebug;
 
 public class CddaStreamHandler
         extends URLStreamHandler {
+
     public URLConnection openConnection(URL url) {
         if (TDebug.TraceCdda) {
             TDebug.out("CddaStreamHandler.openConnection():begin");

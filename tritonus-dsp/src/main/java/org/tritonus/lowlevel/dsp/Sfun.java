@@ -27,6 +27,7 @@ package org.tritonus.lowlevel.dsp;
  * Collection of special functions.
  */
 public class Sfun {
+
     /** The smallest relative spacing for doubles. */
     public final static double EPSILON_SMALL = 1.1102230246252e-16;
 

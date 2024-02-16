@@ -30,6 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 public class AlsaCtlTestCase {
+
     private static final boolean DEBUG = false;
     private static final String CARD_NAME_FOR_INDEX_TEST = "LIFE";
 

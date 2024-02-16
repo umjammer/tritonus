@@ -39,6 +39,7 @@ import org.tritonus.share.TDebug;
 public class TBooleanControl
         extends BooleanControl
         implements TControllable {
+
     private TControlController m_controller;
 
 

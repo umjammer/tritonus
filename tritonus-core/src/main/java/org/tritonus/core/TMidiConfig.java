@@ -47,6 +47,7 @@ import org.tritonus.share.TDebug;
  * TODO:
  */
 public class TMidiConfig {
+
     private static Set<MidiDeviceProvider> sm_midiDeviceProviders = null;
     private static Set<MidiFileReader> sm_midiFileReaders = null;
     private static Set<MidiFileWriter> sm_midiFileWriters = null;

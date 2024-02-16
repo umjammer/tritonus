@@ -30,6 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class GetMaxPolyphonyTestCase
         extends BaseSynthesizerTestCase {
+
     protected void checkSynthesizer(Synthesizer synth)
             throws Exception {
         int poly;

@@ -45,6 +45,7 @@ import org.tritonus.share.sampled.file.THeaderlessAudioFileWriter;
  */
 public class GSMAudioFileWriter
         extends THeaderlessAudioFileWriter {
+
     private static final AudioFileFormat.Type[] FILE_TYPES =
             {
                     new AudioFileFormat.Type("GSM", "gsm")

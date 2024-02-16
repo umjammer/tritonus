@@ -232,6 +232,7 @@ class TDirectSynthesizerTestCase {
         }
 
         public static class TestChannel implements MidiChannel {
+
             private Type m_nType;
             private int m_nValue1;
             private int m_nValue2;

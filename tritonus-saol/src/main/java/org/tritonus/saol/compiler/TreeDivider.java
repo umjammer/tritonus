@@ -36,6 +36,7 @@ import org.tritonus.share.TDebug;
 
 public class TreeDivider
         extends DepthFirstAdapter {
+
     private static final boolean DEBUG = true;
 
     private InstrumentTable m_instrumentTable;

@@ -32,6 +32,7 @@ import java.net.URLStreamHandlerFactory;
 
 public class CddaURLStreamHandlerFactory
         implements URLStreamHandlerFactory {
+
     private static URLStreamHandler m_cddaHandler = null;
 
 

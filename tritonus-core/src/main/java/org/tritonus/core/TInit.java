@@ -37,6 +37,7 @@ import org.tritonus.share.TDebug;
  * Helper methods for provider registration.
  */
 public class TInit {
+
     /**
      * Constructor to prevent instantiation.
      */
@@ -87,6 +88,7 @@ public class TInit {
      * is called for each provider that has to be registered.
      */
     public interface ProviderRegistrationAction {
+
         void register(Object provider)
                 throws Exception;
     }

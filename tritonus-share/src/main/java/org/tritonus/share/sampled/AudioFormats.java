@@ -34,6 +34,7 @@ import javax.sound.sampled.AudioSystem;
 
 
 public class AudioFormats {
+
     private static boolean doMatch(int i1, int i2) {
         return i1 == AudioSystem.NOT_SPECIFIED
                 || i2 == AudioSystem.NOT_SPECIFIED

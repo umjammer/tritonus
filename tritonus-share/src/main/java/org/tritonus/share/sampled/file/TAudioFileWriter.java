@@ -60,6 +60,7 @@ import org.tritonus.share.sampled.TConversionTool;
 
 public abstract class TAudioFileWriter
         extends AudioFileWriter {
+
     protected static final int ALL = AudioSystem.NOT_SPECIFIED;
 
     protected static final AudioFormat.Encoding PCM_SIGNED = AudioFormat.Encoding.PCM_SIGNED;

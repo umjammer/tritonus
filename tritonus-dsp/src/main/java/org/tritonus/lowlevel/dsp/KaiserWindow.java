@@ -30,6 +30,7 @@ package org.tritonus.lowlevel.dsp;
  * An implementation of the Kaiser window.
  */
 public class KaiserWindow implements FIRWindow {
+
     /**
      * The alpha parameter of the Kaiser window.
      */

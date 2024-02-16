@@ -32,6 +32,7 @@ package org.tritonus.midi.device.java;
  */
 public class SunMiscPerfClock
         implements JavaSequencer.Clock {
+
     private long m_nanos;
 
 

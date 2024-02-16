@@ -32,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class MidiChannelTestCase
         extends BaseSynthesizerTestCase {
+
     protected void checkSynthesizer(Synthesizer synth)
             throws Exception {
         MidiChannel channel;

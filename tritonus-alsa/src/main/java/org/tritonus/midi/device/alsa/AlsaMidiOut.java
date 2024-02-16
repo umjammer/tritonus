@@ -41,6 +41,7 @@ import org.tritonus.share.TDebug;
  * established elsewhere.
  */
 public class AlsaMidiOut {
+
     /**
      * The low-level object to interface to the ALSA sequencer.
      */

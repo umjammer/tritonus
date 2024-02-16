@@ -39,6 +39,7 @@ import org.tritonus.share.TDebug;
 
 public class CddaDataConnection
         extends URLConnection {
+
     private static int PCM_FRAMES_PER_CDDA_FRAME = 588;
     private static AudioFormat CDDA_FORMAT = new AudioFormat(
             AudioFormat.Encoding.PCM_SIGNED,

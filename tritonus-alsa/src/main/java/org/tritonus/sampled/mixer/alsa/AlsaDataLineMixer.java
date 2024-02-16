@@ -54,6 +54,7 @@ import org.tritonus.share.sampled.mixer.TSoftClip;
 
 public class AlsaDataLineMixer
         extends TMixer {
+
     private static final AudioFormat[] EMPTY_AUDIOFORMAT_ARRAY = new AudioFormat[0];
     private static final int CHANNELS_LIMIT = 32;
 

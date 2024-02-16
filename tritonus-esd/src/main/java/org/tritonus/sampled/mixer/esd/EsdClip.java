@@ -47,6 +47,7 @@ import org.tritonus.share.sampled.mixer.TMixer;
 public class EsdClip
         extends TDataLine
         implements Clip {
+
     private static final Class[] CONTROL_CLASSES = {/*GainControl.class*/};
     private static final int BUFFER_FRAMES = 16384;
 

@@ -34,6 +34,7 @@ import javax.sound.sampled.AudioFormat;
 
 public class TAudioFormat
         extends AudioFormat {
+
     private Map<String, Object> m_properties;
     private Map<String, Object> m_unmodifiableProperties;
 

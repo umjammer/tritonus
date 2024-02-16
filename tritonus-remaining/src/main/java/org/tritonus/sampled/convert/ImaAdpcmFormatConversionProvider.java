@@ -69,6 +69,7 @@ import org.tritonus.share.sampled.convert.TSynchronousFilteredAudioInputStream;
  */
 public class ImaAdpcmFormatConversionProvider
         extends TEncodingFormatConversionProvider {
+
     // only used as abbreviation
     private static final AudioFormat.Encoding IMA_ADPCM = new AudioFormat.Encoding("IMA_ADPCM");
     private static final AudioFormat.Encoding PCM_SIGNED = new AudioFormat.Encoding("PCM_SIGNED");
@@ -217,6 +218,7 @@ public class ImaAdpcmFormatConversionProvider
     aspectj compiler. */
     /*private*/public static class DecodedImaAdpcmAudioInputStream
             extends TSynchronousFilteredAudioInputStream {
+
         private ImaAdpcmState m_state;
 
 
@@ -366,6 +368,7 @@ public class ImaAdpcmFormatConversionProvider
     aspectj compiler. */
     /*private*/public static class EncodedImaAdpcmAudioInputStream
             extends TSynchronousFilteredAudioInputStream {
+
         private ImaAdpcmState m_state;
 
 
@@ -533,6 +536,7 @@ public class ImaAdpcmFormatConversionProvider
      * decoded.
      */
     private static class ImaAdpcmState {
+
         public int valprev;
         public int index;
     }

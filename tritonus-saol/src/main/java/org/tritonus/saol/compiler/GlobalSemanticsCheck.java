@@ -35,6 +35,7 @@ import org.tritonus.saol.sablecc.node.ASeqdefGlobaldef;
 
 public class GlobalSemanticsCheck
         extends IOGTCommonSemanticsCheck {
+
     private static final boolean DEBUG = true;
     private static final int[] LEGAL_VARIABLE_TYPES = new int[]
             {

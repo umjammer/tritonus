@@ -39,6 +39,7 @@ import org.tritonus.share.TDebug;
  * Helper methods for reading and writing MIDI files.
  */
 public class MidiUtils {
+
     public static int getUnsignedInteger(byte b) {
         return (b < 0) ? b + 256 : b;
     }

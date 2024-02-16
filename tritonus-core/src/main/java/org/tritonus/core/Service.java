@@ -43,6 +43,7 @@ import org.tritonus.share.TDebug;
 
 
 public class Service {
+
     private static final String BASE_NAME = "META-INF/services/";
 
 

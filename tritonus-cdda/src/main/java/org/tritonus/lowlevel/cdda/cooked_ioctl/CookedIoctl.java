@@ -35,6 +35,7 @@ import org.tritonus.share.TDebug;
  * Reading audio CDs using the 'cooked ioctl' interface.
  */
 public class CookedIoctl {
+
     static {
         if (TDebug.TraceCdda) {
             TDebug.out("CookedIoctl.<clinit>(): loading native library tritonuscooked_ioctl");

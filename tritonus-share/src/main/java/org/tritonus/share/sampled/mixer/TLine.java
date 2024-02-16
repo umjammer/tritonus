@@ -49,6 +49,7 @@ import org.tritonus.share.TNotifier;
  */
 public abstract class TLine
         implements Line {
+
     private static final Control[] EMPTY_CONTROL_ARRAY = new Control[0];
 
     private Line.Info m_info;

@@ -42,6 +42,7 @@ import org.tritonus.share.TDebug;
  */
 public abstract class TPreloadingSequencer
         extends TSequencer {
+
     /**
      * The default value for {@link m_nLatency}.
      * This default value is set in the constructor.

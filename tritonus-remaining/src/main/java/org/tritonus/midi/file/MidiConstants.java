@@ -31,6 +31,7 @@ package org.tritonus.midi.file;
  * Constants for Standard Midi Files reading and writing.
  */
 public interface MidiConstants {
+
     /**
      * Header magic constant.
      * Has the value "MThd".

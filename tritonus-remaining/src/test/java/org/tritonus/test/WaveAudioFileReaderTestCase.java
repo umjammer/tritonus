@@ -23,6 +23,7 @@ package org.tritonus.test;
 
 public class WaveAudioFileReaderTestCase
         extends BaseAudioFileReaderTestCase {
+
     public WaveAudioFileReaderTestCase() {
         setResourcePrefix("wave");
     }

@@ -30,6 +30,7 @@ package org.tritonus.share.sampled.mixer;
 
 
 public interface TControllable {
+
     void setParentControl(TCompoundControl compoundControl);
 
     TCompoundControl getParentControl();

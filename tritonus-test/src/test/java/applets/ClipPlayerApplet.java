@@ -45,6 +45,7 @@ import javax.swing.JPanel;
 public class ClipPlayerApplet
         extends JApplet
         implements LineListener {
+
     private AudioInputStream m_audioInputStream;
     private AudioFormat m_format;
     private Clip m_clip;

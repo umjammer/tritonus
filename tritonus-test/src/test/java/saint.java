@@ -22,7 +22,9 @@ import org.tritonus.lowlevel.saint.Saint;
 
 
 public class saint {
+
     private static class SupportedFormat {
+
         private String m_strName;
         private int m_nNumber;
         private AudioFormat.Encoding m_encoding;

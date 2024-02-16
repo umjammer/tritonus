@@ -30,6 +30,7 @@ package org.tritonus.lowlevel.dsp;
  * An implementation of the Hamming window.
  */
 public class HammingWindow implements FIRWindow {
+
     /** {@inheritDoc} */
     @Override
     public double[] getWindow(int nOrder) {

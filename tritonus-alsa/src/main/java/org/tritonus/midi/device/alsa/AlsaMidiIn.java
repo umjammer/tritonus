@@ -46,6 +46,7 @@ import org.tritonus.share.TDebug;
  */
 public class AlsaMidiIn
         extends Thread {
+
     /**
      * ALSA client used to receive events.
      */
@@ -457,6 +458,7 @@ public class AlsaMidiIn
      *
      */
     public interface AlsaMidiInListener {
+
         void dequeueEvent(MidiMessage message, long lTimestamp);
     }
 }

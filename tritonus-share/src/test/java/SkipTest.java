@@ -31,6 +31,7 @@ import javax.sound.sampled.AudioSystem;
 
 
 public class SkipTest {
+
     private static final int LOAD_METHOD_STREAM = 1;
     private static final int LOAD_METHOD_FILE = 2;
     private static final int LOAD_METHOD_URL = 3;

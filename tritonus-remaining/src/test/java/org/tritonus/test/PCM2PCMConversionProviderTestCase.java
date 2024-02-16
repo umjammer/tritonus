@@ -23,6 +23,7 @@ package org.tritonus.test;
 
 public class PCM2PCMConversionProviderTestCase
         extends BaseFormatConversionProviderTestCase {
+
     public PCM2PCMConversionProviderTestCase() {
         setResourcePrefix("pcm2pcm");
     }

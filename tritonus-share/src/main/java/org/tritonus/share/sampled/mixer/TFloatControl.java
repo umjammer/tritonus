@@ -39,6 +39,7 @@ import org.tritonus.share.TDebug;
 public class TFloatControl
         extends FloatControl
         implements TControllable {
+
     private TControlController m_controller;
 
 

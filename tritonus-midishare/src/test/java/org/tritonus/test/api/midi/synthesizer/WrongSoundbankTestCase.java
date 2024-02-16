@@ -35,6 +35,7 @@ import static org.junit.jupiter.api.Assertions.fail;
  */
 public class WrongSoundbankTestCase
         extends BaseSynthesizerTestCase {
+
     protected void checkSynthesizer(Synthesizer synth)
             throws Exception {
         WrongSoundbank sb = new WrongSoundbank();
@@ -119,7 +120,9 @@ public class WrongSoundbankTestCase
 
 
     private static class WrongSoundbank implements Soundbank {
+
         public class WrongInstrument extends Instrument {
+
             public WrongInstrument() {
                 super(WrongSoundbank.this, null, null, null);
             }

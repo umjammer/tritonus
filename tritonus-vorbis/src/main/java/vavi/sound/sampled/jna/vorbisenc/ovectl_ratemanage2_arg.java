@@ -1,9 +1,13 @@
 package vavi.sound.sampled.jna.vorbisenc;
+
+import java.util.Arrays;
+import java.util.List;
+
 import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
-import java.util.Arrays;
-import java.util.List;
+
+
 /**
  * \name struct ovectl_ratemanage2_arg<br>
  * The ovectl_ratemanage2_arg structure is used with vorbis_encode_ctl() and<br>
@@ -16,66 +20,77 @@ import java.util.List;
  * For help, please visit <a href="http://nativelibs4java.googlecode.com/">NativeLibs4Java</a> , <a href="http://rococoa.dev.java.net/">Rococoa</a>, or <a href="http://jna.dev.java.net/">JNA</a>.
  */
 public class ovectl_ratemanage2_arg extends Structure {
-	/** < nonzero if bitrate management is active */
-	public int management_active;
-	/** Lower allowed bitrate limit in kilobits per second */
-	public NativeLong bitrate_limit_min_kbps;
-	/** Upper allowed bitrate limit in kilobits per second */
-	public NativeLong bitrate_limit_max_kbps;
-	/** <Size of the bitrate reservoir in bits */
-	public NativeLong bitrate_limit_reservoir_bits;
-	/**
-	 * Regulates the bitrate reservoir's preferred fill level in a range from 0.0<br>
-	 * to 1.0; 0.0 tries to bank bits to buffer against future bitrate spikes, 1.0<br>
-	 * buffers against future sudden drops in instantaneous bitrate. Default is<br>
-	 * 0.1
-	 */
-	public double bitrate_limit_reservoir_bias;
-	/** Average bitrate setting in kilobits per second */
-	public NativeLong bitrate_average_kbps;
-	/**
-	 * Slew rate limit setting for average bitrate adjustment; sets the minimum<br>
-	 *  time in seconds the bitrate tracker may swing from one extreme to the<br>
-	 *  other when boosting or damping average bitrate.
-	 */
-	public double bitrate_average_damping;
-	public ovectl_ratemanage2_arg() {
-		super();
-	}
-	protected List<String> getFieldOrder() {
-		return Arrays.asList("management_active", "bitrate_limit_min_kbps", "bitrate_limit_max_kbps", "bitrate_limit_reservoir_bits", "bitrate_limit_reservoir_bias", "bitrate_average_kbps", "bitrate_average_damping");
-	}
-	/**
-	 * @param management_active < nonzero if bitrate management is active<br>
-	 * @param bitrate_limit_min_kbps Lower allowed bitrate limit in kilobits per second<br>
-	 * @param bitrate_limit_max_kbps Upper allowed bitrate limit in kilobits per second<br>
-	 * @param bitrate_limit_reservoir_bits <Size of the bitrate reservoir in bits<br>
-	 * @param bitrate_limit_reservoir_bias Regulates the bitrate reservoir's preferred fill level in a range from 0.0<br>
-	 * to 1.0; 0.0 tries to bank bits to buffer against future bitrate spikes, 1.0<br>
-	 * buffers against future sudden drops in instantaneous bitrate. Default is<br>
-	 * 0.1<br>
-	 * @param bitrate_average_kbps Average bitrate setting in kilobits per second<br>
-	 * @param bitrate_average_damping Slew rate limit setting for average bitrate adjustment; sets the minimum<br>
-	 *  time in seconds the bitrate tracker may swing from one extreme to the<br>
-	 *  other when boosting or damping average bitrate.
-	 */
-	public ovectl_ratemanage2_arg(int management_active, NativeLong bitrate_limit_min_kbps, NativeLong bitrate_limit_max_kbps, NativeLong bitrate_limit_reservoir_bits, double bitrate_limit_reservoir_bias, NativeLong bitrate_average_kbps, double bitrate_average_damping) {
-		super();
-		this.management_active = management_active;
-		this.bitrate_limit_min_kbps = bitrate_limit_min_kbps;
-		this.bitrate_limit_max_kbps = bitrate_limit_max_kbps;
-		this.bitrate_limit_reservoir_bits = bitrate_limit_reservoir_bits;
-		this.bitrate_limit_reservoir_bias = bitrate_limit_reservoir_bias;
-		this.bitrate_average_kbps = bitrate_average_kbps;
-		this.bitrate_average_damping = bitrate_average_damping;
-	}
-	public ovectl_ratemanage2_arg(Pointer peer) {
-		super(peer);
-	}
-	public static class ByReference extends ovectl_ratemanage2_arg implements Structure.ByReference {
-		
-	};
-	public static class ByValue extends ovectl_ratemanage2_arg implements Structure.ByValue {
-		
-	};
+
+    /** < nonzero if bitrate management is active */
+    public int management_active;
+    /** Lower allowed bitrate limit in kilobits per second */
+    public NativeLong bitrate_limit_min_kbps;
+    /** Upper allowed bitrate limit in kilobits per second */
+    public NativeLong bitrate_limit_max_kbps;
+    /** <Size of the bitrate reservoir in bits */
+    public NativeLong bitrate_limit_reservoir_bits;
+    /**
+     * Regulates the bitrate reservoir's preferred fill level in a range from 0.0<br>
+     * to 1.0; 0.0 tries to bank bits to buffer against future bitrate spikes, 1.0<br>
+     * buffers against future sudden drops in instantaneous bitrate. Default is<br>
+     * 0.1
+     */
+    public double bitrate_limit_reservoir_bias;
+    /** Average bitrate setting in kilobits per second */
+    public NativeLong bitrate_average_kbps;
+    /**
+     * Slew rate limit setting for average bitrate adjustment; sets the minimum<br>
+     * time in seconds the bitrate tracker may swing from one extreme to the<br>
+     * other when boosting or damping average bitrate.
+     */
+    public double bitrate_average_damping;
+
+    public ovectl_ratemanage2_arg() {
+        super();
+    }
+
+    protected List<String> getFieldOrder() {
+        return Arrays.asList("management_active", "bitrate_limit_min_kbps", "bitrate_limit_max_kbps", "bitrate_limit_reservoir_bits", "bitrate_limit_reservoir_bias", "bitrate_average_kbps", "bitrate_average_damping");
+    }
+
+    /**
+     * @param management_active            < nonzero if bitrate management is active<br>
+     * @param bitrate_limit_min_kbps       Lower allowed bitrate limit in kilobits per second<br>
+     * @param bitrate_limit_max_kbps       Upper allowed bitrate limit in kilobits per second<br>
+     * @param bitrate_limit_reservoir_bits <Size of the bitrate reservoir in bits<br>
+     * @param bitrate_limit_reservoir_bias Regulates the bitrate reservoir's preferred fill level in a range from 0.0<br>
+     *                                     to 1.0; 0.0 tries to bank bits to buffer against future bitrate spikes, 1.0<br>
+     *                                     buffers against future sudden drops in instantaneous bitrate. Default is<br>
+     *                                     0.1<br>
+     * @param bitrate_average_kbps         Average bitrate setting in kilobits per second<br>
+     * @param bitrate_average_damping      Slew rate limit setting for average bitrate adjustment; sets the minimum<br>
+     *                                     time in seconds the bitrate tracker may swing from one extreme to the<br>
+     *                                     other when boosting or damping average bitrate.
+     */
+    public ovectl_ratemanage2_arg(int management_active, NativeLong bitrate_limit_min_kbps, NativeLong bitrate_limit_max_kbps, NativeLong bitrate_limit_reservoir_bits, double bitrate_limit_reservoir_bias, NativeLong bitrate_average_kbps, double bitrate_average_damping) {
+        super();
+        this.management_active = management_active;
+        this.bitrate_limit_min_kbps = bitrate_limit_min_kbps;
+        this.bitrate_limit_max_kbps = bitrate_limit_max_kbps;
+        this.bitrate_limit_reservoir_bits = bitrate_limit_reservoir_bits;
+        this.bitrate_limit_reservoir_bias = bitrate_limit_reservoir_bias;
+        this.bitrate_average_kbps = bitrate_average_kbps;
+        this.bitrate_average_damping = bitrate_average_damping;
+    }
+
+    public ovectl_ratemanage2_arg(Pointer peer) {
+        super(peer);
+    }
+
+    public static class ByReference extends ovectl_ratemanage2_arg implements Structure.ByReference {
+
+    }
+
+    ;
+
+    public static class ByValue extends ovectl_ratemanage2_arg implements Structure.ByValue {
+
+    }
+
+    ;
 }

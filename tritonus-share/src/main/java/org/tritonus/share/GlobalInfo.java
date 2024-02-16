@@ -30,6 +30,7 @@ package org.tritonus.share;
 
 
 public class GlobalInfo {
+
     private static final String VENDOR = "Tritonus is free software. See http://www.tritonus.org/";
     private static final String VERSION = "0.3.1";
 

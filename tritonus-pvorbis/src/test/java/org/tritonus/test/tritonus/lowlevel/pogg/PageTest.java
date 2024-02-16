@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * PageTest.
- *
+ * <p>
  * Tests for classes org.tritonus.lowlevel.pogg.Page.
  */
 public class PageTest {

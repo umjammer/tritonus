@@ -21,6 +21,7 @@
 package org.tritonus.lowlevel.gsm;
 
 public class Long_term {
+
     public void Gsm_Long_Term_Predictor(short[] d, /* [0..39] residual signal IN */
                                         int k, /* d entry point, which 40 */
                                         short[] e, /* [0..39] add 5 to index OUT */

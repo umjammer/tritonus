@@ -1,6 +1,7 @@
 package misc;
 
 public class SleepTest {
+
     public static void main(String[] args)
             throws InterruptedException {
         long lRequestedSleepDuration = Long.parseLong(args[0]);

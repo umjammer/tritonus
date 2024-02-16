@@ -57,6 +57,7 @@ import org.tritonus.share.TDebug;
  */
 public abstract class TAudioFileReader
         extends AudioFileReader {
+
     private int m_nMarkLimit;
     private boolean m_bRereading;
 

@@ -25,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author Matthias Pfisterer
  */
 public abstract class AbstractFormatConversionProviderTest {
+
     /**
      * Empty list of {@link Encoding}.
      */

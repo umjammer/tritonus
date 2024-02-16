@@ -53,6 +53,7 @@ import org.tritonus.share.midi.TSequencer;
 public class AlsaSequencer
 // TODO: derive from TPreloadingSequencer
         extends TSequencer {
+
     /**
      * The syncronization modes the sequencer can sync to.
      */
@@ -606,6 +607,7 @@ public class AlsaSequencer
 
     /*private*/ public class PlaybackAlsaMidiInListener
             implements AlsaMidiIn.AlsaMidiInListener {
+
         public void dequeueEvent(MidiMessage message, long lTimestamp) {
             if (TDebug.TraceSequencer) {
                 TDebug.out("AlsaSequencer.PlaybackAlsaMidiInListener.dequeueEvent(): message: " + message);
@@ -641,6 +643,7 @@ public class AlsaSequencer
 
     /*private*/ public class RecordingAlsaMidiInListener
             implements AlsaMidiIn.AlsaMidiInListener {
+
         public void dequeueEvent(MidiMessage message, long lTimestamp) {
             if (TDebug.TraceSequencer) {
                 TDebug.out("AlsaSequencer.RecordingAlsaMidiInListener.dequeueEvent(): message: " + message);
@@ -653,6 +656,7 @@ public class AlsaSequencer
     /*private*/ public class AlsaSequencerReceiver
             extends TReceiver
             implements AlsaReceiver {
+
         /**
          * Subscribe to the passed port.
          * This establishes a subscription in the ALSA sequencer
@@ -685,6 +689,7 @@ public class AlsaSequencer
 
     /*private*/ public class AlsaSequencerTransmitter
             extends TTransmitter {
+
         private boolean m_bReceiverSubscribed;
 
 
@@ -737,6 +742,7 @@ public class AlsaSequencer
      */
     /*private*/ public class LoaderThread
             extends Thread {
+
         /**
          * Current position of loading in Ticks.  This is used to get
          * a useful tick value for the end of track message.
@@ -922,6 +928,7 @@ public class AlsaSequencer
     // TODO: start/stop; on/off
     /*private*/ public class MasterSynchronizer
             extends Thread {
+
         public void run() {
             while (isOpen()) {
                 do {

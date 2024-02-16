@@ -36,6 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class MidiDeviceTestCase
         extends BaseMidiDeviceTestCase {
+
     @Test
     public void testGetDeviceInfo()
             throws Exception {

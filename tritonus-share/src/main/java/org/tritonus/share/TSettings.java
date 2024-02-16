@@ -32,6 +32,7 @@ import java.security.AccessControlException;
 
 
 public class TSettings {
+
     public static boolean SHOW_ACCESS_CONTROL_EXCEPTIONS = false;
     private static final String PROPERTY_PREFIX = "tritonus.";
 

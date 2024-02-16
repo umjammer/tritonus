@@ -60,6 +60,6 @@ public class VorbisAudioFileWriter extends THeaderlessAudioFileWriter {
     public VorbisAudioFileWriter() {
         super(Arrays.asList(FILE_TYPES), Arrays.asList(AUDIO_FORMATS));
         logger.log(Level.TRACE, "VorbisAudioFileWriter.<init>(): begin");
-        logger.log(Level.TRACE,  "VorbisAudioFileWriter.<init>(): end");
+        logger.log(Level.TRACE, "VorbisAudioFileWriter.<init>(): end");
     }
 }

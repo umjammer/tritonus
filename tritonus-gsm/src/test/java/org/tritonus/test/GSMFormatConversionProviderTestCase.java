@@ -26,6 +26,7 @@ import org.junit.jupiter.api.Disabled;
 @Disabled // no suitable class
 public class GSMFormatConversionProviderTestCase
         extends BaseFormatConversionProviderTestCase {
+
     public GSMFormatConversionProviderTestCase() {
         setResourcePrefix("gsm");
     }

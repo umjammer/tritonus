@@ -36,6 +36,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 
 public class AudioFormatTestCase {
+
     @Test
     public void testNoMap() {
         AudioFormat fileFormat = new AudioFormat(

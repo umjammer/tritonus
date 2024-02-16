@@ -30,6 +30,7 @@ import org.tritonus.lowlevel.gsm.BitEncoder.AllocationMode;
  * @author Matthias Pfisterer
  */
 public class Encoder { /* Every Encoder has a state through completion */
+
     private Gsm_State g_s = new Gsm_State();
     private Long_term lg_term_Obj = new Long_term();
     private Lpc lpc_Obj = new Lpc();

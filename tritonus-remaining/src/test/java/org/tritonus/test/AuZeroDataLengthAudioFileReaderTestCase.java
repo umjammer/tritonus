@@ -23,6 +23,7 @@ package org.tritonus.test;
 
 public class AuZeroDataLengthAudioFileReaderTestCase
         extends BaseAudioFileReaderTestCase {
+
     public AuZeroDataLengthAudioFileReaderTestCase() {
         setResourcePrefix("au_zero_data_length");
     }

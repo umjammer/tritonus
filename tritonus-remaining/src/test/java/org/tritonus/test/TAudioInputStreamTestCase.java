@@ -36,6 +36,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 
 public class TAudioInputStreamTestCase {
+
     @Test
     public void testEmptyMap() {
         AudioFormat format = new AudioFormat(44100.0F, 16, 2, true, false);

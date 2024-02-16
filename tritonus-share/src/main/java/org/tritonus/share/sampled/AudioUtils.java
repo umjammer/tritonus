@@ -37,6 +37,7 @@ import javax.sound.sampled.Mixer;
 
 @SuppressWarnings("cast")
 public class AudioUtils {
+
     public static long getLengthInBytes(AudioInputStream audioInputStream) {
         return getLengthInBytes(audioInputStream.getFormat(),
                 audioInputStream.getFrameLength());

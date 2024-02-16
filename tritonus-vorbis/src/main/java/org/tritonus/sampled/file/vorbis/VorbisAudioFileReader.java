@@ -35,11 +35,12 @@ import org.tritonus.share.sampled.file.TAudioFileReader;
 
 /**
  * @author Matthias Pfisterer
- *
+ * <p>
  * This file is part of Tritonus: http://www.tritonus.org/
  */
 public class VorbisAudioFileReader
         extends TAudioFileReader {
+
     private static final int INITAL_READ_LENGTH = 4096;
     private static final int MARK_LIMIT = INITAL_READ_LENGTH + 1;
 

@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * BufferTest.
- *
+ * <p>
  * Tests for class org.tritonus.lowlevel.pogg.Buffer.
  */
 public class BufferTest {

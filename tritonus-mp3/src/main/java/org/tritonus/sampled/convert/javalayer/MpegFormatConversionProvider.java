@@ -136,31 +136,31 @@ public class MpegFormatConversionProvider extends TEncodingFormatConversionProvi
 
 
     private static final AudioFormat[] OUTPUT_FORMATS = {
-                // mono, 16 bit signed
-                new AudioFormat(PCM_SIGNED, -1.0F, 16, 1, 2, -1.0F, false),
-                new AudioFormat(PCM_SIGNED, -1.0F, 16, 1, 2, -1.0F, true),
+            // mono, 16 bit signed
+            new AudioFormat(PCM_SIGNED, -1.0F, 16, 1, 2, -1.0F, false),
+            new AudioFormat(PCM_SIGNED, -1.0F, 16, 1, 2, -1.0F, true),
 
-                // stereo, 16 bit signed
-                new AudioFormat(PCM_SIGNED, -1.0F, 16, 2, 4, -1.0F, false),
-                new AudioFormat(PCM_SIGNED, -1.0F, 16, 2, 4, -1.0F, true),
+            // stereo, 16 bit signed
+            new AudioFormat(PCM_SIGNED, -1.0F, 16, 2, 4, -1.0F, false),
+            new AudioFormat(PCM_SIGNED, -1.0F, 16, 2, 4, -1.0F, true),
 
-                /* 24 and 32 bit not yet possible
-                  // mono, 24 bit signed
-                  new AudioFormat(PCM_SIGNED, -1.0F, 24, 1, 3, -1.0F, false),
-                  new AudioFormat(PCM_SIGNED, -1.0F, 24, 1, 3, -1.0F, true),
+            /* 24 and 32 bit not yet possible
+              // mono, 24 bit signed
+              new AudioFormat(PCM_SIGNED, -1.0F, 24, 1, 3, -1.0F, false),
+              new AudioFormat(PCM_SIGNED, -1.0F, 24, 1, 3, -1.0F, true),
 
-                  // stereo, 24 bit signed
-                  new AudioFormat(PCM_SIGNED, -1.0F, 24, 2, 6, -1.0F, false),
-                  new AudioFormat(PCM_SIGNED, -1.0F, 24, 2, 6, -1.0F, true),
+              // stereo, 24 bit signed
+              new AudioFormat(PCM_SIGNED, -1.0F, 24, 2, 6, -1.0F, false),
+              new AudioFormat(PCM_SIGNED, -1.0F, 24, 2, 6, -1.0F, true),
 
-                  // mono, 32 bit signed
-                  new AudioFormat(PCM_SIGNED, -1.0F, 32, 1, 4, -1.0F, false),
-                  new AudioFormat(PCM_SIGNED, -1.0F, 32, 1, 4, -1.0F, true),
+              // mono, 32 bit signed
+              new AudioFormat(PCM_SIGNED, -1.0F, 32, 1, 4, -1.0F, false),
+              new AudioFormat(PCM_SIGNED, -1.0F, 32, 1, 4, -1.0F, true),
 
-                  // stereo, 32 bit signed
-                  new AudioFormat(PCM_SIGNED, -1.0F, 32, 2, 8, -1.0F, false),
-                  new AudioFormat(PCM_SIGNED, -1.0F, 32, 2, 8, -1.0F, true),
-                */
+              // stereo, 32 bit signed
+              new AudioFormat(PCM_SIGNED, -1.0F, 32, 2, 8, -1.0F, false),
+              new AudioFormat(PCM_SIGNED, -1.0F, 32, 2, 8, -1.0F, true),
+            */
     };
 
     /**

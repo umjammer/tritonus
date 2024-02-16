@@ -30,6 +30,7 @@ import java.util.Random;
 
 
 public class WhiteNoise implements Source {
+
     private Random m_random;
 
     public WhiteNoise() {

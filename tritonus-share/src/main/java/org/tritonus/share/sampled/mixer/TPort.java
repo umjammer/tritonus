@@ -40,6 +40,7 @@ import javax.sound.sampled.Port;
 public class TPort
         extends TLine
         implements Port {
+
     public TPort(TMixer mixer,
                  Line.Info info) {
         super(mixer, info);

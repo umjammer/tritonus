@@ -42,6 +42,7 @@ import javax.sound.midi.Track;
  * [F7 F0 04 F7]
  */
 public class CreateSysexSequence {
+
     public static void main(String[] args)
             throws IOException, InvalidMidiDataException {
         if (args.length != 1) {

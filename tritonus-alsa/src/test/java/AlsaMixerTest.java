@@ -7,6 +7,7 @@ import org.tritonus.lowlevel.alsa.AlsaMixerElement;
 
 
 public class AlsaMixerTest {
+
     private static boolean sm_bShowInactiveElements;
 
 

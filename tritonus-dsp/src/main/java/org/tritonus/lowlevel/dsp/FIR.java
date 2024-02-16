@@ -30,6 +30,7 @@ package org.tritonus.lowlevel.dsp;
  * A Finite Impulse Response (FIR) filter.
  */
 public class FIR implements Filter {
+
     /**
      * The length of the filter (number of coefficients).
      */

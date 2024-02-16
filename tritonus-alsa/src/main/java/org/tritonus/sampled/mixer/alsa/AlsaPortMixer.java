@@ -54,6 +54,7 @@ import org.tritonus.share.sampled.mixer.TPort;
  */
 public class AlsaPortMixer
         extends TMixer {
+
     /**
      * Used to signal an illegal value for direction.
      */
@@ -404,6 +405,7 @@ public class AlsaPortMixer
 
     private static class AlsaVolumeControl
             extends FloatControl {
+
         private AlsaMixerElement m_element;
         private int m_nChannel;
 
@@ -504,6 +506,7 @@ public class AlsaPortMixer
 
     private static class AlsaSwitchControl
             extends BooleanControl {
+
         private AlsaMixerElement m_element;
         private int m_nChannel;
 
@@ -578,6 +581,7 @@ public class AlsaPortMixer
      */
     public static class AlsaCompoundControl
             extends CompoundControl {
+
         public AlsaCompoundControl(CompoundControl.Type type,
                                    Control[] aMemberControls) {
             super(type, aMemberControls);

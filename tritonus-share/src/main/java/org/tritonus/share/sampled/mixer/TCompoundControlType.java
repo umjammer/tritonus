@@ -35,6 +35,7 @@ import javax.sound.sampled.CompoundControl;
  */
 public class TCompoundControlType
         extends CompoundControl.Type {
+
     /**
      * Constructor.
      * Constructs a CompoundControl.Type with the

@@ -48,6 +48,7 @@ import javax.sound.sampled.AudioInputStream;
 
 public class TAudioInputStream
         extends AudioInputStream {
+
     private Map<String, Object> m_properties;
     private Map<String, Object> m_unmodifiableProperties;
 

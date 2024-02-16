@@ -29,6 +29,7 @@ package org.tritonus.saol.compiler;
 
 public class VariableEntry
         extends WidthAndRate {
+
     private String m_strVariableName;
     private boolean m_bImports;
     private boolean m_bExports;

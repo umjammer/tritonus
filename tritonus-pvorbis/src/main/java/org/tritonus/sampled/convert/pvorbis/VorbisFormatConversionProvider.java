@@ -121,7 +121,7 @@ public class VorbisFormatConversionProvider extends TEncodingFormatConversionPro
 //                Arrays.asList(OUTPUT_FORMATS),
 //                true, // new behaviour
 //                false  // bidirectional .. constants UNIDIR../BIDIR..?
-                );
+        );
         logger.log(Level.TRACE, "VorbisFormatConversionProvider.<init>(): begin");
         logger.log(Level.TRACE, "VorbisFormatConversionProvider.<init>(): end");
     }
@@ -218,7 +218,7 @@ public class VorbisFormatConversionProvider extends TEncodingFormatConversionPro
             m_decodedStream = inputStream;
             m_abReadbuffer = new byte[READ * getFrameSize()];
             Object property;
-Debug.println("properties: " + outputFormat.properties());
+            Debug.println("properties: " + outputFormat.properties());
 
             property = outputFormat.getProperty("vbr");
             boolean bUseVBR = DEFAULT_VBR;
@@ -267,12 +267,12 @@ Debug.println("properties: " + outputFormat.properties());
             logger.log(Level.TRACE, "sample rate: " + nSampleRate);
             logger.log(Level.TRACE, "channels: " + getChannels());
             if (bUseVBR) {
-Debug.printf("VBR: ch: %d, rate: %d, q: %3.1f", getChannels(), nSampleRate, fQuality);
+                Debug.printf("VBR: ch: %d, rate: %d, q: %3.1f", getChannels(), nSampleRate, fQuality);
                 int r = encoder.initVBR(m_info, getChannels(), nSampleRate, fQuality);
                 if (r != 0)
                     throw new IllegalStateException("initVBR: unexpected return value: " + r);
             } else {
-Debug.printf("non VBR: ch: %d, rate: %d, q: %3.1f", getChannels(), nSampleRate, fQuality);
+                Debug.printf("non VBR: ch: %d, rate: %d, q: %3.1f", getChannels(), nSampleRate, fQuality);
                 int r = encoder.init(m_info, getChannels(), nSampleRate, nMaxBitrate, nNominalBitrate, nMinBitrate);
                 if (r != 0)
                     throw new IllegalStateException("init: unexpected return value: " + r);
@@ -296,7 +296,7 @@ Debug.printf("non VBR: ch: %d, rate: %d, q: %3.1f", getChannels(), nSampleRate, 
             Random random;
             property = outputFormat.getProperty("vorbis.test");
             if (property instanceof Boolean test && test) {
-Debug.println("use test random seed");
+                Debug.println("use test random seed");
                 random = new Random(314159265358979L);
             } else {
                 random = new Random(System.currentTimeMillis());
@@ -477,10 +477,10 @@ Debug.println("use test random seed");
      * AudioSystem.getAudioInputStream(AudioFormat, AudioInputStream)
      * to decode an ogg/vorbis stream. This class contains the logic
      * of maintaining buffers and calling the decoder.
-     *
+     * <p>
      * TODO Class should be private, but is public due to a bug (?) in the aspectj compiler.
      */
-     /* private */ public static class DecodedVorbisAudioInputStream extends TAsynchronousFilteredAudioInputStream {
+    /* private */ public static class DecodedVorbisAudioInputStream extends TAsynchronousFilteredAudioInputStream {
 
         private static final int INPUT_BUFFER_SIZE = 4096;
         private static final int BUFFER_MULTIPLE = 4;
@@ -517,11 +517,15 @@ Debug.println("use test random seed");
          */
         public DecodedVorbisAudioInputStream(AudioFormat outputFormat, AudioInputStream bitStream) {
             super(outputFormat, AudioSystem.NOT_SPECIFIED);
-            if (TDebug.TraceAudioConverter) { logger.log(Level.TRACE, "DecodedVorbisAudioInputStream.<init>(): begin"); }
+            if (TDebug.TraceAudioConverter) {
+                logger.log(Level.TRACE, "DecodedVorbisAudioInputStream.<init>(): begin");
+            }
             m_oggBitStream = bitStream;
             m_bHeadersExpected = true;
             init_jorbis();
-            if (TDebug.TraceAudioConverter) { logger.log(Level.TRACE, "DecodedVorbisAudioInputStream.<init>(): end"); }
+            if (TDebug.TraceAudioConverter) {
+                logger.log(Level.TRACE, "DecodedVorbisAudioInputStream.<init>(): end");
+            }
         }
 
         /**
@@ -548,16 +552,24 @@ Debug.println("use test random seed");
          * Callback from circular buffer.
          */
         public void execute() {
-if (TDebug.TraceAudioConverter) { logger.log(Level.TRACE, ">DecodedVorbisAudioInputStream.execute(): begin"); }
+            if (TDebug.TraceAudioConverter) {
+                logger.log(Level.TRACE, ">DecodedVorbisAudioInputStream.execute(): begin");
+            }
             if (m_bHeadersExpected) {
-if (TDebug.TraceAudioConverter) { logger.log(Level.TRACE, "reading headers..."); }
+                if (TDebug.TraceAudioConverter) {
+                    logger.log(Level.TRACE, "reading headers...");
+                }
                 // Headers (+ Comments).
                 try {
                     readHeaders();
                 } catch (IOException e) {
-if (TDebug.TraceAllExceptions) { logger.log(Level.TRACE, e); }
+                    if (TDebug.TraceAllExceptions) {
+                        logger.log(Level.TRACE, e);
+                    }
                     closePhysicalStream();
-if (TDebug.TraceAudioConverter) { logger.log(Level.TRACE, "<DecodedVorbisAudioInputStream.execute(): end"); }
+                    if (TDebug.TraceAudioConverter) {
+                        logger.log(Level.TRACE, "<DecodedVorbisAudioInputStream.execute(): end");
+                    }
                     return;
                 }
                 m_bHeadersExpected = false;
@@ -573,7 +585,8 @@ if (TDebug.TraceAudioConverter) { logger.log(Level.TRACE, "<DecodedVorbisAudioIn
                         logger.log(Level.TRACE, e);
                     }
                     closePhysicalStream();
-                    if (TDebug.TraceAudioConverter) logger.log(Level.TRACE, "<DecodedVorbisAudioInputStream.execute(): end");
+                    if (TDebug.TraceAudioConverter)
+                        logger.log(Level.TRACE, "<DecodedVorbisAudioInputStream.execute(): end");
                     return;
                 }
                 decodeDataPacket();
@@ -593,7 +606,8 @@ if (TDebug.TraceAudioConverter) { logger.log(Level.TRACE, "<DecodedVorbisAudioIn
         }
 
         private void closePhysicalStream() {
-            if (TDebug.TraceAudioConverter) logger.log(Level.TRACE, "DecodedVorbisAudioInputStream.closePhysicalStream(): begin");
+            if (TDebug.TraceAudioConverter)
+                logger.log(Level.TRACE, "DecodedVorbisAudioInputStream.closePhysicalStream(): begin");
             m_oggSyncState.clear();
             try {
                 if (m_oggBitStream != null) {
@@ -605,7 +619,8 @@ if (TDebug.TraceAudioConverter) { logger.log(Level.TRACE, "<DecodedVorbisAudioIn
                     logger.log(Level.TRACE, e);
                 }
             }
-            if (TDebug.TraceAudioConverter) logger.log(Level.TRACE, "DecodedVorbisAudioInputStream.closePhysicalStream(): end");
+            if (TDebug.TraceAudioConverter)
+                logger.log(Level.TRACE, "DecodedVorbisAudioInputStream.closePhysicalStream(): end");
         }
 
         /**
@@ -857,12 +872,12 @@ if (TDebug.TraceAudioConverter) { logger.log(Level.TRACE, "<DecodedVorbisAudioIn
             return m_oggBitStream.read(buffer, nStart, nLength);
         }
 
-        /** */
+        /**  */
         private int getSampleSizeInBytes() {
             return getFormat().getFrameSize() / getFormat().getChannels();
         }
 
-        /** */
+        /**  */
         private int getFrameSize() {
             return getFormat().getFrameSize();
         }

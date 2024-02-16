@@ -33,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class SyncModesTestCase
         extends BaseSequencerTestCase {
+
     private static final Sequencer.SyncMode[] MASTER_SYNC_MODES =
             {
                     Sequencer.SyncMode.INTERNAL_CLOCK,

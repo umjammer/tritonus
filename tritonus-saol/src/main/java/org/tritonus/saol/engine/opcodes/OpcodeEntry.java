@@ -32,6 +32,7 @@ package org.tritonus.saol.engine.opcodes;
  * This class is used for entries in the opcode table.
  */
 public class OpcodeEntry {
+
     private String m_strOpcodeName;
     private OpcodeClass m_opcodeClass;
     private String m_strMethodName;

@@ -205,6 +205,7 @@ public class AlsaSourceDataLine
     // IDEA: move inner classes to TBaseDataLine
     public class AlsaSourceDataLineGainControl
             extends FloatControl {
+
         /*
          * These variables should be static. However, Java 1.1
          * doesn't allow this. So they aren't.

@@ -43,6 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @Disabled
 public class BaseAudioFileReaderTestCase
         extends BaseProviderTestCase {
+
     private static final boolean DEBUG = true;
     private static final String RESOURCE_BASENAME = "audiofilereader";
     private static final String PROVIDER_PREFIX = "(Provider:) ";

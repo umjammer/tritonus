@@ -28,6 +28,7 @@ import javax.sound.midi.MidiSystem;
  * Base class for tests of javax.sound.midi.MidiDevice.
  */
 public abstract class BaseMidiDeviceTestCase {
+
     /**
      * Iterate over all available MidiDevices.
      */
@@ -51,6 +52,7 @@ public abstract class BaseMidiDeviceTestCase {
 
 
     protected interface Check {
+
         void check(MidiDevice device)
                 throws Exception;
     }

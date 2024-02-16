@@ -144,6 +144,7 @@ public class GSMDecoderFormatConversionProvider extends
      */
     private static class DecodedGSMAudioInputStream extends
             TAsynchronousFilteredAudioInputStream {
+
         /*
          * Seems like DataInputStream (opposite to InputStream) is only needed
          * for readFully(). readFully-behaviour should perhaps be implemented in

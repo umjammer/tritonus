@@ -33,6 +33,7 @@ import org.tritonus.saol.sablecc.node.AMiditagMiditag;
 
 public class InstrumentSemanticsCheck
         extends IOTCommonSemanticsCheck {
+
     private static final boolean DEBUG = true;
     private static final int[] LEGAL_VARIABLE_TYPES = new int[]
             {

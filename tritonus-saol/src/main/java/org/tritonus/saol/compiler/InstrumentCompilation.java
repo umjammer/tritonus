@@ -81,7 +81,7 @@ public class InstrumentCompilation extends DepthFirstAdapter {
     private String m_strClassName;
     private ClassGen m_classGen;
     private ConstantPoolGen m_constantPoolGen;
-//    private MethodGen m_methodGen;
+    //    private MethodGen m_methodGen;
 //    private InstructionList m_instructionList;
     private InstructionFactory m_instructionFactory;
 //    private BranchInstruction m_pendingBranchInstruction;

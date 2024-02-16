@@ -39,6 +39,7 @@ import org.tritonus.share.sampled.convert.TSynchronousFilteredAudioInputStream;
  */
 public abstract class FloatAudioInputStream
         extends TSynchronousFilteredAudioInputStream {
+
     private AudioFormat intermediateFloatBufferFormat;
     private FloatSampleBuffer m_floatBuffer = null;
 

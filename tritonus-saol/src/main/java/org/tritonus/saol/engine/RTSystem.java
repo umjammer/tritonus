@@ -32,6 +32,7 @@ import org.tritonus.share.TDebug;
  * This file is part of Tritonus: http://www.tritonus.org/
  */
 public class RTSystem extends Thread {
+
     private static final boolean DEBUG = false;
 
     private SystemOutput m_output;

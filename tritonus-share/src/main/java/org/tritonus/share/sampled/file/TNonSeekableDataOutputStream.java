@@ -43,6 +43,7 @@ import java.io.OutputStream;
 public class TNonSeekableDataOutputStream
         extends DataOutputStream
         implements TDataOutputStream {
+
     public TNonSeekableDataOutputStream(OutputStream outputStream) {
         super(outputStream);
     }

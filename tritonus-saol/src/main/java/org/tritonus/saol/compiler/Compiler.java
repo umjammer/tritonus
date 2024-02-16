@@ -40,6 +40,7 @@ import org.tritonus.share.TDebug;
  * This file is part of Tritonus: http://www.tritonus.org/
  */
 public class Compiler {
+
     private static final boolean DEBUG = false;
 
     private static final int ACTION_DUMP_TREE = 0;

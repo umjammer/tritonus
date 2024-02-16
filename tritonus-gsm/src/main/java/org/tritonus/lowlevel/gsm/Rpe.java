@@ -21,6 +21,7 @@
 package org.tritonus.lowlevel.gsm;
 
 public class Rpe {
+
     private short exp_in; /* IN */
     private short mant_in; /* IN */
     private short exp_out; /* OUT */

@@ -29,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 public class TCircularBufferTestCase {
+
     @Test
     public void testBufferSize() {
         int nSize = 45678;
@@ -145,6 +146,7 @@ public class TCircularBufferTestCase {
 
     private static class TestTrigger
             implements TCircularBuffer.Trigger {
+
         private boolean m_bCalled = false;
 
 

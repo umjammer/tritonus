@@ -47,6 +47,7 @@ import javax.sound.midi.MidiChannel;
  */
 public abstract class TMidiChannel
         implements MidiChannel {
+
     private int m_nChannel;
 
     protected TMidiChannel(int nChannel) {

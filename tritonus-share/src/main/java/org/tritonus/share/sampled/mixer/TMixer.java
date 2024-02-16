@@ -50,6 +50,7 @@ import org.tritonus.share.sampled.AudioFormats;
 public abstract class TMixer
         extends TLine
         implements Mixer {
+
     private static Line.Info[] EMPTY_LINE_INFO_ARRAY = new Line.Info[0];
     private static Line[] EMPTY_LINE_ARRAY = new Line[0];
 

@@ -51,6 +51,7 @@ import java.io.PrintWriter;
  * @author Matthias Pfisterer
  */
 public class GsmFrameParameters {
+
     public int[] m_LARc = new int[8];
     public int[] m_Nc = new int[4];
     public int[] m_Mc = new int[4];

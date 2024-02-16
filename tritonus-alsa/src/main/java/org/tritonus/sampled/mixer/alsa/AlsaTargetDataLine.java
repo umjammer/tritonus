@@ -41,6 +41,7 @@ import org.tritonus.share.sampled.TConversionTool;
 public class AlsaTargetDataLine
         extends AlsaBaseDataLine
         implements TargetDataLine {
+
     private byte[] m_abSwapBuffer;
 
 
@@ -174,6 +175,7 @@ public class AlsaTargetDataLine
 
     public class AlsaTargetDataLineGainControl
             extends FloatControl {
+
         /*
          * These variables should be static. However, Java 1.1
          * doesn't allow this. So they aren't.

@@ -30,6 +30,7 @@ package org.tritonus.lowlevel.dsp;
  * Window for FIR filter design using the windowing method.
  */
 public interface FIRWindow {
+
     /**
      * Get an array containing the window coefficients.
      *

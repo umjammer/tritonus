@@ -33,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * Base class for testsof javax.sound.midi.Sequencer.
  */
 public class JavaSequencerClockTestCase {
+
     private static final boolean IGNORE_SUN_SEQUENCER = true;
 
 
@@ -87,6 +88,7 @@ public class JavaSequencerClockTestCase {
 
     private static class TestClock
             implements JavaSequencer.Clock {
+
         public long getMicroseconds() {
             return -1;
         }

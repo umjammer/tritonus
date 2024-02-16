@@ -33,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 public class DataLineInfoTestCase {
+
     @Test
     public void testConstructors() {
         DataLine.Info info;

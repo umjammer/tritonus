@@ -28,6 +28,7 @@ package org.tritonus.lowlevel.dsp;
  * Description of a direct form Finite Impulse Response (FIR) filter.
  */
 public class FIRDirectFormFilterDescription implements FilterDescription {
+
     /**
      * The filter coefficients.
      */

@@ -42,7 +42,7 @@ import org.tritonus.share.sampled.convert.TFormatConversionProvider;
  * > Ich hab mal kurz in den SmartConverter reingeguckt, warum machst Du das mit den
  * > Threads ? In Rekursion wird doch nicht ein neuer Thread benutzt ? Und sonst
  * > koennte man das doch mit synchronized bzw. einem echten lock machen ?
- *
+ * <p>
  * Bei der Rekursion bezu"glich der selben Konvertersuche befindet man sich
  * im gleichen Thread; diese Eigenschaft nutze ich ja gerade aus. Es kann
  * aber das Anwendungsprogramm von mehreren Threads aus gleichzeitig einen
@@ -122,8 +122,8 @@ public class SmartFormatConversionProvider extends TFormatConversionProvider {
      * Search for converter chain.
      *
      * @return an array of intermediate formats (possibly of length 0 if it's possible
-     *  to do the conversion in one step) or null if the conversion is not
-     *  possible.
+     * to do the conversion in one step) or null if the conversion is not
+     * possible.
      */
     private AudioFormat[] getIntermediateFormats(AudioFormat sourceFormat, AudioFormat targetFormat) {
         AudioFormat.Encoding sourceEncoding = sourceFormat.getEncoding();

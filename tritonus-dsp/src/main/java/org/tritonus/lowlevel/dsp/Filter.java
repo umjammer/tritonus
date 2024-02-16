@@ -41,6 +41,7 @@ package org.tritonus.lowlevel.dsp;
  * </p>
  */
 public interface Filter {
+
     /**
      * Process one sample through the filter.
      *

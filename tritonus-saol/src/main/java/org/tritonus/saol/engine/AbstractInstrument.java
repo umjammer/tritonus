@@ -29,6 +29,7 @@ package org.tritonus.saol.engine;
 
 public abstract class AbstractInstrument
         implements Output {
+
     private Output m_outputPort;
     private int m_nStartTime;
     private int m_nEndTime;

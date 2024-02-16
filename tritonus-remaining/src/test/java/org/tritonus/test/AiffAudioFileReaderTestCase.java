@@ -23,6 +23,7 @@ package org.tritonus.test;
 
 public class AiffAudioFileReaderTestCase
         extends BaseAudioFileReaderTestCase {
+
     public AiffAudioFileReaderTestCase() {
         setResourcePrefix("aiff");
     }

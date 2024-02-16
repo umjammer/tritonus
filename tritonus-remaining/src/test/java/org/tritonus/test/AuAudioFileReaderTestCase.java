@@ -23,6 +23,7 @@ package org.tritonus.test;
 
 public class AuAudioFileReaderTestCase
         extends BaseAudioFileReaderTestCase {
+
     public AuAudioFileReaderTestCase() {
         setResourcePrefix("au");
     }

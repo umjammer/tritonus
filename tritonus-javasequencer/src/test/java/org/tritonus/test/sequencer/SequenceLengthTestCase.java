@@ -33,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class SequenceLengthTestCase
         extends BaseSequencerTestCase {
+
     private static final String MIDI_FILENAME = "trippygaia1.mid";
 
 

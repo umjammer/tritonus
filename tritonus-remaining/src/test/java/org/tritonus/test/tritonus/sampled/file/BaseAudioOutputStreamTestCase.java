@@ -53,6 +53,7 @@ either big or little, depending on file format
 
  */
 public abstract class BaseAudioOutputStreamTestCase {
+
     private static final boolean DEBUG = true;
 
     /**

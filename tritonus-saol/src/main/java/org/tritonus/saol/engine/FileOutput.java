@@ -37,6 +37,7 @@ import org.tritonus.share.sampled.AudioSystemShadow;
 
 public class FileOutput
         extends AudioOutputStreamOutput {
+
     public FileOutput(File outputFile,
                       AudioFileFormat.Type targetType,
                       AudioFormat audioFormat)

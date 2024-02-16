@@ -31,6 +31,7 @@ package org.tritonus.saol.engine.opcodes;
  * The Math Opcodes (Section 5.9.4).
  */
 public class OpcodeClass {
+
     /**
      * Opcode class type: no instance needed.
      * This means the opcode is implemented as a static method

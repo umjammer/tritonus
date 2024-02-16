@@ -31,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 public class EncodingTestCase {
+
     @Test
     public void testEquals() {
         assertNotNull(Encoding.ALAW, "equals(null)");

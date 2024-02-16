@@ -62,6 +62,7 @@ import org.tritonus.share.sampled.convert.TEncodingFormatConversionProvider;
  */
 public class JorbisFormatConversionProvider
         extends TEncodingFormatConversionProvider {
+
     // only used as abbreviation
     private static final AudioFormat.Encoding VORBIS = new AudioFormat.Encoding("VORBIS");
     private static final AudioFormat.Encoding PCM_SIGNED = new AudioFormat.Encoding("PCM_SIGNED");
@@ -191,6 +192,7 @@ public class JorbisFormatConversionProvider
     aspectj compiler. */
     /*private*/public static class DecodedJorbisAudioInputStream
             extends TAsynchronousFilteredAudioInputStream {
+
         private static final int BUFFER_MULTIPLE = 4;
         private static final int BUFFER_SIZE = BUFFER_MULTIPLE * 256 * 2;
         private static final int CONVSIZE = BUFFER_SIZE * 2;

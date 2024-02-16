@@ -42,6 +42,7 @@ import org.tritonus.share.TDebug;
 
 public class CddaDriveListConnection
         extends URLConnection {
+
     private CddaMidLevel m_cddaMidLevel;
 
 

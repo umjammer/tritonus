@@ -37,6 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * Tests for class javax.sound.midi.MidiMessage.
  */
 public class MidiMessageTestCase {
+
     /**
      * Checks the constructor.
      * The test checks for four things:
@@ -144,6 +145,7 @@ public class MidiMessageTestCase {
      */
     private static class TestMidiMessage
             extends MidiMessage {
+
         private boolean m_bSetMessageUsed;
 
 

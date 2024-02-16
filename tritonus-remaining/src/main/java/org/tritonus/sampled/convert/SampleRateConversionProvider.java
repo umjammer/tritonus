@@ -1133,6 +1133,7 @@ public class SampleRateConversionProvider extends
      * case where the frame rate is always in sync with the sample rate. (MP)
      */
     public static class SRCAudioFormat extends AudioFormat {
+
         private float sampleRate;
 
         public SRCAudioFormat(AudioFormat targetFormat) {

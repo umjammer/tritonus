@@ -35,6 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class TempoTestCase
         extends BaseSequencerTestCase {
+
     private static final float DELTA = 1.0E-9F;
     private static final float MPQ0 = 500000;
     private static final float BPM0 = 120;
@@ -135,6 +136,7 @@ public class TempoTestCase
 
     private static class TempoDetector
             implements MetaEventListener {
+
         private long[] m_alArrivalTimes;
 
 

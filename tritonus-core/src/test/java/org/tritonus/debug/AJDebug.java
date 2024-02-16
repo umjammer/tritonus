@@ -33,22 +33,26 @@ import org.tritonus.share.TDebug;
 public abstract class AJDebug extends Utils {
 
     @Pointcut("handler(Throwable+)")
-    public void allExceptions() {}
+    public void allExceptions() {
+    }
 
     // TAudioConfig, TMidiConfig, TInit
 
     @Pointcut("execution(* org.tritonus.core.TMidiConfig.*(..))")
-    public void TMidiConfigCalls() {}
+    public void TMidiConfigCalls() {
+    }
 
     @Pointcut("execution(* org.tritonus.core.TInit.*(..))")
-    public void TInitCalls() {}
+    public void TInitCalls() {
+    }
 
     // share
 
     // midi
 
     @Pointcut("execution(* javax.sound.midi.MidiSystem .*(..))")
-    public void MidiSystemCalls() {}
+    public void MidiSystemCalls() {
+    }
 
     @Pointcut("execution(org.tritonus.share.midi.TSequencer+.new(..)) ||" +
             "execution(* org.tritonus.share.midi.TSequencer+.*(..)) ||" +
@@ -60,15 +64,18 @@ public abstract class AJDebug extends Utils {
             "execution(* org.tritonus.midi.device.alsa.AlsaSequencer.LoaderThread.*(..)) ||" +
             "execution(org.tritonus.midi.device.alsa.AlsaSequencer.MasterSynchronizer.new(..)) ||" +
             "execution(* org.tritonus.midi.device.alsa.AlsaSequencer.MasterSynchronizer.*(..))")
-    public void Sequencer() {}
+    public void Sequencer() {
+    }
 
     // audio
 
     @Pointcut("execution(* javax.sound.sampled.AudioSystem.*(..))")
-    public void AudioSystemCalls() {}
+    public void AudioSystemCalls() {
+    }
 
     @Pointcut("call(* javax.sound.sampled.SourceDataLine+.*(..))")
-    public void sourceDataLine() {}
+    public void sourceDataLine() {
+    }
 
     // OLD
 
@@ -156,7 +163,7 @@ public abstract class AJDebug extends Utils {
         if (TDebug.TraceAudioConverter) outLeavingJoinPoint(thisJoinPoint);
     }
 
-    @AfterReturning(pointcut="call(* org.tritonus.share.sampled.convert.TAsynchronousFilteredAudioInputStream.read(byte[],int,int))", returning = "nBytes")
+    @AfterReturning(pointcut = "call(* org.tritonus.share.sampled.convert.TAsynchronousFilteredAudioInputStream.read(byte[],int,int))", returning = "nBytes")
     public void afterReturningTAsynchronousFilteredAudioInputStream_read_XBII(int nBytes) {
         if (TDebug.TraceAudioConverter) TDebug.out("returning bytes: " + nBytes);
     }

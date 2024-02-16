@@ -35,6 +35,7 @@ import org.tritonus.share.TDebug;
  * Reading audio CDs using libcdparanoia.
  */
 public class Cdparanoia {
+
     static {
         if (TDebug.TraceCdda) {
             TDebug.out("Cdparanoia.<clinit>(): loading native library tritonuscdparanoia");

@@ -32,6 +32,7 @@ package org.tritonus.midi.device.java;
  */
 public class SystemCurrentTimeMillisClock
         implements JavaSequencer.Clock {
+
     /**
      * Retrieve system time in microseconds.
      * This method retrieves the time by calling

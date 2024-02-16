@@ -33,6 +33,7 @@ import org.tritonus.share.TDebug;
  * TODO:
  */
 public class AlsaPcmSWParams {
+
     /**
      * Holds the pointer to snd_pcm_sw_params_t
      * for the native code.

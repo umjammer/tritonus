@@ -37,6 +37,7 @@ package org.tritonus.saol.engine;
  * @author Matthias Pfisterer
  */
 public interface Output {
+
     /**
      * Gives the width of this output.
      *

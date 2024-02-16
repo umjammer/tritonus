@@ -41,6 +41,7 @@ import org.tritonus.share.midi.MidiUtils;
 // idea: put things that can implemented with "pure MIDI" into a base class TMidiChannel
 public class AlsaMidiChannel
         implements MidiChannel {
+
     private Receiver m_receiver;
     private int m_nChannel;
 

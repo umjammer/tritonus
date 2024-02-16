@@ -40,6 +40,7 @@ import org.tritonus.share.TDebug;
 
 public abstract class TMixerProvider
         extends MixerProvider {
+
     private static final Mixer.Info[] EMPTY_MIXER_INFO_ARRAY = new Mixer.Info[0];
 
     private static Map<Class<?>, MixerProviderStruct> sm_mixerProviderStructs = new HashMap<>();
@@ -209,6 +210,7 @@ public abstract class TMixerProvider
 
 
     private static class MixerProviderStruct {
+
         public List<Mixer> m_mixers;
         public Mixer m_defaultMixer;
 

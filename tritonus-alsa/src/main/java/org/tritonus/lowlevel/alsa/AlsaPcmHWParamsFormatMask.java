@@ -33,6 +33,7 @@ import org.tritonus.share.TDebug;
  * TODO:
  */
 public class AlsaPcmHWParamsFormatMask {
+
     /**
      * Holds the pointer to snd_pcm_format_mask_t
      * for the native code.

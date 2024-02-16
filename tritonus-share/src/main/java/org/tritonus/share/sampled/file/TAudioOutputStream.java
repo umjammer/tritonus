@@ -49,6 +49,7 @@ import static org.tritonus.share.sampled.TConversionTool.swapOrder32;
 
 public abstract class TAudioOutputStream
         implements AudioOutputStream {
+
     private AudioFormat m_audioFormat;
     private long m_lLength; // in bytes
     private long m_lCalculatedLength;

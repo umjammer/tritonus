@@ -29,6 +29,7 @@ import org.junit.jupiter.api.Test;
 
 
 public class AudioInputStreamTestCase {
+
     @Test
     public void testConstructorNullPointers() {
         @SuppressWarnings("unused") AudioInputStream ais = null;

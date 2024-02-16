@@ -39,7 +39,8 @@ abstract class AJDebugVorbis extends Utils {
             "execution(* org.tritonus.sampled.convert.jorbis.JorbisFormatConversionProvider.*(..)) ||" +
             "execution(org.tritonus.sampled.convert.jorbis.JorbisFormatConversionProvider.DecodedJorbisAudioInputStream.new(..)) ||" +
             "execution(* org.tritonus.sampled.convert.jorbis.JorbisFormatConversionProvider.DecodedJorbisAudioInputStream.*(..))")
-    public void AudioConverterCalls() {}
+    public void AudioConverterCalls() {
+    }
 
 //    @Pointcut("call(* SourceDataLine+.*(..))")
 //    public void sourceDataLine() {}

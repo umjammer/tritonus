@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * PacketTest.
- *
+ * <p>
  * Tests for classes org.tritonus.lowlevel.pogg.Packet.
  */
 public class PacketTest {

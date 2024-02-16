@@ -33,6 +33,7 @@ import org.tritonus.share.TDebug;
 
 public class EsdRecordingStream
         extends Esd {
+
     /**
      * Holds socket fd to EsounD.
      * This field is long because on 64 bit architectures, the native

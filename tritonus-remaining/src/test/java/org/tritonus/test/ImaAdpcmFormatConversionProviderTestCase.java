@@ -23,6 +23,7 @@ package org.tritonus.test;
 
 public class ImaAdpcmFormatConversionProviderTestCase
         extends BaseFormatConversionProviderTestCase {
+
     public ImaAdpcmFormatConversionProviderTestCase() {
         setResourcePrefix("imaadpcm");
     }

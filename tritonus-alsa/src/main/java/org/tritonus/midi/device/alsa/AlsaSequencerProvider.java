@@ -38,6 +38,7 @@ import org.tritonus.share.midi.TMidiDevice;
 
 public class AlsaSequencerProvider
         extends MidiDeviceProvider {
+
     private static MidiDevice.Info sm_info;
 
 

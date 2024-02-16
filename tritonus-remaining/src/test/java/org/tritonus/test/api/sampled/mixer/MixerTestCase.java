@@ -33,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class MixerTestCase
         extends BaseMixerTestCase {
+
     @Test
     public void testGetMixerInfo()
             throws Exception {

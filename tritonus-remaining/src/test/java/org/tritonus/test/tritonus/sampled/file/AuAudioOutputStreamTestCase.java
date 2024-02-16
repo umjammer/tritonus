@@ -29,6 +29,7 @@ import org.tritonus.share.sampled.file.TDataOutputStream;
 
 public class AuAudioOutputStreamTestCase
         extends BaseAudioOutputStreamTestCase {
+
     private static final int EXPECTED_ADDITIONAL_HEADER_LENGTH = 20;
 
 

@@ -30,6 +30,7 @@ import org.tritonus.saol.sablecc.node.AInstrdeclInstrdecl;
 
 
 public class InstrumentEntry {
+
     private String m_strInstrumentName;
     private AInstrdeclInstrdecl m_startNode;
     VariableTable m_localVariableTable;

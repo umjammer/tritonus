@@ -47,7 +47,7 @@ class Test3 {
         TDebug.TraceAudioFileReader = false;
     }
 
-    static final double volume = Double.parseDouble(System.getProperty("vavi.test.volume",  "0.2"));
+    static final double volume = Double.parseDouble(System.getProperty("vavi.test.volume", "0.2"));
 
     @Property
     String ogg = "src/test/resources/test.ogg";
@@ -90,7 +90,7 @@ class Test3 {
                 4,
                 originalAudioFormat.getSampleRate(),
                 false);
-Debug.println(targetAudioFormat);
+        Debug.println(targetAudioFormat);
         AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(targetAudioFormat, originalAudioInputStream);
         AudioFormat audioFormat = audioInputStream.getFormat();
         DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat, AudioSystem.NOT_SPECIFIED);

@@ -38,6 +38,7 @@ import org.tritonus.saol.sablecc.node.AParamlistTailParamlistTail;
 
 public class OpcodeSemanticsCheck
         extends IOTCommonSemanticsCheck {
+
     private static final boolean DEBUG = true;
     private static final int[] LEGAL_VARIABLE_TYPES = new int[]
             {

@@ -135,8 +135,8 @@ public class Add {
 
         return (short) (((a & 0xffff0000) != 0)
                 ? (((a & 0xff000000) != 0)
-                    ? -1 + bitoff[0xFF & (a >> 24)] : 7 + bitoff[0xFF & (a >> 16)])
-                    : (((a & 0xff00) != 0) ? 15 + bitoff[0xFF & (a >> 8)]
+                ? -1 + bitoff[0xFF & (a >> 24)] : 7 + bitoff[0xFF & (a >> 16)])
+                : (((a & 0xff00) != 0) ? 15 + bitoff[0xFF & (a >> 8)]
                 : 23 + bitoff[0xFF & a]));
     }
 

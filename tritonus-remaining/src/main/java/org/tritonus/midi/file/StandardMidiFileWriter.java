@@ -50,6 +50,7 @@ import org.tritonus.share.TDebug;
  */
 public class StandardMidiFileWriter
         extends MidiFileWriter {
+
     /**
      * TODO:
      */

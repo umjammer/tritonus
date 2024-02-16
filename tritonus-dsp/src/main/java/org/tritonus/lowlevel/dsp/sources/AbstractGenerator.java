@@ -14,6 +14,7 @@ import org.tritonus.share.sampled.FloatSampleBuffer;
  * @author Matthias Pfisterer
  */
 public abstract class AbstractGenerator {
+
     private final int channelCount;
     private final float sampleRate;
     private float frequency;

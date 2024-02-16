@@ -25,11 +25,12 @@ import org.tritonus.saol.sablecc.node.*;
 
 /**
  * IOGTCommonSemanticsCheck.java
- *
+ * <p>
  * This file is part of Tritonus: http://www.tritonus.org/
  */
 public abstract class IOGTCommonSemanticsCheck
         extends DepthFirstAdapter {
+
     private static final boolean DEBUG = true;
 
     private NodeSemanticsTable m_nodeSemanticsTable;

@@ -33,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * Tests for class javax.sound.sampled.Control.
  */
 public class ControlTestCase {
+
     /**
      * Checks getType().
      * The test checks if the object returned by
@@ -83,6 +84,7 @@ public class ControlTestCase {
      */
     private static class TestControl
             extends Control {
+
         public TestControl(Control.Type type) {
             super(type);
         }

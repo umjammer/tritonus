@@ -32,6 +32,7 @@ import org.tritonus.share.TDebug;
 
 
 public class Esd {
+
     public static final int ESD_STREAM = 0x0000;
     public static final int ESD_PLAY = 0x1000;
     public static final int ESD_BITS8 = 0x0000;

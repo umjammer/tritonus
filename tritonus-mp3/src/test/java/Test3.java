@@ -55,7 +55,7 @@ class Test3 {
         TDebug.TraceAudioFileReader = false;
     }
 
-    static final double volume = Double.parseDouble(System.getProperty("vavi.test.volume",  "0.2"));
+    static final double volume = Double.parseDouble(System.getProperty("vavi.test.volume", "0.2"));
 
     @Property
     String wav = "src/test/resources/test.wav";
@@ -101,7 +101,7 @@ class Test3 {
                 4,
                 originalAudioFormat.getSampleRate(),
                 false);
-Debug.println(targetAudioFormat);
+        Debug.println(targetAudioFormat);
         AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(targetAudioFormat, originalAudioInputStream);
         AudioFormat audioFormat = audioInputStream.getFormat();
         DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat, AudioSystem.NOT_SPECIFIED);
@@ -130,7 +130,7 @@ Debug.println(targetAudioFormat);
     void test1() throws Exception {
         AudioInputStream ais = AudioSystem.getAudioInputStream(new BufferedInputStream(Files.newInputStream(Path.of(wav))));
         AudioFormat inFormat = ais.getFormat();
-Debug.println(inFormat);
+        Debug.println(inFormat);
         AudioFormat outFormat = new AudioFormat(
                 MpegFormatConversionProvider.MPEG1L3,
                 -1f,
@@ -139,7 +139,7 @@ Debug.println(inFormat);
                 -1,
                 -1f,
                 false);
-Debug.println(outFormat);
+        Debug.println(outFormat);
         AudioInputStream aout = AudioSystem.getAudioInputStream(outFormat, ais);
 
         Path out = Paths.get("tmp", "out.mp3");
@@ -163,7 +163,7 @@ Debug.println(outFormat);
     void test4() throws Exception {
         AudioInputStream ais = AudioSystem.getAudioInputStream(new BufferedInputStream(Files.newInputStream(Path.of(wav))));
         AudioFormat inFormat = ais.getFormat();
-Debug.println(inFormat);
+        Debug.println(inFormat);
         AudioFormat outFormat = new AudioFormat(
                 MpegFormatConversionProvider.MPEG1L3,
                 inFormat.getSampleRate(),
@@ -172,7 +172,7 @@ Debug.println(inFormat);
                 -1,
                 -1f,
                 false);
-Debug.println(outFormat);
+        Debug.println(outFormat);
         AudioInputStream aout = AudioSystem.getAudioInputStream(outFormat, ais);
 
         Path out2 = Paths.get("tmp", "out2.mp3");
@@ -186,7 +186,7 @@ Debug.println(outFormat);
     void test3() throws Exception {
         AudioInputStream ais = AudioSystem.getAudioInputStream(new BufferedInputStream(Files.newInputStream(Path.of(mp3raw))));
         AudioFormat inFormat = ais.getFormat();
-Debug.println(inFormat);
+        Debug.println(inFormat);
 
         Path out2 = Paths.get("tmp", "out2.mp3");
         AudioSystem.write(ais, MP3, new BufferedOutputStream(Files.newOutputStream(out2)));

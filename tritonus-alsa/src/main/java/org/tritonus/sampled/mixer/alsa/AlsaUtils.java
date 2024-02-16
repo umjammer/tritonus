@@ -36,6 +36,7 @@ import org.tritonus.share.sampled.AudioFormats;
 
 
 public class AlsaUtils {
+
     private static AudioFormat[] sm_aFormatTable = new AudioFormat[32];
 
     static {

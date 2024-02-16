@@ -39,6 +39,7 @@ import org.tritonus.share.TDebug;
 public class TEnumControl
         extends EnumControl
         implements TControllable {
+
     private TControlController m_controller;
 
 

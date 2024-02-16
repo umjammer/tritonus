@@ -43,6 +43,7 @@ import java.io.RandomAccessFile;
 public class TSeekableDataOutputStream
         extends RandomAccessFile
         implements TDataOutputStream {
+
     public TSeekableDataOutputStream(File file)
             throws IOException {
         super(file, "rw");

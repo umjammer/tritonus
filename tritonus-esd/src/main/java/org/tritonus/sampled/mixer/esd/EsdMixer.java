@@ -48,6 +48,7 @@ import org.tritonus.share.sampled.mixer.TSoftClip;
 
 public class EsdMixer
         extends TMixer {
+
     // default buffer size in bytes.
     private static final int DEFAULT_BUFFER_SIZE = 32768;
 
