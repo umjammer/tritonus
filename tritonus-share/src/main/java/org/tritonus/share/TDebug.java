@@ -121,7 +121,7 @@ public class TDebug {
         } else {
             newMsg = new StringBuilder(indent + strMessage);
         }
-        m_printStream.info(newMsg.toString());
+        m_printStream.fine(newMsg.toString());
         if (strMessage.length() > 0 && strMessage.charAt(0) == '>') {
             indent += "  ";
         }
