@@ -44,7 +44,8 @@ import org.tritonus.share.sampled.file.TAudioFileFormat;
 import org.tritonus.share.sampled.file.TAudioFileReader;
 
 import static java.lang.System.getLogger;
-import static org.tritonus.sampled.file.pvorbis.VorbisAudioFileWriter.VORBIS;
+import static org.tritonus.sampled.convert.pvorbis.VorbisFormatConversionProvider.VORBIS;
+import static org.tritonus.sampled.file.pvorbis.VorbisAudioFileWriter.OGG;
 
 
 /**
@@ -293,7 +294,7 @@ public class VorbisAudioFileReader extends TAudioFileReader {
         // nFrameSize = (int) (lFileSizeInBytes / ...;
 
         AudioFormat format = new AudioFormat(
-                new AudioFormat.Encoding("VORBIS"),
+                VORBIS,
                 fSampleRate,
                 AudioSystem.NOT_SPECIFIED,
                 nChannels,
@@ -303,7 +304,7 @@ public class VorbisAudioFileReader extends TAudioFileReader {
         if (TDebug.TraceAudioFileReader) {
             TDebug.out("AudioFormat: " + format);
         }
-        AudioFileFormat.Type type = VORBIS;
+        AudioFileFormat.Type type = OGG;
         AudioFileFormat audioFileFormat =
                 new TAudioFileFormat(
                         type,

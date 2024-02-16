@@ -29,7 +29,7 @@ import vavi.util.properties.annotation.PropsEntity;
 import vavix.util.Checksum;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.tritonus.sampled.file.pvorbis.VorbisAudioFileWriter.VORBIS;
+import static org.tritonus.sampled.file.pvorbis.VorbisAudioFileWriter.OGG;
 
 
 /**
@@ -128,7 +128,7 @@ Debug.println(outFormat);
         AudioInputStream aout = AudioSystem.getAudioInputStream(outFormat, ais);
 
         Path out2 = Paths.get("tmp", "out2.ogg");
-        AudioSystem.write(aout, VORBIS, new BufferedOutputStream(Files.newOutputStream(out2)));
+        AudioSystem.write(aout, OGG, new BufferedOutputStream(Files.newOutputStream(out2)));
 
         assertEquals(Checksum.getChecksum(out2), Checksum.getChecksum(Paths.get(ogg)));
     }
@@ -158,7 +158,7 @@ Debug.println(outFormat);
         AudioInputStream aout = AudioSystem.getAudioInputStream(outFormat, ais);
 
         Path out2 = Paths.get("tmp", "out2.ogg");
-        AudioSystem.write(aout, VORBIS, new BufferedOutputStream(Files.newOutputStream(out2)));
+        AudioSystem.write(aout, OGG, new BufferedOutputStream(Files.newOutputStream(out2)));
 
         assertEquals(Checksum.getChecksum(out2), Checksum.getChecksum(Paths.get(ogg)));
     }

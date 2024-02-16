@@ -46,10 +46,10 @@ public class VorbisAudioFileWriter extends THeaderlessAudioFileWriter {
 
     private static final Logger logger = System.getLogger("TraceAudioFileWriter");
 
-    public static final AudioFileFormat.Type VORBIS = new AudioFileFormat.Type("Vorbis", "ogg");
+    public static final AudioFileFormat.Type OGG = new AudioFileFormat.Type("Vorbis", "ogg");
 
     private static final AudioFileFormat.Type[] FILE_TYPES = {
-            VORBIS
+            OGG
     };
 
     private static final AudioFormat[] AUDIO_FORMATS = {
