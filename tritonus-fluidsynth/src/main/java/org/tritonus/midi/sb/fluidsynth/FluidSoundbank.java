@@ -62,6 +62,7 @@ public class FluidSoundbank implements Soundbank {
             return "Instrument " + getName() + " (bank " + getPatch().getBank() + " program " + getPatch().getProgram() + ")";
         }
 
+        @Override
         public Object getData() {
             return null;
         }
@@ -119,30 +120,37 @@ public class FluidSoundbank implements Soundbank {
             return null;
     }
 
+    @Override
     public Instrument getInstrument(Patch patch) {
         return null;
     }
 
+    @Override
     public String getVersion() {
         return "1.0";
     }
 
+    @Override
     public String getVendor() {
         return "Mansoft";
     }
 
+    @Override
     public SoundbankResource[] getResources() {
         return null;
     }
 
+    @Override
     public String getName() {
         return "Mansoft";
     }
 
+    @Override
     public Instrument[] getInstruments() {
         return instruments;
     }
 
+    @Override
     public String getDescription() {
         return "Mansoft";
     }

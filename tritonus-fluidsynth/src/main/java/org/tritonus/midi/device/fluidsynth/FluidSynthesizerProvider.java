@@ -57,6 +57,7 @@ public class FluidSynthesizerProvider extends MidiDeviceProvider {
     }
 
 
+    @Override
     public MidiDevice.Info[] getDeviceInfo() {
         if (TDebug.TraceMidiDeviceProvider) TDebug.out("FluidSynthesizerProvider.getDeviceInfo(): begin");
         MidiDevice.Info[] infos = new MidiDevice.Info[1];
@@ -66,6 +67,7 @@ public class FluidSynthesizerProvider extends MidiDeviceProvider {
     }
 
 
+    @Override
     public MidiDevice getDevice(MidiDevice.Info info) {
         if (TDebug.TraceMidiDeviceProvider) TDebug.out("FluidSynthesizerProvider.getDevice(): begin");
         MidiDevice device;

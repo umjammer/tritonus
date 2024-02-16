@@ -78,6 +78,7 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
         super(info);
     }
 
+    @Override
     protected void openImpl() throws MidiUnavailableException {
         newSynth();
         if (TDebug.TraceSynthesizer) TDebug.out("FluidSynthesizer: " + Long.toHexString(Pointer.nativeValue(synth.getValue())));
@@ -98,6 +99,7 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
         }
     }
 
+    @Override
     protected void closeImpl() {
         if (TDebug.TraceSynthesizer) TDebug.out("FluidSynthesizer.closeImpl(): " + Long.toHexString(Pointer.nativeValue(synth.getValue())));
         deleteSynth();
@@ -109,6 +111,7 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
         defaultbankSfontID = sfontID;
     }
 
+    @Override
     protected void finalize() {
         if (TDebug.TraceSynthesizer) TDebug.out("finalize: " + Long.toHexString(Pointer.nativeValue(synth.getValue())));
         close();
@@ -143,7 +146,10 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
         //fluid_synth_set_reverb_preset(synth, (int) reverbPreset);
     }
 
-    public native int getMaxPolyphony();
+    @Override
+    public int getMaxPolyphony() {
+        return SynthLibrary.INSTANCE.fluid_synth_get_polyphony(synth);
+    }
 
     protected void newSynth() throws MidiUnavailableException {
         if (synth == null) {
@@ -323,61 +329,75 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
         return bend.getValue();
     }
 
+    @Override
     public boolean isSoundbankSupported(Soundbank soundbank) {
         return (soundbank instanceof FluidSoundbank);
     }
 
+    @Override
     public boolean loadAllInstruments(Soundbank soundbank) {
         checkSoundbank(soundbank);
         return true;
     }
 
+    @Override
     public void unloadAllInstruments(Soundbank soundbank) {
         checkSoundbank(soundbank);
     }
 
+    @Override
     public void unloadInstruments(Soundbank soundbank, Patch[] patchList) {
         checkSoundbank(soundbank);
     }
 
+    @Override
     public boolean loadInstruments(Soundbank soundbank, Patch[] patchList) {
         checkSoundbank(soundbank);
         return true;
     }
 
+    @Override
     public void unloadInstrument(Instrument instrument) {
         checkInstrument(instrument);
     }
 
+    @Override
     public boolean loadInstrument(Instrument instrument) {
         checkInstrument(instrument);
         return true;
     }
 
+    @Override
     public Instrument[] getAvailableInstruments() {
         return null;
     }
 
+    @Override
     public MidiChannel[] getChannels() {
         return channels;
     }
 
+    @Override
     public Soundbank getDefaultSoundbank() {
         return defaultSoundbank;
     }
 
+    @Override
     public long getLatency() {
         return 0L;
     }
 
+    @Override
     public Instrument[] getLoadedInstruments() {
         return null;
     }
 
+    @Override
     public VoiceStatus[] getVoiceStatus() {
         return new VoiceStatus[0];
     }
 
+    @Override
     public boolean remapInstrument(Instrument from, Instrument to) {
         checkInstrument(from);
         checkInstrument(to);
@@ -413,14 +433,17 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
             super(nChannel);
         }
 
+        @Override
         public void noteOn(int nNoteNumber, int nVelocity) {
             FluidSynthesizer.this.noteOn(getChannel(), nNoteNumber, nVelocity);
         }
 
+        @Override
         public void noteOff(int nNoteNumber, int nVelocity) {
             FluidSynthesizer.this.noteOff(getChannel(), nNoteNumber, nVelocity);
         }
 
+        @Override
         public void noteOff(int nNoteNumber) {
             noteOff(nNoteNumber, 0);
         }
@@ -429,6 +452,7 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
          * Fluidsynth does not implement poly pressure (aftertouch). Therefore,
          * this method does nothing.
          */
+        @Override
         public void setPolyPressure(int nNoteNumber, int nPressure) {
         }
 
@@ -436,6 +460,7 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
          * Fluidsynth does not implement poly pressure (aftertouch). Therefore,
          * this method always return 0.
          */
+        @Override
         public int getPolyPressure(int nNoteNumber) {
             return 0;
         }
@@ -444,6 +469,7 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
          * Fluidsynth does not implement channel pressure. Therefore,
          * this method does nothing.
          */
+        @Override
         public void setChannelPressure(int nPressure) {
         }
 
@@ -451,45 +477,56 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
          * Fluidsynth does not implement channel pressure. Therefore,
          * this method always returns 0.
          */
+        @Override
         public int getChannelPressure() {
             return 0;
         }
 
+        @Override
         public void controlChange(int nController, int nValue) {
             FluidSynthesizer.this.controlChange(getChannel(), nController, nValue);
         }
 
+        @Override
         public int getController(int nController) {
             return FluidSynthesizer.this.getController(getChannel(), nController);
         }
 
+        @Override
         public void programChange(int nProgram) {
             FluidSynthesizer.this.programChange(getChannel(), nProgram);
         }
 
+        @Override
         public int getProgram() {
             return FluidSynthesizer.this.getProgram(getChannel());
         }
 
+        @Override
         public void setPitchBend(int nBend) {
             FluidSynthesizer.this.setPitchBend(getChannel(), nBend);
         }
 
+        @Override
         public int getPitchBend() {
             return FluidSynthesizer.this.getPitchBend(getChannel());
         }
 
         // TODO: emulate by manipulating volume
+        @Override
         public void setMute(boolean bMute) {
         }
 
+        @Override
         public boolean getMute() {
             return false;
         }
 
+        @Override
         public void setSolo(boolean bSolo) {
         }
 
+        @Override
         public boolean getSolo() {
             return false;
         }
