@@ -40,6 +40,7 @@ public class vorbis_info extends Structure {
 	}
 	public vorbis_info(Pointer peer) {
 		super(peer);
+		read();
 	}
 	public static class ByReference extends vorbis_info implements Structure.ByReference {
 		

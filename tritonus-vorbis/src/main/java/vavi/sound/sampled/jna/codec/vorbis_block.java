@@ -2,7 +2,7 @@ package vavi.sound.sampled.jna.codec;
 import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
-import com.sun.jna.ptr.PointerByReference;
+
 import java.util.Arrays;
 import java.util.List;
 import vavi.sound.sampled.jna.ogg.oggpack_buffer;
@@ -17,7 +17,7 @@ public class vorbis_block extends Structure {
 	 * this is a pointer into local storage<br>
 	 * C type : float**
 	 */
-	public PointerByReference pcm;
+	public Pointer pcm;
 	/** C type : oggpack_buffer */
 	public oggpack_buffer opb;
 	public NativeLong lW;
@@ -34,14 +34,14 @@ public class vorbis_block extends Structure {
 	 * For read-only access of configuration<br>
 	 * C type : vorbis_dsp_state*
 	 */
-	public vavi.sound.sampled.jna.codec.vorbis_dsp_state.ByReference vd;
+	public Pointer vd;
 	/** C type : void* */
 	public Pointer localstore;
 	public NativeLong localtop;
 	public NativeLong localalloc;
 	public NativeLong totaluse;
 	/** C type : alloc_chain* */
-	public vavi.sound.sampled.jna.codec.alloc_chain.ByReference reap;
+	public Pointer reap;
 	public NativeLong glue_bits;
 	public NativeLong time_bits;
 	public NativeLong floor_bits;

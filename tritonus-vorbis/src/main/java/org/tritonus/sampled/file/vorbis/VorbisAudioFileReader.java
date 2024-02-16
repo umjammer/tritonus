@@ -1,10 +1,4 @@
 /*
- * VorbisAudioFileReader.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2001 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,10 +13,6 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.sampled.file.vorbis;
 
@@ -45,6 +35,8 @@ import org.tritonus.share.sampled.file.TAudioFileReader;
 
 /**
  * @author Matthias Pfisterer
+ *
+ * This file is part of Tritonus: http://www.tritonus.org/
  */
 public class VorbisAudioFileReader
         extends TAudioFileReader {
@@ -259,11 +251,9 @@ public class VorbisAudioFileReader
             }
 
             // These are only used for error checking.
-  /*
-  int bitrate_upper = abData[16] + 256 * abData[17] + 65536 * abData[18] + 16777216 * abData[19];
-  int bitrate_nominal = abData[20] + 256 * abData[21] + 65536 * abData[22] + 16777216 * abData[23];
-  int bitrate_lower = abData[24] + 256 * abData[25] + 65536 * abData[26] + 16777216 * abData[27];
-  */
+//  int bitrate_upper = abData[16] + 256 * abData[17] + 65536 * abData[18] + 16777216 * abData[19];
+//  int bitrate_nominal = abData[20] + 256 * abData[21] + 65536 * abData[22] + 16777216 * abData[23];
+//  int bitrate_lower = abData[24] + 256 * abData[25] + 65536 * abData[26] + 16777216 * abData[27];
 
             int[] blocksizes = new int[2];
             blocksizes[0] = 1 << (abData[28] & 0xF);
@@ -298,13 +288,11 @@ public class VorbisAudioFileReader
             oggPage.free();
             oggPacket.free();
 
-  /*
-    If the file size is known, we derive the number of frames
-    ('frame size') from it.
-    If the values don't fit into integers, we leave them at
-    NOT_SPECIFIED. 'Unknown' is considered less incorrect than
-    a wrong value.
-  */
+            // If the file size is known, we derive the number of frames
+            // ('frame size') from it.
+            // If the values don't fit into integers, we leave them at
+            // NOT_SPECIFIED. 'Unknown' is considered less incorrect than
+            // a wrong value.
             // [fb] not specifying it causes Sun's Wave file writer to write rubbish
             int nByteSize = AudioSystem.NOT_SPECIFIED;
             if (lFileSizeInBytes != AudioSystem.NOT_SPECIFIED
@@ -312,11 +300,10 @@ public class VorbisAudioFileReader
                 nByteSize = (int) lFileSizeInBytes;
             }
             int nFrameSize = AudioSystem.NOT_SPECIFIED;
-  /* Can we calculate a useful size?
-     Peeking into ogginfo gives the insight that the only
-     way seems to be reading through the file. This is
-     something we do not want, at least not by default.
-  */
+            // Can we calculate a useful size?
+            // Peeking into ogginfo gives the insight that the only
+            // way seems to be reading through the file. This is
+            // something we do not want, at least not by default.
             // nFrameSize = (int) (lFileSizeInBytes / ...;
 
             AudioFormat format = new AudioFormat(

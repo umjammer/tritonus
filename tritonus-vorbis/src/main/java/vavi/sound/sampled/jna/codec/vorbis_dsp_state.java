@@ -2,7 +2,7 @@ package vavi.sound.sampled.jna.codec;
 import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
-import com.sun.jna.ptr.PointerByReference;
+
 import java.util.Arrays;
 import java.util.List;
 /**
@@ -14,11 +14,11 @@ import java.util.List;
 public class vorbis_dsp_state extends Structure {
 	public int analysisp;
 	/** C type : vorbis_info* */
-	public vavi.sound.sampled.jna.codec.vorbis_info.ByReference vi;
+	public Pointer vi;
 	/** C type : float** */
-	public PointerByReference pcm;
+	public Pointer pcm;
 	/** C type : float** */
-	public PointerByReference pcmret;
+	public Pointer pcmret;
 	public int pcm_storage;
 	public int pcm_current;
 	public int pcm_returned;

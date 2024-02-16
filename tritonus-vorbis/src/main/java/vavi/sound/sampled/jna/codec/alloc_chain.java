@@ -17,7 +17,7 @@ public class alloc_chain extends Structure {
 	/** C type : void* */
 	public Pointer ptr;
 	/** C type : alloc_chain* */
-	public alloc_chain.ByReference next;
+	public Pointer next;
 	public alloc_chain() {
 		super();
 	}
@@ -28,7 +28,7 @@ public class alloc_chain extends Structure {
 	 * @param ptr C type : void*<br>
 	 * @param next C type : alloc_chain*
 	 */
-	public alloc_chain(Pointer ptr, alloc_chain.ByReference next) {
+	public alloc_chain(Pointer ptr, Pointer next) {
 		super();
 		this.ptr = ptr;
 		this.next = next;

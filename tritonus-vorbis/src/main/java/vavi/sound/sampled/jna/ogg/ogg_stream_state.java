@@ -2,8 +2,7 @@ package vavi.sound.sampled.jna.ogg;
 import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
-import com.sun.jna.ptr.IntByReference;
-import com.sun.jna.ptr.LongByReference;
+
 import java.util.Arrays;
 import java.util.List;
 /**
@@ -28,14 +27,14 @@ public class ogg_stream_state extends Structure {
 	 * The values that will go to the segment table<br>
 	 * C type : int*
 	 */
-	public IntByReference lacing_vals;
+	public Pointer lacing_vals;
 	/**
 	 * granulepos values for headers. Not compact<br>
 	 * this way, but it is simple coupled to the<br>
 	 * lacing fifo<br>
 	 * C type : ogg_int64_t*
 	 */
-	public LongByReference granule_vals;
+	public Pointer granule_vals;
 	public NativeLong lacing_storage;
 	public NativeLong lacing_fill;
 	public NativeLong lacing_packet;

@@ -21,113 +21,159 @@
  */
 
 /*
-|<---            this code is formatted to fit into 80 columns             --->|
+|<---            this code is formatted to fit into 80 columns             --.|
 */
 
 package org.tritonus.lowlevel.ogg;
 
+import com.sun.jna.NativeLong;
 import org.tritonus.share.TDebug;
+import vavi.sound.sampled.jna.ogg.OggLibrary;
+import vavi.sound.sampled.jna.ogg.ogg_page;
 
 
 /**
  * Wrapper for ogg_page.
  */
 public class Page {
-    static {
-        Ogg.loadNativeLibrary();
-        if (TDebug.TraceOggNative) {
-            setTrace(true);
-        }
-    }
 
     /**
      * Holds the pointer to ogg_page
-     * for the native code.
+     * for the code.
      * This must be long to be 64bit-clean.
      */
-    @SuppressWarnings("unused")
-    private long m_lNativeHandle;
+    private ogg_page handle;
 
+    public ogg_page getHandle() { return handle; }
 
     public Page() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("Page.<init>(): begin");
-        }
+        if (TDebug.TraceOggNative) { TDebug.out("<init>: begin"); }
         int nReturn = malloc();
         if (nReturn < 0) {
             throw new RuntimeException("malloc of ogg_page failed");
         }
-        if (TDebug.TraceOggNative) {
-            TDebug.out("Page.<init>(): end");
-        }
+        if (TDebug.TraceOggNative) { TDebug.out("<init>: end"); }
     }
 
-
-    protected void finalize() {
-        // TODO: call free()
-        // call super.finalize() first or last?
-        // and introduce a flag if free() has already been called?
+    private int malloc() {
+        if (TDebug.TraceOggNative) { TDebug.out("malloc: begin"); }
+        handle = new ogg_page();
+        if (TDebug.TraceOggNative) { TDebug.out(String.format("malloc: handle: %s", handle)); }
+        if (TDebug.TraceOggNative) { TDebug.out("malloc: end"); }
+        return 0;
     }
 
-
-    private native int malloc();
-
-    public native void free();
-
+    public void free() {
+        if (TDebug.TraceOggNative) { TDebug.out("free: begin"); }
+        handle = null;
+        if (TDebug.TraceOggNative) { TDebug.out("free: end"); }
+    }
 
     /**
      * Calls ogg_page_version().
      */
-    public native int getVersion();
+    public int getVersion() {
+        int		nReturn;
+        if (TDebug.TraceOggNative) { TDebug.out("getVersion: begin"); }
+        nReturn = OggLibrary.INSTANCE.ogg_page_version(handle);
+        if (TDebug.TraceOggNative) { TDebug.out("getVersion: end"); }
+        return nReturn;
+    }
 
     /**
      * Calls ogg_page_continued().
      */
-    public native boolean isContinued();
+    public boolean isContinued() {
+        if (TDebug.TraceOggNative) { TDebug.out("isContinued: begin"); }
+        int	nReturn = OggLibrary.INSTANCE.ogg_page_continued(handle);
+        if (TDebug.TraceOggNative) { TDebug.out("isContinued: end"); }
+        return nReturn != 0;
+    }
 
     /**
      * Calls ogg_page_packets().
      */
-    public native int getPackets();
+    public int getPackets() {
+        if (TDebug.TraceOggNative) { TDebug.out("getPackets: begin"); }
+        int nReturn = OggLibrary.INSTANCE.ogg_page_packets(handle);
+        if (TDebug.TraceOggNative) { TDebug.out("getPackets: end"); }
+        return nReturn;
+    }
 
     /**
      * Calls ogg_page_bos().
      */
-    public native boolean isBos();
+    public boolean isBos() {
+        if (TDebug.TraceOggNative) { TDebug.out("isBos: begin"); }
+        int nReturn = OggLibrary.INSTANCE.ogg_page_bos(handle);
+        if (TDebug.TraceOggNative) { TDebug.out("isBos: end"); }
+        return nReturn != 0;
+    }
 
     /**
      * Calls ogg_page_eos().
      */
-    public native boolean isEos();
+    public boolean isEos() {
+        if (TDebug.TraceOggNative) { TDebug.out("isEos: begin"); }
+        int nReturn = OggLibrary.INSTANCE.ogg_page_eos(handle);
+        if (TDebug.TraceOggNative) { TDebug.out("isEos: end"); }
+        return nReturn != 0;
+    }
 
     /**
      * Calls ogg_page_granulepos().
      */
-    public native long getGranulePos();
+    public long getGranulePos() {
+        if (TDebug.TraceOggNative) { TDebug.out("getGranulePos: begin"); }
+        long lReturn = OggLibrary.INSTANCE.ogg_page_granulepos(handle);
+        if (TDebug.TraceOggNative) { TDebug.out("getGranulePos: end"); }
+        return lReturn;
+    }
 
     /**
      * Calls ogg_page_serialno().
      */
-    public native int getSerialNo();
+    public int getSerialNo() {
+        if (TDebug.TraceOggNative) { TDebug.out("getSerialNo: begin"); }
+        int nReturn = OggLibrary.INSTANCE.ogg_page_serialno(handle);
+        if (TDebug.TraceOggNative) { TDebug.out("getSerialNo: end"); }
+        return nReturn;
+    }
 
     /**
      * Calls ogg_page_pageno().
      */
-    public native int getPageNo();
+    public int getPageNo() {
+        if (TDebug.TraceOggNative) { TDebug.out("getPageNo: begin"); }
+        NativeLong nReturn = OggLibrary.INSTANCE.ogg_page_pageno(handle);
+        if (TDebug.TraceOggNative) { TDebug.out("getPageNo: end"); }
+        return nReturn.intValue();
+    }
 
     /**
      * Calls ogg_page_checksum_set().
      */
-    public native void setChecksum();
+    public void setChecksum() {
+        if (TDebug.TraceOggNative) { TDebug.out("setChecksum: begin"); }
+        OggLibrary.INSTANCE.ogg_page_checksum_set(handle);
+        if (TDebug.TraceOggNative) { TDebug.out("setChecksum: end"); }
+    }
 
+    public byte[] getHeader() {
+        if (TDebug.TraceOggNative) { TDebug.out("getHeader: begin"); }
+        byte[] byteArray = new byte[handle.header_len.intValue()];
+        handle.header.read(0, byteArray, 0, handle.header_len.intValue());
+        if (TDebug.TraceOggNative) { TDebug.out("getHeader: end"); }
+        return byteArray;
+    }
 
-    public native byte[] getHeader();
-
-    public native byte[] getBody();
-
-
-    private static native void setTrace(boolean bTrace);
+    public byte[] getBody() {
+        if (TDebug.TraceOggNative) { TDebug.out("getBody: begin"); }
+        byte[] byteArray = new byte[handle.body_len.intValue()];
+        handle.body.read(0, byteArray, 0, handle.body_len.intValue());
+        if (TDebug.TraceOggNative) { TDebug.out("getBody: end"); }
+        return byteArray;
+    }
 }
-
 
 /* Page.java */
