@@ -8,7 +8,7 @@ import java.io.PrintWriter;
  * Contains the "exploded" parameters of a GSM frame.
  *
  * <p>
- * This are the parameters after bit-decoding or before bit-encoding.
+ * These are the parameters after bit-decoding or before bit-encoding.
  *
  * <table border="1">
  * <tr>
@@ -51,6 +51,7 @@ import java.io.PrintWriter;
  * @author Matthias Pfisterer
  */
 public class GsmFrameParameters {
+
     public int[] m_LARc = new int[8];
     public int[] m_Nc = new int[4];
     public int[] m_Mc = new int[4];

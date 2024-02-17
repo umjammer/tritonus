@@ -1,10 +1,4 @@
 /*
- * AlsaPortMixerProvider.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2001 - 2002 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,28 +14,27 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.sampled.mixer.alsa;
+
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 
 import org.tritonus.lowlevel.alsa.Alsa;
 import org.tritonus.lowlevel.alsa.AlsaCtl;
-import org.tritonus.share.TDebug;
 import org.tritonus.share.sampled.mixer.TMixerProvider;
 
+import static java.lang.System.getLogger;
 
-public class AlsaPortMixerProvider
-        extends TMixerProvider {
+
+public class AlsaPortMixerProvider extends TMixerProvider {
+
+    private static final Logger logger = getLogger("org.tritonus.TraceMixerProvider");
+
     private static boolean sm_bInitialized = false;
 
-
     public AlsaPortMixerProvider() {
-        super();
-        if (TDebug.TraceMixerProvider) {
-            TDebug.out("AlsaPortMixerProvider.<init>(): begin");
-        }
+        logger.log(Level.TRACE, "AlsaPortMixerProvider.<init>(): begin");
+
         if (!sm_bInitialized && !isDisabled()) {
             if (!Alsa.isLibraryAvailable()) {
                 disable();
@@ -50,33 +43,23 @@ public class AlsaPortMixerProvider
                 sm_bInitialized = true;
             }
         } else {
-            if (TDebug.TraceMixerProvider) {
-                TDebug.out("AlsaDataLineMixerProvider.<init>(): already initialized or disabled");
-            }
+            logger.log(Level.TRACE, "AlsaDataLineMixerProvider.<init>(): already initialized or disabled");
         }
-        if (TDebug.TraceMixerProvider) {
-            TDebug.out("AlsaPortMixerProvider.<init>(): end");
-        }
+
+        logger.log(Level.TRACE, "AlsaPortMixerProvider.<init>(): end");
     }
 
-
+    @Override
     protected void staticInit() {
-        if (TDebug.TraceMixerProvider) {
-            TDebug.out("AlsaPortMixerProvider.staticInit(): begin");
-        }
+        logger.log(Level.TRACE, "AlsaPortMixerProvider.staticInit(): begin");
+
         int[] anCards = AlsaCtl.getCards();
-        if (TDebug.TraceMixerProvider) {
-            System.out.println("AlsaPortMixerProvider.staticInit(): num cards: " + anCards.length);
-        }
+        logger.log(Level.DEBUG,"AlsaPortMixerProvider.staticInit(): num cards: " + anCards.length);
         for (int anCard : anCards) {
             AlsaPortMixer mixer = new AlsaPortMixer(anCard);
             addMixer(mixer);
         }
-        if (TDebug.TraceMixerProvider) {
-            TDebug.out("AlsaPortMixerProvider.staticInit(): end");
-        }
+
+        logger.log(Level.TRACE, "AlsaPortMixerProvider.staticInit(): end");
     }
 }
-
-
-/* AlsaPortMixerProvider.java */

@@ -1,10 +1,4 @@
 /*
- * AudioOutputStreamOutput.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2002 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,10 +14,6 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.saol.engine;
 
 
@@ -36,9 +26,9 @@ import org.tritonus.share.sampled.file.AudioOutputStream;
 public class AudioOutputStreamOutput
         extends Bus
         implements SystemOutput {
+
     private AudioOutputStream m_audioOutputStream;
     private byte[] m_abBuffer;
-
 
     public AudioOutputStreamOutput(AudioOutputStream audioOutputStream) {
         super(audioOutputStream.getFormat().getChannels());
@@ -46,7 +36,7 @@ public class AudioOutputStreamOutput
         m_abBuffer = new byte[audioOutputStream.getFormat().getFrameSize()];
     }
 
-
+    @Override
     public void emit()
             throws IOException {
         float[] afValues = getValues();
@@ -62,7 +52,7 @@ public class AudioOutputStreamOutput
         m_audioOutputStream.write(m_abBuffer, 0, m_abBuffer.length);
     }
 
-
+    @Override
     public void close()
             throws IOException {
         m_audioOutputStream.close();
@@ -70,4 +60,3 @@ public class AudioOutputStreamOutput
 }
 
 
-/* AudioOutputStreamOutput.java */

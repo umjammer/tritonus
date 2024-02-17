@@ -33,20 +33,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * Base class for testsof javax.sound.midi.Sequencer.
  */
 public class JavaSequencerClockTestCase {
-    private static final boolean IGNORE_SUN_SEQUENCER = true;
 
+    private static final boolean IGNORE_SUN_SEQUENCER = true;
 
     public void testSunMiscPerfClock()
             throws Exception {
         checkClock(new SunMiscPerfClock());
     }
 
-
     public void testSystemCurrentTimeMillisClock()
             throws Exception {
         checkClock(new SystemCurrentTimeMillisClock());
     }
-
 
     private void checkClock(JavaSequencer.Clock clock)
             throws Exception {
@@ -67,7 +65,6 @@ public class JavaSequencerClockTestCase {
         }
     }
 
-
     public void testSetGetClock()
             throws Exception {
         JavaSequencer seq = getSequencer();
@@ -77,16 +74,16 @@ public class JavaSequencerClockTestCase {
         assertSame(clock, seq.getClock(), "setClock");
     }
 
-
-    // TODO: setClock() in open state throws IllegalStateException
+    // TODO setClock() in open state throws IllegalStateException
 
     private JavaSequencer getSequencer() {
         return new JavaSequencer(null);
     }
 
-
     private static class TestClock
             implements JavaSequencer.Clock {
+
+        @Override
         public long getMicroseconds() {
             return -1;
         }
@@ -95,4 +92,3 @@ public class JavaSequencerClockTestCase {
 }
 
 
-/* JavaSequencerClockTestCase.java */

@@ -32,6 +32,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class MidiChannelTestCase
         extends BaseSynthesizerTestCase {
+
+    @Override
     protected void checkSynthesizer(Synthesizer synth)
             throws Exception {
         MidiChannel channel;
@@ -59,7 +61,6 @@ public class MidiChannelTestCase
         }
     }
 
-
     private void checkNotes2(Synthesizer synth, MidiChannel channel) {
         for (int i = 0; i < 127; i++) {
             channel.noteOn(i, i);
@@ -68,7 +69,6 @@ public class MidiChannelTestCase
             channel.noteOff(i, 0);
         }
     }
-
 
     private void checkPolyPressure(Synthesizer synth, MidiChannel channel) {
         for (int i = 0; i < 127; i++) {
@@ -80,13 +80,11 @@ public class MidiChannelTestCase
         }
     }
 
-
     private void checkChannelPressure(Synthesizer synth, MidiChannel channel) {
         checkChannelPressure(synth, channel, 0);
         checkChannelPressure(synth, channel, 77);
         checkChannelPressure(synth, channel, 127);
     }
-
 
     private void checkChannelPressure(Synthesizer synth, MidiChannel channel,
                                       int nPressure) {
@@ -96,7 +94,6 @@ public class MidiChannelTestCase
                 constructErrorMessage(synth,
                         "channel pressure", true));
     }
-
 
     private void checkControlChange(Synthesizer synth, MidiChannel channel) {
         for (int i = 0; i < 127; i++) {
@@ -108,7 +105,6 @@ public class MidiChannelTestCase
         }
     }
 
-
     private void checkProgramChange(Synthesizer synth, MidiChannel channel) {
         for (int i = 0; i < 127; i++) {
             channel.programChange(i);
@@ -119,13 +115,11 @@ public class MidiChannelTestCase
         }
     }
 
-
     private void checkProgramChange2(Synthesizer synth, MidiChannel channel) {
         checkProgramChange2(synth, channel, 0, 0);
         checkProgramChange2(synth, channel, 12000, 102);
         checkProgramChange2(synth, channel, 16383, 127);
     }
-
 
     private void checkProgramChange2(Synthesizer synth, MidiChannel channel,
                                      int nBank, int nProgram) {
@@ -141,7 +135,6 @@ public class MidiChannelTestCase
                         "program change [" + nBank + ", " + nProgram + "]: program", true));
     }
 
-
     private void checkPitchbend(Synthesizer synth, MidiChannel channel) {
         checkPitchbend(synth, channel, 0);
         checkPitchbend(synth, channel, 127);
@@ -152,7 +145,6 @@ public class MidiChannelTestCase
             checkPitchbend(synth, channel, 16383);
         }
     }
-
 
     private void checkPitchbend(Synthesizer synth, MidiChannel channel,
                                 int nBend) {
@@ -165,4 +157,3 @@ public class MidiChannelTestCase
 }
 
 
-/* MidiChannelTestCase.java */

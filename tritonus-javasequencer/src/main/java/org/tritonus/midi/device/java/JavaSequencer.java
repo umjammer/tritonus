@@ -1,10 +1,4 @@
 /*
- * JavaSequencer.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2000 - 2003 by Matthias Pfisterer
  *  Copyright (c) 2003 by Gabriele Mondada
  *
@@ -21,12 +15,10 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.midi.device.java;
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.util.Arrays;
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MetaMessage;
@@ -36,17 +28,19 @@ import javax.sound.midi.MidiMessage;
 import javax.sound.midi.Sequence;
 import javax.sound.midi.Track;
 
-import org.tritonus.share.TDebug;
 import org.tritonus.share.midi.MidiUtils;
 import org.tritonus.share.midi.TSequencer;
+
+import static java.lang.System.getLogger;
 
 
 /**
  * Sequencer implementation in pure Java.
  */
-public class JavaSequencer
-        extends TSequencer
-        implements Runnable {
+public class JavaSequencer extends TSequencer implements Runnable {
+
+    private static final Logger logger = getLogger("org.tritonus.TraceSequencer");
+
     private static final SyncMode[] MASTER_SYNC_MODES = {SyncMode.INTERNAL_CLOCK};
     private static final SyncMode[] SLAVE_SYNC_MODES = {SyncMode.NO_SYNC};
 
@@ -91,14 +85,10 @@ public class JavaSequencer
      */
     private long m_lSleepInterval;
 
-
     public JavaSequencer(MidiDevice.Info info) {
-        super(info,
-                Arrays.asList(MASTER_SYNC_MODES),
-                Arrays.asList(SLAVE_SYNC_MODES));
-        if (TDebug.TraceSequencer) {
-            TDebug.out("JavaSequencer.<init>(): begin");
-        }
+        super(info, Arrays.asList(MASTER_SYNC_MODES), Arrays.asList(SLAVE_SYNC_MODES));
+        logger.log(Level.TRACE, "JavaSequencer.<init>(): begin");
+
         String strVersion = System.getProperty("java.version");
         if (strVersion.contains("1.4.2")) {
             setClock(new SunMiscPerfClock());
@@ -111,33 +101,29 @@ public class JavaSequencer
         } else {
             m_lSleepInterval = 1;
         }
-        if (TDebug.TraceSequencer) {
-            TDebug.out("JavaSequencer.<init>(): end");
-        }
+
+        logger.log(Level.TRACE, "JavaSequencer.<init>(): end");
     }
 
-
+    @Override
     protected void openImpl() {
-        if (TDebug.TraceSequencer) {
-            TDebug.out("JavaSequencer.openImpl(): begin");
-        }
+        logger.log(Level.TRACE, "JavaSequencer.openImpl(): begin");
+
         m_nPhase = STATE_STOPPED;
         m_thread = new Thread(this);
         m_thread.setPriority(Thread.MAX_PRIORITY);
-        if (TDebug.TraceSequencer) {
-            TDebug.out("JavaSequencer.openImpl(): starting thread");
-        }
+
+        logger.log(Level.TRACE, "JavaSequencer.openImpl(): starting thread");
+
         m_thread.start();
-        if (TDebug.TraceSequencer) {
-            TDebug.out("JavaSequencer.openImpl(): end");
-        }
+
+        logger.log(Level.TRACE, "JavaSequencer.openImpl(): end");
     }
 
-
+    @Override
     protected void closeImpl() {
-        if (TDebug.TraceSequencer) {
-            TDebug.out("JavaSequencer.closeImpl(): begin");
-        }
+        logger.log(Level.TRACE, "JavaSequencer.closeImpl(): begin");
+
         stop();
         // terminate the thread
         synchronized (this) {
@@ -146,16 +132,14 @@ public class JavaSequencer
         }
         // now the thread should terminate
         m_thread = null;
-        if (TDebug.TraceSequencer) {
-            TDebug.out("JavaSequencer.closeImpl(): end");
-        }
+
+        logger.log(Level.TRACE, "JavaSequencer.closeImpl(): end");
     }
 
-
+    @Override
     protected void startImpl() {
-        if (TDebug.TraceSequencer) {
-            TDebug.out("JavaSequencer.startImpl(): begin");
-        }
+        logger.log(Level.TRACE, "JavaSequencer.startImpl(): begin");
+
         synchronized (this) {
             if (m_nPhase == STATE_STOPPED) {
                 // unlock thread waiting for start
@@ -166,23 +150,19 @@ public class JavaSequencer
                     try {
                         this.wait();
                     } catch (InterruptedException e) {
-                        if (TDebug.TraceAllExceptions) {
-                            TDebug.out(e);
-                        }
+                        logger.log(Level.ERROR, e.getMessage(), e);
                     }
                 }
             }
         }
-        if (TDebug.TraceSequencer) {
-            TDebug.out("JavaSequencer.startImpl(): end");
-        }
+
+        logger.log(Level.TRACE, "JavaSequencer.startImpl(): end");
     }
 
-
+    @Override
     protected void stopImpl() {
-        if (TDebug.TraceSequencer) {
-            TDebug.out("JavaSequencer.stopImpl(): begin");
-        }
+        logger.log(Level.TRACE, "JavaSequencer.stopImpl(): begin");
+
         synchronized (this) {
             // condition true if called from own run() method
             if (Thread.currentThread() == m_thread) {
@@ -197,48 +177,39 @@ public class JavaSequencer
                         try {
                             this.wait();
                         } catch (InterruptedException e) {
-                            if (TDebug.TraceAllExceptions) {
-                                TDebug.out(e);
-                            }
+                            logger.log(Level.ERROR, e.getMessage(), e);
                         }
                     }
                 }
             }
         }
-        if (TDebug.TraceSequencer) {
-            TDebug.out("JavaSequencer.stopImpl(): end");
-        }
+
+        logger.log(Level.TRACE, "JavaSequencer.stopImpl(): end");
     }
 
-
+    @Override
     public void run() {
-        if (TDebug.TraceSequencer) {
-            TDebug.out("JavaSequencer.run(): begin");
-        }
+        logger.log(Level.TRACE, "JavaSequencer.run(): begin");
+
         while (true) {
             synchronized (this) {
                 while (m_nPhase == STATE_STOPPED) {
-                    if (TDebug.TraceSequencer) {
-                        TDebug.out("JavaSequencer.run(): waiting to become running");
-                    }
+                    logger.log(Level.TRACE, "JavaSequencer.run(): waiting to become running");
+
                     try {
                         this.wait();
                     } catch (InterruptedException e) {
-                        if (TDebug.TraceAllExceptions) {
-                            TDebug.out(e);
-                        }
+                        logger.log(Level.ERROR, e.getMessage(), e);
                     }
                 }
                 if (m_nPhase == STATE_CLOSING) {
-                    if (TDebug.TraceSequencer) {
-                        TDebug.out("JavaSequencer.run(): end");
-                    }
+                    logger.log(Level.TRACE, "JavaSequencer.run(): end");
+
                     return;
                 }
-                if (TDebug.TraceSequencer) {
-                    TDebug.out("JavaSequencer.run(): now running");
-                }
-                //NOTE: all time calculations are done in microseconds
+                logger.log(Level.TRACE, "JavaSequencer.run(): now running");
+
+                // NOTE: all time calculations are done in microseconds
                 m_lStartTime = getTimeInMicroseconds() - m_lTickPosition * m_lMicroSecondsPerTick;
                 m_nPhase = STATE_STARTED;
                 this.notifyAll();
@@ -250,17 +221,16 @@ public class JavaSequencer
             }
             Track[] aTracks = sequence.getTracks();
             // this is used to get a useful time value for the end of track message
-            //long lHighestTime = 0;
+//            long lHighestTime = 0;
             while (m_nPhase == STATE_STARTED) {
                 // searching for the next event
                 boolean bTrackPresent = false;
                 long lBestTick = Long.MAX_VALUE;
                 int nBestTrack = -1;
                 for (int nTrack = 0; nTrack < aTracks.length; nTrack++) {
-                    // TDebug.out("track " + nTrack);
-                    // Track track = aTracks[nTrack];
-                    if (m_anTrackPositions[nTrack] < aTracks[nTrack].size()
-                            && isTrackEnabled(nTrack)) {
+//                    logger.log(Level.TRACE, "track " + nTrack);
+//                    Track track = aTracks[nTrack];
+                    if (m_anTrackPositions[nTrack] < aTracks[nTrack].size() && isTrackEnabled(nTrack)) {
                         bTrackPresent = true;
                         MidiEvent event = aTracks[nTrack].get(m_anTrackPositions[nTrack]);
                         long lTick = event.getTick();
@@ -275,14 +245,11 @@ public class JavaSequencer
                     try {
                         metaMessage.setMessage(0x2F, new byte[0], 0);
                     } catch (InvalidMidiDataException e) {
-                        if (TDebug.TraceAllExceptions) {
-                            TDebug.out(e);
-                        }
+                        logger.log(Level.ERROR, e.getMessage(), e);
                     }
-                    if (TDebug.TraceSequencer) {
-                        TDebug.out("JavaSequencer.run(): sending End of Track message with tick " + (m_lTickPosition + 1));
-                    }
-                    // TODO: calulate us
+                    logger.log(Level.TRACE, "JavaSequencer.run(): sending End of Track message with tick " + (m_lTickPosition + 1));
+
+                    // TODO calulate us
                     deliverEvent(metaMessage, m_lTickPosition + 1);
                     stop();
                     break;
@@ -291,9 +258,8 @@ public class JavaSequencer
                 MidiMessage message = event.getMessage();
                 long lTick = event.getTick();
                 if (message instanceof MetaMessage && ((MetaMessage) message).getType() == 0x2F) {
-                    if (TDebug.TraceSequencer) {
-                        TDebug.out("JavaSequencer.run(): ignoring End of Track message with tick " + lTick);
-                    }
+                    logger.log(Level.TRACE, "JavaSequencer.run(): ignoring End of Track message with tick " + lTick);
+
                     m_anTrackPositions[nBestTrack]++;
                     synchronized (this) {
                         m_lTickPosition = lTick;
@@ -311,12 +277,11 @@ public class JavaSequencer
                         }
                     }
                 }
-            } // while (m_nPhase == STATE_STARTED)
+            }
 
             stop();
-        } // while (true)
+        }
     }
-
 
     /**
      * Deliver a message at a certain time.
@@ -325,9 +290,8 @@ public class JavaSequencer
      * @return true if the event was sent, false otherwise
      */
     private boolean deliverEvent(MidiMessage message, long lScheduledTick) {
-        if (TDebug.TraceSequencer) {
-            TDebug.out("JavaSequencer.deliverEvent(): begin");
-        }
+        logger.log(Level.TRACE, "JavaSequencer.deliverEvent(): begin");
+
         long lScheduledTime;
         synchronized (this) {
             lScheduledTime = lScheduledTick * m_lMicroSecondsPerTick + m_lStartTime;
@@ -346,9 +310,7 @@ public class JavaSequencer
             try {
                 Thread.sleep(m_lSleepInterval);
             } catch (InterruptedException e) {
-                if (TDebug.TraceAllExceptions) {
-                    TDebug.out(e);
-                }
+                logger.log(Level.ERROR, e.getMessage(), e);
             }
         }
 
@@ -361,39 +323,34 @@ public class JavaSequencer
                 int nTempo = MidiUtils.getUnsignedInteger(abData[0]) * 65536 +
                         MidiUtils.getUnsignedInteger(abData[1]) * 256 +
                         MidiUtils.getUnsignedInteger(abData[2]);
-                // TDebug.out("tempo (us/quarter note): " + nTempo);
-                setTempoInMPQ(nTempo);
-                // TODO: setTempoInMPQ() seems to be not thread-safe
+//                logger.log(Level.TRACE, "tempo (us/quarter note): " + nTempo);
+                setTempoInMPQ(nTempo); // TODO setTempoInMPQ() seems to be not thread-safe
             }
         }
 
-        if (TDebug.TraceSequencer) {
-            TDebug.out("JavaSequencer.deliverEvent(): sending message: " + message + " at: " + lScheduledTime);
-        }
-        // sendImpl(message, event.getTick());
-        sendImpl(message, -1);
-        // TODO: sendImpl() seems to be not thread-safe
-        notifyListeners(message);
-        // TODO: notifyListeners() seems to be not thread-safe
-        if (TDebug.TraceSequencer) {
-            TDebug.out("JavaSequencer.deliverEvent(): end");
-        }
+        logger.log(Level.TRACE, "JavaSequencer.deliverEvent(): sending message: " + message + " at: " + lScheduledTime);
+
+//        sendImpl(message, event.getTick());
+        sendImpl(message, -1); // TODO sendImpl() seems to be not thread-safe
+        notifyListeners(message); // TODO notifyListeners() seems to be not thread-safe
+
+        logger.log(Level.TRACE, "JavaSequencer.deliverEvent(): end");
+
         return true; // success
     }
 
-
+    @Override
     protected void setMasterSyncModeImpl(SyncMode syncMode) {
         // DO NOTHING
     }
 
-
+    @Override
     protected void setSlaveSyncModeImpl(SyncMode syncMode) {
         // DO NOTHING
     }
 
-
-    public void setSequence(Sequence sequence)
-            throws InvalidMidiDataException {
+    @Override
+    public void setSequence(Sequence sequence) throws InvalidMidiDataException {
         boolean bWasRunning = isRunning();
         if (bWasRunning) {
             stop();
@@ -407,12 +364,12 @@ public class JavaSequencer
         }
     }
 
-
+    @Override
     public void setMicrosecondPosition(long lPosition) {
         setTickPosition(lPosition / m_lMicroSecondsPerTick);
     }
 
-
+    @Override
     public void setTickPosition(long lPosition) {
         if (getSequence() == null || m_anTrackPositions == null) {
             return;
@@ -428,7 +385,7 @@ public class JavaSequencer
             start();
     }
 
-
+    @Override
     public synchronized long getTickPosition() {
         if (m_nPhase == STATE_STARTED) {
             return Math.max(m_lTickPosition, (getTimeInMicroseconds() - m_lStartTime) / m_lMicroSecondsPerTick);
@@ -437,38 +394,36 @@ public class JavaSequencer
         }
     }
 
-
+    @Override
     public void recordDisable(Track track) {
     }
-
 
     public void recordEnable(Track track) {
     }
 
-
+    @Override
     public void recordEnable(Track track, int nChannel) {
     }
 
-
+    @Override
     public boolean isRecording() {
         return false;
     }
 
-
+    @Override
     public void stopRecording() {
         checkOpen();
     }
 
-
+    @Override
     public void startRecording() {
         checkOpen();
     }
 
-
+    @Override
     protected synchronized void setTempoImpl(float fMPQ) {
-        if (TDebug.TraceSequencer) {
-            TDebug.out("JavaSequencer.setTempoImpl(): begin");
-        }
+        logger.log(Level.TRACE, "JavaSequencer.setTempoImpl(): begin");
+
         int nResolution = getResolution();
         long currentTime = getTimeInMicroseconds();
         long currentTickPosition = 0;
@@ -477,12 +432,10 @@ public class JavaSequencer
         m_lMicroSecondsPerTick = (long) fMPQ / nResolution;
         m_lStartTime = currentTime - currentTickPosition * m_lMicroSecondsPerTick;
         m_bTempoChanged = true;
-        // TODO: update m_lMicroSecondsPerTick and m_lStartTime only after the next event because the the event now waiting for its schedule is not updated
-        if (TDebug.TraceSequencer) {
-            TDebug.out("JavaSequencer.setTempoImpl(): end");
-        }
-    }
+        // TODO update m_lMicroSecondsPerTick and m_lStartTime only after the next event because the the event now waiting for its schedule is not updated
 
+        logger.log(Level.TRACE, "JavaSequencer.setTempoImpl(): end");
+    }
 
     /**
      * Obtain the index of the event with the closest tick value.
@@ -508,7 +461,6 @@ public class JavaSequencer
         }
     }
 
-
     /**
      * Retrieve system time in microseconds.
      * This method uses the clock as set with {@link #setClock}.
@@ -524,7 +476,6 @@ public class JavaSequencer
         return getClock().getMicroseconds();
     }
 
-
     /**
      * Set the clock this sequencer should use.
      *
@@ -538,7 +489,6 @@ public class JavaSequencer
         m_clock = clock;
     }
 
-
     /**
      * Obtain the clock used by this sequencer.
      *
@@ -548,14 +498,11 @@ public class JavaSequencer
         return m_clock;
     }
 
-
     /**
      * Interface for sequencer clocks.
      */
     public interface Clock {
+
         long getMicroseconds();
     }
 }
-
-
-/* JavaSequencer.java */

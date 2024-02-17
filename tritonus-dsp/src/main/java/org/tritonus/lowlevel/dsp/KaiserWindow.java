@@ -1,10 +1,4 @@
 /*
- * KaiserWindow.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2002 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,6 +24,7 @@ package org.tritonus.lowlevel.dsp;
  * An implementation of the Kaiser window.
  */
 public class KaiserWindow implements FIRWindow {
+
     /**
      * The alpha parameter of the Kaiser window.
      */
@@ -66,4 +61,4 @@ public class KaiserWindow implements FIRWindow {
     }
 }
 
-/* KaiserWindow.java */
+

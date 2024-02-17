@@ -1,10 +1,4 @@
 /*
- * TInit.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 1999 - 2001 by Matthias Pfisterer
  *
  *
@@ -22,27 +16,27 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.core;
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.util.Iterator;
 
-import org.tritonus.share.TDebug;
+import static java.lang.System.getLogger;
 
 
 /**
  * Helper methods for provider registration.
  */
 public class TInit {
+
+    private static final Logger logger = getLogger("org.tritonus.TraceInit");
+
     /**
      * Constructor to prevent instantiation.
      */
     private TInit() {
     }
-
 
     /**
      * Register all service providers of a certain type.
@@ -59,26 +53,21 @@ public class TInit {
      *                      something like adding the provider to a collection, but in
      *                      theorie, could be anything.
      */
-    public static void registerClasses(Class providerClass,
-                                       ProviderRegistrationAction action) {
-        if (TDebug.TraceInit) {
-            TDebug.out("TInit.registerClasses(): registering for: " + providerClass);
-        }
-        Iterator providers = Service.providers(providerClass);
+    public static void registerClasses(Class<?> providerClass, ProviderRegistrationAction action) {
+        logger.log(Level.TRACE, "TInit.registerClasses(): registering for: " + providerClass);
+
+        Iterator<?> providers = Service.providers(providerClass);
         if (providers != null) {
             while (providers.hasNext()) {
                 Object provider = providers.next();
                 try {
                     action.register(provider);
                 } catch (Throwable e) {
-                    if (TDebug.TraceInit || TDebug.TraceAllExceptions) {
-                        TDebug.out(e);
-                    }
+                    logger.log(Level.ERROR, e.getMessage(), e);
                 }
             }
         }
     }
-
 
     /**
      * Action to be taken on registration of a provider.
@@ -87,10 +76,8 @@ public class TInit {
      * is called for each provider that has to be registered.
      */
     public interface ProviderRegistrationAction {
+
         void register(Object provider)
                 throws Exception;
     }
 }
-
-
-/* TInit.java */

@@ -1,8 +1,3 @@
-/*
- * FloatSampleProcessor.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2003 by Matthias Pfisterer
@@ -20,18 +15,14 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.dsp.interfaces;
 
 import org.tritonus.share.sampled.FloatSampleBuffer;
 
 
 public interface FloatSampleProcessor {
+
     void process(FloatSampleBuffer buffer);
 }
 
 
-/* FloatSampleProcessor.java */

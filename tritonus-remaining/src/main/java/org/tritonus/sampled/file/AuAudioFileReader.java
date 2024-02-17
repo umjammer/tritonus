@@ -1,10 +1,4 @@
 /*
- * AuAudioFileReader.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 1999,2000,2001 by Florian Bomers
  *  Copyright (c) 1999 by Matthias Pfisterer
  *
@@ -23,15 +17,13 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.sampled.file;
 
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.util.HashMap;
 import java.util.Map;
 import javax.sound.sampled.AudioFileFormat;
@@ -39,9 +31,10 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import org.tritonus.share.TDebug;
 import org.tritonus.share.sampled.file.TAudioFileFormat;
 import org.tritonus.share.sampled.file.TAudioFileReader;
+
+import static java.lang.System.getLogger;
 
 
 /**
@@ -51,13 +44,14 @@ import org.tritonus.share.sampled.file.TAudioFileReader;
  * @author Matthias Pfisterer
  */
 public class AuAudioFileReader extends TAudioFileReader {
-    private static final int READ_LIMIT = 1000;
 
+    private static final Logger logger = getLogger(AuAudioFileReader.class.getName());
+
+    private static final int READ_LIMIT = 1000;
 
     public AuAudioFileReader() {
         super(READ_LIMIT);
     }
-
 
     private static String readDescription(DataInputStream dis, int len) throws IOException {
         byte c = -1;
@@ -72,12 +66,11 @@ public class AuAudioFileReader extends TAudioFileReader {
         return ret.toString();
     }
 
-
+    @Override
     protected AudioFileFormat getAudioFileFormat(InputStream inputStream, long lFileSizeInBytes)
             throws UnsupportedAudioFileException, IOException {
-        if (TDebug.TraceAudioFileReader) {
-            TDebug.out("AuAudioFileReader.getAudioFileFormat(InputStream, long): begin");
-        }
+        logger.log(Level.TRACE, "AuAudioFileReader.getAudioFileFormat(InputStream, long): begin");
+
         DataInputStream dataInputStream = new DataInputStream(inputStream);
         int nMagic = dataInputStream.readInt();
         if (nMagic != AuTool.AU_HEADER_MAGIC) {
@@ -85,71 +78,60 @@ public class AuAudioFileReader extends TAudioFileReader {
                     "not an AU file: wrong header magic");
         }
         int nDataOffset = dataInputStream.readInt();
-        if (TDebug.TraceAudioFileReader) {
-            TDebug.out("AuAudioFileReader.getAudioFileFormat(): data offset: " + nDataOffset);
-        }
+        logger.log(Level.TRACE, "AuAudioFileReader.getAudioFileFormat(): data offset: " + nDataOffset);
+
         if (nDataOffset < AuTool.DATA_OFFSET) {
-            throw new UnsupportedAudioFileException(
-                    "not an AU file: data offset must be 24 or greater");
+            throw new UnsupportedAudioFileException("not an AU file: data offset must be 24 or greater");
         }
         int nDataLength = dataInputStream.readInt();
-        if (TDebug.TraceAudioFileReader) {
-            TDebug.out("AuAudioFileReader.getAudioFileFormat(): data length: " + nDataLength);
-        }
+        logger.log(Level.TRACE, "AuAudioFileReader.getAudioFileFormat(): data length: " + nDataLength);
+
         if (nDataLength < 0 && nDataLength != AuTool.AUDIO_UNKNOWN_SIZE) {
-            throw new UnsupportedAudioFileException(
-                    "not an AU file: data length must be positive, 0 or -1 for unknown");
+            throw new UnsupportedAudioFileException("not an AU file: data length must be positive, 0 or -1 for unknown");
         }
         AudioFormat.Encoding encoding = null;
         int nSampleSize = 0;
         int nEncoding = dataInputStream.readInt();
-        switch (nEncoding) {
-        case AuTool.SND_FORMAT_MULAW_8:  // 8-bit uLaw G.711
-            encoding = AudioFormat.Encoding.ULAW;
-            nSampleSize = 8;
-            break;
-
-        case AuTool.SND_FORMAT_LINEAR_8:
-            encoding = AudioFormat.Encoding.PCM_SIGNED;
-            nSampleSize = 8;
-            break;
-
-        case AuTool.SND_FORMAT_LINEAR_16:
-            encoding = AudioFormat.Encoding.PCM_SIGNED;
-            nSampleSize = 16;
-            break;
-
-        case AuTool.SND_FORMAT_LINEAR_24:
-            encoding = AudioFormat.Encoding.PCM_SIGNED;
-            nSampleSize = 24;
-            break;
-
-        case AuTool.SND_FORMAT_LINEAR_32:
-            encoding = AudioFormat.Encoding.PCM_SIGNED;
-            nSampleSize = 32;
-            break;
-
-        case AuTool.SND_FORMAT_ALAW_8: // 8-bit aLaw G.711
-            encoding = AudioFormat.Encoding.ALAW;
-            nSampleSize = 8;
-            break;
-        }
+        nSampleSize = switch (nEncoding) {
+            case AuTool.SND_FORMAT_MULAW_8 -> {
+                encoding = AudioFormat.Encoding.ULAW;
+                yield 8; // 8-bit uLaw G.711
+            }
+            case AuTool.SND_FORMAT_LINEAR_8 -> {
+                encoding = AudioFormat.Encoding.PCM_SIGNED;
+                yield 8;
+            }
+            case AuTool.SND_FORMAT_LINEAR_16 -> {
+                encoding = AudioFormat.Encoding.PCM_SIGNED;
+                yield 16;
+            }
+            case AuTool.SND_FORMAT_LINEAR_24 -> {
+                encoding = AudioFormat.Encoding.PCM_SIGNED;
+                yield 24;
+            }
+            case AuTool.SND_FORMAT_LINEAR_32 -> {
+                encoding = AudioFormat.Encoding.PCM_SIGNED;
+                yield 32;
+            }
+            case AuTool.SND_FORMAT_ALAW_8 -> {
+                encoding = AudioFormat.Encoding.ALAW;
+                yield 8; // 8-bit aLaw G.711
+            }
+            default -> nSampleSize;
+        };
         if (nSampleSize == 0) {
-            throw new UnsupportedAudioFileException(
-                    "unsupported AU file: unknown encoding " + nEncoding);
+            throw new UnsupportedAudioFileException("unsupported AU file: unknown encoding " + nEncoding);
         }
         int nSampleRate = dataInputStream.readInt();
         if (nSampleRate <= 0) {
-            throw new UnsupportedAudioFileException(
-                    "corrupt AU file: sample rate must be positive");
+            throw new UnsupportedAudioFileException("corrupt AU file: sample rate must be positive");
         }
         int nNumChannels = dataInputStream.readInt();
         if (nNumChannels <= 0) {
-            throw new UnsupportedAudioFileException(
-                    "corrupt AU file: number of channels must be positive");
+            throw new UnsupportedAudioFileException("corrupt AU file: number of channels must be positive");
         }
         // skip header information field
-        //inputStream.skip(nDataOffset - AuTool.DATA_OFFSET);
+//        inputStream.skip(nDataOffset - AuTool.DATA_OFFSET);
         // read header info field
         String desc = readDescription(dataInputStream, nDataOffset - AuTool.DATA_OFFSET);
         // add the description to the file format's properties
@@ -168,18 +150,12 @@ public class AuAudioFileReader extends TAudioFileReader {
         AudioFileFormat audioFileFormat = new TAudioFileFormat(
                 AudioFileFormat.Type.AU,
                 format,
-                (nDataLength == AuTool.AUDIO_UNKNOWN_SIZE) ?
-                        AudioSystem.NOT_SPECIFIED : (nDataLength / format.getFrameSize()),
-                (nDataLength == AuTool.AUDIO_UNKNOWN_SIZE) ?
-                        AudioSystem.NOT_SPECIFIED : (nDataLength + nDataOffset),
+                (nDataLength == AuTool.AUDIO_UNKNOWN_SIZE) ? AudioSystem.NOT_SPECIFIED : (nDataLength / format.getFrameSize()),
+                (nDataLength == AuTool.AUDIO_UNKNOWN_SIZE) ? AudioSystem.NOT_SPECIFIED : (nDataLength + nDataOffset),
                 properties);
-        if (TDebug.TraceAudioFileReader) {
-            TDebug.out("AuAudioFileReader.getAudioFileFormat(InputStream, long): begin");
-        }
+
+        logger.log(Level.TRACE, "AuAudioFileReader.getAudioFileFormat(InputStream, long): begin");
+
         return audioFileFormat;
     }
 }
-
-
-/* AuAudioFileReader.java */
-

@@ -1,10 +1,4 @@
 /*
- * WaveAudioFileWriter.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 1999,2000 by Florian Bomers
  *
  *
@@ -21,10 +15,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.sampled.file;
 
@@ -51,7 +41,6 @@ public class WaveAudioFileWriter
                     AudioFileFormat.Type.WAVE
             };
 
-
     // IMPORTANT: this array depends on the AudioFormat.match() algorithm which takes
     //            AudioSystem.NOT_SPECIFIED into account !
     private static final AudioFormat[] AUDIO_FORMATS =
@@ -76,12 +65,13 @@ public class WaveAudioFileWriter
     }
 
     // overwritten for quicker and more accurate check
+    @Override
     protected boolean isAudioFormatSupportedImpl(AudioFormat format,
                                                  AudioFileFormat.Type fileType) {
         return WaveTool.getFormatCode(format) != WaveTool.WAVE_FORMAT_UNSPECIFIED;
     }
 
-
+    @Override
     protected AudioOutputStream getAudioOutputStream(AudioFormat audioFormat,
                                                      long lLengthInBytes,
                                                      AudioFileFormat.Type fileType,
@@ -93,4 +83,4 @@ public class WaveAudioFileWriter
 
 }
 
-/* WaveAudioFileWriter.java */
+

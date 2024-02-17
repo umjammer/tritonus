@@ -14,6 +14,7 @@ import java.io.*;
  * Reads data from the input channel and writes to the output stream
  */
 public class Capture extends Applet implements Runnable {
+
     TargetDataLine line;
     Thread thread;
     private Button startCaptureButton, stopCaptureButton;
@@ -44,7 +45,6 @@ public class Capture extends Applet implements Runnable {
         } else
             return super.action(event, arg);
     }
-
 
     public void debut() {
         System.out.println("start1");

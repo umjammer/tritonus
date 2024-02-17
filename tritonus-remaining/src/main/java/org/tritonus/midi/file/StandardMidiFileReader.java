@@ -1,10 +1,4 @@
 /*
- * StandardMidiFileReader.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 1999, 2000 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,10 +14,6 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.midi.file;
 
 import java.io.DataInputStream;
@@ -31,6 +21,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.net.URL;
 import java.nio.file.Files;
 import javax.sound.midi.InvalidMidiDataException;
@@ -44,17 +36,20 @@ import javax.sound.midi.SysexMessage;
 import javax.sound.midi.Track;
 import javax.sound.midi.spi.MidiFileReader;
 
-import org.tritonus.share.TDebug;
 import org.tritonus.share.midi.TMidiFileFormat;
+
+import static java.lang.System.getLogger;
 
 
 /**
- * TODO:
+ * TODO
  */
-public class StandardMidiFileReader
-        extends MidiFileReader {
+public class StandardMidiFileReader extends MidiFileReader {
+
+    private static final Logger logger= getLogger("org.tritonus.TraceAllExceptions");
+
     /**
-     * TODO:
+     * TODO
      */
     public static boolean CANCEL_RUNNING_STATUS_ON_META_AND_SYSEX = true;
 
@@ -64,12 +59,11 @@ public class StandardMidiFileReader
     private static final int STATUS_SYSEX = 3;
     private static final int STATUS_META = 4;
 
-
     /**
-     * TODO:
+     * TODO
      */
-    public MidiFileFormat getMidiFileFormat(InputStream inputStream)
-            throws InvalidMidiDataException, IOException {
+    @Override
+    public MidiFileFormat getMidiFileFormat(InputStream inputStream) throws InvalidMidiDataException, IOException {
         DataInputStream dataInputStream = new DataInputStream(inputStream);
         int nHeaderMagic = dataInputStream.readInt();
         if (nHeaderMagic != MidiConstants.HEADER_MAGIC) {
@@ -96,33 +90,18 @@ public class StandardMidiFileReader
         int nDivision = dataInputStream.readUnsignedShort();
         float fDivisionType;
         int nResolution;
-        if ((nDivision & 0x8000) != 0) //frame division
-        {
-            // TODO:
+        if ((nDivision & 0x8000) != 0) { // frame division
+            // TODO
             int nFrameType = -((nDivision >>> 8) & 0xFF);
-            switch (nFrameType) {
-            case 24:
-                fDivisionType = Sequence.SMPTE_24;
-                break;
-
-            case 25:
-                fDivisionType = Sequence.SMPTE_25;
-                break;
-
-            case 29:
-                fDivisionType = Sequence.SMPTE_30DROP;
-                break;
-
-            case 30:
-                fDivisionType = Sequence.SMPTE_30;
-                break;
-
-            default:
-                throw new InvalidMidiDataException("corrupt MIDI file: illegal frame division type");
-            }
+            fDivisionType = switch (nFrameType) {
+                case 24 -> Sequence.SMPTE_24;
+                case 25 -> Sequence.SMPTE_25;
+                case 29 -> Sequence.SMPTE_30DROP;
+                case 30 -> Sequence.SMPTE_30;
+                default -> throw new InvalidMidiDataException("corrupt MIDI file: illegal frame division type");
+            };
             nResolution = nDivision & 0xff;
-        } else    // BPM division
-        {
+        } else { // BPM division
             fDivisionType = Sequence.PPQ;
             nResolution = nDivision & 0x7fff;
         }
@@ -138,76 +117,67 @@ public class StandardMidiFileReader
         return midiFileFormat;
     }
 
-
     /**
-     * TODO:
+     * TODO
      */
-    public MidiFileFormat getMidiFileFormat(URL url)
-            throws InvalidMidiDataException, IOException {
+    @Override
+    public MidiFileFormat getMidiFileFormat(URL url) throws InvalidMidiDataException, IOException {
         try (InputStream inputStream = url.openStream()) {
             return getMidiFileFormat(inputStream);
         }
     }
 
-
     /**
-     * TODO:
+     * TODO
      */
-    public MidiFileFormat getMidiFileFormat(File file)
-            throws InvalidMidiDataException, IOException {
-        //inputStream = new BufferedInputStream(inputStream, 1024);
+    @Override
+    public MidiFileFormat getMidiFileFormat(File file) throws InvalidMidiDataException, IOException {
+//        inputStream = new BufferedInputStream(inputStream, 1024);
         try (InputStream inputStream = new FileInputStream(file)) {
             return getMidiFileFormat(inputStream);
         }
     }
 
-
     /**
-     * TODO:
+     * TODO
      */
-    public Sequence getSequence(URL url)
-            throws InvalidMidiDataException, IOException {
+    @Override
+    public Sequence getSequence(URL url) throws InvalidMidiDataException, IOException {
         InputStream inputStream = url.openStream();
         try {
             return getSequence(inputStream);
         } catch (InvalidMidiDataException | IOException e) {
-            if (TDebug.TraceAllExceptions) {
-                TDebug.out(e);
-            }
+            logger.log(Level.ERROR, e.getMessage(), e);
+
             inputStream.close();
             throw e;
         }
     }
 
-
     /**
-     * TODO:
+     * TODO
      */
-    public Sequence getSequence(File file)
-            throws InvalidMidiDataException, IOException {
+    @Override
+    public Sequence getSequence(File file) throws InvalidMidiDataException, IOException {
         InputStream inputStream = Files.newInputStream(file.toPath());
-        // inputStream = new BufferedInputStream(inputStream, 1024);
+//        inputStream = new BufferedInputStream(inputStream, 1024);
         try {
             return getSequence(inputStream);
         } catch (InvalidMidiDataException | IOException e) {
-            if (TDebug.TraceAllExceptions) {
-                TDebug.out(e);
-            }
+            logger.log(Level.ERROR, e.getMessage(), e);
+
             inputStream.close();
             throw e;
         }
     }
 
-
     /**
-     * TODO:
+     * TODO
      */
-    public Sequence getSequence(InputStream inputStream)
-            throws InvalidMidiDataException, IOException {
+    @Override
+    public Sequence getSequence(InputStream inputStream) throws InvalidMidiDataException, IOException {
         MidiFileFormat midiFileFormat = getMidiFileFormat(inputStream);
-        Sequence sequence = new Sequence(
-                midiFileFormat.getDivisionType(),
-                midiFileFormat.getResolution());
+        Sequence sequence = new Sequence(midiFileFormat.getDivisionType(), midiFileFormat.getResolution());
         DataInputStream dataInputStream = new DataInputStream(inputStream);
         int nNumTracks = ((TMidiFileFormat) midiFileFormat).getTrackCount();
         for (int nTrack = 0; nTrack < nNumTracks; nTrack++) {
@@ -217,12 +187,10 @@ public class StandardMidiFileReader
         return sequence;
     }
 
-
     /**
-     * TODO:
+     * TODO
      */
-    private void readTrack(DataInputStream dataInputStream, Track track)
-            throws InvalidMidiDataException, IOException {
+    private void readTrack(DataInputStream dataInputStream, Track track) throws InvalidMidiDataException, IOException {
         // search for a "MTrk" chunk
         while (true) {
             int nMagic = dataInputStream.readInt();
@@ -244,21 +212,20 @@ public class StandardMidiFileReader
         anRunningStatusByte[0] = -1;
         while (alRemainingBytes[0] > 0) {
             long lDeltaTicks = readVariableLengthQuantity(dataInputStream, alRemainingBytes);
-            // TDebug.out("delta ticks: " + lDeltaTicks);
+//            logger.log(Level.TRACE, "delta ticks: " + lDeltaTicks);
             lTicks += lDeltaTicks;
             MidiEvent event = readEvent(dataInputStream, alRemainingBytes, anRunningStatusByte, lTicks);
             track.add(event);
         }
     }
 
-
     /**
-     * TODO:
+     * TODO
      */
     private static MidiEvent readEvent(DataInputStream dataInputStream, long[] alRemainingBytes, int[] anRunningStatusByte, long lTicks)
             throws InvalidMidiDataException, IOException {
         int nStatusByte = readUnsignedByte(dataInputStream, alRemainingBytes);
-        // TDebug.out("status byte: " + nStatusByte);
+//        logger.log(Level.TRACE, "status byte: " + nStatusByte);
         MidiMessage message = null;
         boolean bRunningStatusApplies = false;
         int nSavedByte = 0;
@@ -335,31 +302,25 @@ public class StandardMidiFileReader
         return event;
     }
 
-
-    // TODO: use table
+    // TODO use table
 
     /**
-     * TODO:
+     * TODO
      */
     private static int getType(int nStatusByte) {
-        if (nStatusByte < 0xf0) // channel voice or mode command
-        {
+        if (nStatusByte < 0xf0) { // channel voice or mode command
             int nCommand = nStatusByte & 0xf0;
-            switch (nCommand) {
-            case 0x80: // note off
-            case 0x90: // note on
-            case 0xa0: // polyphonic key pressure
-            case 0xb0: // control change
-            case 0xe0: // pitch wheel change
-                return STATUS_TWO_BYTES;
-
-            case 0xc0: // program change
-            case 0xd0: // channel pressure
-                return STATUS_ONE_BYTE;
-
-            default:
-                return STATUS_NONE;
-            }
+            return switch (nCommand) { // note off
+                // note on
+                // polyphonic key pressure
+                // control change
+                // pitch wheel change
+                // program change
+                case 0x80, 0x90, 0xa0, 0xb0, 0xe0 -> STATUS_TWO_BYTES;
+                // channel pressure
+                case 0xc0, 0xd0 -> STATUS_ONE_BYTE;
+                default -> STATUS_NONE;
+            };
         } else if (nStatusByte == 0xf0 || nStatusByte == 0xf7) {
             return STATUS_SYSEX;
         } else if (nStatusByte == 0xff) {
@@ -369,9 +330,8 @@ public class StandardMidiFileReader
         }
     }
 
-
     /**
-     * TODO:
+     * TODO
      */
     public static long readVariableLengthQuantity(DataInputStream dataInputStream, long[] alRemainingBytes)
             throws InvalidMidiDataException, IOException {
@@ -382,31 +342,24 @@ public class StandardMidiFileReader
             nByteCount++;
             lValue <<= 7;
             lValue |= (nByte & 0x7f);
-            if (nByte < 128) // MSB is 0: last byte
-            {
+            if (nByte < 128) { // MSB is 0: last byte
                 return lValue;
             }
         }
-        throw new InvalidMidiDataException("not a MIDI file: unterminated variable-length quantity");
 
+        throw new InvalidMidiDataException("not a MIDI file: unterminated variable-length quantity");
     }
 
-
     /**
-     * TODO:
+     * TODO
      */
-    public static int readUnsignedByte(DataInputStream dataInputStream, long[] alRemainingBytes)
-            throws IOException {
+    public static int readUnsignedByte(DataInputStream dataInputStream, long[] alRemainingBytes) throws IOException {
         int nByte = dataInputStream.readUnsignedByte();
-// already done in DataInputStream.readUnsignedByte();
-//   if (nByte < 0)
-//   {
-//    throw new EOFException();
-//   }
+        // already done in DataInputStream.readUnsignedByte();
+//        if (nByte < 0) {
+//            throw new EOFException();
+//        }
         alRemainingBytes[0]--;
         return nByte;
     }
 }
-
-
-/* StandardMidiFileReader.java */

@@ -1,10 +1,4 @@
 /*
- * GlobalSemanticsCheck.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2002 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,10 +14,6 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.saol.compiler;
 
 import org.tritonus.saol.sablecc.node.AGlobaldeclGlobaldecl;
@@ -35,6 +25,7 @@ import org.tritonus.saol.sablecc.node.ASeqdefGlobaldef;
 
 public class GlobalSemanticsCheck
         extends IOGTCommonSemanticsCheck {
+
     private static final boolean DEBUG = true;
     private static final int[] LEGAL_VARIABLE_TYPES = new int[]
             {
@@ -45,7 +36,6 @@ public class GlobalSemanticsCheck
             };
 
     private VariableTable m_globalVariableTable;
-
 
     public GlobalSemanticsCheck(VariableTable globalVariableTable,
                                 NodeSemanticsTable nodeSemanticsTable) {
@@ -58,39 +48,43 @@ public class GlobalSemanticsCheck
 ////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
 
-
+    @Override
     public void inAGlobaldeclGlobaldecl(AGlobaldeclGlobaldecl node) {
     }
 
-
+    @Override
     public void outAGlobaldeclGlobaldecl(AGlobaldeclGlobaldecl node) {
     }
 
-
+    @Override
     public void inARtparamGlobaldef(ARtparamGlobaldef node) {
     }
 
+    @Override
     public void outARtparamGlobaldef(ARtparamGlobaldef node) {
     }
 
-
+    @Override
     public void inARoutedefGlobaldef(ARoutedefGlobaldef node) {
     }
 
+    @Override
     public void outARoutedefGlobaldef(ARoutedefGlobaldef node) {
     }
 
-
+    @Override
     public void inASenddefGlobaldef(ASenddefGlobaldef node) {
     }
 
+    @Override
     public void outASenddefGlobaldef(ASenddefGlobaldef node) {
     }
 
-
+    @Override
     public void inASeqdefGlobaldef(ASeqdefGlobaldef node) {
     }
 
+    @Override
     public void outASeqdefGlobaldef(ASeqdefGlobaldef node) {
     }
 
@@ -99,21 +93,20 @@ public class GlobalSemanticsCheck
 ////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
 
-
+    @Override
     protected VariableTable getOwnVariableTable() {
         return m_globalVariableTable;
     }
 
-
+    @Override
     protected VariableTable getGlobalVariableTable() {
         return null;
     }
 
-
+    @Override
     protected int[] getLegalVariableTypes() {
         return LEGAL_VARIABLE_TYPES;
     }
 }
 
 
-/* GlobalSemanticsCheck.java */

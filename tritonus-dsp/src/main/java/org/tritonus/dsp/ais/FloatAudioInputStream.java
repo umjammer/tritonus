@@ -1,8 +1,3 @@
-/*
- * FloatAudioInputStream.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2000 by Florian Bomers
@@ -21,10 +16,6 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.dsp.ais;
 
 import javax.sound.sampled.AudioFormat;
@@ -39,9 +30,9 @@ import org.tritonus.share.sampled.convert.TSynchronousFilteredAudioInputStream;
  */
 public abstract class FloatAudioInputStream
         extends TSynchronousFilteredAudioInputStream {
+
     private AudioFormat intermediateFloatBufferFormat;
     private FloatSampleBuffer m_floatBuffer = null;
-
 
     public FloatAudioInputStream(AudioInputStream sourceStream, AudioFormat targetFormat) {
         // transform the targetFormat so that
@@ -66,7 +57,7 @@ public abstract class FloatAudioInputStream
                 targetFormat.isBigEndian());
     }
 
-
+    @Override
     protected int convert(byte[] inBuffer, byte[] outBuffer, int outByteOffset, int inFrameCount) {
         int sampleCount = inFrameCount * getOriginalStream().getFormat().getChannels();
         int byteCount = sampleCount * (getOriginalStream().getFormat().getSampleSizeInBits() / 8);
@@ -79,9 +70,7 @@ public abstract class FloatAudioInputStream
         return inFrameCount;
     }
 
-
     protected abstract void convert(FloatSampleBuffer buffer);
 }
 
 
-/* FloatAudioInputStream.java */

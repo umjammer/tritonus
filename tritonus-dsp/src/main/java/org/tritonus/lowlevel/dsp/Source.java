@@ -1,10 +1,4 @@
 /*
- * Source.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2002 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,10 +14,6 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.lowlevel.dsp;
 
 
@@ -32,6 +22,7 @@ package org.tritonus.lowlevel.dsp;
  * Examples of such sources are noise generators and waveform generators.
  */
 public interface Source {
+
     /**
      * Returns one sample of the source.
      * Samples are normally in the range [-1.0 .. +1.0].
@@ -40,4 +31,3 @@ public interface Source {
 }
 
 
-/* Source.java */

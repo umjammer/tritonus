@@ -29,20 +29,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 public abstract class BaseDataOutputStreamTestCase {
-    private boolean m_bSeekable;
 
+    private boolean m_bSeekable;
 
     protected BaseDataOutputStreamTestCase(boolean bSeekable) {
         m_bSeekable = bSeekable;
     }
-
 
     protected abstract TDataOutputStream createDataOutputStream()
             throws Exception;
 
     protected abstract byte[] getWrittenData()
             throws Exception;
-
 
     @Test
     public void testWriting()
@@ -54,7 +52,6 @@ public abstract class BaseDataOutputStreamTestCase {
         checkTDataOutputStream2(abResultingData);
     }
 
-
     @Test
     public void testSupportsSeek()
             throws Exception {
@@ -62,14 +59,12 @@ public abstract class BaseDataOutputStreamTestCase {
         assertEquals(m_bSeekable, dataOutputStream.supportsSeek(), "seekability");
     }
 
-
     private void checkTDataOutputStream(TDataOutputStream dataOutputStream)
             throws Exception {
         dataOutputStream.writeLittleEndian32(0x12345678);
         dataOutputStream.writeLittleEndian16((short) 0x2345);
         dataOutputStream.close();
     }
-
 
     private void checkTDataOutputStream2(byte[] abResultingData)
             throws Exception {
@@ -79,4 +74,3 @@ public abstract class BaseDataOutputStreamTestCase {
 }
 
 
-/* BaseDataOutputStreamTestCase.java */

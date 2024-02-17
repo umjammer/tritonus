@@ -1,10 +1,4 @@
 /*
- * AudioUtils.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2000 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,10 +15,6 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.share.sampled;
 
 import java.util.Iterator;
@@ -37,6 +27,7 @@ import javax.sound.sampled.Mixer;
 
 @SuppressWarnings("cast")
 public class AudioUtils {
+
     public static long getLengthInBytes(AudioInputStream audioInputStream) {
         return getLengthInBytes(audioInputStream.getFormat(),
                 audioInputStream.getFrameLength());
@@ -54,7 +45,6 @@ public class AudioUtils {
 */
     }
 
-
     /**
      * if the passed value for lLength is
      * AudioSystem.NOT_SPECIFIED (unknown
@@ -71,11 +61,10 @@ public class AudioUtils {
         }
     }
 
-
     public static boolean containsFormat(AudioFormat sourceFormat,
-                                         Iterator possibleFormats) {
+                                         Iterator<AudioFormat> possibleFormats) {
         while (possibleFormats.hasNext()) {
-            AudioFormat format = (AudioFormat) possibleFormats.next();
+            AudioFormat format = possibleFormats.next();
             if (AudioFormats.matches(format, sourceFormat)) {
                 return true;
             }
@@ -285,7 +274,6 @@ public class AudioUtils {
         return java.nio.ByteOrder.nativeOrder().equals(java.nio.ByteOrder.BIG_ENDIAN);
     }
 
-
     //$$fb 2000-07-18: added these debugging functions
     public static String NS_or_number(int number) {
         return (number == AudioSystem.NOT_SPECIFIED) ? "NOT_SPECIFIED" : String.valueOf(number);
@@ -347,4 +335,3 @@ public class AudioUtils {
 }
 
 
-/* AudioUtils.java */

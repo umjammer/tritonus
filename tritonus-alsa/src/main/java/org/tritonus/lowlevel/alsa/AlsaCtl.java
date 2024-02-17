@@ -1,10 +1,4 @@
 /*
- * AlsaCtl.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2000 - 2001 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,33 +14,22 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.lowlevel.alsa;
 
-import org.tritonus.share.TDebug;
-
-
 /**
- * TODO:
+ * TODO
  */
 public class AlsaCtl {
+
     /**
      * Contains a pointer to snd_ctl_t.
      */
     @SuppressWarnings("unused")
     private long m_lNativeHandle;
 
-
     static {
         Alsa.loadNativeLibrary();
-        if (TDebug.TraceAlsaCtlNative) {
-            setTrace(true);
-        }
     }
-
 
     public static native int loadCard(int nCard);
 
@@ -58,7 +41,6 @@ public class AlsaCtl {
     public static native String getCardName(int nCard);
 
     public static native String getCardLongName(int nCard);
-
 
     /**
      * Open a ctl.
@@ -74,19 +56,15 @@ public class AlsaCtl {
      *                like SND_CTL_NONBLOCK, SND_CTL_ASYNC. Normally, set
      *                this to 0.
      */
-    public AlsaCtl(String strName, int nMode)
-            throws Exception {
+    public AlsaCtl(String strName, int nMode) throws Exception {
         if (open(strName, nMode) < 0) {
             throw new Exception();
         }
     }
 
-
-    public AlsaCtl(int nCard)
-            throws Exception {
+    public AlsaCtl(int nCard) throws Exception {
         this("hw:" + nCard, 0);
     }
-
 
     /**
      * Calls snd_ctl_open().
@@ -103,11 +81,10 @@ public class AlsaCtl {
      */
     public native int getCardInfo(AlsaCtlCardInfo cardInfo);
 
-
-    // TODO: ??
+    // TODO ??
     public native int[] getPcmDevices();
 
-    // TODO: remove
+    // TODO remove
 
     /**
      * anValues[0] device (inout)
@@ -125,9 +102,5 @@ public class AlsaCtl {
      */
     public native int getPcmInfo(int[] anValues, String[] astrValues);
 
-
     private static native void setTrace(boolean bTrace);
 }
-
-
-/* AlsaCtl.java */

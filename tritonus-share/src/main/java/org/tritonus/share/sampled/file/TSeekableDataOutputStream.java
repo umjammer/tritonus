@@ -1,8 +1,3 @@
-/*
- * TSeekableDataOutputStream.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999 by Florian Bomers
@@ -23,10 +18,6 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.share.sampled.file;
 
 import java.io.File;
@@ -43,17 +34,18 @@ import java.io.RandomAccessFile;
 public class TSeekableDataOutputStream
         extends RandomAccessFile
         implements TDataOutputStream {
+
     public TSeekableDataOutputStream(File file)
             throws IOException {
         super(file, "rw");
     }
 
-
+    @Override
     public boolean supportsSeek() {
         return true;
     }
 
-
+    @Override
     public void writeLittleEndian32(int value)
             throws IOException {
         writeByte(value & 0xFF);
@@ -62,7 +54,7 @@ public class TSeekableDataOutputStream
         writeByte((value >> 24) & 0xFF);
     }
 
-
+    @Override
     public void writeLittleEndian16(short value)
             throws IOException {
         writeByte(value & 0xFF);
@@ -71,4 +63,3 @@ public class TSeekableDataOutputStream
 }
 
 
-/* TSeekableDataOutputStream.java */

@@ -1,10 +1,4 @@
 /*
- * AlsaMidiDevice.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 1999 - 2001 by Matthias Pfisterer
  *
  *
@@ -22,12 +16,10 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.midi.device.alsa;
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.MidiUnavailableException;
@@ -39,16 +31,18 @@ import org.tritonus.lowlevel.alsa.AlsaSeqEvent;
 import org.tritonus.lowlevel.alsa.AlsaSeqPortSubscribe;
 import org.tritonus.lowlevel.alsa.AlsaSeqQueueStatus;
 import org.tritonus.share.GlobalInfo;
-import org.tritonus.share.TDebug;
 import org.tritonus.share.midi.TMidiDevice;
+
+import static java.lang.System.getLogger;
 
 
 /**
  * A representation of a physical MIDI port based on the ALSA sequencer.
  */
-public class AlsaMidiDevice
-        extends TMidiDevice
-        implements AlsaMidiIn.AlsaMidiInListener {
+public class AlsaMidiDevice extends TMidiDevice implements AlsaMidiIn.AlsaMidiInListener {
+
+    private static final Logger logger = getLogger("org.tritonus.TraceMidiDevice");
+
     /**
      * ALSA client id of the physical port.
      */
@@ -95,7 +89,6 @@ public class AlsaMidiDevice
      */
     private AlsaSeqEvent m_event = new AlsaSeqEvent();
 
-
     public AlsaMidiDevice(int nClient, int nPort, boolean bUseIn, boolean bUseOut) {
         this(new TMidiDevice.Info("ALSA MIDI port (" + nClient + ":" + nPort + ")",
                         GlobalInfo.getVendor(),
@@ -104,49 +97,40 @@ public class AlsaMidiDevice
                 nClient, nPort, bUseIn, bUseOut);
     }
 
-
     protected AlsaMidiDevice(MidiDevice.Info info, int nClient, int nPort, boolean bUseIn, boolean bUseOut) {
         super(info, bUseIn, bUseOut);
-        if (TDebug.TraceMidiDevice) {
-            TDebug.out("AlsaMidiDevice.<init>(): begin");
-        }
+        logger.log(Level.TRACE, "AlsaMidiDevice.<init>(): begin");
+
         m_nPhysicalClient = nClient;
         m_nPhysicalPort = nPort;
-        if (TDebug.TraceMidiDevice) {
-            TDebug.out("AlsaMidiDevice.<init>(): end");
-        }
-    }
 
+        logger.log(Level.TRACE, "AlsaMidiDevice.<init>(): end");
+    }
 
     protected AlsaSeq getAlsaSeq() {
         return m_alsaSeq;
     }
 
-
     protected int getOwnPort() {
         return m_nOwnPort;
     }
-
 
     protected int getPhysicalClient() {
         return m_nPhysicalClient;
     }
 
-
     protected int getPhysicalPort() {
         return m_nPhysicalPort;
     }
-
 
     private AlsaSeqQueueStatus getQueueStatus() {
         return m_queueStatus;
     }
 
-
+    @Override
     protected void openImpl() {
-        if (TDebug.TraceMidiDevice) {
-            TDebug.out("AlsaMidiDevice.openImpl(): begin");
-        }
+        logger.log(Level.TRACE, "AlsaMidiDevice.openImpl(): begin");
+
         // create an ALSA client...
         m_alsaSeq = new AlsaSeq("Tritonus Midi port handler");
         // ...and an ALSA port
@@ -157,15 +141,13 @@ public class AlsaMidiDevice
                 AlsaSeq.SND_SEQ_PORT_TYPE_APPLICATION,
                 0, 0, 0);
         if (getUseTransmitter()) {
-            /*
-             * AlsaMidiIn listens to incoming event on the
-             * MIDI port.
-             * It calls this.dequeueEvent() if
-             * it receives an event.
-             */
+            // AlsaMidiIn listens to incoming event on the
+            // MIDI port.
+            // It calls this.dequeueEvent() if
+            // it receives an event.
             m_nTimestampingQueue = getAlsaSeq().allocQueue();
             m_queueStatus = new AlsaSeqQueueStatus();
-            // TODO: stop queue
+            // TODO stop queue
             startQueue();
             m_alsaMidiIn = new AlsaMidiIn(
                     getAlsaSeq(), getOwnPort(),
@@ -183,60 +165,52 @@ public class AlsaMidiDevice
             getAlsaSeq().subscribePort(portSubscribe);
             portSubscribe.free();
         }
-        if (TDebug.TraceMidiDevice) {
-            TDebug.out("AlsaMidiDevice.openImpl(): end");
-        }
+
+        logger.log(Level.TRACE, "AlsaMidiDevice.openImpl(): end");
     }
 
-
+    @Override
     protected void closeImpl() {
-        if (TDebug.TraceMidiDevice) {
-            TDebug.out("AlsaMidiDevice.closeImpl(): begin");
-        }
+        logger.log(Level.TRACE, "AlsaMidiDevice.closeImpl(): begin");
+
         if (getUseTransmitter()) {
             m_alsaMidiIn.interrupt();
             m_alsaMidiIn = null;
             stopQueue();
-            // TODO: release timestamping queue
+            // TODO release timestamping queue
             m_queueStatus.free();
             m_queueStatus = null;
         }
-        // TODO:
-        // getAlsaSeq().destroyPort(getOwnPort());
+        // TODO
+//        getAlsaSeq().destroyPort(getOwnPort());
         getAlsaSeq().close();
         m_alsaSeq = null;
-        if (TDebug.TraceMidiDevice) {
-            TDebug.out("AlsaMidiDevice.closeImpl(): end");
-        }
+
+        logger.log(Level.TRACE, "AlsaMidiDevice.closeImpl(): end");
     }
 
-
     public long getMicroSecondPosition() {
-        if (TDebug.TraceMidiDevice) {
-            TDebug.out("AlsaMidiDevice.getMicroSecondPosition(): begin");
-        }
+        logger.log(Level.TRACE, "AlsaMidiDevice.getMicroSecondPosition(): begin");
+
         long lPosition = 0;
         if (m_queueStatus != null) {
             getAlsaSeq().getQueueStatus(getTimestampingQueue(), getQueueStatus());
             long lNanoSeconds = getQueueStatus().getRealTime();
             lPosition = lNanoSeconds / 1000;
         }
-        if (TDebug.TraceMidiDevice) {
-            TDebug.out("AlsaMidiDevice.getMicroSecondPosition(): end");
-        }
+
+        logger.log(Level.TRACE, "AlsaMidiDevice.getMicroSecondPosition(): end");
+
         return lPosition;
     }
-
 
     private void startQueue() {
         controlQueue(AlsaSeq.SND_SEQ_EVENT_START);
     }
 
-
     private void stopQueue() {
         controlQueue(AlsaSeq.SND_SEQ_EVENT_STOP);
     }
-
 
     private void controlQueue(int nType) {
         m_event.setCommon(nType,
@@ -248,65 +222,56 @@ public class AlsaMidiDevice
         getAlsaSeq().eventOutputDirect(m_event);
     }
 
-
     /**
      * Pass MidiMessage from Receivers to physical MIDI port.
      */
+    @Override
     protected void receive(MidiMessage message, long lTimeStamp) {
         if (isOpen()) {
             m_alsaMidiOut.enqueueMessage(message, lTimeStamp);
         }
     }
 
-
     // for AlsaMidiInListener
-    // passes events read from the device to the Transmitters
+
+    /** passes events read from the device to the Transmitters */
+    @Override
     public void dequeueEvent(MidiMessage message, long lTimestamp) {
-        if (TDebug.TraceMidiDevice) {
-            TDebug.out("AlsaMidiDevice.dequeueEvent(): message: " + message);
-        }
-        if (TDebug.TraceMidiDevice) {
-            TDebug.out("AlsaMidiDevice.dequeueEvent(): tick: " + lTimestamp);
-        }
+        logger.log(Level.TRACE, "AlsaMidiDevice.dequeueEvent(): message: " + message);
+
+        logger.log(Level.TRACE, "AlsaMidiDevice.dequeueEvent(): tick: " + lTimestamp);
+
         // send via superclass method
         sendImpl(message, lTimestamp);
     }
-
 
     private int getTimestampingQueue() {
         return m_nTimestampingQueue;
     }
 
-
-    public Receiver getReceiver()
-            throws MidiUnavailableException {
+    @Override
+    public Receiver getReceiver() throws MidiUnavailableException {
         if (!getUseReceiver()) {
             throw new MidiUnavailableException("Receivers are not supported by this device");
         }
         return new AlsaMidiDeviceReceiver();
     }
 
-
-    public Transmitter getTransmitter()
-            throws MidiUnavailableException {
+    @Override
+    public Transmitter getTransmitter() throws MidiUnavailableException {
         if (!getUseTransmitter()) {
             throw new MidiUnavailableException("Transmitters are not supported by this device");
         }
         return new AlsaMidiDeviceTransmitter();
     }
 
+    // inner classes ----
 
-/////////////////// INNER CLASSES //////////////////////////////////////
-
-    private class AlsaMidiDeviceReceiver
-            extends TReceiver
-            implements AlsaReceiver {
-
+    private class AlsaMidiDeviceReceiver extends TReceiver implements AlsaReceiver {
 
         public AlsaMidiDeviceReceiver() {
             super();
         }
-
 
         /**
          * Subscribe to the passed port.
@@ -317,6 +282,7 @@ public class AlsaMidiDevice
          * @return true if subscription was established,
          * false otherwise
          */
+        @Override
         public boolean subscribeTo(int nClient, int nPort) {
             try {
                 AlsaSeqPortSubscribe portSubscribe = new AlsaSeqPortSubscribe();
@@ -326,61 +292,52 @@ public class AlsaMidiDevice
                 portSubscribe.free();
                 return true;
             } catch (RuntimeException e) {
-                if (TDebug.TraceAllExceptions) {
-                    TDebug.out(e);
-                }
+                logger.log(Level.ERROR, e.getMessage(), e);
+
                 return false;
             }
         }
-
-
     }
 
+    private class AlsaMidiDeviceTransmitter extends TTransmitter {
 
-    private class AlsaMidiDeviceTransmitter
-            extends TTransmitter {
         private boolean m_bReceiverSubscribed;
-
 
         public AlsaMidiDeviceTransmitter() {
             super();
             m_bReceiverSubscribed = false;
         }
 
-
+        /**
+         * Try to establish a subscription of the Receiver
+         * to the ALSA seqencer client of the device this
+         * Transmitter belongs to.
+         */
+        @Override
         public void setReceiver(Receiver receiver) {
             super.setReceiver(receiver);
-            /*
-             * Try to establish a subscription of the Receiver
-             * to the ALSA seqencer client of the device this
-             * Transmitter belongs to.
-             */
             if (receiver instanceof AlsaReceiver) {
                 m_bReceiverSubscribed = ((AlsaReceiver) receiver).subscribeTo(getPhysicalClient(), getPhysicalPort());
             }
         }
 
-
+        /**
+         * Send message via Java methods only if no
+         * subscription was established. If there is a
+         * subscription, the message is routed inside
+         * the ALSA sequencer.
+         */
+        @Override
         public void send(MidiMessage message, long lTimeStamp) {
-            /*
-             * Send message via Java methods only if no
-             * subscription was established. If there is a
-             * subscription, the message is routed inside of
-             * the ALSA sequencer.
-             */
             if (!m_bReceiverSubscribed) {
                 super.send(message, lTimeStamp);
             }
         }
 
-
+        @Override
         public void close() {
             super.close();
-            // TODO: remove subscription
+            // TODO remove subscription
         }
     }
 }
-
-
-/* AlsaMidiDevice.java */
-

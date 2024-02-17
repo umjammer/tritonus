@@ -29,6 +29,7 @@ import org.tritonus.share.sampled.TConversionTool;
 
 
 public final class GSMDecoder {
+
     private static final byte GSM_MAGIC = 0x0d;
 
     private static final int[] FAC = {18431, 20479, 22527, 24575, 26623,
@@ -41,7 +42,7 @@ public final class GSMDecoder {
 
     private GsmFrameFormat gsmFrameFormat;
 
-    private BitDecoder bitDecoder = new BitDecoder(null, 0,
+    private final BitDecoder bitDecoder = new BitDecoder(null, 0,
             AllocationMode.LSBitFirst);
 
     private int[] m_dp0 = new int[280];
@@ -770,5 +771,5 @@ public final class GSMDecoder {
 
 }
 
-/* GSMDecoder.java */
+
 

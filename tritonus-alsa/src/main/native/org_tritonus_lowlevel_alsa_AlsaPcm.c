@@ -1,7 +1,6 @@
 /*
  *	org_tritonus_lowlevel_alsa_AlsaPcm.c
  */
-
 /*
  *  Copyright (c) 2000 - 2001 by Matthias Pfisterer
  *

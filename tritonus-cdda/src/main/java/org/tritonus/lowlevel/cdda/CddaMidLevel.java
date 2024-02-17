@@ -1,10 +1,4 @@
 /*
- * CddaMidLevel.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2001 by Matthias Pfisterer
  *
  *
@@ -22,10 +16,6 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.lowlevel.cdda;
 
 import java.io.IOException;
@@ -38,13 +28,13 @@ import javax.sound.sampled.AudioInputStream;
  * Mid-level interface definition for reading CDs
  */
 public interface CddaMidLevel {
+
     /**
      * Size of a cdda frame in bytes.
      */
     int FRAME_SIZE = 2352;
 
-
-    // TODO: document!!
+    // TODO document!!
 
     /**
      * Gives the available CDROM devices.
@@ -56,8 +46,7 @@ public interface CddaMidLevel {
      * String starts with exactely one '/'.
      * Should only those drives returned that have an audio CD in?
      */
-    Iterator getDevices();
-
+    Iterator<String> getDevices();
 
     /**
      * Gives the default drive.
@@ -69,7 +58,6 @@ public interface CddaMidLevel {
      */
     String getDefaultDevice();
 
-
     InputStream getTocAsXml(String strDevice)
             throws IOException;
 
@@ -78,4 +66,3 @@ public interface CddaMidLevel {
 }
 
 
-/* CddaMidLevel.java */

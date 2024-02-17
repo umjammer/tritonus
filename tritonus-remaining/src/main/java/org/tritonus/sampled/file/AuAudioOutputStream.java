@@ -1,8 +1,3 @@
-/*
- * AuAudioOutputStream.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2000,2001 by Florian Bomers
@@ -23,19 +18,18 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.sampled.file;
 
 import java.io.IOException;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 
-import org.tritonus.share.TDebug;
 import org.tritonus.share.sampled.file.TAudioOutputStream;
 import org.tritonus.share.sampled.file.TDataOutputStream;
+
+import static java.lang.System.getLogger;
 
 
 /**
@@ -47,7 +41,9 @@ import org.tritonus.share.sampled.file.TDataOutputStream;
 
 public class AuAudioOutputStream extends TAudioOutputStream {
 
-    private static String description = "Created by Tritonus";
+    private static final Logger logger= getLogger("org.tritonus.TraceAudioOutputStream");
+
+    private static final String description = "Created by Tritonus";
 
     /**
      * Writes a null-terminated ascii string s to f.
@@ -56,7 +52,7 @@ public class AuAudioOutputStream extends TAudioOutputStream {
      * @throws IOException Write error.
      */
     protected static void writeText(TDataOutputStream dos, String s) throws IOException {
-        if (s.length() > 0) {
+        if (!s.isEmpty()) {
             dos.writeBytes(s);
             dos.writeByte(0);  // pour terminer le texte
             if ((s.length() % 2) == 0) {
@@ -70,7 +66,7 @@ public class AuAudioOutputStream extends TAudioOutputStream {
      * Returns number of bytes that have to written for string s (with alignment)
      */
     protected static int getTextLength(String s) {
-        if (s.length() == 0) {
+        if (s.isEmpty()) {
             return 0;
         } else {
             return (s.length() + 2) & 0xFFFFFFFE;
@@ -95,23 +91,20 @@ public class AuAudioOutputStream extends TAudioOutputStream {
         requireSign8bit(true);
         // AU requires big endian
         requireEndianness(true);
-        if (TDebug.TraceAudioOutputStream) {
-            TDebug.out("Writing AU: " + audioFormat.getSampleSizeInBits()
-                    + " bits, " + audioFormat.getEncoding());
-        }
+
+        logger.log(Level.TRACE, "Writing AU: " + audioFormat.getSampleSizeInBits() +
+                    " bits, " + audioFormat.getEncoding());
     }
 
+    @Override
     protected void writeHeader() throws IOException {
-        if (TDebug.TraceAudioOutputStream) {
-            TDebug.out("AuAudioOutputStream.writeHeader(): called.");
-        }
+        logger.log(Level.TRACE, "AuAudioOutputStream.writeHeader(): called.");
+
         AudioFormat format = getFormat();
         long lLength = getLength();
         TDataOutputStream dos = getDataOutputStream();
-        if (TDebug.TraceAudioOutputStream) {
-            TDebug.out("AuAudioOutputStream.writeHeader(): AudioFormat: " + format);
-            TDebug.out("AuAudioOutputStream.writeHeader(): length: " + lLength);
-        }
+        logger.log(Level.TRACE, "AuAudioOutputStream.writeHeader(): AudioFormat: " + format);
+        logger.log(Level.TRACE, "AuAudioOutputStream.writeHeader(): length: " + lLength);
 
         dos.writeInt(AuTool.AU_HEADER_MAGIC);
         dos.writeInt(AuTool.DATA_OFFSET + getTextLength(description));
@@ -122,6 +115,7 @@ public class AuAudioOutputStream extends TAudioOutputStream {
         writeText(dos, description);
     }
 
+    @Override
     protected void patchHeader() throws IOException {
         TDataOutputStream tdos = getDataOutputStream();
         tdos.seek(0);
@@ -130,4 +124,4 @@ public class AuAudioOutputStream extends TAudioOutputStream {
     }
 }
 
-/* AuAudioOutputStream.java */
+

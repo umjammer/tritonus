@@ -1,10 +1,4 @@
 /*
- * EsdMixerProvider.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 1999 - 2002 by Matthias Pfisterer
  *
  *
@@ -22,29 +16,29 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.sampled.mixer.esd;
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
+
 import org.tritonus.lowlevel.esd.Esd;
-import org.tritonus.share.TDebug;
 import org.tritonus.share.sampled.mixer.TMixerProvider;
 
+import static java.lang.System.getLogger;
 
-public class EsdMixerProvider
-        extends TMixerProvider {
+
+public class EsdMixerProvider extends TMixerProvider {
+
+    private static final Logger logger = getLogger("org.tritonus.TraceMixerProvider");
+
     private static boolean sm_bInitialized = false;
-
 
     public EsdMixerProvider() {
         super();
-        if (TDebug.TraceMixerProvider) {
-            TDebug.out("EsdMixerProvider.<init>(): begin");
-        }
+        logger.log(Level.TRACE, "EsdMixerProvider.<init>(): begin");
+
         if (!sm_bInitialized && !isDisabled()) {
-            /// TODO: adapt!
+            /// TODO adapt!
             if (!Esd.isLibraryAvailable()) {
                 disable();
             } else {
@@ -52,27 +46,19 @@ public class EsdMixerProvider
                 sm_bInitialized = true;
             }
         } else {
-            if (TDebug.TraceMixerProvider) {
-                TDebug.out("EsdMixerProvider.<init>(): already initialized or disabled");
-            }
+            logger.log(Level.TRACE, "EsdMixerProvider.<init>(): already initialized or disabled");
+
         }
 
-        if (TDebug.TraceMixerProvider) {
-            TDebug.out("EsdMixerProvider.<init>(): end");
-        }
+        logger.log(Level.TRACE, "EsdMixerProvider.<init>(): end");
     }
 
-
+    @Override
     protected void staticInit() {
-        if (TDebug.TraceMixerProvider) {
-            TDebug.out("EsdMixerProvider.staticInit(): begin");
-        }
+        logger.log(Level.TRACE, "EsdMixerProvider.staticInit(): begin");
+
         addMixer(new EsdMixer());
-        if (TDebug.TraceMixerProvider) {
-            TDebug.out("EsdMixerProvider.staticInit(): end");
-        }
+
+        logger.log(Level.TRACE, "EsdMixerProvider.staticInit(): end");
     }
 }
-
-
-/* EsdMixerProvider.java */

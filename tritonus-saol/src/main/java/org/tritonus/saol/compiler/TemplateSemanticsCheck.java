@@ -1,10 +1,4 @@
 /*
- * TemplateSemanticsCheck.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2002 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,17 +14,14 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.saol.compiler;
 
 
 public class TemplateSemanticsCheck
         extends IOTCommonSemanticsCheck {
+
     private static final boolean DEBUG = true;
-    // TODO: verify
+    // TODO verify
     private static final int[] LEGAL_VARIABLE_TYPES = new int[]
             {
                     WidthAndRate.RATE_I,
@@ -41,7 +32,6 @@ public class TemplateSemanticsCheck
 
     private VariableTable m_globalVariableTable;
     private VariableTable m_localVariableTable;
-
 
     public TemplateSemanticsCheck(VariableTable globalVariableTable,
                                   VariableTable localVariableTable,
@@ -61,21 +51,20 @@ public class TemplateSemanticsCheck
 ////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
 
-
+    @Override
     protected VariableTable getOwnVariableTable() {
         return m_localVariableTable;
     }
 
-
+    @Override
     protected VariableTable getGlobalVariableTable() {
         return m_globalVariableTable;
     }
 
-
+    @Override
     protected int[] getLegalVariableTypes() {
         return LEGAL_VARIABLE_TYPES;
     }
 }
 
 
-/* TemplateSemanticsCheck.java */

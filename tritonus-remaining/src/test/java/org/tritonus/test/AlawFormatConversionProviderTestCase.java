@@ -1,7 +1,6 @@
 /*
  * AlawFormatConversionProviderTestCase.java
  */
-
 /*
  *  Copyright (c) 2001 - 2002 by Matthias Pfisterer
  *
@@ -26,10 +25,10 @@ import org.junit.jupiter.api.Disabled;
 @Disabled
 public class AlawFormatConversionProviderTestCase
         extends BaseFormatConversionProviderTestCase {
+
     public AlawFormatConversionProviderTestCase() {
         setResourcePrefix("alaw");
     }
 }
 
 
-/* AlawFormatConversionProviderTestCase.java */

@@ -1,10 +1,4 @@
 /*
- * InstrumentSemanticsCheck.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2002 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,10 +14,6 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.saol.compiler;
 
 import org.tritonus.saol.sablecc.node.AInstrdeclInstrdecl;
@@ -33,6 +23,7 @@ import org.tritonus.saol.sablecc.node.AMiditagMiditag;
 
 public class InstrumentSemanticsCheck
         extends IOTCommonSemanticsCheck {
+
     private static final boolean DEBUG = true;
     private static final int[] LEGAL_VARIABLE_TYPES = new int[]
             {
@@ -44,7 +35,6 @@ public class InstrumentSemanticsCheck
 
     private VariableTable m_globalVariableTable;
     private VariableTable m_localVariableTable;
-
 
     public InstrumentSemanticsCheck(VariableTable globalVariableTable,
                                     VariableTable localVariableTable,
@@ -59,7 +49,7 @@ public class InstrumentSemanticsCheck
 ////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
 
-
+    @Override
     public void inAInstrdeclInstrdecl(AInstrdeclInstrdecl node) {
 //   String strInstrumentName = node.getIdentifier().getText();
 //   m_strClassName = PACKAGE_PREFIX + strInstrumentName;
@@ -80,7 +70,7 @@ public class InstrumentSemanticsCheck
 //   m_aMethods[METHOD_CONSTR].appendInstruction(invokeSuperInstruction);
     }
 
-
+    @Override
     public void outAInstrdeclInstrdecl(AInstrdeclInstrdecl node) {
 //   for (int i = 0; i < m_aMethods.length; i++)
 //   {
@@ -105,17 +95,19 @@ public class InstrumentSemanticsCheck
 //   }
     }
 
-
+    @Override
     public void inAMiditagMiditag(AMiditagMiditag node) {
     }
 
+    @Override
     public void outAMiditagMiditag(AMiditagMiditag node) {
     }
 
-
+    @Override
     public void inAIntListIntList(AIntListIntList node) {
     }
 
+    @Override
     public void outAIntListIntList(AIntListIntList node) {
     }
 
@@ -124,21 +116,20 @@ public class InstrumentSemanticsCheck
 ////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
 
-
+    @Override
     protected VariableTable getOwnVariableTable() {
         return m_localVariableTable;
     }
 
-
+    @Override
     protected VariableTable getGlobalVariableTable() {
         return m_globalVariableTable;
     }
 
-
+    @Override
     protected int[] getLegalVariableTypes() {
         return LEGAL_VARIABLE_TYPES;
     }
 }
 
 
-/* InstrumentSemanticsCheck.java */

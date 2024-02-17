@@ -32,6 +32,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  */
 public class GetChannelsTestCase
         extends BaseSynthesizerTestCase {
+
+    @Override
     protected void checkSynthesizer(Synthesizer synth)
             throws Exception {
         MidiChannel[] channels;
@@ -53,4 +55,3 @@ public class GetChannelsTestCase
 }
 
 
-/* GetChannelsTestCase.java */

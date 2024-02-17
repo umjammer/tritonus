@@ -1,8 +1,3 @@
-/*
- * GSMAudioFileWriter.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2000 by Florian Bomers
@@ -23,18 +18,17 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.sampled.file.gsm;
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.util.Arrays;
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioFormat;
 
-import org.tritonus.share.TDebug;
 import org.tritonus.share.sampled.file.THeaderlessAudioFileWriter;
+
+import static java.lang.System.getLogger;
 
 
 /**
@@ -43,31 +37,23 @@ import org.tritonus.share.sampled.file.THeaderlessAudioFileWriter;
  * @author Florian Bomers
  * @author Matthias Pfisterer
  */
-public class GSMAudioFileWriter
-        extends THeaderlessAudioFileWriter {
-    private static final AudioFileFormat.Type[] FILE_TYPES =
-            {
-                    new AudioFileFormat.Type("GSM", "gsm")
-            };
+public class GSMAudioFileWriter extends THeaderlessAudioFileWriter {
 
-    private static final AudioFormat[] AUDIO_FORMATS =
-            {
-                    new AudioFormat(new AudioFormat.Encoding("GSM0610"), 8000.0F, ALL, 1, 33, 50.0F, false),
-                    new AudioFormat(new AudioFormat.Encoding("GSM0610"), 8000.0F, ALL, 1, 33, 50.0F, true),
-            };
+    private static final Logger logger = getLogger("org.tritonus.TraceAudioFileWriter");
 
+    private static final AudioFileFormat.Type[] FILE_TYPES = {
+            new AudioFileFormat.Type("GSM", "gsm")
+    };
+
+    private static final AudioFormat[] AUDIO_FORMATS = {
+            new AudioFormat(new AudioFormat.Encoding("GSM0610"), 8000.0F, ALL, 1, 33, 50.0F, false),
+            new AudioFormat(new AudioFormat.Encoding("GSM0610"), 8000.0F, ALL, 1, 33, 50.0F, true),
+    };
 
     public GSMAudioFileWriter() {
-        super(Arrays.asList(FILE_TYPES),
-                Arrays.asList(AUDIO_FORMATS));
-        if (TDebug.TraceAudioFileWriter) {
-            TDebug.out("GSMAudioFileWriter.<init>(): begin");
-        }
-        if (TDebug.TraceAudioFileWriter) {
-            TDebug.out("GSMAudioFileWriter.<init>(): end");
-        }
+        super(Arrays.asList(FILE_TYPES), Arrays.asList(AUDIO_FORMATS));
+        logger.log(Level.TRACE, "GSMAudioFileWriter.<init>(): begin");
+
+        logger.log(Level.TRACE, "GSMAudioFileWriter.<init>(): end");
     }
 }
-
-
-/* GSMAudioFileWriter.java */

@@ -1,10 +1,4 @@
 /*
- * Page.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2000 - 2001 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,113 +15,203 @@
  */
 
 /*
-|<---            this code is formatted to fit into 80 columns             --->|
+|<---            this code is formatted to fit into 80 columns             --.|
 */
 
 package org.tritonus.lowlevel.ogg;
 
-import org.tritonus.share.TDebug;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
+
+import com.sun.jna.NativeLong;
+import vavi.sound.sampled.jna.ogg.OggLibrary;
+import vavi.sound.sampled.jna.ogg.ogg_page;
+
+import static java.lang.System.getLogger;
 
 
 /**
  * Wrapper for ogg_page.
  */
 public class Page {
-    static {
-        Ogg.loadNativeLibrary();
-        if (TDebug.TraceOggNative) {
-            setTrace(true);
-        }
-    }
+
+    private static final Logger logger= getLogger("org.tritonus.TraceOggNative");
 
     /**
      * Holds the pointer to ogg_page
-     * for the native code.
+     * for the code.
      * This must be long to be 64bit-clean.
      */
-    @SuppressWarnings("unused")
-    private long m_lNativeHandle;
+    private ogg_page handle;
 
+    public ogg_page getHandle() {
+        return handle;
+    }
 
     public Page() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("Page.<init>(): begin");
-        }
+        logger.log(Level.TRACE, "<init>: begin");
+
         int nReturn = malloc();
         if (nReturn < 0) {
             throw new RuntimeException("malloc of ogg_page failed");
         }
-        if (TDebug.TraceOggNative) {
-            TDebug.out("Page.<init>(): end");
-        }
+
+        logger.log(Level.TRACE, "<init>: end");
     }
 
+    private int malloc() {
+        logger.log(Level.TRACE, "malloc: begin");
 
-    protected void finalize() {
-        // TODO: call free()
-        // call super.finalize() first or last?
-        // and introduce a flag if free() has already been called?
+        handle = new ogg_page();
+        logger.log(Level.TRACE, String.format("malloc: handle: %s", handle));
+
+        logger.log(Level.TRACE, "malloc: end");
+
+        return 0;
     }
 
+    public void free() {
+        logger.log(Level.TRACE, "free: begin");
 
-    private native int malloc();
+        handle = null;
 
-    public native void free();
-
+        logger.log(Level.TRACE, "free: end");
+    }
 
     /**
      * Calls ogg_page_version().
      */
-    public native int getVersion();
+    public int getVersion() {
+        logger.log(Level.TRACE, "getVersion: begin");
+
+        int nReturn = OggLibrary.INSTANCE.ogg_page_version(handle);
+
+        logger.log(Level.TRACE, "getVersion: end");
+
+        return nReturn;
+    }
 
     /**
      * Calls ogg_page_continued().
      */
-    public native boolean isContinued();
+    public boolean isContinued() {
+        logger.log(Level.TRACE, "isContinued: begin");
+
+        int nReturn = OggLibrary.INSTANCE.ogg_page_continued(handle);
+
+        logger.log(Level.TRACE, "isContinued: end");
+
+        return nReturn != 0;
+    }
 
     /**
      * Calls ogg_page_packets().
      */
-    public native int getPackets();
+    public int getPackets() {
+        logger.log(Level.TRACE, "getPackets: begin");
+
+        int nReturn = OggLibrary.INSTANCE.ogg_page_packets(handle);
+
+        logger.log(Level.TRACE, "getPackets: end");
+
+        return nReturn;
+    }
 
     /**
      * Calls ogg_page_bos().
      */
-    public native boolean isBos();
+    public boolean isBos() {
+        logger.log(Level.TRACE, "isBos: begin");
+
+        int nReturn = OggLibrary.INSTANCE.ogg_page_bos(handle);
+
+        logger.log(Level.TRACE, "isBos: end");
+
+        return nReturn != 0;
+    }
 
     /**
      * Calls ogg_page_eos().
      */
-    public native boolean isEos();
+    public boolean isEos() {
+        logger.log(Level.TRACE, "isEos: begin");
+
+        int nReturn = OggLibrary.INSTANCE.ogg_page_eos(handle);
+
+        logger.log(Level.TRACE, "isEos: end");
+
+        return nReturn != 0;
+    }
 
     /**
      * Calls ogg_page_granulepos().
      */
-    public native long getGranulePos();
+    public long getGranulePos() {
+        logger.log(Level.TRACE, "getGranulePos: begin");
+
+        long lReturn = OggLibrary.INSTANCE.ogg_page_granulepos(handle);
+
+        logger.log(Level.TRACE, "getGranulePos: end");
+
+        return lReturn;
+    }
 
     /**
      * Calls ogg_page_serialno().
      */
-    public native int getSerialNo();
+    public int getSerialNo() {
+        logger.log(Level.TRACE, "getSerialNo: begin");
+
+        int nReturn = OggLibrary.INSTANCE.ogg_page_serialno(handle);
+
+        logger.log(Level.TRACE, "getSerialNo: end");
+
+        return nReturn;
+    }
 
     /**
      * Calls ogg_page_pageno().
      */
-    public native int getPageNo();
+    public int getPageNo() {
+        logger.log(Level.TRACE, "getPageNo: begin");
+
+        NativeLong nReturn = OggLibrary.INSTANCE.ogg_page_pageno(handle);
+
+        logger.log(Level.TRACE, "getPageNo: end");
+
+        return nReturn.intValue();
+    }
 
     /**
      * Calls ogg_page_checksum_set().
      */
-    public native void setChecksum();
+    public void setChecksum() {
+        logger.log(Level.TRACE, "setChecksum: begin");
 
+        OggLibrary.INSTANCE.ogg_page_checksum_set(handle);
 
-    public native byte[] getHeader();
+        logger.log(Level.TRACE, "setChecksum: end");
+    }
 
-    public native byte[] getBody();
+    public byte[] getHeader() {
+        logger.log(Level.TRACE, "getHeader: begin");
 
+        byte[] byteArray = new byte[handle.header_len.intValue()];
+        handle.header.read(0, byteArray, 0, handle.header_len.intValue());
 
-    private static native void setTrace(boolean bTrace);
+        logger.log(Level.TRACE, "getHeader: end");
+
+        return byteArray;
+    }
+
+    public byte[] getBody() {
+        logger.log(Level.TRACE, "getBody: begin");
+
+        byte[] byteArray = new byte[handle.body_len.intValue()];
+        handle.body.read(0, byteArray, 0, handle.body_len.intValue());
+
+        logger.log(Level.TRACE, "getBody: end");
+
+        return byteArray;
+    }
 }
-
-
-/* Page.java */

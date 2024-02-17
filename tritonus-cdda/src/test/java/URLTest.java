@@ -5,10 +5,10 @@ import org.tritonus.sampled.cdda.CddaURLStreamHandlerFactory;
 
 
 public class URLTest {
+
     static {
         URL.setURLStreamHandlerFactory(new CddaURLStreamHandlerFactory());
     }
-
 
     public static void main(String[] args) {
         String strURL = args[0];

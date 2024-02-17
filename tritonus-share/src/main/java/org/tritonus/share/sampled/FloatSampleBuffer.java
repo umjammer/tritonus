@@ -1,8 +1,3 @@
-/*
- * FloatSampleBuffer.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2000-2006 by Florian Bomers

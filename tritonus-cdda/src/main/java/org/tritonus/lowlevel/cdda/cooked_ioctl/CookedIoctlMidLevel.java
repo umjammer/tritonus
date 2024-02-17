@@ -1,10 +1,4 @@
 /*
- * CookedIoctlMidLevel.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2001 by Matthias Pfisterer
  *
  *
@@ -22,10 +16,6 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.lowlevel.cdda.cooked_ioctl;
 
 import java.io.ByteArrayInputStream;
@@ -33,6 +23,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -41,48 +33,45 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 
 import org.tritonus.lowlevel.cdda.CddaMidLevel;
-import org.tritonus.share.TDebug;
 import org.tritonus.share.sampled.convert.TAsynchronousFilteredAudioInputStream;
 
+import static java.lang.System.getLogger;
 
-public class CookedIoctlMidLevel
-        implements CddaMidLevel {
-    private static int PCM_FRAMES_PER_CDDA_FRAME = 588;
-    private static AudioFormat CDDA_FORMAT = new AudioFormat(
+
+public class CookedIoctlMidLevel implements CddaMidLevel {
+
+    private static final Logger logger = getLogger("org.tritonus.TraceCdda");
+
+    private static final int PCM_FRAMES_PER_CDDA_FRAME = 588;
+    private static final AudioFormat CDDA_FORMAT = new AudioFormat(
             AudioFormat.Encoding.PCM_SIGNED,
             44100.0F, 16, 2, 4, 44100.0F, false);
 
-
     public CookedIoctlMidLevel() {
-        if (TDebug.TraceCdda) {
-            TDebug.out("CookedIoctlMidLevel.<init>(): begin");
-        }
-        if (TDebug.TraceCdda) {
-            TDebug.out("CookedIoctlMidLevel.<init>(): end");
-        }
+        logger.log(Level.TRACE, "CookedIoctlMidLevel.<init>(): begin");
+
+        logger.log(Level.TRACE, "CookedIoctlMidLevel.<init>(): end");
     }
 
-
-    public Iterator getDevices() {
-        // TODO: hack!! should be replaced by a real search
+    @Override
+    public Iterator<String> getDevices() {
+        // TODO hack!! should be replaced by a real search
         String[] astrDevices = {"/dev/cdrom"};
-        // TODO: should make list immutable
+        // TODO should make list immutable
         List<String> devicesList = Arrays.asList(astrDevices);
-        Iterator iterator = devicesList.iterator();
+        Iterator<String> iterator = devicesList.iterator();
         return iterator;
     }
 
-
+    @Override
     public String getDefaultDevice() {
         return "/dev/cdrom";
     }
 
+    @Override
+    public InputStream getTocAsXml(String strDevice) throws IOException {
+        logger.log(Level.TRACE, "CookedIoctlMidLevel.getTocAsXML(): begin");
 
-    public InputStream getTocAsXml(String strDevice)
-            throws IOException {
-        if (TDebug.TraceCdda) {
-            TDebug.out("CookedIoctlMidLevel.getTocAsXML(): begin");
-        }
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream out = new PrintStream(baos);
         int[] anValues = new int[2];
@@ -111,36 +100,29 @@ public class CookedIoctlMidLevel
         byte[] abData = baos.toByteArray();
         ByteArrayInputStream bais = new ByteArrayInputStream(abData);
         cookedIoctl.close();
-        if (TDebug.TraceCdda) {
-            TDebug.out("CookedIoctlMidLevel.getTocAsXML(): end");
-        }
+
+        logger.log(Level.TRACE, "CookedIoctlMidLevel.getTocAsXML(): end");
+
         return bais;
     }
 
+    @Override
+    public AudioInputStream getTrack(String strDevice, int nTrack) throws IOException {
+        logger.log(Level.TRACE, "CookedIoctlMidLevel.getInputStream(): begin");
 
-    public AudioInputStream getTrack(String strDevice, int nTrack)
-            throws IOException {
-        if (TDebug.TraceCdda) {
-            TDebug.out("CookedIoctlMidLevel.getInputStream(): begin");
-        }
         AudioInputStream audioInputStream = new CddaAudioInputStream(strDevice, nTrack);
-        if (TDebug.TraceCdda) {
-            TDebug.out("CookedIoctlMidLevel.getInputStream(): end");
-        }
+
+        logger.log(Level.TRACE, "CookedIoctlMidLevel.getInputStream(): end");
+
         return audioInputStream;
     }
 
+    private static class CddaAudioInputStream extends TAsynchronousFilteredAudioInputStream {
 
-    private static class CddaAudioInputStream
-            extends TAsynchronousFilteredAudioInputStream {
         private static final int BUFFER_SIZE = CddaMidLevel.FRAME_SIZE;
 
-
-        /**
-         *
-         */
+        /** */
         private CookedIoctl m_cookedIoctl;
-
 
         /**
          * This variable gets initialized to the total number of cdda
@@ -149,13 +131,11 @@ public class CookedIoctlMidLevel
          */
         private int m_nCddaFrameCount;
 
-
         /**
          * This variable contains the number of the cdda
          * frame where the current track begins.
          */
         private int m_nStartFrame;
-
 
         /**
          * This variable contains the number of the cdda
@@ -163,12 +143,10 @@ public class CookedIoctlMidLevel
          */
         private int m_nEndFrame;
 
-
         /**
          * Buffer for reading cdda frames.
          */
         private byte[] m_abData;
-
 
         /**
          * Track number.
@@ -176,12 +154,9 @@ public class CookedIoctlMidLevel
         private int m_nTrack;
 
         public CddaAudioInputStream(String strDevice, int nTrack) {
-            super(CDDA_FORMAT,
-                    AudioSystem.NOT_SPECIFIED
-                    /*getTrackLengthInPcmFrames()*/);
-            if (TDebug.TraceCdda) {
-                TDebug.out("CddaAudioInputStream.<init>(): begin");
-            }
+            super(CDDA_FORMAT, AudioSystem.NOT_SPECIFIED /* getTrackLengthInPcmFrames() */);
+            logger.log(Level.TRACE, "CddaAudioInputStream.<init>(): begin");
+
             m_nTrack = nTrack;
             int[] anValues = new int[2];
             int[] anStartFrame = new int[100];
@@ -204,11 +179,9 @@ public class CookedIoctlMidLevel
             // !!! writing to protected superclass variable !!!
             frameLength = getTrackLengthInPcmFrames();
             m_abData = new byte[BUFFER_SIZE];
-            if (TDebug.TraceCdda) {
-                TDebug.out("CddaAudioInputStream.<init>(): end");
-            }
-        }
 
+            logger.log(Level.TRACE, "CddaAudioInputStream.<init>(): end");
+        }
 
         private long getTrackLengthInPcmFrames() {
             int nCddaFrames = getTrackLengthInCddaFrames();
@@ -216,88 +189,68 @@ public class CookedIoctlMidLevel
             return lLength;
         }
 
-
         private int getTrackLengthInCddaFrames() {
             int nLength = getEndFrame() - getStartFrame() + 1;
             return nLength;
         }
 
-
         private int getStartFrame() {
             return m_nStartFrame;
         }
-
 
         private int getEndFrame() {
             return m_nEndFrame;
         }
 
-
         private int getTrack() {
             return m_nTrack;
         }
-
 
         private int getCurrentFrameNumber() {
             return m_nCddaFrameCount + m_nStartFrame;
         }
 
-
         private void increaseCurrentFrameNumber() {
             m_nCddaFrameCount++;
         }
-
 
         private boolean isEndOfTrackReached() {
             return m_nCddaFrameCount >= getTrackLengthInCddaFrames();
         }
 
-
+        @Override
         public void execute() {
-            if (TDebug.TraceCdda) {
-                TDebug.out("CddaAudioInputStream.execute(): begin");
-            }
+            logger.log(Level.TRACE, "CddaAudioInputStream.execute(): begin");
+
             if (!isEndOfTrackReached()) {
-                if (TDebug.TraceCdda) {
-                    TDebug.out("CddaAudioInputStream.execute(): begin");
-                }
-                while (getCircularBuffer().availableWrite() >= BUFFER_SIZE &&
-                        !isEndOfTrackReached()) {
-                    if (TDebug.TraceCdda) {
-                        TDebug.out("CddaAudioInputStream.execute(): before readFrame()");
-                    }
+                logger.log(Level.TRACE, "CddaAudioInputStream.execute(): begin");
+
+                while (getCircularBuffer().availableWrite() >= BUFFER_SIZE && !isEndOfTrackReached()) {
+                    logger.log(Level.TRACE, "CddaAudioInputStream.execute(): before readFrame()");
+
                     m_cookedIoctl.readFrame(getCurrentFrameNumber(), 1, m_abData);
-                    if (TDebug.TraceCdda) {
-                        TDebug.out("CddaAudioInputStream.execute(): after readFrame(), before cb.write()");
-                    }
+                    logger.log(Level.TRACE, "CddaAudioInputStream.execute(): after readFrame(), before cb.write()");
+
                     getCircularBuffer().write(m_abData, 0, BUFFER_SIZE);
-                    if (TDebug.TraceCdda) {
-                        TDebug.out("CddaAudioInputStream.execute(): after cb.write()");
-                    }
+                    logger.log(Level.TRACE, "CddaAudioInputStream.execute(): after cb.write()");
+
                     increaseCurrentFrameNumber();
                 }
             } else {
-                if (TDebug.TraceCdda) {
-                    TDebug.out("CddaAudioInputStream.execute(): end of cdda track");
-                }
+                logger.log(Level.TRACE, "CddaAudioInputStream.execute(): end of cdda track");
+
                 getCircularBuffer().close();
             }
 
-            if (TDebug.TraceCdda) {
-                TDebug.out("CddaAudioInputStream.execute(): end");
-            }
+            logger.log(Level.TRACE, "CddaAudioInputStream.execute(): end");
         }
 
-
-        public void close()
-                throws IOException {
+        @Override
+        public void close() throws IOException {
             m_cookedIoctl.close();
             super.close();
-            // TODO: close cdda?
-            // m_encodedStream.close();
+            // TODO close cdda?
+//            m_encodedStream.close();
         }
     }
 }
-
-
-/*** CookedIoctlMidLevel.java ****/

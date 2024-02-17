@@ -29,7 +29,7 @@ LAME is acknowledged to provide high quality mp3 encoding.
 Additionally, it is completely open source (LGPL) and does
 not use 3rd party source code.
 As LAME is accessed via JNI, the current implementation
-in Tritonus can only be used under Linux. In future,
+in Tritonus can only be used under Linux. In the future,
 a port to Windows and other systems is possible.
 
 Capabilities in Tritonus:

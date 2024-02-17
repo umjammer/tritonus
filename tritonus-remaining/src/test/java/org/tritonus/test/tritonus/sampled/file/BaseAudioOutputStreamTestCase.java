@@ -1,7 +1,6 @@
 /*
  * BaseAudioOutputStreamTestCase.java
  */
-
 /*
  *  Copyright (c) 2001 - 2002 by Matthias Pfisterer
  *
@@ -53,6 +52,7 @@ either big or little, depending on file format
 
  */
 public abstract class BaseAudioOutputStreamTestCase {
+
     private static final boolean DEBUG = true;
 
     /**
@@ -80,10 +80,8 @@ public abstract class BaseAudioOutputStreamTestCase {
     private static final int[] CHANNEL_COUNTS =
             {1, 2};
 
-
     private File m_file;
     private ByteArrayOutputStream m_baos;
-
 
     // non-seekable, given length
     @Test
@@ -92,14 +90,12 @@ public abstract class BaseAudioOutputStreamTestCase {
         doTest(false, true);
     }
 
-
     // non-seekable, unknown length
     @Test
     public void testAOS2()
             throws Exception {
         doTest(false, false);
     }
-
 
     // seekable, given length
     @Test
@@ -108,14 +104,12 @@ public abstract class BaseAudioOutputStreamTestCase {
         doTest(true, true);
     }
 
-
     // seekable, unknown length
     @Test
     public void testAOS4()
             throws Exception {
         doTest(true, false);
     }
-
 
     private void doTest(boolean bSeekable, boolean bLengthGiven)
             throws Exception {
@@ -138,7 +132,6 @@ public abstract class BaseAudioOutputStreamTestCase {
             }
         }
     }
-
 
     private void doTest(AudioFormat audioFormat,
                         boolean bSeekable, boolean bLengthGiven)
@@ -174,7 +167,6 @@ public abstract class BaseAudioOutputStreamTestCase {
         }
     }
 
-
     private byte[] createAudioData(int nFrameSize) {
         byte[] abData = new byte[8 * nFrameSize];
         for (int i = 0; i < abData.length; i++) {
@@ -182,7 +174,6 @@ public abstract class BaseAudioOutputStreamTestCase {
         }
         return abData;
     }
-
 
     private TDataOutputStream createDataOutputStream(boolean bSeekable)
             throws Exception {
@@ -197,7 +188,6 @@ public abstract class BaseAudioOutputStreamTestCase {
         return dataOutputStream;
     }
 
-
     private AudioOutputStream createAudioOutputStream(
             AudioFormat audioFormat,
             long nLength,
@@ -209,13 +199,11 @@ public abstract class BaseAudioOutputStreamTestCase {
                 dataOutputStream);
     }
 
-
     protected abstract AudioOutputStream createAudioOutputStreamImpl(
             AudioFormat audioFormat,
             long nLength,
             TDataOutputStream dataOutputStream)
             throws Exception;
-
 
     private byte[] getWrittenData(boolean bSeekable)
             throws Exception {
@@ -228,12 +216,10 @@ public abstract class BaseAudioOutputStreamTestCase {
         return abResultingData;
     }
 
-
     protected abstract byte[] getExpectedHeaderData(AudioFormat audioFormat,
                                                     int nLength,
                                                     boolean bSeekable,
                                                     boolean bLengthGiven);
-
 
     protected abstract int getExpectedAdditionalHeaderLength();
 
@@ -241,11 +227,9 @@ public abstract class BaseAudioOutputStreamTestCase {
 
     protected abstract boolean is8bitUnsigned();
 
-
     protected void out(String strMessage) {
         System.out.println(strMessage);
     }
 }
 
 
-/* BaseAudioOutputStreamTestCase.java */

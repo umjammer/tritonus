@@ -1,7 +1,6 @@
 /*
  * GSMFormatConversionProviderTestCase.java
  */
-
 /*
  *  Copyright (c) 2001 - 2002 by Matthias Pfisterer
  *
@@ -26,10 +25,10 @@ import org.junit.jupiter.api.Disabled;
 @Disabled // no suitable class
 public class GSMFormatConversionProviderTestCase
         extends BaseFormatConversionProviderTestCase {
+
     public GSMFormatConversionProviderTestCase() {
         setResourcePrefix("gsm");
     }
 }
 
 
-/* GSMFormatConversionProviderTestCase.java */

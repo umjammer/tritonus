@@ -1,8 +1,3 @@
-/*
- * FloatSampleInput.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2006 by Florian Bomers

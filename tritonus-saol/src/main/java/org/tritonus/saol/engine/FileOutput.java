@@ -1,10 +1,4 @@
 /*
- * FileOutput.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2002 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,10 +14,6 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.saol.engine;
 
 import java.io.File;
@@ -37,6 +27,7 @@ import org.tritonus.share.sampled.AudioSystemShadow;
 
 public class FileOutput
         extends AudioOutputStreamOutput {
+
     public FileOutput(File outputFile,
                       AudioFileFormat.Type targetType,
                       AudioFormat audioFormat)
@@ -50,4 +41,3 @@ public class FileOutput
 }
 
 
-/* FileOutput.java */

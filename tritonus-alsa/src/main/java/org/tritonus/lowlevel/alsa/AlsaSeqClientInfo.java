@@ -1,10 +1,4 @@
 /*
- * AlsaSeqClientInfo.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 1999 - 2001 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,60 +15,45 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.lowlevel.alsa;
 
-import org.tritonus.share.TDebug;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
+
+import static java.lang.System.getLogger;
 
 
 public class AlsaSeqClientInfo {
+
+    private static final Logger logger = getLogger("org.tritonus.TraceAlsaSeqNative");
+
     static {
         Alsa.loadNativeLibrary();
-        if (TDebug.TraceAlsaSeqNative) {
-            setTrace(true);
-        }
     }
-
 
     /**
      * Holds the pointer to snd_seq_port_info_t
      * for the native code.
      * This must be long to be 64bit-clean.
      */
-    /*private*/ long m_lNativeHandle;
-
+    /* private */ long m_lNativeHandle;
 
     public AlsaSeqClientInfo() {
-        if (TDebug.TraceAlsaSeqNative) {
-            TDebug.out("AlsaSeq.ClientInfo.<init>(): begin");
-        }
+        logger.log(Level.TRACE, "AlsaSeq.ClientInfo.<init>(): begin");
+
         int nReturn = malloc();
-        if (TDebug.TraceAlsaSeqNative) {
-            TDebug.out("AlsaSeq.ClientInfo.<init>(): malloc() returns: " + nReturn);
-        }
+        logger.log(Level.TRACE, "AlsaSeq.ClientInfo.<init>(): malloc() returns: " + nReturn);
+
         if (nReturn < 0) {
             throw new RuntimeException("malloc of client_info failed");
         }
-        if (TDebug.TraceAlsaSeqNative) {
-            TDebug.out("AlsaSeq.ClientInfo.<init>(): end");
-        }
+
+        logger.log(Level.TRACE, "AlsaSeq.ClientInfo.<init>(): end");
     }
-
-
-    protected void finalize() {
-        // TODO: call free()
-        // call super.finalize() first or last?
-        // and introduce a flag if free() has already been called?
-    }
-
 
     private native int malloc();
 
     public native void free();
-
 
     public native int getClient();
 
@@ -86,12 +65,11 @@ public class AlsaSeqClientInfo {
 
     public native int getErrorBounce();
 
-    // TODO: event filter
+    // TODO event filter
 
     public native int getNumPorts();
 
     public native int getEventLost();
-
 
     public native void setClient(int nClient);
 
@@ -99,12 +77,9 @@ public class AlsaSeqClientInfo {
 
     public native void setBroadcastFilter(int nBroadcastFilter);
 
-
     public native void setErrorBounce(int nErrorBounce);
 
     private static native void setTrace(boolean bTrace);
-    // TODO: event filter
+
+    // TODO event filter
 }
-
-
-/* AlsaSeqClientInfo.java */

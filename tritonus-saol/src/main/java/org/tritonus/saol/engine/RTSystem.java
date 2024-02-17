@@ -17,13 +17,15 @@
 package org.tritonus.saol.engine;
 
 import java.io.IOException;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.lang.reflect.Constructor;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.tritonus.share.TDebug;
+import static java.lang.System.getLogger;
 
 
 /**
@@ -32,8 +34,9 @@ import org.tritonus.share.TDebug;
  * This file is part of Tritonus: http://www.tritonus.org/
  */
 public class RTSystem extends Thread {
-    private static final boolean DEBUG = false;
 
+    private static final Logger logger = getLogger(RTSystem.class.getName());
+    
     private SystemOutput m_output;
     private Map<String, Class<AbstractInstrument>> m_instrumentMap;
     private boolean m_bRunning;
@@ -51,7 +54,7 @@ public class RTSystem extends Thread {
     public RTSystem(SystemOutput output, Map<String, Class<AbstractInstrument>> instrumentMap) {
         m_output = output;
         m_instrumentMap = instrumentMap;
-        // TODO:
+        // TODO
         setRates(44100, 100);
         m_activeInstruments = new LinkedList<>();
         m_scheduledInstruments = new LinkedList<>();
@@ -68,6 +71,7 @@ public class RTSystem extends Thread {
         m_fIntToFloatTimeFactor = m_fTimeStep;
     }
 
+    @Override
     public void run() {
         try {
             runImpl();
@@ -91,24 +95,16 @@ public class RTSystem extends Thread {
     }
 
     private void doI() {
-        if (DEBUG) {
-            TDebug.out("doI()");
-            TDebug.out("time: " + getTime());
-        }
+        logger.log(Level.DEBUG, "doI()");
+        logger.log(Level.DEBUG, "time: " + getTime());
         synchronized (m_scheduledInstruments) {
             Iterator<AbstractInstrument> scheduledInstruments = m_scheduledInstruments.iterator();
             while (scheduledInstruments.hasNext()) {
-                if (DEBUG) {
-                    TDebug.out("scheduled instrument");
-                }
+                logger.log(Level.DEBUG, "scheduled instrument");
                 AbstractInstrument instrument = scheduledInstruments.next();
-                if (DEBUG) {
-                    TDebug.out("instrument start time: " + instrument.getStartTime());
-                }
+                logger.log(Level.DEBUG, "instrument start time: " + instrument.getStartTime());
                 if (getTime() >= instrument.getStartTime()) {
-                    if (DEBUG) {
-                        TDebug.out("...activating");
-                    }
+                    logger.log(Level.DEBUG, "...activating");
                     scheduledInstruments.remove();
                     instrument.doIPass(this);
                     m_activeInstruments.add(instrument);
@@ -119,9 +115,7 @@ public class RTSystem extends Thread {
         while (activeInstruments.hasNext()) {
             AbstractInstrument instrument = activeInstruments.next();
             if (getTime() > instrument.getEndTime()) {
-                if (DEBUG) {
-                    TDebug.out("...DEactivating");
-                }
+                logger.log(Level.DEBUG, "...DEactivating");
                 activeInstruments.remove();
             }
         }
@@ -137,10 +131,10 @@ public class RTSystem extends Thread {
     }
 
     private void doA() throws IOException {
-        // TDebug.out("doA()");
+//        logger.log(Level.TRACE, "doA()");
         m_output.clear();
         for (AbstractInstrument instrument : m_activeInstruments) {
-            // TDebug.out("doA(): has active Instrument");
+//            logger.log(Level.TRACE, "doA(): has active Instrument");
             instrument.doAPass(this);
         }
         m_output.emit();
@@ -153,17 +147,15 @@ public class RTSystem extends Thread {
         instrument.setStartAndEndTime(nStartTime, nEndTime);
         synchronized (m_scheduledInstruments) {
             m_scheduledInstruments.add(instrument);
-            if (DEBUG) {
-                TDebug.out("adding instrument");
-                TDebug.out("start: " + nStartTime);
-                TDebug.out("end: " + nEndTime);
-            }
+            logger.log(Level.DEBUG, "adding instrument");
+            logger.log(Level.DEBUG, "start: " + nStartTime);
+            logger.log(Level.DEBUG, "end: " + nEndTime);
         }
     }
 
     public void scheduleEnd(float fEndTime) {
         m_nScheduledEndTime = Math.round(fEndTime * m_fFloatToIntTimeFactor);
-        // TODO:
+        // TODO
     }
 
     public void stopEngine() {

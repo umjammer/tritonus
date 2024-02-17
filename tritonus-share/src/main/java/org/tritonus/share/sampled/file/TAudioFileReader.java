@@ -1,10 +1,4 @@
 /*
- * TAudioFileReader.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 1999 by Matthias Pfisterer
  *  Copyright (c) 2001 by Florian Bomers
  *
@@ -21,10 +15,6 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.share.sampled.file;
 
 import java.io.BufferedInputStream;
@@ -33,6 +23,8 @@ import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
@@ -42,7 +34,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.sound.sampled.spi.AudioFileReader;
 
-import org.tritonus.share.TDebug;
+import static java.lang.System.getLogger;
 
 
 /**
@@ -55,22 +47,21 @@ import org.tritonus.share.TDebug;
  * @author Matthias Pfisterer
  * @author Florian Bomers
  */
-public abstract class TAudioFileReader
-        extends AudioFileReader {
+public abstract class TAudioFileReader extends AudioFileReader {
+
+    private static final Logger logger= getLogger("org.tritonus.TraceAudioFileReader");
+
     private int m_nMarkLimit;
     private boolean m_bRereading;
-
 
     protected TAudioFileReader(int nMarkLimit) {
         this(nMarkLimit, false);
     }
 
-
     protected TAudioFileReader(int nMarkLimit, boolean bRereading) {
         m_nMarkLimit = nMarkLimit;
         m_bRereading = bRereading;
     }
-
 
     protected int getMarkLimit() {
         return m_nMarkLimit;
@@ -84,7 +75,6 @@ public abstract class TAudioFileReader
         return m_bRereading;
     }
 
-
     /**
      * Get an AudioFileFormat object for a File.
      * This method calls getAudioFileFormat(InputStream, long).
@@ -97,11 +87,9 @@ public abstract class TAudioFileReader
      * information from the header of the file passed in.
      */
     @Override
-    public AudioFileFormat getAudioFileFormat(File file)
-            throws UnsupportedAudioFileException, IOException {
-        if (TDebug.TraceAudioFileReader) {
-            TDebug.out("TAudioFileReader.getAudioFileFormat(File): begin (class: " + getClass().getSimpleName() + ")");
-        }
+    public AudioFileFormat getAudioFileFormat(File file) throws UnsupportedAudioFileException, IOException {
+        logger.log(Level.TRACE, "TAudioFileReader.getAudioFileFormat(File): begin (class: " + getClass().getSimpleName() + ")");
+
         long lFileLengthInBytes = file.length();
         InputStream inputStream = Files.newInputStream(file.toPath());
         AudioFileFormat audioFileFormat;
@@ -110,12 +98,10 @@ public abstract class TAudioFileReader
         } finally {
             inputStream.close();
         }
-        if (TDebug.TraceAudioFileReader) {
-            TDebug.out("TAudioFileReader.getAudioFileFormat(File): end");
-        }
+        logger.log(Level.TRACE, "TAudioFileReader.getAudioFileFormat(File): end");
+
         return audioFileFormat;
     }
-
 
     /**
      * Get an AudioFileFormat object for a URL.
@@ -129,11 +115,9 @@ public abstract class TAudioFileReader
      * information from the header of the URL passed in.
      */
     @Override
-    public AudioFileFormat getAudioFileFormat(URL url)
-            throws UnsupportedAudioFileException, IOException {
-        if (TDebug.TraceAudioFileReader) {
-            TDebug.out("TAudioFileReader.getAudioFileFormat(URL): begin (class: " + getClass().getSimpleName() + ")");
-        }
+    public AudioFileFormat getAudioFileFormat(URL url) throws UnsupportedAudioFileException, IOException {
+        logger.log(Level.TRACE, "TAudioFileReader.getAudioFileFormat(URL): begin (class: " + getClass().getSimpleName() + ")");
+
         long lFileLengthInBytes = getDataLength(url);
         InputStream inputStream = url.openStream();
         AudioFileFormat audioFileFormat;
@@ -142,12 +126,11 @@ public abstract class TAudioFileReader
         } finally {
             inputStream.close();
         }
-        if (TDebug.TraceAudioFileReader) {
-            TDebug.out("TAudioFileReader.getAudioFileFormat(URL): end");
-        }
+
+        logger.log(Level.TRACE, "TAudioFileReader.getAudioFileFormat(URL): end");
+
         return audioFileFormat;
     }
-
 
     /**
      * Get an AudioFileFormat object for an InputStream.
@@ -161,11 +144,9 @@ public abstract class TAudioFileReader
      * information from the header of the stream passed in.
      */
     @Override
-    public AudioFileFormat getAudioFileFormat(InputStream inputStream)
-            throws UnsupportedAudioFileException, IOException {
-        if (TDebug.TraceAudioFileReader) {
-            TDebug.out("TAudioFileReader.getAudioFileFormat(InputStream): begin (class: " + getClass().getSimpleName() + ")");
-        }
+    public AudioFileFormat getAudioFileFormat(InputStream inputStream) throws UnsupportedAudioFileException, IOException {
+        logger.log(Level.TRACE, "TAudioFileReader.getAudioFileFormat(InputStream): begin (class: " + getClass().getSimpleName() + ")");
+
         long lFileLengthInBytes = AudioSystem.NOT_SPECIFIED;
         if (!inputStream.markSupported()) {
             inputStream = new BufferedInputStream(inputStream, getMarkLimit());
@@ -175,18 +156,16 @@ public abstract class TAudioFileReader
         try {
             audioFileFormat = getAudioFileFormat(inputStream, lFileLengthInBytes);
         } finally {
-   /* TODO: required semantics is unclear: should reset()
-      be executed only when there is an exception or
-      should it be done always?
-   */
+            // TODO required semantics is unclear: should reset()
+            // be executed only when there is an exception or
+            // should it be done always?
             inputStream.reset();
         }
-        if (TDebug.TraceAudioFileReader) {
-            TDebug.out("TAudioFileReader.getAudioFileFormat(InputStream): end");
-        }
+
+        logger.log(Level.TRACE, "TAudioFileReader.getAudioFileFormat(InputStream): end");
+
         return audioFileFormat;
     }
-
 
     /**
      * Get an AudioFileFormat (internal implementation). Subclasses must
@@ -206,10 +185,8 @@ public abstract class TAudioFileReader
      * @return an AudioFileFormat instance containing information from the
      * header of the stream passed in as inputStream.
      */
-    protected abstract AudioFileFormat getAudioFileFormat(
-            InputStream inputStream, long lFileLengthInBytes)
+    protected abstract AudioFileFormat getAudioFileFormat(InputStream inputStream, long lFileLengthInBytes)
             throws UnsupportedAudioFileException, IOException;
-
 
     /**
      * Get an AudioInputStream object for a file.
@@ -224,11 +201,9 @@ public abstract class TAudioFileReader
      * the audio data from this file.
      */
     @Override
-    public AudioInputStream getAudioInputStream(File file)
-            throws UnsupportedAudioFileException, IOException {
-        if (TDebug.TraceAudioFileReader) {
-            TDebug.out("TAudioFileReader.getAudioInputStream(File): begin (class: " + getClass().getSimpleName() + ")");
-        }
+    public AudioInputStream getAudioInputStream(File file) throws UnsupportedAudioFileException, IOException {
+        logger.log(Level.TRACE, "TAudioFileReader.getAudioInputStream(File): begin (class: " + getClass().getSimpleName() + ")");
+
         long lFileLengthInBytes = file.length();
         InputStream inputStream = Files.newInputStream(file.toPath());
         AudioInputStream audioInputStream;
@@ -238,12 +213,11 @@ public abstract class TAudioFileReader
             inputStream.close();
             throw e;
         }
-        if (TDebug.TraceAudioFileReader) {
-            TDebug.out("TAudioFileReader.getAudioInputStream(File): end");
-        }
+
+        logger.log(Level.TRACE, "TAudioFileReader.getAudioInputStream(File): end");
+
         return audioInputStream;
     }
-
 
     /**
      * Get an AudioInputStream object for a URL.
@@ -258,11 +232,9 @@ public abstract class TAudioFileReader
      * the audio data from this URL.
      */
     @Override
-    public AudioInputStream getAudioInputStream(URL url)
-            throws UnsupportedAudioFileException, IOException {
-        if (TDebug.TraceAudioFileReader) {
-            TDebug.out("TAudioFileReader.getAudioInputStream(URL): begin (class: " + getClass().getSimpleName() + ")");
-        }
+    public AudioInputStream getAudioInputStream(URL url) throws UnsupportedAudioFileException, IOException {
+        logger.log(Level.TRACE, "TAudioFileReader.getAudioInputStream(URL): begin (class: " + getClass().getSimpleName() + ")");
+
         long lFileLengthInBytes = getDataLength(url);
         InputStream inputStream = url.openStream();
         AudioInputStream audioInputStream;
@@ -272,12 +244,11 @@ public abstract class TAudioFileReader
             inputStream.close();
             throw e;
         }
-        if (TDebug.TraceAudioFileReader) {
-            TDebug.out("TAudioFileReader.getAudioInputStream(URL): end");
-        }
+
+        logger.log(Level.TRACE, "TAudioFileReader.getAudioInputStream(URL): end");
+
         return audioInputStream;
     }
-
 
     /**
      * Get an AudioInputStream object for an InputStream.
@@ -292,16 +263,14 @@ public abstract class TAudioFileReader
      * the audio data from this stream.
      */
     @Override
-    public AudioInputStream getAudioInputStream(InputStream inputStream)
-            throws UnsupportedAudioFileException, IOException {
-        if (TDebug.TraceAudioFileReader) {
-            TDebug.out("TAudioFileReader.getAudioInputStream(InputStream): begin (class: " + getClass().getSimpleName() + ")");
-        }
+    public AudioInputStream getAudioInputStream(InputStream inputStream) throws UnsupportedAudioFileException, IOException {
+        logger.log(Level.TRACE, "TAudioFileReader.getAudioInputStream(InputStream): begin (class: " + getClass().getSimpleName() + ")");
+
         long lFileLengthInBytes = AudioSystem.NOT_SPECIFIED;
         AudioInputStream audioInputStream;
         if (!inputStream.markSupported()) {
             inputStream = new BufferedInputStream(inputStream, getMarkLimit());
-            TDebug.out("wrapped: " + inputStream.getClass().getName() + ", " + getMarkLimit());
+            logger.log(Level.TRACE, "wrapped: " + inputStream.getClass().getName() + ", " + getMarkLimit());
         }
         inputStream.mark(getMarkLimit());
         try {
@@ -310,7 +279,7 @@ public abstract class TAudioFileReader
             try {
                 inputStream.reset();
             } catch (IOException f) {
-                if (TDebug.TraceAudioFileReader) f.printStackTrace();
+                logger.log(Level.ERROR, f.getMessage(), f);
             }
             throw e;
         } catch (IOException e) {
@@ -324,12 +293,11 @@ public abstract class TAudioFileReader
             }
             throw e;
         }
-        if (TDebug.TraceAudioFileReader) {
-            TDebug.out("TAudioFileReader.getAudioInputStream(InputStream): end");
-        }
+
+        logger.log(Level.TRACE, "TAudioFileReader.getAudioInputStream(InputStream): end");
+
         return audioInputStream;
     }
-
 
     /**
      * Get an AudioInputStream (internal implementation). This implementation
@@ -350,41 +318,32 @@ public abstract class TAudioFileReader
      *                           this value can't be derived from the information in the file
      *                           header.
      */
-    protected AudioInputStream getAudioInputStream(InputStream inputStream,
-                                                   long lFileLengthInBytes) throws UnsupportedAudioFileException,
-            IOException {
-        if (TDebug.TraceAudioFileReader) {
-            TDebug.out("TAudioFileReader.getAudioInputStream(InputStream, long): begin (class: "
-                    + getClass().getSimpleName() + ")");
-        }
+    protected AudioInputStream getAudioInputStream(InputStream inputStream, long lFileLengthInBytes)
+            throws UnsupportedAudioFileException, IOException {
+        logger.log(Level.TRACE, "TAudioFileReader.getAudioInputStream(InputStream, long): begin (class: " + getClass().getSimpleName() + ")");
         if (isRereading()) {
             if (!inputStream.markSupported()) {
-                inputStream = new BufferedInputStream(inputStream,
-                        getMarkLimit());
+                inputStream = new BufferedInputStream(inputStream, getMarkLimit());
             }
             inputStream.mark(getMarkLimit());
         }
-        AudioFileFormat audioFileFormat = getAudioFileFormat(inputStream,
-                lFileLengthInBytes);
+        AudioFileFormat audioFileFormat = getAudioFileFormat(inputStream, lFileLengthInBytes);
         if (isRereading()) {
             inputStream.reset();
         }
-        AudioInputStream audioInputStream = new AudioInputStream(inputStream,
-                audioFileFormat.getFormat(), audioFileFormat.getFrameLength());
-        if (TDebug.TraceAudioFileReader) {
-            TDebug.out("TAudioFileReader.getAudioInputStream(InputStream, long): end");
-        }
+        AudioInputStream audioInputStream = new AudioInputStream(
+                inputStream, audioFileFormat.getFormat(), audioFileFormat.getFrameLength());
+
+        logger.log(Level.TRACE, "TAudioFileReader.getAudioInputStream(InputStream, long): end");
+
         return audioInputStream;
     }
-
 
     protected static int calculateFrameSize(int nSampleSize, int nNumChannels) {
         return ((nSampleSize + 7) / 8) * nNumChannels;
     }
 
-
-    private static long getDataLength(URL url)
-            throws IOException {
+    private static long getDataLength(URL url) throws IOException {
         long lFileLengthInBytes = AudioSystem.NOT_SPECIFIED;
         URLConnection connection = url.openConnection();
         connection.connect();
@@ -395,9 +354,7 @@ public abstract class TAudioFileReader
         return lFileLengthInBytes;
     }
 
-
-    public static int readLittleEndianInt(InputStream is)
-            throws IOException {
+    public static int readLittleEndianInt(InputStream is) throws IOException {
         int b0 = is.read();
         int b1 = is.read();
         int b2 = is.read();
@@ -408,9 +365,7 @@ public abstract class TAudioFileReader
         return (b3 << 24) + (b2 << 16) + (b1 << 8) + (b0 << 0);
     }
 
-
-    public static short readLittleEndianShort(InputStream is)
-            throws IOException {
+    public static short readLittleEndianShort(InputStream is) throws IOException {
         int b0 = is.read();
         int b1 = is.read();
         if ((b0 | b1) < 0) {
@@ -419,46 +374,41 @@ public abstract class TAudioFileReader
         return (short) ((b1 << 8) + (b0 << 0));
     }
 
-
-
-    /*
-     * C O N V E R T   F R O M   I E E E   E X T E N D E D
-     */
-
-    /*
+    /**
+     * Convert from IEEE extended
+     * <pre>
      * Copyright (C) 1988-1991 Apple Computer, Inc.
      * All rights reserved.
-     *
+     * </pre>
      * Machine-independent I/O routines for IEEE floating-point numbers.
-     *
+     * <p>
      * NaN's and infinities are converted to HUGE_VAL or HUGE, which
      * happens to be infinity on IEEE machines.  Unfortunately, it is
      * impossible to preserve NaN's in a machine-independent way.
      * Infinities are, however, preserved on IEEE machines.
-     *
+     * <p>
      * These routines have been tested on the following machines:
-     *    Apple Macintosh, MPW 3.1 C compiler
-     *    Apple Macintosh, THINK C compiler
-     *    Silicon Graphics IRIS, MIPS compiler
-     *    Cray X/MP and Y/MP
-     *    Digital Equipment VAX
-     *
+     * <ul>
+     *    <li>Apple Macintosh, MPW 3.1 C compiler</li>
+     *    <li>Apple Macintosh, THINK C compiler</li>
+     *    <li>Silicon Graphics IRIS, MIPS compiler</li>
+     *    <li>Cray X/MP and Y/MP</li>
+     *    <li>Digital Equipment VAX</li>
+     * </ul>
      *
      * Implemented by Malcolm Slaney and Ken Turkowski.
-     *
+     * <p>
      * Malcolm Slaney contributions during 1988-1990 include big- and little-
      * endian file I/O, conversion to and from Motorola's extended 80-bit
      * floating-point format, and conversions to and from IEEE single-
      * precision floating-point format.
-     *
+     * <p>
      * In 1991, Ken Turkowski implemented the conversions to and from
      * IEEE double-precision format, added more precision to the extended
      * conversions, and accommodated conversions involving +/- infinity,
      * NaN's, and denormalized numbers.
      */
-
-    public static double readIeeeExtended(DataInputStream dis)
-            throws IOException {
+    public static double readIeeeExtended(DataInputStream dis) throws IOException {
         double f;
         int expon;
         long hiMant;
@@ -489,5 +439,4 @@ public abstract class TAudioFileReader
 }
 
 
-/* TAudioFileReader.java */
 

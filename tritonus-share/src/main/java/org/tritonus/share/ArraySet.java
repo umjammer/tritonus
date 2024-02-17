@@ -1,8 +1,3 @@
-/*
- * ArraySet.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999 -2004 by Matthias Pfisterer
@@ -22,12 +17,9 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.share;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
@@ -36,19 +28,20 @@ import java.util.Set;
 public class ArraySet<E>
         extends ArrayList<E>
         implements Set<E> {
+
+    @Serial
     private static final long serialVersionUID = 1;
 
     public ArraySet() {
         super();
     }
 
-
     public ArraySet(Collection<E> c) {
         this();
         addAll(c);
     }
 
-
+    @Override
     public boolean add(E element) {
         if (!contains(element)) {
             super.add(element);
@@ -58,11 +51,12 @@ public class ArraySet<E>
         }
     }
 
-
+    @Override
     public void add(int index, E element) {
         throw new UnsupportedOperationException("ArraySet.add(int index, Object element) unsupported");
     }
 
+    @Override
     public E set(int index, E element) {
         throw new UnsupportedOperationException("ArraySet.set(int index, Object element) unsupported");
     }
@@ -70,4 +64,3 @@ public class ArraySet<E>
 }
 
 
-/* ArraySet.java */

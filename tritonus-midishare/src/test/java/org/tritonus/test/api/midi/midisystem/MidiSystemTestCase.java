@@ -25,7 +25,6 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 
 /*
@@ -67,16 +66,15 @@ public class MidiSystemTestCase {
     @Test
     public void testGetWrongMidiDevice() throws Exception {
         MidiDevice.Info info = new TestInfo("name", "vendor", "description", "version");
-        assertThrows(IllegalArgumentException.class, () -> {
-            MidiSystem.getMidiDevice(info);
-        }, "wrong MidiDevice.Info should throw exception");
+        assertThrows(IllegalArgumentException.class, () -> MidiSystem.getMidiDevice(info), "wrong MidiDevice.Info should throw exception");
     }
 
     private static class TestInfo extends MidiDevice.Info {
+
         public TestInfo(String name, String vendor, String description, String version) {
             super(name, vendor, description, version);
         }
     }
 }
 
-/* MidiSystemTestCase.java */
+

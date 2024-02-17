@@ -1,8 +1,3 @@
-/*
- * FloatSampleTools.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2000-2006 by Florian Bomers
@@ -26,6 +21,7 @@
 
 package org.tritonus.share.sampled;
 
+import java.lang.System.Logger.Level;
 import java.util.List;
 import java.util.Random;
 import javax.sound.sampled.AudioFormat;
@@ -195,7 +191,7 @@ public class FloatSampleTools {
      * Return a string representation of this format
      */
     static String formatType2Str(int formatType) {
-        String res = "" + formatType + ": ";
+        String res = formatType + ": ";
         switch (formatType & F_SAMPLE_WIDTH_MASK) {
         case F_8:
             res += "8bit";
@@ -472,10 +468,7 @@ public class FloatSampleTools {
     static void byte2floatGeneric(byte[] input, int inByteOffset,
                                   int inByteStep, float[] output, int outOffset, int sampleCount,
                                   int formatType) {
-        // if (TDebug.TraceAudioConverter) {
-        // TDebug.out("FloatSampleTools.byte2floatGeneric, formatType="
-        // +formatType2Str(formatType));
-        // }
+//        logger.log(Level.TRACE, "FloatSampleTools.byte2floatGeneric, formatType=" + formatType2Str(formatType));
         int endCount = outOffset + sampleCount;
         int inIndex = inByteOffset;
         for (int outIndex = outOffset; outIndex < endCount; outIndex++, inIndex += inByteStep) {
@@ -516,7 +509,7 @@ public class FloatSampleTools {
                         * invTwoPower23;
                 break;
             case CT_24_4SL:
-                // TODO: verify the indexes
+                // TODO verify the indexes
                 output[outIndex] = ((input[inIndex + 3] << 16)
                         | ((input[inIndex + 2] & 0xFF) << 8)
                         | (input[inIndex + 1] & 0xFF))
@@ -777,10 +770,7 @@ public class FloatSampleTools {
     static void float2byteGeneric(float[] input, int inOffset, byte[] output,
                                   int outByteOffset, int outByteStep, int sampleCount,
                                   int formatType, float ditherBits) {
-        // if (TDebug.TraceAudioConverter) {
-        // TDebug.out("FloatSampleBuffer.float2byteGeneric, formatType="
-        // +"formatType2Str(formatType));
-        // }
+//        logger.log(Level.TRACE, "FloatSampleBuffer.float2byteGeneric, formatType=" + "formatType2Str(formatType));
 
         if (inOffset < 0 || inOffset + sampleCount > input.length
                 || sampleCount < 0) {
@@ -839,7 +829,7 @@ public class FloatSampleTools {
                 output[outIndex] = (byte) (iSample & 0xFF);
                 break;
             case CT_24_4SB:
-                // TODO: verify
+                // TODO verify
                 iSample = quantize24(input[inIndex] * twoPower23, ditherBits);
                 output[outIndex + 0] = 0;
                 output[outIndex + 1] = (byte) (iSample >> 16);
@@ -847,7 +837,7 @@ public class FloatSampleTools {
                 output[outIndex + 3] = (byte) (iSample & 0xFF);
                 break;
             case CT_24_4SL:
-                // TODO: verify
+                // TODO verify
                 iSample = quantize24(input[inIndex] * twoPower23, ditherBits);
                 output[outIndex + 3] = (byte) (iSample >> 16);
                 output[outIndex + 2] = (byte) ((iSample >>> 8) & 0xFF);

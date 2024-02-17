@@ -1,10 +1,4 @@
 /*
- * StandardMidiFileReader.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 1999, 2000 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,16 +14,14 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.midi.file;
 
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.nio.file.Files;
 import javax.sound.midi.MetaMessage;
 import javax.sound.midi.MidiEvent;
@@ -40,7 +32,7 @@ import javax.sound.midi.SysexMessage;
 import javax.sound.midi.Track;
 import javax.sound.midi.spi.MidiFileWriter;
 
-import org.tritonus.share.TDebug;
+import static java.lang.System.getLogger;
 
 
 /**
@@ -48,18 +40,19 @@ import org.tritonus.share.TDebug;
  * This writer can write type 0 and type 1 files. It cannot write type
  * 2 files.
  */
-public class StandardMidiFileWriter
-        extends MidiFileWriter {
+public class StandardMidiFileWriter extends MidiFileWriter {
+
+    private static final Logger logger = getLogger(StandardMidiFileWriter.class.getName());
+
     /**
-     * TODO:
+     * TODO
      */
     public static boolean USE_RUNNING_STATUS = true;
 
     /**
-     * TODO:
+     * TODO
      */
     public static boolean CANCEL_RUNNING_STATUS_ON_META_AND_SYSEX = true;
-
 
     /**
      * Return supported MIDI file types.
@@ -68,10 +61,10 @@ public class StandardMidiFileWriter
      *
      * @return an array of supported SMF types.
      */
+    @Override
     public int[] getMidiFileTypes() {
         return new int[] {0, 1};
     }
-
 
     /**
      * Return the supported MIDI file types for a given Sequence.
@@ -81,6 +74,7 @@ public class StandardMidiFileWriter
      * @return and array of supported SMF types. It contains 0 if
      * the Sequence has one track, 1 otherwise.
      */
+    @Override
     public int[] getMidiFileTypes(Sequence sequence) {
         Track[] tracks = sequence.getTracks();
         if (tracks.length == 1) {
@@ -90,7 +84,6 @@ public class StandardMidiFileWriter
         }
     }
 
-
     /**
      * Write a Sequence as Standard MIDI File (SMF) to an OutputStream.
      * A byte stream representing the passed Sequence is written
@@ -98,10 +91,8 @@ public class StandardMidiFileWriter
      *
      * @return The number of bytes written to the output stream.
      */
-    public int write(Sequence sequence,
-                     int nFileType,
-                     OutputStream outputStream)
-            throws IOException {
+    @Override
+    public int write(Sequence sequence, int nFileType, OutputStream outputStream) throws IOException {
         if (!isFileTypeSupported(nFileType, sequence)) {
             throw new IllegalArgumentException("file type is not supported for this sequence");
         }
@@ -117,18 +108,16 @@ public class StandardMidiFileWriter
         if (fDivisionType == Sequence.PPQ) {
             nDivision = nResolution & 0x7fff;
         } else {
-            // TODO:
+            // TODO
         }
         dataOutputStream.writeShort(nDivision); // unsigned?
         int nBytesWritten = 14;
         for (Track aTrack : aTracks) {
-            nBytesWritten += writeTrack(aTrack,
-                    dataOutputStream);
+            nBytesWritten += writeTrack(aTrack, dataOutputStream);
         }
 
         return nBytesWritten;
     }
-
 
     /**
      * Write a Sequence as Standard MIDI File (SMF) to a File.
@@ -137,41 +126,31 @@ public class StandardMidiFileWriter
      *
      * @return The number of bytes written to the file.
      */
-    public int write(Sequence sequence,
-                     int nFileType,
-                     File file)
-            throws IOException {
+    @Override
+    public int write(Sequence sequence, int nFileType, File file) throws IOException {
         OutputStream outputStream = Files.newOutputStream(file.toPath());
-        int nBytes = write(sequence,
-                nFileType,
-                outputStream);
+        int nBytes = write(sequence, nFileType, outputStream);
         outputStream.close();
         return nBytes;
     }
-
 
     /**
      * Write a Track to a DataOutputStream.
      *
      * @return The number of bytes written.
      */
-    private static int writeTrack(Track track,
-                                  DataOutputStream dataOutputStream)
-            throws IOException {
-        /** The number of bytes written. This is used as return
-         value for this method.
-         */
+    private static int writeTrack(Track track, DataOutputStream dataOutputStream) throws IOException {
+        // The number of bytes written. This is used as return
+        // value for this method.
         int nLength = 0;
         if (dataOutputStream != null) {
             dataOutputStream.writeInt(MidiConstants.TRACK_MAGIC);
         }
-        /*
-         * This is a recursive call!
-         * It is to find out the length of the track without
-         * actually writing. Having the second parameter as
-         * null tells writeTrack() and its subordinate
-         * methods to not write out data bytes.
-         */
+        // This is a recursive call!
+        // It is to find out the length of the track without
+        // actually writing. Having the second parameter as
+        // null tells writeTrack() and its subordinate
+        // methods to not write out data bytes.
         int nTrackLength = 0;
         if (dataOutputStream != null) {
             nTrackLength = writeTrack(track, null);
@@ -184,88 +163,65 @@ public class StandardMidiFileWriter
         anRunningStatusByte[0] = -1;
         for (int nEvent = 0; nEvent < track.size(); nEvent++) {
             MidiEvent event = track.get(nEvent);
-            nLength += writeEvent(event,
-                    previousEvent,
-                    anRunningStatusByte,
-                    dataOutputStream);
+            nLength += writeEvent(event, previousEvent, anRunningStatusByte, dataOutputStream);
             previousEvent = event;
         }
         return nLength;
     }
 
-
     /**
-     * TODO:
+     * TODO
      */
     private static int writeEvent(MidiEvent event,
                                   MidiEvent previousEvent,
                                   int[] anRunningStatusByte,
-                                  DataOutputStream dataOutputStream)
-            throws IOException {
-        /** The number of bytes written. This is used as return
-         value for this method.
-         */
+                                  DataOutputStream dataOutputStream) throws IOException {
+        // The number of bytes written. This is used as return
+        // value for this method.
         int nLength = 0;
         long lTickDelta = 0;
         if (previousEvent != null) {
             lTickDelta = event.getTick() - previousEvent.getTick();
         }
         if (lTickDelta < 0) {
-            TDebug.out("StandardMidiFileWriter.writeEvent(): warning: events not in order");
+            logger.log(Level.TRACE, "StandardMidiFileWriter.writeEvent(): warning: events not in order");
         }
         // add bytes according to coded length of delta
         nLength += writeVariableLengthQuantity(lTickDelta, dataOutputStream);
         MidiMessage message = event.getMessage();
-        // int  nDataLength = message.getLength();
+//        int nDataLength = message.getLength();
         if (message instanceof ShortMessage) {
-            nLength += writeShortMessage((ShortMessage) message,
-                    anRunningStatusByte,
-                    dataOutputStream);
+            nLength += writeShortMessage((ShortMessage) message, anRunningStatusByte, dataOutputStream);
         } else if (message instanceof SysexMessage) {
-            nLength += writeSysexMessage((SysexMessage) message,
-                    anRunningStatusByte,
-                    dataOutputStream);
+            nLength += writeSysexMessage((SysexMessage) message, anRunningStatusByte, dataOutputStream);
         } else if (message instanceof MetaMessage) {
-            nLength += writeMetaMessage((MetaMessage) message,
-                    anRunningStatusByte,
-                    dataOutputStream);
+            nLength += writeMetaMessage((MetaMessage) message, anRunningStatusByte, dataOutputStream);
         } else {
-            TDebug.out("StandardMidiFileWriter.writeEvent(): warning: unknown message class");
+            logger.log(Level.TRACE, "StandardMidiFileWriter.writeEvent(): warning: unknown message class");
         }
         return nLength;
     }
 
-
     /**
-     * TODO:
+     * TODO
      */
     private static int writeShortMessage(ShortMessage message,
                                          int[] anRunningStatusByte,
-                                         DataOutputStream dataOutputStream)
-            throws IOException {
-        /** The number of bytes written. This is used as return
-         value for this method.
-         */
+                                         DataOutputStream dataOutputStream) throws IOException {
+        // The number of bytes written. This is used as return
+        // value for this method.
         int nLength = 0;
         int nDataLength = message.getLength();
         if (USE_RUNNING_STATUS && anRunningStatusByte[0] == message.getStatus()) {
-            /*
-             * Write without status byte.
-             */
+            // Write without status byte.
             if (dataOutputStream != null) {
-                dataOutputStream.write(
-                        message.getMessage(),
-                        1, nDataLength - 1);
+                dataOutputStream.write(message.getMessage(), 1, nDataLength - 1);
             }
             nLength += nDataLength - 1;
         } else {
-            /*
-             * Write with status byte.
-             */
+            // Write with status byte.
             if (dataOutputStream != null) {
-                dataOutputStream.write(
-                        message.getMessage(),
-                        0, nDataLength);
+                dataOutputStream.write(message.getMessage(), 0, nDataLength);
             }
             nLength += nDataLength;
             anRunningStatusByte[0] = message.getStatus();
@@ -273,17 +229,14 @@ public class StandardMidiFileWriter
         return nLength;
     }
 
-
     /**
-     * TODO:
+     * TODO
      */
     private static int writeSysexMessage(SysexMessage message,
                                          int[] anRunningStatusByte,
-                                         DataOutputStream dataOutputStream)
-            throws IOException {
-        /** The number of bytes written. This is used as return
-         value for this method.
-         */
+                                         DataOutputStream dataOutputStream) throws IOException {
+        // The number of bytes written. This is used as return
+        // value for this method.
         int nLength = 0;
         int nDataLength = message.getLength();
         if (CANCEL_RUNNING_STATUS_ON_META_AND_SYSEX) {
@@ -293,29 +246,22 @@ public class StandardMidiFileWriter
             dataOutputStream.write(message.getStatus());
         }
         nLength++;
-        nLength += writeVariableLengthQuantity(
-                nDataLength - 1,
-                dataOutputStream);
+        nLength += writeVariableLengthQuantity(nDataLength - 1, dataOutputStream);
         if (dataOutputStream != null) {
-            dataOutputStream.write(
-                    message.getData(),
-                    0, nDataLength - 1);
+            dataOutputStream.write(message.getData(), 0, nDataLength - 1);
         }
         nLength += nDataLength - 1;
         return nLength;
     }
 
-
     /**
-     * TODO:
+     * TODO
      */
     private static int writeMetaMessage(MetaMessage message,
                                         int[] anRunningStatusByte,
-                                        DataOutputStream dataOutputStream)
-            throws IOException {
-        /** The number of bytes written. This is used as return
-         value for this method.
-         */
+                                        DataOutputStream dataOutputStream) throws IOException {
+        // The number of bytes written. This is used as return
+        // value for this method.
         int nLength = 0;
         byte[] abData = message.getData();
         int nDataLength = abData.length;
@@ -327,9 +273,7 @@ public class StandardMidiFileWriter
             dataOutputStream.write(message.getType());
         }
         nLength += 2;
-        nLength += writeVariableLengthQuantity(
-                nDataLength,
-                dataOutputStream);
+        nLength += writeVariableLengthQuantity(nDataLength, dataOutputStream);
         if (dataOutputStream != null) {
             dataOutputStream.write(abData);
         }
@@ -337,17 +281,14 @@ public class StandardMidiFileWriter
         return nLength;
     }
 
-
     /**
-     * TODO:
+     * TODO
      * outputStream == 0 signals to only calculate the number of
      * needed to represent the value.
      */
-    private static int writeVariableLengthQuantity(long lValue, OutputStream outputStream)
-            throws IOException {
-        /** The number of bytes written. This is used as return
-         value for this method.
-         */
+    private static int writeVariableLengthQuantity(long lValue, OutputStream outputStream) throws IOException {
+        // The number of bytes written. This is used as return
+        // value for this method.
         int nLength = 0;
         // IDEA: use a loop
         boolean bWritingStarted = false;
@@ -382,7 +323,3 @@ public class StandardMidiFileWriter
         return nLength;
     }
 }
-
-
-/* StandardMidiFileWriter.java */
-

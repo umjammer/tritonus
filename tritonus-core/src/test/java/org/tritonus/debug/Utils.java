@@ -16,14 +16,20 @@
 
 package org.tritonus.debug;
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
+
 import org.aspectj.lang.JoinPoint;
-import org.tritonus.share.TDebug;
+
+import static java.lang.System.getLogger;
 
 
 /**
  * Utility methods for the debugging aspects.
  */
 public class Utils {
+
+    private static final Logger logger = getLogger(Utils.class.getName());
 
     /**
      * Indentation step.
@@ -78,8 +84,6 @@ public class Utils {
      * Print message with the current indentation.
      */
     public static void out(String strMessage) {
-        TDebug.out(INDENTATION_STRING.substring(0, sm_nIndentation) + strMessage);
+        logger.log(Level.TRACE, INDENTATION_STRING.substring(0, sm_nIndentation) + strMessage);
     }
 }
-
-/* Utils.java */

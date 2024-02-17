@@ -1,10 +1,4 @@
 /*
- * EsdStream.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 1999 by Matthias Pfisterer
  *
  *
@@ -22,17 +16,11 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.lowlevel.esd;
-
-import org.tritonus.share.TDebug;
-
 
 public class EsdStream
         extends Esd {
+
     /**
      * Holds socket fd to EsounD.
      * This field is long because on 64 bit architectures, the native
@@ -41,24 +29,17 @@ public class EsdStream
     @SuppressWarnings("unused")
     private long m_lNativeHandle;
 
-
     static {
         Esd.loadNativeLibrary();
-        if (TDebug.TraceEsdStreamNative) {
-            setTrace(true);
-        }
     }
-
 
     public EsdStream() {
     }
-
 
     /**
      * Opens the connection to esd and initiates a stream.
      */
     public native void open(int nFormat, int nSampleRate);
-
 
     /**
      * Writes a block of data to esd.
@@ -70,7 +51,6 @@ public class EsdStream
      */
     public native int write(byte[] abData, int nOffset, int nLength);
 
-
     /**
      * Closes the connection to esd.
      * With this call, all resources inside esd associated with
@@ -80,9 +60,5 @@ public class EsdStream
      */
     public native void close();
 
-
     private static native void setTrace(boolean bTrace);
 }
-
-
-/* EsdStream.java */

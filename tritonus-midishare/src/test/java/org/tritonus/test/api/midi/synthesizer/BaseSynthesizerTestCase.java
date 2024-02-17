@@ -33,8 +33,8 @@ import org.junit.jupiter.api.Test;
  */
 @Disabled
 public abstract class BaseSynthesizerTestCase {
-    private static final boolean IGNORE_SUN_SYNTHESIZER = false;
 
+    private static final boolean IGNORE_SUN_SYNTHESIZER = false;
 
     /**
      * Iterate over all available Sequencers.
@@ -54,7 +54,6 @@ public abstract class BaseSynthesizerTestCase {
         }
     }
 
-
     protected abstract void checkSynthesizer(Synthesizer seq)
             throws Exception;
 
@@ -66,7 +65,6 @@ public abstract class BaseSynthesizerTestCase {
         return strAll;
     }
 
-
     /**
      * Get the prefix for error messages (containing the Synthesizer's name).
      */
@@ -76,4 +74,3 @@ public abstract class BaseSynthesizerTestCase {
 }
 
 
-/* BaseSynthesizerTestCase.java */

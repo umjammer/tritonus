@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.tritonus</groupId>
     <artifactId>tritonus</artifactId>
-    <version>0.3.12</version>
+    <version>0.3.13</version>
   </parent>
 
   <artifactId>tritonus-saol</artifactId>
@@ -22,11 +22,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.10.1</version>
         <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
-          <encoding>UTF-8</encoding>
           <generatedSourcesDirectory>${gensource.dir}/sablecc</generatedSourcesDirectory>
         </configuration>
       </plugin>
@@ -67,7 +63,7 @@
     <dependency>
       <groupId>org.apache.bcel</groupId>
       <artifactId>bcel</artifactId>
-      <version>6.5.0</version>
+      <version>6.8.1</version>
     </dependency>
   </dependencies>
 </project>

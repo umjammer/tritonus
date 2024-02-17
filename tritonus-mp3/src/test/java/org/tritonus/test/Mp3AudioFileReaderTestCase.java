@@ -1,7 +1,6 @@
 /*
  * Mp3AudioFileReaderTestCase.java
  */
-
 /*
  *  Copyright (c) 2001 - 2002 by Matthias Pfisterer
  *
@@ -23,6 +22,7 @@ package org.tritonus.test;
 
 public class Mp3AudioFileReaderTestCase
         extends BaseAudioFileReaderTestCase {
+
     public Mp3AudioFileReaderTestCase() {
         setResourcePrefix("mp3");
         setCheckRealLengths(false);
@@ -30,4 +30,3 @@ public class Mp3AudioFileReaderTestCase
 }
 
 
-/* Mp3AudioFileReaderTestCase.java */

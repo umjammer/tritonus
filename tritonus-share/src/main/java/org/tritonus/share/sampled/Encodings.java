@@ -1,10 +1,4 @@
 /*
- * Encodings.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2000 by Florian Bomers
  *
  *
@@ -66,7 +60,7 @@ import org.tritonus.share.StringHashedSet;
 public class Encodings extends AudioFormat.Encoding {
 
     /** contains all known encodings */
-    private static StringHashedSet<AudioFormat.Encoding> encodings = new StringHashedSet<>();
+    private static final StringHashedSet<AudioFormat.Encoding> encodings = new StringHashedSet<>();
 
     // initially add the standard encodings
     static {
@@ -132,7 +126,6 @@ public class Encodings extends AudioFormat.Encoding {
         return e2.toString().equals(e1.toString());
     }
 
-
     /**
      * Returns all &quot;supported&quot; encodings.
      * Supported means that it is possible to read or
@@ -156,7 +149,6 @@ public class Encodings extends AudioFormat.Encoding {
                 new AudioFormat.Encoding[0]);
     }
 
-
     private static void iterateEncodings(AudioFormat.Encoding source,
                                          StringHashedSet<AudioFormat.Encoding> iteratedSources,
                                          StringHashedSet<AudioFormat.Encoding> retrievedTargets) {
@@ -173,5 +165,4 @@ public class Encodings extends AudioFormat.Encoding {
 }
 
 
-/* Encodings.java */
 

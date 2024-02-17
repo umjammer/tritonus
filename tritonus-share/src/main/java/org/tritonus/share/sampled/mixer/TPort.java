@@ -1,10 +1,4 @@
 /*
- * TPort.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 1999 - 2004 by Matthias Pfisterer
  *
  *
@@ -22,10 +16,6 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.share.sampled.mixer;
 
 import java.util.Collection;
@@ -40,11 +30,11 @@ import javax.sound.sampled.Port;
 public class TPort
         extends TLine
         implements Port {
+
     public TPort(TMixer mixer,
                  Line.Info info) {
         super(mixer, info);
     }
-
 
     public TPort(TMixer mixer,
                  Line.Info info,
@@ -54,4 +44,3 @@ public class TPort
 }
 
 
-/* TPort.java */

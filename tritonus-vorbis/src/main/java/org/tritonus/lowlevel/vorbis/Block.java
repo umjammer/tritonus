@@ -1,10 +1,4 @@
 /*
- * Block.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2000 - 2001 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,95 +14,141 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.lowlevel.vorbis;
 
-import org.tritonus.lowlevel.ogg.Ogg;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
+
 import org.tritonus.lowlevel.ogg.Packet;
-import org.tritonus.share.TDebug;
+import vavi.sound.sampled.jna.codec.CodecLibrary;
+import vavi.sound.sampled.jna.codec.vorbis_block;
+import vavi.sound.sampled.jna.codec.vorbis_dsp_state;
+import vavi.sound.sampled.jna.ogg.ogg_packet;
+
+import static java.lang.System.getLogger;
 
 
 /**
  * Wrapper for vorbis_block.
  */
 public class Block {
-    static {
-        Ogg.loadNativeLibrary();
-        if (TDebug.TraceVorbisNative) {
-            setTrace(true);
-        }
-    }
 
+    private static final Logger logger= getLogger("org.tritonus.TraceVorbisNative");
 
     /**
      * Holds the pointer to vorbis_block
-     * for the native code.
+     * for the code.
      * This must be long to be 64bit-clean.
      */
-    @SuppressWarnings("unused")
-    private long m_lNativeHandle;
+    private vorbis_block handle;
 
+    public vorbis_block getHandle() {
+        return handle;
+    }
 
     public Block() {
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("Block.<init>(): begin");
-        }
+        logger.log(Level.TRACE, "Block.<init>(): begin");
+
         int nReturn = malloc();
         if (nReturn < 0) {
             throw new RuntimeException("malloc of vorbis_block failed");
         }
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("Block.<init>(): end");
-        }
+
+        logger.log(Level.TRACE, "Block.<init>(): end");
     }
 
+    private int malloc() {
+        logger.log(Level.TRACE, "malloc(): begin");
 
-    protected void finalize() {
-        // TODO: call free()
-        // call super.finalize() first or last?
-        // and introduce a flag if free() has already been called?
+        handle = new vorbis_block();
+        logger.log(Level.TRACE, String.format("malloc(): handle: %s", handle));
+
+        logger.log(Level.TRACE, "malloc(): end");
+
+        return 0;
     }
 
+    public void free() {
+        logger.log(Level.TRACE, "free(): begin");
 
-    private native int malloc();
+        handle = null;
 
-    public native void free();
-
+        logger.log(Level.TRACE, "free(): end");
+    }
 
     /**
      * Calls vorbis_block_init().
      */
-    public native int init(DspState dspState);
+    public int init(DspState dspState) {
+        logger.log(Level.TRACE, "init(): begin");
 
+        vorbis_dsp_state dspStateHandle = dspState.getHandle();
+        int nReturn = CodecLibrary.INSTANCE.vorbis_block_init(dspStateHandle, handle);
+
+        logger.log(Level.TRACE, "init(): end");
+
+        return nReturn;
+    }
 
     /**
      * Calls vorbis_bitrate_addblock().
      */
-    public native int addBlock();
+    public int addBlock() {
+        logger.log(Level.TRACE, "addBlock(): begin");
 
+        int nReturn = CodecLibrary.INSTANCE.vorbis_bitrate_addblock(handle);
+
+        logger.log(Level.TRACE, "addBlock(): end");
+
+        return nReturn;
+    }
 
     /**
      * Calls vorbis_analysis().
      */
-    public native int analysis(Packet packet);
+    public int analysis(Packet packet) {
+        logger.log(Level.TRACE, "analysis(): begin");
 
+        ogg_packet packetHandle = null;
+        if (packet != null) {
+            packetHandle = packet.getHandle();
+        }
+        int nReturn = CodecLibrary.INSTANCE.vorbis_analysis(handle, packetHandle);
+
+        logger.log(Level.TRACE, "analysis(): end");
+
+        return nReturn;
+    }
 
     /**
      * Calls vorbis_synthesis().
      */
-    public native int synthesis(Packet packet);
+    public int synthesis(Packet packet) {
+        logger.log(Level.TRACE, "synthesis(): begin");
 
+        ogg_packet packetHandle = null;
+        if (packet != null) {
+            packetHandle = packet.getHandle();
+        }
+        logger.log(Level.TRACE, String.format("synthesis(): packet handle: %s", packetHandle));
+
+        int nReturn = CodecLibrary.INSTANCE.vorbis_synthesis(handle, packetHandle);
+
+        logger.log(Level.TRACE, "synthesis(): end");
+
+        return nReturn;
+    }
 
     /**
      * Calls vorbis_block_clear().
      */
-    public native int clear();
+    public int clear() {
+        logger.log(Level.TRACE, "clear(): begin");
 
-    private static native void setTrace(boolean bTrace);
+        int nReturn = CodecLibrary.INSTANCE.vorbis_block_clear(handle);
+
+        logger.log(Level.TRACE, "clear(): end");
+
+        return nReturn;
+    }
 }
-
-
-/* Block.java */

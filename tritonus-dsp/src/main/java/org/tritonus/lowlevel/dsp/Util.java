@@ -1,10 +1,4 @@
 /*
- * Util.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2002 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,10 +14,6 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.lowlevel.dsp;
 
 
@@ -31,6 +21,7 @@ package org.tritonus.lowlevel.dsp;
  * Helper methods used for filter design.
  */
 public class Util {
+
     /**
      * Modified Bessel function of first kind and 0th order.
      */
@@ -47,7 +38,6 @@ public class Util {
         }
         return S;
     }
-
 
     /**
      * Compute an inverse discrete fourier transform (IDFT).
@@ -76,7 +66,6 @@ public class Util {
         return aTimeDomain;
     }
 
-
     /**
      * Multiplication of two arrays.
      */
@@ -88,7 +77,6 @@ public class Util {
         }
         return adResult;
     }
-
 
     /**
      * Converts frequency representation from omega to relative.
@@ -105,7 +93,6 @@ public class Util {
         return dRelative;
     }
 
-
     /**
      * Converts frequency representation from relative to omega.
      * This method converts a frequency represented relative to
@@ -120,7 +107,6 @@ public class Util {
         double dOmega = dRelative * 2.0 * Math.PI;
         return dOmega;
     }
-
 
     /**
      * Converts frequency representation from omega to absolute.
@@ -137,7 +123,6 @@ public class Util {
         return dAbsolute;
     }
 
-
     /**
      * Converts frequency representation from absolute to omega.
      * This method converts a frequency represented relative to
@@ -153,7 +138,6 @@ public class Util {
         return dOmega;
     }
 
-
     /**
      * Quantize constants from double to float.
      */
@@ -167,4 +151,3 @@ public class Util {
 }
 
 
-/* Util.java */

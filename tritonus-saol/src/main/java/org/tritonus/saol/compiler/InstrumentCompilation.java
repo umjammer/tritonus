@@ -81,12 +81,12 @@ public class InstrumentCompilation extends DepthFirstAdapter {
     private String m_strClassName;
     private ClassGen m_classGen;
     private ConstantPoolGen m_constantPoolGen;
-//    private MethodGen m_methodGen;
+    //    private MethodGen m_methodGen;
 //    private InstructionList m_instructionList;
     private InstructionFactory m_instructionFactory;
 //    private BranchInstruction m_pendingBranchInstruction;
 
-    // TODO: should be made obsolete by using node attributes
+    // TODO should be made obsolete by using node attributes
     private boolean m_bOpvardecls;
     private MemoryClassLoader m_classLoader = new MemoryClassLoader();
 
@@ -103,6 +103,7 @@ public class InstrumentCompilation extends DepthFirstAdapter {
         m_aMethods = new InstrumentMethod[4];
     }
 
+    @Override
     public void inAInstrdeclInstrdecl(AInstrdeclInstrdecl node) {
         String strInstrumentName = node.getIdentifier().getText();
         m_strClassName = PACKAGE_PREFIX + strInstrumentName;
@@ -123,6 +124,7 @@ public class InstrumentCompilation extends DepthFirstAdapter {
         m_aMethods[METHOD_CONSTR].appendInstruction(invokeSuperInstruction);
     }
 
+    @Override
     public void outAInstrdeclInstrdecl(AInstrdeclInstrdecl node) {
         for (InstrumentMethod m_aMethod : m_aMethods) {
             m_aMethod.finish();
@@ -143,29 +145,37 @@ public class InstrumentCompilation extends DepthFirstAdapter {
         }
     }
 
+    @Override
     public void inABlockBlock(ABlockBlock node) {
     }
 
+    @Override
     public void outABlockBlock(ABlockBlock node) {
     }
 
+    @Override
     public void outAAssignmentStatement(AAssignmentStatement node) {
         Instruction instruction = (Instruction) getNodeAttribute(node.getLvalue());
         m_aMethods[METHOD_A].appendInstruction(instruction);
     }
 
+    @Override
     public void inAExpressionStatement(AExpressionStatement node) {
     }
 
+    @Override
     public void outAExpressionStatement(AExpressionStatement node) {
     }
 
+    @Override
     public void inAIfStatement(AIfStatement node) {
     }
 
+    @Override
     public void outAIfStatement(AIfStatement node) {
     }
 
+    @Override
     public void caseAIfStatement(AIfStatement node) {
         inAIfStatement(node);
         if (node.getIf() != null) {
@@ -197,57 +207,75 @@ public class InstrumentCompilation extends DepthFirstAdapter {
         outAIfStatement(node);
     }
 
+    @Override
     public void inAIfElseStatement(AIfElseStatement node) {
     }
 
+    @Override
     public void outAIfElseStatement(AIfElseStatement node) {
     }
 
+    @Override
     public void inAWhileStatement(AWhileStatement node) {
     }
 
+    @Override
     public void outAWhileStatement(AWhileStatement node) {
     }
 
+    @Override
     public void inAInstrumentStatement(AInstrumentStatement node) {
     }
 
+    @Override
     public void outAInstrumentStatement(AInstrumentStatement node) {
     }
 
+    @Override
     public void inAOutputStatement(AOutputStatement node) {
     }
 
+    @Override
     public void outAOutputStatement(AOutputStatement node) {
     }
 
+    @Override
     public void inASpatializeStatement(ASpatializeStatement node) {
     }
 
+    @Override
     public void outASpatializeStatement(ASpatializeStatement node) {
     }
 
+    @Override
     public void inAOutbusStatement(AOutbusStatement node) {
     }
 
+    @Override
     public void outAOutbusStatement(AOutbusStatement node) {
     }
 
+    @Override
     public void inAExtendStatement(AExtendStatement node) {
     }
 
+    @Override
     public void outAExtendStatement(AExtendStatement node) {
     }
 
+    @Override
     public void inATurnoffStatement(ATurnoffStatement node) {
     }
 
+    @Override
     public void outATurnoffStatement(ATurnoffStatement node) {
     }
 
+    @Override
     public void inAReturnStatement(AReturnStatement node) {
     }
 
+    @Override
     public void outAReturnStatement(AReturnStatement node) {
     }
 
@@ -255,15 +283,17 @@ public class InstrumentCompilation extends DepthFirstAdapter {
      * This is needed at the very end, when the putfield
      * instruction is executed.
      */
+    @Override
     public void outASimpleLvalue(ASimpleLvalue node) {
         m_aMethods[METHOD_A].appendInstruction(InstructionConst.ALOAD_0);
         String strVariableName = node.getIdentifier().getText();
-        // TODO: use getClassName()
+        // TODO use getClassName()
         // set the instruction to be executed after the rvalue is calculated
         Instruction instruction = getInstructionFactory().createPutField(m_strClassName, strVariableName, Type.FLOAT);
         setNodeAttribute(node, instruction);
     }
 
+    @Override
     public void inAIndexedLvalue(AIndexedLvalue node) {
         // push the array reference onto the stack
         String strVariableName = node.getIdentifier().getText();
@@ -275,69 +305,89 @@ public class InstrumentCompilation extends DepthFirstAdapter {
      * also the array index (as a float) is on the stack.
      * It has to be transformed to integer.
      */
+    @Override
     public void outAIndexedLvalue(AIndexedLvalue node) {
-        // TODO: correct rounding (1.5 -> 2.0)
+        // TODO correct rounding (1.5 -> 2.0)
         m_aMethods[METHOD_A].appendInstruction(InstructionConst.F2I);
         // set the instruction to be executed after the rvalue is calculated
         setNodeAttribute(node, InstructionConst.FASTORE);
     }
 
+    @Override
     public void inAIdentlistIdentlist(AIdentlistIdentlist node) {
     }
 
+    @Override
     public void outAIdentlistIdentlist(AIdentlistIdentlist node) {
     }
 
+    @Override
     public void inAIdentlistTailIdentlistTail(AIdentlistTailIdentlistTail node) {
     }
 
+    @Override
     public void outAIdentlistTailIdentlistTail(AIdentlistTailIdentlistTail node) {
     }
 
+    @Override
     public void inAParamlistParamlist(AParamlistParamlist node) {
     }
 
+    @Override
     public void outAParamlistParamlist(AParamlistParamlist node) {
     }
 
+    @Override
     public void inAParamlistTailParamlistTail(AParamlistTailParamlistTail node) {
     }
 
+    @Override
     public void outAParamlistTailParamlistTail(AParamlistTailParamlistTail node) {
     }
 
+    @Override
     public void inATablemapVardecl(ATablemapVardecl node) {
     }
 
+    @Override
     public void outATablemapVardecl(ATablemapVardecl node) {
     }
 
+    @Override
     public void inASigvarOpvardecl(ASigvarOpvardecl node) {
         m_bOpvardecls = true;
     }
 
+    @Override
     public void outASigvarOpvardecl(ASigvarOpvardecl node) {
         m_bOpvardecls = false;
     }
 
+    @Override
     public void inAParamdeclParamdecl(AParamdeclParamdecl node) {
     }
 
+    @Override
     public void outAParamdeclParamdecl(AParamdeclParamdecl node) {
     }
 
+    @Override
     public void inANamelistNamelist(ANamelistNamelist node) {
     }
 
+    @Override
     public void outANamelistNamelist(ANamelistNamelist node) {
     }
 
+    @Override
     public void inANamelistTailNamelistTail(ANamelistTailNamelistTail node) {
     }
 
+    @Override
     public void outANamelistTailNamelistTail(ANamelistTailNamelistTail node) {
     }
 
+    @Override
     public void outASimpleName(ASimpleName node) {
         if (m_bOpvardecls) {
             String strVariableName = node.getIdentifier().getText();
@@ -345,6 +395,7 @@ public class InstrumentCompilation extends DepthFirstAdapter {
         }
     }
 
+    @Override
     public void outAIndexedName(AIndexedName node) {
         if (m_bOpvardecls) {
             String strVariableName = node.getIdentifier().getText();
@@ -359,156 +410,194 @@ public class InstrumentCompilation extends DepthFirstAdapter {
         }
     }
 
+    @Override
     public void outAInchannelsName(AInchannelsName node) {
-        // TODO:
+        // TODO
     }
 
+    @Override
     public void outAOutchannelsName(AOutchannelsName node) {
-        // TODO:
+        // TODO
     }
 
+    @Override
     public void outAIvarStype(AIvarStype node) {
         setNodeAttribute(node, new WidthAndRate(WidthAndRate.WIDTH_UNKNOWN, WidthAndRate.RATE_I));
     }
 
+    @Override
     public void outAKsigStype(AKsigStype node) {
         setNodeAttribute(node, new WidthAndRate(WidthAndRate.WIDTH_UNKNOWN, WidthAndRate.RATE_K));
     }
 
+    @Override
     public void outAAsigStype(AAsigStype node) {
         setNodeAttribute(node, new WidthAndRate(WidthAndRate.WIDTH_UNKNOWN, WidthAndRate.RATE_A));
     }
 
+    @Override
     public void outAOparrayStype(AOparrayStype node) {
-        // TODO:
+        // TODO
     }
 
+    @Override
     public void inATabledeclTabledecl(ATabledeclTabledecl node) {
     }
 
+    @Override
     public void outATabledeclTabledecl(ATabledeclTabledecl node) {
     }
 
+    @Override
     public void inAImportsTaglist(AImportsTaglist node) {
     }
 
+    @Override
     public void outAImportsTaglist(AImportsTaglist node) {
     }
 
+    @Override
     public void inAExportsTaglist(AExportsTaglist node) {
     }
 
+    @Override
     public void outAExportsTaglist(AExportsTaglist node) {
     }
 
+    @Override
     public void inAImportsexportsTaglist(AImportsexportsTaglist node) {
     }
 
+    @Override
     public void outAImportsexportsTaglist(AImportsexportsTaglist node) {
     }
 
+    @Override
     public void inAExportsimportsTaglist(AExportsimportsTaglist node) {
     }
 
+    @Override
     public void outAExportsimportsTaglist(AExportsimportsTaglist node) {
     }
 
+    @Override
     public void inAAopcodeOptype(AAopcodeOptype node) {
     }
 
+    @Override
     public void outAAopcodeOptype(AAopcodeOptype node) {
     }
 
+    @Override
     public void inAKopcodeOptype(AKopcodeOptype node) {
     }
 
+    @Override
     public void outAKopcodeOptype(AKopcodeOptype node) {
     }
 
+    @Override
     public void inAIopcodeOptype(AIopcodeOptype node) {
     }
 
+    @Override
     public void outAIopcodeOptype(AIopcodeOptype node) {
     }
 
+    @Override
     public void inAOpcodeOptype(AOpcodeOptype node) {
     }
 
+    @Override
     public void outAOpcodeOptype(AOpcodeOptype node) {
     }
 
+    @Override
     public void inAAltExpr(AAltExpr node) {
-        // TODO:
+        // TODO
     }
 
+    @Override
     public void outAAltExpr(AAltExpr node) {
-        // TODO:
+        // TODO
     }
 
+    @Override
     public void outAOrOrexpr(AOrOrexpr node) {
-        // TODO:
+        // TODO
     }
 
+    @Override
     public void outAAndAndexpr(AAndAndexpr node) {
-        // TODO:
+        // TODO
     }
 
+    @Override
     public void outANeqEqualityexpr(ANeqEqualityexpr node) {
         BranchInstruction branch = new IFNE(null);
         m_aMethods[METHOD_A].appendRelationalOperation(branch);
     }
 
+    @Override
     public void outAEqEqualityexpr(AEqEqualityexpr node) {
         BranchInstruction branch = new IFEQ(null);
         m_aMethods[METHOD_A].appendRelationalOperation(branch);
     }
 
+    @Override
     public void inAGtRelationalexpr(AGtRelationalexpr node) {
     }
 
+    @Override
     public void outAGtRelationalexpr(AGtRelationalexpr node) {
         BranchInstruction branch = new IFGT(null);
         m_aMethods[METHOD_A].appendRelationalOperation(branch);
     }
 
+    @Override
     public void outALtRelationalexpr(ALtRelationalexpr node) {
         BranchInstruction branch = new IFLT(null);
         m_aMethods[METHOD_A].appendRelationalOperation(branch);
     }
 
+    @Override
     public void outALteqRelationalexpr(ALteqRelationalexpr node) {
         BranchInstruction branch = new IFLE(null);
         m_aMethods[METHOD_A].appendRelationalOperation(branch);
     }
 
+    @Override
     public void outAGteqRelationalexpr(AGteqRelationalexpr node) {
         BranchInstruction branch = new IFGE(null);
         m_aMethods[METHOD_A].appendRelationalOperation(branch);
     }
 
+    @Override
     public void outAPlusAddexpr(APlusAddexpr node) {
         m_aMethods[METHOD_A].appendInstruction(InstructionConst.FADD);
     }
 
-
+    @Override
     public void outAMinusAddexpr(AMinusAddexpr node) {
         m_aMethods[METHOD_A].appendInstruction(InstructionConst.FSUB);
     }
 
-
+    @Override
     public void outAMultFactor(AMultFactor node) {
         m_aMethods[METHOD_A].appendInstruction(InstructionConst.FMUL);
     }
 
-
+    @Override
     public void outADivFactor(ADivFactor node) {
         m_aMethods[METHOD_A].appendInstruction(InstructionConst.FDIV);
     }
 
+    @Override
     public void outANotUnaryminusterm(ANotUnaryminusterm node) {
         m_aMethods[METHOD_A].appendInstruction(InstructionConst.FNEG);
     }
 
+    @Override
     public void outANotNotterm(ANotNotterm node) {
         m_aMethods[METHOD_A].appendInstruction(InstructionConst.FCONST_0);
         m_aMethods[METHOD_A].appendInstruction(InstructionConst.FCMPL);
@@ -522,11 +611,13 @@ public class InstrumentCompilation extends DepthFirstAdapter {
         m_aMethods[METHOD_A].setPendingBranchInstruction(branch1);
     }
 
+    @Override
     public void outAIdentifierTerm(AIdentifierTerm node) {
         String strVariableName = node.getIdentifier().getText();
         m_aMethods[METHOD_A].appendGetField(strVariableName);
     }
 
+    @Override
     public void outAConstantTerm(AConstantTerm node) {
         Object constant = getNodeAttribute(node.getConst());
         if (constant instanceof Integer ||
@@ -538,6 +629,7 @@ public class InstrumentCompilation extends DepthFirstAdapter {
         }
     }
 
+    @Override
     public void inAIndexedTerm(AIndexedTerm node) {
         // push the array reference onto the stack
         String strVariableName = node.getIdentifier().getText();
@@ -549,80 +641,100 @@ public class InstrumentCompilation extends DepthFirstAdapter {
      * also the array index (as a float) is on the stack.
      * It has to be transformed to integer.
      */
+    @Override
     public void outAIndexedTerm(AIndexedTerm node) {
-        // TODO: correct rounding (1.5 -> 2.0)
+        // TODO correct rounding (1.5 -> 2.0)
         m_aMethods[METHOD_A].appendInstruction(InstructionConst.F2I);
         // and now fetch the value from the array
         setNodeAttribute(node, InstructionConst.FALOAD);
     }
 
+    @Override
     public void inASasbfTerm(ASasbfTerm node) {
     }
 
+    @Override
     public void outASasbfTerm(ASasbfTerm node) {
     }
 
+    @Override
     public void inAFunctionTerm(AFunctionTerm node) {
     }
 
+    @Override
     public void outAFunctionTerm(AFunctionTerm node) {
     }
 
+    @Override
     public void inAIndexedfunctionTerm(AIndexedfunctionTerm node) {
     }
 
+    @Override
     public void outAIndexedfunctionTerm(AIndexedfunctionTerm node) {
     }
 
+    @Override
     public void inAExprlistExprlist(AExprlistExprlist node) {
     }
 
+    @Override
     public void outAExprlistExprlist(AExprlistExprlist node) {
     }
 
+    @Override
     public void inAExprlistTailExprlistTail(AExprlistTailExprlistTail node) {
     }
 
+    @Override
     public void outAExprlistTailExprlistTail(AExprlistTailExprlistTail node) {
     }
 
+    @Override
     public void inAExprstrlistExprstrlist(AExprstrlistExprstrlist node) {
     }
 
+    @Override
     public void outAExprstrlistExprstrlist(AExprstrlistExprstrlist node) {
     }
 
+    @Override
     public void inAExprstrlistTailExprstrlistTail(AExprstrlistTailExprstrlistTail node) {
     }
 
+    @Override
     public void outAExprstrlistTailExprstrlistTail(AExprstrlistTailExprstrlistTail node) {
     }
 
+    @Override
     public void inAExprExprOrString(AExprExprOrString node) {
     }
 
+    @Override
     public void outAExprExprOrString(AExprExprOrString node) {
     }
 
+    @Override
     public void inAStringExprOrString(AStringExprOrString node) {
     }
 
+    @Override
     public void outAStringExprOrString(AStringExprOrString node) {
     }
 
+    @Override
     public void inAIntegerConst(AIntegerConst node) {
     }
 
+    @Override
     public void outAIntegerConst(AIntegerConst node) {
         String strInteger = node.getInteger().getText();
-        Integer integer = new Integer(strInteger);
-        setNodeAttribute(node, integer);
+        setNodeAttribute(node, Integer.parseInt(strInteger));
     }
 
+    @Override
     public void outANumberConst(ANumberConst node) {
         String strNumber = node.getNumber().getText();
-        Float number = new Float(strNumber);
-        setNodeAttribute(node, number);
+        setNodeAttribute(node, Float.parseFloat(strNumber));
     }
 
     // helper methods
@@ -808,4 +920,4 @@ public class InstrumentCompilation extends DepthFirstAdapter {
     }
 }
 
-/* InstrumentCompilation.java */
+

@@ -45,6 +45,7 @@ import javax.swing.JPanel;
 public class ClipPlayerApplet
         extends JApplet
         implements LineListener {
+
     private AudioInputStream m_audioInputStream;
     private AudioFormat m_format;
     private Clip m_clip;
@@ -53,10 +54,8 @@ public class ClipPlayerApplet
     private JButton m_loopButton;
     private JButton m_stopButton;
 
-
     public ClipPlayerApplet() {
     }
-
 
     public void init() {
         System.out.println("ClipPlayerApplet.init(): context class loader: " + Thread.currentThread().getContextClassLoader());
@@ -73,7 +72,7 @@ public class ClipPlayerApplet
         loadClip(clipURL);
         JPanel panel = new JPanel();
         this.getContentPane().add(panel);
-        // TODO: label showing the url
+        // TODO label showing the url
         m_loopButton = new JButton("Loop");
         m_loopButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
@@ -91,13 +90,11 @@ public class ClipPlayerApplet
         panel.add(m_stopButton);
     }
 
-
     public void destroy() {
         if (m_clip != null) {
             m_clip.close();
         }
     }
-
 
     private void loadClip(URL clipURL) {
         System.out.println("ClipPlayerApplet.loadClip(): setting another class loader");
@@ -122,13 +119,12 @@ public class ClipPlayerApplet
             }
             // m_clip.loop(nLoopCount);
         } else {
-            // TODO: popup (also for other error conditions)
+            // TODO popup (also for other error conditions)
             System.out.println("ClipPlayerApplet.<init>(): can't get data from URL " + clipURL);
         }
         Thread.currentThread().setContextClassLoader(originalClassLoader);
         System.out.println("ClipPlayerApplet.loadClip(): restored the original class loader");
     }
-
 
     public void update(LineEvent event) {
         System.out.println("ClipPlayerApplet.update(): received event: " + event);
@@ -146,4 +142,3 @@ public class ClipPlayerApplet
 }
 
 
-/* ClipPlayerApplet.java */

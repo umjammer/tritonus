@@ -41,6 +41,7 @@ import org.apache.bcel.generic.Type;
  * part of the jakarta project (http://jakarta.apache.org/bcel/).
  */
 public class BCELTest {
+
     public static void main(String[] args) {
         String strClassName = "tone";
         ClassGen classGen = new ClassGen(strClassName,

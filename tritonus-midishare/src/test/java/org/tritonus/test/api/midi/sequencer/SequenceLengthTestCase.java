@@ -1,8 +1,4 @@
 /*
- * SequenceLengthTestCase.java
- */
-
-/*
  *  Copyright (c) 2003 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,6 +16,7 @@
 
 package org.tritonus.test.api.midi.sequencer;
 
+import java.io.BufferedInputStream;
 import java.io.InputStream;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.Sequence;
@@ -31,11 +28,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * Tests for class javax.sound.midi.MidiMessage.
  */
-public class SequenceLengthTestCase
-        extends BaseSequencerTestCase {
+public class SequenceLengthTestCase extends BaseSequencerTestCase {
+
     private static final String MIDI_FILENAME = "trippygaia1.mid";
 
-
+    @Override
     protected void checkSequencer(Sequencer seq)
             throws Exception {
         seq.open();
@@ -53,11 +50,9 @@ public class SequenceLengthTestCase
         seq.close();
     }
 
-
     private static InputStream getMediaFile(String strFilename) {
-        return SequenceLengthTestCase.class.getResourceAsStream("/sounds/" + strFilename);
+        return new BufferedInputStream(SequenceLengthTestCase.class.getResourceAsStream("/sounds/" + strFilename));
     }
 }
 
 
-/* SequenceLengthTestCase.java */

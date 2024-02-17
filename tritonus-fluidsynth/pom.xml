@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.tritonus</groupId>
     <artifactId>tritonus</artifactId>
-    <version>0.3.12</version>
+    <version>0.3.13</version>
   </parent>
 
   <artifactId>tritonus-fluidsynth</artifactId>
@@ -13,127 +13,31 @@
 
   <name>Tritonus fluidsynth Module</name>
 
+  <properties>
+    <!-- latest is 0.13-SNAPSHOT, need to run on java 1.8 (bridj? blocks) -->
+    <jnaerator.version>0.13-SNAPSHOT</jnaerator.version>
+  </properties>
+
   <profiles>
     <profile>
-      <id>local (not on jitpack)</id>
-      <activation>
-        <property>
-          <name>env.JITPACK</name>
-          <value>!true</value>
-        </property>
-        <os>
-          <family>mac</family>
-        </os>
-      </activation>
+      <!-- mvn -P jnaerator jnaerator:generate -->
+      <id>jnaerator</id>
       <build>
         <plugins>
           <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>native-maven-plugin</artifactId>
-            <version>1.0-alpha-11</version>
-            <extensions>true</extensions>
+            <groupId>com.nativelibs4java</groupId>
+            <artifactId>maven-jnaerator-plugin</artifactId>
+            <version>${jnaerator.version}</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>generate</goal>
+                </goals>
+              </execution>
+            </executions>
             <configuration>
-              <javahClassNames>
-                <javahClassName>org.tritonus.midi.device.fluidsynth.FluidSynthesizer</javahClassName>
-                <javahClassName>org.tritonus.midi.sb.fluidsynth.FluidSoundbank</javahClassName>
-              </javahClassNames>
-              <javahSearchJNIFromDependencies>false</javahSearchJNIFromDependencies>
-              <javahOS>darwin</javahOS>
-              <compilerProvider>generic-classic</compilerProvider>
-              <compilerStartOptions>
-                <compilerStartOption>-g -Wall -O2 -fomit-frame-pointer -fPIC</compilerStartOption>
-                <!-- unless locating jdk includes, cause error why??? -->
-                <compilerStartOption>-arch x86_64
-                  -I${java.home}/../include
-                  -I${java.home}/../include/darwin
-                  -I /usr/local/include
-                </compilerStartOption>
-              </compilerStartOptions>
-              <sources>
-                <source>
-                  <directory>src/main/native</directory>
-                  <fileNames>
-                    <fileName>org_tritonus_midi_device_fluidsynth_FluidSynthesizer.c</fileName>
-                    <fileName>common/common.c</fileName>
-                  </fileNames>
-                </source>
-              </sources>
-              <linkerStartOptions>
-                <linkerStartOption>-dynamiclib -arch x86_64
-                  -L/usr/local/lib -lfluidsynth
-                </linkerStartOption>
-              </linkerStartOptions>
-              <linkerFinalName/>
-              <linkerEndOptions>
-                <linkerEndOption>-o ${project.build.directory}/libtritonusfluid.dylib</linkerEndOption>
-              </linkerEndOptions>
+              <javaOutputDirectory>${project.build.sourceDirectory}</javaOutputDirectory>
             </configuration>
-            <executions>
-              <execution>
-                <id>compile-fluidsynth</id>
-                <phase>compile</phase>
-                <goals>
-                  <goal>javah</goal>
-                  <goal>compile</goal>
-                  <goal>link</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-install-plugin</artifactId>
-            <version>3.0.0-M1</version>
-            <executions>
-              <execution>
-                <id>install-library</id>
-                <phase>install</phase>
-                <goals>
-                  <goal>install-file</goal>
-                </goals>
-                <configuration>
-                  <groupId>${project.groupId}</groupId>
-                  <artifactId>${project.artifactId}</artifactId>
-                  <version>${project.parent.version}</version>
-                  <packaging>dylib</packaging>
-                  <file>${project.build.directory}/libtritonusfluid.dylib</file>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-
-          <plugin>
-            <!-- because of maven deploy-file uploads source, jar also -->
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <version>1.6.0</version>
-            <executions>
-              <execution>
-                <id>deploy-library</id>
-                <phase>deploy</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <executable>mvn</executable>
-                  <arguments>
-                    <argument>deploy:deploy-file</argument>
-                    <argument>-DgroupId=${project.groupId}</argument>
-                    <argument>-DartifactId=${project.artifactId}</argument>
-                    <argument>-Dversion=${project.parent.version}</argument>
-                    <argument>-Dpackaging=dylib</argument>
-                    <argument>-Dfile=${project.build.directory}/libtritonusfluid.dylib</argument>
-                    <argument>-DgeneratePom=false</argument>
-                    <argument>-DrepositoryId=github</argument>
-                    <argument>-Durl=https://maven.pkg.github.com/umjammer/tritonus</argument>
-                    <argument>-DgeneratePom=false</argument>
-                    <argument>-s</argument>
-                    <argument>${env.GITHUB_WORKSPACE}/settings.xml</argument>
-                  </arguments>
-                </configuration>
-              </execution>
-            </executions>
           </plugin>
         </plugins>
       </build>
@@ -151,7 +55,7 @@
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>properties-maven-plugin</artifactId>
-            <version>1.0.0</version>
+            <version>1.1.0</version>
             <executions>
               <execution>
                 <phase>initialize</phase>
@@ -175,27 +79,16 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.10.1</version>
-        <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
-          <encoding>utf-8</encoding>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.0.0-M7</version>
         <configuration>
           <dependenciesToScan>
             <dependency>org.tritonus:tritonus-midishare</dependency>
           </dependenciesToScan>
-          <forkMode>always</forkMode>
+          <reuseForks>false</reuseForks>
           <!-- mvn clean install -Dtritonus.fluidsynth.defaultsoundbank=your_soundfont_path -->
           <argLine>
             -Djava.util.logging.config.file=src/test/resources/logging.properties
-            -Djava.library.path=${project.build.directory}:/usr/local/lib
+            -Djna.library.path=${native.library.path}
           </argLine>
           <systemProperties>
             <tritonus.fluidsynth.defaultsoundbank>${tritonus.fluidsynth.defaultsoundbank}</tritonus.fluidsynth.defaultsoundbank>
@@ -216,6 +109,11 @@
     <dependency>
       <groupId>org.tritonus</groupId>
       <artifactId>tritonus-share</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>net.java.dev.jna</groupId>
+      <artifactId>jna</artifactId>
     </dependency>
 
     <dependency>
@@ -250,7 +148,12 @@
     <dependency>
       <groupId>com.github.umjammer</groupId>
       <artifactId>vavi-commons</artifactId>
-      <version>1.1.6</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>${vavi-sound.groupId}</groupId>
+      <artifactId>vavi-sound</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

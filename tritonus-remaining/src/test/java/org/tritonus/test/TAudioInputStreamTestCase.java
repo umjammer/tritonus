@@ -36,6 +36,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 
 public class TAudioInputStreamTestCase {
+
     @Test
     public void testEmptyMap() {
         AudioFormat format = new AudioFormat(44100.0F, 16, 2, true, false);
@@ -49,7 +50,6 @@ public class TAudioInputStreamTestCase {
         Object result = propReturn.get("bitrate");
         assertNull(result);
     }
-
 
     @Test
     public void testCopying() {
@@ -74,7 +74,6 @@ public class TAudioInputStreamTestCase {
         }
     }
 
-
     @Test
     public void testUnmodifiable() {
         AudioFormat format = new AudioFormat(44100.0F, 16, 2, true, false);
@@ -90,7 +89,6 @@ public class TAudioInputStreamTestCase {
         } catch (UnsupportedOperationException e) {
         }
     }
-
 
     @Test
     public void testGet() {
@@ -109,4 +107,3 @@ public class TAudioInputStreamTestCase {
 }
 
 
-/* TAudioInputStreamTestCase.java */

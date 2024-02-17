@@ -1,10 +1,4 @@
 /*
- * TMixerInfo.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 1999, 2000 by Matthias Pfisterer
  *
  *
@@ -22,10 +16,6 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.share.sampled.mixer;
 
 import javax.sound.sampled.Mixer;
@@ -37,11 +27,11 @@ import javax.sound.sampled.Mixer;
  */
 public class TMixerInfo
         extends Mixer.Info {
+
     public TMixerInfo(String a, String b, String c, String d) {
         super(a, b, c, d);
     }
 }
 
 
-/* TMixerInfo.java */
 

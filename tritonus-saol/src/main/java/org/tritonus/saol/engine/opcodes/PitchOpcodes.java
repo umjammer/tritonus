@@ -1,10 +1,4 @@
 /*
- * PitchOpcodes.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2002 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,10 +13,6 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.saol.engine.opcodes;
 
@@ -39,15 +29,14 @@ import org.tritonus.saol.compiler.WidthAndRate;
  * instantiated once per orchestra rendering.
  */
 public final class PitchOpcodes {
+
     private static final float DEFAULT_TUNE = 440.0F;
 
     private float m_fTune;
 
-
     public PitchOpcodes() {
         m_fTune = DEFAULT_TUNE;
     }
-
 
     public static void buildOpcodeTable(OpcodeTable opcodeTable) {
         OpcodeClass staticClass = new OpcodeClass("org.tritonus.saol.engine.opcodes.PitchOpcodes", OpcodeClass.TYPE_STATIC);
@@ -70,82 +59,66 @@ public final class PitchOpcodes {
         opcodeTable.addEntry(new OpcodeEntry("cpsmidi", instanceClass, WidthAndRate.RATE_X));
     }
 
-
     public float gettune() {
         return m_fTune;
     }
-
 
     public float settune(float x) {
         m_fTune = x;
         return x;
     }
 
-
     public static float octpch(float x) {
         return getOctValue(getPchOctave(x), getPchNote(x));
     }
-
 
     public static float pchoct(float x) {
         return getPchValue(getOctOctave(x), getOctNote(x));
     }
 
-
     public float cpspch(float x) {
         return getCpsValue(getPchOctave(x), getPchNote(x));
     }
-
 
     public float pchcps(float x) {
         return getPchValue(getCpsOctave(x), getCpsNote(x));
     }
 
-
     public float cpsoct(float x) {
         return getCpsValue(getOctOctave(x), getOctNote(x));
     }
-
 
     public float octcps(float x) {
         return getOctValue(getCpsOctave(x), getCpsNote(x));
     }
 
-
     public static float midipch(float x) {
         return getMidiValue(getPchOctave(x), getPchNote(x));
     }
-
 
     public static float pchmidi(float x) {
         return getPchValue(getMidiOctave(x), getMidiNote(x));
     }
 
-
     public static float midioct(float x) {
         return getMidiValue(getOctOctave(x), getOctNote(x));
     }
-
 
     public static float octmidi(float x) {
         return getOctValue(getMidiOctave(x), getMidiNote(x));
     }
 
-
     public float midicps(float x, float y) {
         return getMidiValue(getCpsOctave(x), getCpsNote(x));
     }
-
 
     public float cpsmidi(float x) {
         return getCpsValue(getMidiOctave(x), getMidiNote(x));
     }
 
-
     /*
      * helper methds
      */
-
 
  /*
    These methods use the following conventions:
@@ -174,11 +147,9 @@ public final class PitchOpcodes {
    11 B
  */
 
-
     private float getCpsValue(int nOctave, int nNote) {
         return gettune() * (float) Math.pow(2.0, (nOctave - 8) + (nNote - 9) / 12.0);
     }
-
 
     private int getCpsOctave(float fCps) {
         double dRelativePitch = fCps / gettune();
@@ -186,58 +157,47 @@ public final class PitchOpcodes {
         return (int) dTone + 8;
     }
 
-
     private int getCpsNote(float fCps) {
         double dRelativePitch = fCps / gettune();
         double dTone = Math.log(dRelativePitch) * (1.0 / Math.log(2.0));
         return (int) ((dTone - (int) dTone) * 12.0);
     }
 
-
     private static float getMidiValue(int nOctave, int nNote) {
         return (nOctave - 3) * 12 + nNote;
     }
-
 
     private static int getMidiOctave(float fMidi) {
         return (int) fMidi / 12 + 3;
     }
 
-
     private static int getMidiNote(float fMidi) {
         return (int) fMidi % 12;
     }
-
 
     private static float getOctValue(int nOctave, int nNote) {
         return nOctave + nNote * (1.0F / 12.0F);
     }
 
-
     private static int getOctOctave(float fOct) {
         return (int) fOct;
     }
-
 
     private static int getOctNote(float fOct) {
         return (int) ((fOct - getOctOctave(fOct)) * 12.0F);
     }
 
-
     private static float getPchValue(int nOctave, int nNote) {
         return nOctave + nNote * 0.01F;
     }
-
 
     private static int getPchOctave(float fPch) {
         return (int) fPch;
     }
 
-
     private static int getPchNote(float fPch) {
         return (int) ((fPch - getPchOctave(fPch)) * 100.0F);
     }
-
 
     private static float notImplemented() {
         throw new RuntimeException("opcode not implemented");
@@ -245,4 +205,3 @@ public final class PitchOpcodes {
 }
 
 
-/* PitchOpcodes.java */

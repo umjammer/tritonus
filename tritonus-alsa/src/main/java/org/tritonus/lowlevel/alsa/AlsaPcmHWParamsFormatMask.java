@@ -1,10 +1,4 @@
 /*
- * AlsaPcmHWParamsFormatMask.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2000 - 2001 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,19 +14,21 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.lowlevel.alsa;
 
-import org.tritonus.share.TDebug;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
+
+import static java.lang.System.getLogger;
 
 
 /**
- * TODO:
+ * TODO
  */
 public class AlsaPcmHWParamsFormatMask {
+
+    private static final Logger logger = getLogger("org.tritonus.TraceAlsaPcmNative");
+
     /**
      * Holds the pointer to snd_pcm_format_mask_t
      * for the native code.
@@ -41,33 +37,21 @@ public class AlsaPcmHWParamsFormatMask {
     @SuppressWarnings("unused")
     private long m_lNativeHandle;
 
-
     public AlsaPcmHWParamsFormatMask() {
-        if (TDebug.TraceAlsaPcmNative) {
-            TDebug.out("AlsaPcmHWParamsFormatMask.<init>(): begin");
-        }
+        logger.log(Level.TRACE, "AlsaPcmHWParamsFormatMask.<init>(): begin");
+
         int nReturn = malloc();
         if (nReturn < 0) {
             throw new RuntimeException("malloc of format_mask failed");
         }
-        if (TDebug.TraceAlsaPcmNative) {
-            TDebug.out("AlsaPcmHWParamsFormatMask.<init>(): end");
-        }
+
+        logger.log(Level.TRACE, "AlsaPcmHWParamsFormatMask.<init>(): end");
     }
-
-
-    protected void finalize() {
-        // TODO: call free()
-        // call super.finalize() first or last?
-        // and introduce a flag if free() has already been called?
-    }
-
 
     /**
      * Calls snd_pcm_format_mask_malloc().
      */
     private native int malloc();
-
 
     /**
      * Calls snd_pcm_format_mask_free().
@@ -89,20 +73,13 @@ public class AlsaPcmHWParamsFormatMask {
      */
     public native boolean test(int nFormat);
 
-
     /**
      * Calls snd_pcm_format_mask_set().
      */
     public native void set(int nFormat);
 
-
     /**
      * Calls snd_pcm_format_mask_reset().
      */
     public native void reset(int nFormat);
-
-
 }
-
-
-/* AlsaPcmHWParamsFormatMask.java */

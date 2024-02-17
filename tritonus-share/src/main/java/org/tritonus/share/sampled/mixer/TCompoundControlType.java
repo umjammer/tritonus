@@ -1,10 +1,4 @@
 /*
- * TCompoundControlType.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2001 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,10 +14,6 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.share.sampled.mixer;
 
 import javax.sound.sampled.CompoundControl;
@@ -35,6 +25,7 @@ import javax.sound.sampled.CompoundControl;
  */
 public class TCompoundControlType
         extends CompoundControl.Type {
+
     /**
      * Constructor.
      * Constructs a CompoundControl.Type with the
@@ -48,4 +39,3 @@ public class TCompoundControlType
 }
 
 
-/* TCompoundControlType.java */

@@ -1,7 +1,6 @@
 /*
  * MidiDeviceProviderTestCase.java
  */
-
 /*
  *  Copyright (c) 2001 - 2002 by Matthias Pfisterer
  *
@@ -33,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * Tests for class javax.sound.midi.spi.MidiDeviceProvider.
  */
 public class MidiDeviceProviderTestCase {
+
     @Test
     public void testIsDeviceSupported()
             throws Exception {
@@ -46,7 +46,6 @@ public class MidiDeviceProviderTestCase {
         });
     }
 
-
     private void checkIsDeviceSupported(MidiDevice.Info[] aSupportedInfos,
                                         MidiDevice.Info testInfo,
                                         boolean bExpectedResult)
@@ -55,37 +54,36 @@ public class MidiDeviceProviderTestCase {
         assertFalse(bExpectedResult ^ provider.isDeviceSupported(testInfo), "empty supported array");
     }
 
-
     /**
      * Concrete subclass of MidiDeviceProvider.
      */
     private static class TestMidiDeviceProvider
             extends MidiDeviceProvider {
-        MidiDevice.Info[] m_aSupportedInfos;
 
+        MidiDevice.Info[] m_aSupportedInfos;
 
         public TestMidiDeviceProvider(MidiDevice.Info[] aSupportedInfos) {
             m_aSupportedInfos = aSupportedInfos;
         }
 
-
+        @Override
         public MidiDevice.Info[] getDeviceInfo() {
             return m_aSupportedInfos;
         }
 
-
+        @Override
         public MidiDevice getDevice(MidiDevice.Info info) {
             return null;
         }
 
     }
 
-
     /**
      * Accessible subclass of MidiDevice.Info.
      */
     private static class TestInfo
             extends MidiDevice.Info {
+
         public TestInfo(String name, String vendor, String description,
                         String version) {
             super(name, vendor, description, version);
@@ -94,4 +92,3 @@ public class MidiDeviceProviderTestCase {
 }
 
 
-/* MidiDeviceProviderTestCase.java */

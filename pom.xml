@@ -4,7 +4,7 @@
 
   <groupId>org.tritonus</groupId>
   <artifactId>tritonus</artifactId>
-  <version>0.3.12</version>
+  <version>0.3.13</version>
   <packaging>pom</packaging>
 
   <name>Tritonus Parent Module</name>
@@ -27,36 +27,65 @@
     <module>tritonus-fluidsynth</module>
     <module>tritonus-src</module>
     <module>tritonus-aos</module>
-    <!--
-        <module>tritonus-timidity</module>
-    -->
+<!--
+    <module>tritonus-timidity</module>
+-->
     <module>tritonus-saol</module>
   </modules>
 
-  <distributionManagement>
-    <repository>
-      <id>github</id>
-      <url>https://maven.pkg.github.com/umjammer/tritonus</url>
-    </repository>
-  </distributionManagement>
+  <properties>
+    <vavi-sound.groupId>com.github.umjammer</vavi-sound.groupId> <!-- vavi / com.github.umjammer -->
+  </properties>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.11.0</version>
+          <configuration>
+            <release>17</release>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>3.2.2</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
 
   <dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>org.tritonus</groupId>
         <artifactId>tritonus-share</artifactId>
-        <version>0.3.12</version>
+        <version>0.3.13</version>
       </dependency>
       <dependency>
         <groupId>org.tritonus</groupId>
         <artifactId>tritonus-remaining</artifactId>
-        <version>0.3.12</version>
+        <version>0.3.13</version>
+      </dependency>
+
+      <dependency>
+        <groupId>net.java.dev.jna</groupId>
+        <artifactId>jna</artifactId>
+        <version>5.14.0</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.github.umjammer</groupId>
+        <artifactId>vavi-commons</artifactId>
+        <version>1.1.10</version>
       </dependency>
 
       <dependency>
         <groupId>org.junit</groupId>
         <artifactId>junit-bom</artifactId>
-        <version>5.9.0</version>
+        <version>5.10.1</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -64,28 +93,35 @@
       <dependency>
         <groupId>org.tritonus</groupId>
         <artifactId>tritonus-midishare</artifactId>
-        <version>0.3.12</version>
+        <version>0.3.13</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.tritonus</groupId>
         <artifactId>tritonus-share</artifactId>
-        <version>0.3.12</version>
+        <version>0.3.13</version>
         <type>test-jar</type>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.tritonus</groupId>
         <artifactId>tritonus-remaining</artifactId>
-        <version>0.3.12</version>
+        <version>0.3.13</version>
         <type>test-jar</type>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.tritonus</groupId>
         <artifactId>tritonus-midishare</artifactId>
-        <version>0.3.12</version>
+        <version>0.3.13</version>
         <type>test-jar</type>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>${vavi-sound.groupId}</groupId>
+        <artifactId>vavi-sound</artifactId>
+        <version>1.0.16</version>
         <scope>test</scope>
       </dependency>
     </dependencies>

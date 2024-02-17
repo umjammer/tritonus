@@ -1,10 +1,4 @@
 /*
- * PCM2PCMConversionProvider.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2000,2006,2007 by Florian Bomers
  *
  *
@@ -28,19 +22,22 @@
 
 package org.tritonus.sampled.convert;
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.util.Arrays;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 
 import org.tritonus.share.ArraySet;
-import org.tritonus.share.TDebug;
 import org.tritonus.share.sampled.AudioFormats;
 import org.tritonus.share.sampled.AudioUtils;
 import org.tritonus.share.sampled.FloatSampleBuffer;
 import org.tritonus.share.sampled.TConversionTool;
 import org.tritonus.share.sampled.convert.TSimpleFormatConversionProvider;
 import org.tritonus.share.sampled.convert.TSynchronousFilteredAudioInputStream;
+
+import static java.lang.System.getLogger;
 
 
 /**
@@ -86,8 +83,9 @@ import org.tritonus.share.sampled.convert.TSynchronousFilteredAudioInputStream;
  * @see org.tritonus.share.sampled.FloatSampleBuffer
  * @see org.tritonus.share.sampled.TConversionTool
  */
-
 public class PCM2PCMConversionProvider extends TSimpleFormatConversionProvider {
+
+    private static final Logger logger = getLogger("org.tritonus.TraceAudioConverter");
 
     // if true, always use FloatSampleBuffer
     private static final boolean ONLY_FLOAT_CONVERSION = false;
@@ -145,11 +143,13 @@ public class PCM2PCMConversionProvider extends TSimpleFormatConversionProvider {
     private static final int CONVERT_8UTO16L = 11;
     private static final int CONVERT_8UTO16B = 12;
     private static final int CONVERT_ONLY_EXPAND_CHANNELS = 13;
-    private static final int CONVERT_FLOAT = 100; // all other conversions
-    private static final int CONVERT_NONE = 101; // no conversion necessary
+    /** all other conversions */
+    private static final int CONVERT_FLOAT = 100;
+    /** no conversion necessary */
+    private static final int CONVERT_NONE = 101;
 
-    public AudioInputStream getAudioInputStream(AudioFormat targetFormat,
-                                                AudioInputStream sourceStream) {
+    @Override
+    public AudioInputStream getAudioInputStream(AudioFormat targetFormat, AudioInputStream sourceStream) {
         AudioFormat sourceFormat = sourceStream.getFormat();
 
         // the non-conversion case
@@ -168,17 +168,15 @@ public class PCM2PCMConversionProvider extends TSimpleFormatConversionProvider {
                     sourceFormat.getChannels(), targetType,
                     targetFormat.getChannels());
 
-            if (TDebug.TraceAudioConverter) {
-                TDebug.out("PCM2PCM: sourceType=" + formatType2Str(sourceType)
-                        + ", " + sourceFormat.getChannels() + "ch"
-                        + " targetType=" + formatType2Str(targetType) + ", "
-                        + targetFormat.getChannels() + "ch"
-                        + " conversionType="
-                        + conversionType2Str(conversionType));
-            }
+            logger.log(Level.TRACE, "PCM2PCM: sourceType=" + formatType2Str(sourceType) +
+                    ", " + sourceFormat.getChannels() + "ch" +
+                    " targetType=" + formatType2Str(targetType) + ", " +
+                    targetFormat.getChannels() + "ch" +
+                    " conversionType=" +
+                    conversionType2Str(conversionType));
+
             if (conversionType == CONVERT_NOT_POSSIBLE) {
-                throw new IllegalArgumentException(
-                        "format conversion not supported");
+                throw new IllegalArgumentException("format conversion not supported");
             }
             return new PCM2PCMStream(sourceStream, targetFormat, conversionType);
         }
@@ -186,16 +184,15 @@ public class PCM2PCMConversionProvider extends TSimpleFormatConversionProvider {
         throw new IllegalArgumentException("format conversion not supported");
     }
 
-    public AudioFormat[] getTargetFormats(AudioFormat.Encoding targetEncoding,
-                                          AudioFormat sourceFormat) {
-        if (TDebug.TraceAudioConverter) {
-            TDebug.out(">PCM2PCMFormatConversionProvider.getTargetFormats(AudioFormat.Encoding, AudioFormat):");
-            TDebug.out("checking out possible target formats");
-            TDebug.out("from: " + sourceFormat);
-            TDebug.out("to  : " + targetEncoding);
-        }
+    @Override
+    public AudioFormat[] getTargetFormats(AudioFormat.Encoding targetEncoding, AudioFormat sourceFormat) {
+        logger.log(Level.TRACE, ">PCM2PCMFormatConversionProvider.getTargetFormats(AudioFormat.Encoding, AudioFormat):");
+        logger.log(Level.TRACE, "checking out possible target formats");
+        logger.log(Level.TRACE, "from: " + sourceFormat);
+        logger.log(Level.TRACE, "to  : " + targetEncoding);
+
         if (isConversionSupported(targetEncoding, sourceFormat)) {
-            // TODO: check that no duplicates may occur...
+            // TODO check that no duplicates may occur...
             ArraySet<AudioFormat> result = new ArraySet<>();
             for (AudioFormat targetFormat : getCollectionTargetFormats()) {
                 targetFormat = replaceNotSpecified(sourceFormat, targetFormat);
@@ -203,14 +200,13 @@ public class PCM2PCMConversionProvider extends TSimpleFormatConversionProvider {
                     result.add(targetFormat);
                 }
             }
-            if (TDebug.TraceAudioConverter) {
-                TDebug.out("<found " + result.size() + " matching formats.");
-            }
+
+            logger.log(Level.TRACE, "<found " + result.size() + " matching formats.");
+
             return result.toArray(EMPTY_FORMAT_ARRAY);
         } else {
-            if (TDebug.TraceAudioConverter) {
-                TDebug.out("<returning empty array.");
-            }
+            logger.log(Level.TRACE, "<returning empty array.");
+
             return EMPTY_FORMAT_ARRAY;
         }
     }
@@ -219,8 +215,8 @@ public class PCM2PCMConversionProvider extends TSimpleFormatConversionProvider {
      * method overidden due to the difficult situation with the channel count
      * and the possible conversions possible.
      */
-    public boolean isConversionSupported(AudioFormat targetFormat,
-                                         AudioFormat sourceFormat) {
+    @Override
+    public boolean isConversionSupported(AudioFormat targetFormat, AudioFormat sourceFormat) {
         targetFormat = replaceNotSpecified(sourceFormat, targetFormat);
 
         boolean res = AudioFormats.matches(sourceFormat, targetFormat)
@@ -232,13 +228,11 @@ public class PCM2PCMConversionProvider extends TSimpleFormatConversionProvider {
                 sourceFormat.getChannels(),
                 getFormatType(targetFormat), targetFormat.getChannels()) != CONVERT_NOT_POSSIBLE);
 
-        if (TDebug.TraceAudioConverter) {
-            TDebug.out(">PCM2PCM: isConversionSupported(AudioFormat, AudioFormat):");
-            TDebug.out("checking if conversion possible");
-            TDebug.out("from: " + sourceFormat);
-            TDebug.out("to  : " + targetFormat);
-            TDebug.out("< result : " + res);
-        }
+        logger.log(Level.TRACE, ">PCM2PCM: isConversionSupported(AudioFormat, AudioFormat):");
+        logger.log(Level.TRACE, "checking if conversion possible");
+        logger.log(Level.TRACE, "from: " + sourceFormat);
+        logger.log(Level.TRACE, "to  : " + targetFormat);
+        logger.log(Level.TRACE, "< result : " + res);
 
         return res;
     }
@@ -309,16 +303,15 @@ public class PCM2PCMConversionProvider extends TSimpleFormatConversionProvider {
             } else if ((sourceType == BIG_ENDIAN32 && targetType == LITTLE_ENDIAN32)
                     || (sourceType == LITTLE_ENDIAN32 && targetType == BIG_ENDIAN32)) {
                 return CONVERT_BYTE_ORDER32;
-                /*
-                 * downsampling is better handled with Float conversion ->
-                 * dithering } else if (sourceType==LITTLE_ENDIAN16 &&
-                 * targetType==SIGNED8) { return CONVERT_16LTO8S; } else if
-                 * (sourceType==LITTLE_ENDIAN16 && targetType==UNSIGNED8) {
-                 * return CONVERT_16LTO8U; } else if (sourceType==BIG_ENDIAN16 &&
-                 * targetType==SIGNED8) { return CONVERT_16BTO8S; } else if
-                 * (sourceType==BIG_ENDIAN16 && targetType==UNSIGNED8) { return
-                 * CONVERT_16BTO8U;
-                 */
+                // downsampling is better handled with Float conversion -> dithering
+//            } else if (sourceType == LITTLE_ENDIAN16 && targetType == SIGNED8) {
+//                return CONVERT_16LTO8S;
+//            } else if (sourceType == LITTLE_ENDIAN16 && targetType == UNSIGNED8) {
+//                return CONVERT_16LTO8U;
+//            } else if (sourceType == BIG_ENDIAN16 && targetType == SIGNED8) {
+//                return CONVERT_16BTO8S;
+//            } else if (sourceType == BIG_ENDIAN16 && targetType == UNSIGNED8) {
+//                return CONVERT_16BTO8U;
             } else if (sourceType == SIGNED8 && targetType == LITTLE_ENDIAN16) {
                 return CONVERT_8STO16L;
             } else if (sourceType == SIGNED8 && targetType == BIG_ENDIAN16) {
@@ -336,68 +329,43 @@ public class PCM2PCMConversionProvider extends TSimpleFormatConversionProvider {
      * Debugging function
      */
     private static String formatType2Str(int formatType) {
-        switch (formatType) {
-        case 0:
-            return "unsupported";
-        case UNSIGNED8:
-            return "UNSIGNED8";
-        case SIGNED8:
-            return "SIGNED8";
-        case BIG_ENDIAN16:
-            return "BIG_ENDIAN16";
-        case LITTLE_ENDIAN16:
-            return "LITTLE_ENDIAN16";
-        case BIG_ENDIAN24:
-            return "BIG_ENDIAN24";
-        case LITTLE_ENDIAN24:
-            return "LITTLE_ENDIAN24";
-        case BIG_ENDIAN32:
-            return "BIG_ENDIAN32";
-        case LITTLE_ENDIAN32:
-            return "LITTLE_ENDIAN32";
-        }
-        return "unknown";
+        return switch (formatType) {
+            case 0 -> "unsupported";
+            case UNSIGNED8 -> "UNSIGNED8";
+            case SIGNED8 -> "SIGNED8";
+            case BIG_ENDIAN16 -> "BIG_ENDIAN16";
+            case LITTLE_ENDIAN16 -> "LITTLE_ENDIAN16";
+            case BIG_ENDIAN24 -> "BIG_ENDIAN24";
+            case LITTLE_ENDIAN24 -> "LITTLE_ENDIAN24";
+            case BIG_ENDIAN32 -> "BIG_ENDIAN32";
+            case LITTLE_ENDIAN32 -> "LITTLE_ENDIAN32";
+            default -> "unknown";
+        };
     }
 
     /**
      * Debugging function
      */
     protected static String conversionType2Str(int conversionType) {
-        switch (conversionType) {
-        case CONVERT_NOT_POSSIBLE:
-            return "CONVERT_NOT_POSSIBLE";
-        case CONVERT_SIGN:
-            return "CONVERT_SIGN";
-        case CONVERT_BYTE_ORDER16:
-            return "CONVERT_BYTE_ORDER16";
-        case CONVERT_BYTE_ORDER24:
-            return "CONVERT_BYTE_ORDER24";
-        case CONVERT_BYTE_ORDER32:
-            return "CONVERT_BYTE_ORDER32";
-        case CONVERT_16LTO8S:
-            return "CONVERT_16LTO8S";
-        case CONVERT_16LTO8U:
-            return "CONVERT_16LTO8U";
-        case CONVERT_16BTO8S:
-            return "CONVERT_16BTO8S";
-        case CONVERT_16BTO8U:
-            return "CONVERT_16BTO8U";
-        case CONVERT_8STO16L:
-            return "CONVERT_8STO16L";
-        case CONVERT_8STO16B:
-            return "CONVERT_8STO16B";
-        case CONVERT_8UTO16L:
-            return "CONVERT_8UTO16L";
-        case CONVERT_8UTO16B:
-            return "CONVERT_8UTO16B";
-        case CONVERT_ONLY_EXPAND_CHANNELS:
-            return "CONVERT_ONLY_EXPAND_CHANNELS";
-        case CONVERT_FLOAT:
-            return "CONVERT_FLOAT";
-        case CONVERT_NONE:
-            return "CONVERT_NONE";
-        }
-        return "unknown";
+        return switch (conversionType) {
+            case CONVERT_NOT_POSSIBLE -> "CONVERT_NOT_POSSIBLE";
+            case CONVERT_SIGN -> "CONVERT_SIGN";
+            case CONVERT_BYTE_ORDER16 -> "CONVERT_BYTE_ORDER16";
+            case CONVERT_BYTE_ORDER24 -> "CONVERT_BYTE_ORDER24";
+            case CONVERT_BYTE_ORDER32 -> "CONVERT_BYTE_ORDER32";
+            case CONVERT_16LTO8S -> "CONVERT_16LTO8S";
+            case CONVERT_16LTO8U -> "CONVERT_16LTO8U";
+            case CONVERT_16BTO8S -> "CONVERT_16BTO8S";
+            case CONVERT_16BTO8U -> "CONVERT_16BTO8U";
+            case CONVERT_8STO16L -> "CONVERT_8STO16L";
+            case CONVERT_8STO16B -> "CONVERT_8STO16B";
+            case CONVERT_8UTO16L -> "CONVERT_8UTO16L";
+            case CONVERT_8UTO16B -> "CONVERT_8UTO16B";
+            case CONVERT_ONLY_EXPAND_CHANNELS -> "CONVERT_ONLY_EXPAND_CHANNELS";
+            case CONVERT_FLOAT -> "CONVERT_FLOAT";
+            case CONVERT_NONE -> "CONVERT_NONE";
+            default -> "unknown";
+        };
     }
 
     /**
@@ -405,6 +373,7 @@ public class PCM2PCMConversionProvider extends TSimpleFormatConversionProvider {
      * rxpanding of channels.
      */
     static class PCM2PCMStream extends TSynchronousFilteredAudioInputStream {
+
         private int conversionType;
         private boolean needExpandChannels;
         private boolean needMixDown;
@@ -412,8 +381,7 @@ public class PCM2PCMConversionProvider extends TSimpleFormatConversionProvider {
         private AudioFormat intermediateFloatBufferFormat;
         private FloatSampleBuffer floatBuffer = null;
 
-        public PCM2PCMStream(AudioInputStream sourceStream,
-                             AudioFormat targetFormat, int conversionType) {
+        public PCM2PCMStream(AudioInputStream sourceStream, AudioFormat targetFormat, int conversionType) {
             // transform the targetFormat so that
             // FrameRate, and SampleRate match the sourceFormat
             super(sourceStream, new AudioFormat(targetFormat.getEncoding(),
@@ -424,10 +392,7 @@ public class PCM2PCMConversionProvider extends TSimpleFormatConversionProvider {
                     targetFormat.getSampleSizeInBits()),
                     sourceStream.getFormat().getFrameRate(),
                     targetFormat.isBigEndian(), targetFormat.properties()));
-            if (TDebug.TraceAudioConverter) {
-                TDebug.out("PCM2PCMStream: constructor. ConversionType="
-                        + conversionType2Str(conversionType));
-            }
+            logger.log(Level.TRACE, "PCM2PCMStream: constructor. ConversionType=" + conversionType2Str(conversionType));
             this.conversionType = conversionType;
             needExpandChannels = sourceStream.getFormat().getChannels() < targetFormat.getChannels();
             needMixDown = sourceStream.getFormat().getChannels() > targetFormat.getChannels();
@@ -435,23 +400,19 @@ public class PCM2PCMConversionProvider extends TSimpleFormatConversionProvider {
             // some sanity tests. These can be dropped when this converter has
             // been tested enough...
             if (needMixDown && conversionType != CONVERT_FLOAT) {
-                throw new IllegalArgumentException(
-                        "PCM2PCMStream: MixDown only possible with CONVERT_FLOAT");
+                throw new IllegalArgumentException("PCM2PCMStream: MixDown only possible with CONVERT_FLOAT");
             }
             if (needMixDown && targetFormat.getChannels() != 1) {
-                throw new IllegalArgumentException(
-                        "PCM2PCMStream: MixDown only possible with target channel count=1");
+                throw new IllegalArgumentException("PCM2PCMStream: MixDown only possible with target channel count=1");
             }
             if (needExpandChannels
                     && sourceStream.getFormat().getChannels() != 1) {
-                throw new IllegalArgumentException(
-                        "PCM2PCMStream: Expanding channels only possible with source channel count=1");
+                throw new IllegalArgumentException("PCM2PCMStream: Expanding channels only possible with source channel count=1");
             }
             // end sanity
 
             if (conversionType == CONVERT_FLOAT) {
-                int floatChannels = needExpandChannels ? 1
-                        : targetFormat.getChannels();
+                int floatChannels = needExpandChannels ? 1 : targetFormat.getChannels();
                 intermediateFloatBufferFormat = new AudioFormat(
                         targetFormat.getEncoding(),
                         sourceStream.getFormat().getSampleRate(),
@@ -477,48 +438,45 @@ public class PCM2PCMConversionProvider extends TSimpleFormatConversionProvider {
         }
 
         // these functions only treat the highbyte of 16bit samples
-        // obsolete: is handled with FloatBuffer because of dithering
-        private void do16BTO8S(byte[] inBuffer, int inCounter,
-                               byte[] outBuffer, int outByteOffset, int sampleCount) {
+
+        /** obsolete: is handled with FloatBuffer because of dithering */
+        private static void do16BTO8S(byte[] inBuffer, int inCounter,
+                                      byte[] outBuffer, int outByteOffset, int sampleCount) {
             for (; sampleCount > 0; sampleCount--, inCounter++) {
                 outBuffer[outByteOffset++] = inBuffer[inCounter++];
             }
         }
 
-        // obsolete: is handled with FloatBuffer because of dithering
-        private void do16BTO8U(byte[] inBuffer, int inCounter,
-                               byte[] outBuffer, int outByteOffset, int sampleCount) {
+        /** obsolete: is handled with FloatBuffer because of dithering */
+        private static void do16BTO8U(byte[] inBuffer, int inCounter,
+                                      byte[] outBuffer, int outByteOffset, int sampleCount) {
             for (; sampleCount > 0; sampleCount--, inCounter++) {
                 outBuffer[outByteOffset++] = (byte) (inBuffer[inCounter++] + 128);
             }
         }
 
-        private void do8STO16L(byte[] inBuffer, byte[] outBuffer,
-                               int outByteOffset, int sampleCount) {
+        private static void do8STO16L(byte[] inBuffer, byte[] outBuffer, int outByteOffset, int sampleCount) {
             for (int inCounter = 0; sampleCount > 0; sampleCount--) {
                 outBuffer[outByteOffset++] = 0;
                 outBuffer[outByteOffset++] = inBuffer[inCounter++];
             }
         }
 
-        private void do8UTO16L(byte[] inBuffer, byte[] outBuffer,
-                               int outByteOffset, int sampleCount) {
+        private static void do8UTO16L(byte[] inBuffer, byte[] outBuffer, int outByteOffset, int sampleCount) {
             for (int inCounter = 0; sampleCount > 0; sampleCount--) {
                 outBuffer[outByteOffset++] = 0;
                 outBuffer[outByteOffset++] = (byte) (inBuffer[inCounter++] + 128);
             }
         }
 
-        private void do8STO16B(byte[] inBuffer, byte[] outBuffer,
-                               int outByteOffset, int sampleCount) {
+        private static void do8STO16B(byte[] inBuffer, byte[] outBuffer, int outByteOffset, int sampleCount) {
             for (int inCounter = 0; sampleCount > 0; sampleCount--) {
                 outBuffer[outByteOffset++] = inBuffer[inCounter++];
                 outBuffer[outByteOffset++] = 0;
             }
         }
 
-        private void do8UTO16B(byte[] inBuffer, byte[] outBuffer,
-                               int outByteOffset, int sampleCount) {
+        private static void do8UTO16B(byte[] inBuffer, byte[] outBuffer, int outByteOffset, int sampleCount) {
             for (int inCounter = 0; sampleCount > 0; sampleCount--) {
                 outBuffer[outByteOffset++] = (byte) (inBuffer[inCounter++] + 128);
                 outBuffer[outByteOffset++] = 0;
@@ -526,8 +484,7 @@ public class PCM2PCMConversionProvider extends TSimpleFormatConversionProvider {
         }
 
         /** copy the channels: in the buffer there is only one channel */
-        private void expandChannels(byte[] buffer, int offset,
-                                    int frameCount, int bytesPerFrame, int channels) {
+        private static void expandChannels(byte[] buffer, int offset, int frameCount, int bytesPerFrame, int channels) {
             int inOffset = offset + bytesPerFrame * frameCount;
             int outOffset = offset + bytesPerFrame * channels * frameCount;
             switch (bytesPerFrame) {
@@ -582,8 +539,7 @@ public class PCM2PCMConversionProvider extends TSimpleFormatConversionProvider {
             doFloatConversion(buffer, needExpandChannels);
         }
 
-        private void doFloatConversion(FloatSampleBuffer buffer,
-                                       boolean expandChannels) {
+        private void doFloatConversion(FloatSampleBuffer buffer, boolean expandChannels) {
             if (needMixDown) {
                 buffer.mixDownChannels();
             }
@@ -594,40 +550,31 @@ public class PCM2PCMConversionProvider extends TSimpleFormatConversionProvider {
 
         private void doFloatConversion(byte[] inBuffer, int inByteOffset,
                                        byte[] outBuffer, int outByteOffset, int sampleCount) {
-            int byteCount = sampleCount
-                    * ((getOriginalStream().getFormat().getSampleSizeInBits() + 7) / 8);
+            int byteCount = sampleCount * ((getOriginalStream().getFormat().getSampleSizeInBits() + 7) / 8);
             if (floatBuffer == null) {
                 floatBuffer = new FloatSampleBuffer();
             }
-            floatBuffer.initFromByteArray(inBuffer, inByteOffset, byteCount,
-                    getOriginalStream().getFormat());
+            floatBuffer.initFromByteArray(inBuffer, inByteOffset, byteCount, getOriginalStream().getFormat());
             // expansion is done on byte array
             doFloatConversion(floatBuffer, false);
-            floatBuffer.convertToByteArray(outBuffer, outByteOffset,
-                    intermediateFloatBufferFormat);
+            floatBuffer.convertToByteArray(outBuffer, outByteOffset, intermediateFloatBufferFormat);
         }
 
         @Override
-        protected int convert(byte[] inBuffer, byte[] outBuffer,
-                              int outByteOffset, int inFrameCount) {
-            int sampleCount = inFrameCount
-                    * getOriginalStream().getFormat().getChannels();
+        protected int convert(byte[] inBuffer, byte[] outBuffer, int outByteOffset, int inFrameCount) {
+            int sampleCount = inFrameCount * getOriginalStream().getFormat().getChannels();
             switch (conversionType) {
             case CONVERT_SIGN:
-                TConversionTool.convertSign8(inBuffer, 0, outBuffer,
-                        outByteOffset, sampleCount);
+                TConversionTool.convertSign8(inBuffer, 0, outBuffer, outByteOffset, sampleCount);
                 break;
             case CONVERT_BYTE_ORDER16:
-                TConversionTool.swapOrder16(inBuffer, 0, outBuffer,
-                        outByteOffset, sampleCount);
+                TConversionTool.swapOrder16(inBuffer, 0, outBuffer, outByteOffset, sampleCount);
                 break;
             case CONVERT_BYTE_ORDER24:
-                TConversionTool.swapOrder24(inBuffer, 0, outBuffer,
-                        outByteOffset, sampleCount);
+                TConversionTool.swapOrder24(inBuffer, 0, outBuffer, outByteOffset, sampleCount);
                 break;
             case CONVERT_BYTE_ORDER32:
-                TConversionTool.swapOrder32(inBuffer, 0, outBuffer,
-                        outByteOffset, sampleCount);
+                TConversionTool.swapOrder32(inBuffer, 0, outBuffer, outByteOffset, sampleCount);
                 break;
             case CONVERT_16LTO8S:
                 do16BTO8S(inBuffer, 1, outBuffer, outByteOffset, sampleCount);
@@ -655,35 +602,25 @@ public class PCM2PCMConversionProvider extends TSimpleFormatConversionProvider {
                 break;
             case CONVERT_ONLY_EXPAND_CHANNELS:
                 // implicit: channelCount in inBuffer=1
-                System.arraycopy(
-                        inBuffer,
-                        0,
-                        outBuffer,
-                        outByteOffset,
-                        inFrameCount
-                                * getOriginalStream().getFormat().getFrameSize());
+                System.arraycopy(inBuffer, 0, outBuffer, outByteOffset,
+                        inFrameCount * getOriginalStream().getFormat().getFrameSize());
                 break;
             case CONVERT_FLOAT:
-                doFloatConversion(inBuffer, 0, outBuffer, outByteOffset,
-                        sampleCount);
+                doFloatConversion(inBuffer, 0, outBuffer, outByteOffset, sampleCount);
                 break;
             default:
-                throw new RuntimeException(
-                        "PCM2PCMStream: Call to convert with unknown conversionType.");
+                throw new RuntimeException("PCM2PCMStream: Call to convert with unknown conversionType.");
             }
             if (needExpandChannels) {
                 expandChannels(outBuffer, outByteOffset, inFrameCount,
-                        (getFormat().getSampleSizeInBits() + 7) / 8,
-                        getFormat().getChannels());
+                        (getFormat().getSampleSizeInBits() + 7) / 8, getFormat().getChannels());
             }
             return inFrameCount;
         }
 
         @Override
-        protected void convertInPlace(byte[] buffer, int byteOffset,
-                                      int frameCount) {
-            int sampleCount = frameCount
-                    * getOriginalStream().getFormat().getChannels();
+        protected void convertInPlace(byte[] buffer, int byteOffset, int frameCount) {
+            int sampleCount = frameCount * getOriginalStream().getFormat().getChannels();
             switch (conversionType) {
             case CONVERT_SIGN:
                 TConversionTool.convertSign8(buffer, byteOffset, sampleCount);
@@ -698,17 +635,14 @@ public class PCM2PCMConversionProvider extends TSimpleFormatConversionProvider {
                 TConversionTool.swapOrder32(buffer, byteOffset, sampleCount);
                 break;
             case CONVERT_FLOAT:
-                doFloatConversion(buffer, byteOffset, buffer, byteOffset,
-                        sampleCount);
+                doFloatConversion(buffer, byteOffset, buffer, byteOffset, sampleCount);
                 if (needExpandChannels) {
                     expandChannels(buffer, byteOffset, frameCount,
-                            (getFormat().getSampleSizeInBits() + 7) / 8,
-                            getFormat().getChannels());
+                            (getFormat().getSampleSizeInBits() + 7) / 8, getFormat().getChannels());
                 }
                 break;
             default:
-                throw new RuntimeException(
-                        "PCM2PCMStream: Call to convertInPlace, but it cannot convert in place.");
+                throw new RuntimeException("PCM2PCMStream: Call to convertInPlace, but it cannot convert in place.");
             }
         }
 
@@ -721,7 +655,4 @@ public class PCM2PCMConversionProvider extends TSimpleFormatConversionProvider {
             doFloatConversion(buffer);
         }
     }
-
 }
-
-/** PCM2PCMFormatConversionProvider.java ** */

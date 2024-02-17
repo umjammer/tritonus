@@ -1,10 +1,4 @@
 /*
- * WaveAudioFileReader.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 1999,2000 by Florian Bomers
  *  Copyright (c) 1999 by Matthias Pfisterer
  *
@@ -28,14 +22,17 @@ package org.tritonus.sampled.file;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import org.tritonus.share.TDebug;
 import org.tritonus.share.sampled.file.TAudioFileFormat;
 import org.tritonus.share.sampled.file.TAudioFileReader;
+
+import static java.lang.System.getLogger;
 
 
 /**
@@ -46,14 +43,16 @@ import org.tritonus.share.sampled.file.TAudioFileReader;
  */
 public class WaveAudioFileReader extends TAudioFileReader {
 
+    private static final Logger logger= getLogger("org.tritonus.TraceAudioFileReader");
+
     private static final int READ_LIMIT = 1000;
 
     public WaveAudioFileReader() {
         super(READ_LIMIT);
     }
 
-    protected void advanceChunk(DataInputStream dis, long prevLength, long prevRead) throws IOException {
-        long l = ((prevLength + 1) & 0xFFFFFFFE) - prevRead;
+    protected static void advanceChunk(DataInputStream dis, long prevLength, long prevRead) throws IOException {
+        long l = ((prevLength + 1) & 0xffff_fffeL) - prevRead;
         if (prevLength > 0) {
             long r = 0;
             while (r < l) {
@@ -62,7 +61,7 @@ public class WaveAudioFileReader extends TAudioFileReader {
         }
     }
 
-    protected long findChunk(DataInputStream dis, int key) throws UnsupportedAudioFileException, IOException {
+    protected static long findChunk(DataInputStream dis, int key) throws UnsupportedAudioFileException, IOException {
         // $$fb 1999-12-18: we should take care that we don't exceed
         // the mark of this stream. When we exceeded the mark and
         // we notice that we don't support this wave file,
@@ -74,9 +73,9 @@ public class WaveAudioFileReader extends TAudioFileReader {
             try {
                 thisKey = dis.readInt();
             } catch (IOException e) {
-                if (TDebug.TraceAllExceptions) {
-                    TDebug.out(e);
-                }
+                // TraceAllExceptions
+                    logger.log(Level.TRACE, e);
+
                 // $$fb: when we come here, we skipped past the end of the wave file
                 // without finding the chunk.
                 // IMHO, this is not an IOException, as there are incarnations
@@ -84,13 +83,13 @@ public class WaveAudioFileReader extends TAudioFileReader {
                 // maybe we can find a nice description of the "required chunk" ?
                 throw new UnsupportedAudioFileException("unsupported WAVE file: required chunk not found.");
             }
-            chunkLength = readLittleEndianInt(dis) & 0xFFFFFFFFL; // unsigned
+            chunkLength = readLittleEndianInt(dis) & 0xffff_ffffL; // unsigned
         } while (thisKey != key);
         return chunkLength;
     }
 
-    protected AudioFormat readFormatChunk(DataInputStream dis,
-                                          long chunkLength) throws UnsupportedAudioFileException, IOException {
+    protected static AudioFormat readFormatChunk(
+            DataInputStream dis, long chunkLength) throws UnsupportedAudioFileException, IOException {
         String debugAdd = "";
 
         int read = WaveTool.MIN_FMT_CHUNK_LENGTH;
@@ -128,9 +127,8 @@ public class WaveAudioFileReader extends TAudioFileReader {
             if (sampleSizeInBits <= 0) {
                 throw new UnsupportedAudioFileException("corrupt WAVE file: sample size must be positive");
             }
-            encoding = (sampleSizeInBits <= 8) ?
-                    AudioFormat.Encoding.PCM_UNSIGNED : AudioFormat.Encoding.PCM_SIGNED;
-            if (TDebug.TraceAudioFileReader) {
+            encoding = (sampleSizeInBits <= 8) ? AudioFormat.Encoding.PCM_UNSIGNED : AudioFormat.Encoding.PCM_SIGNED;
+            if (logger.isLoggable(Level.TRACE)) {
                 debugAdd += ", wBitsPerSample=" + sampleSizeInBits;
             }
             read += 2;
@@ -152,8 +150,8 @@ public class WaveAudioFileReader extends TAudioFileReader {
             if (cbSize < 2) {
                 throw new UnsupportedAudioFileException("corrupt WAVE file: extra GSM bytes are corrupt");
             }
-            int decodedSamplesPerBlock = readLittleEndianShort(dis) & 0xFFFF; // unsigned
-            if (TDebug.TraceAudioFileReader) {
+            int decodedSamplesPerBlock = readLittleEndianShort(dis) & 0xffff; // unsigned
+            if (logger.isLoggable(Level.TRACE)) {
                 debugAdd += ", wBitsPerSample=" + sampleSizeInBits
                         + ", cbSize=" + cbSize
                         + ", wSamplesPerBlock=" + decodedSamplesPerBlock;
@@ -175,7 +173,7 @@ public class WaveAudioFileReader extends TAudioFileReader {
                 throw new UnsupportedAudioFileException("corrupt WAVE file: extra IMA ADPCM bytes are corrupt");
             }
             int samplesPerBlock = readLittleEndianShort(dis) & 0xFFFF; // unsigned
-            if (TDebug.TraceAudioFileReader) {
+            if (logger.isLoggable(Level.TRACE)) {
                 debugAdd += ", wBitsPerSample=" + sampleSizeInBits
                         + ", cbSize=" + cbSize
                         + ", wSamplesPerBlock=" + samplesPerBlock;
@@ -195,22 +193,20 @@ public class WaveAudioFileReader extends TAudioFileReader {
             frameSize = calculateFrameSize(sampleSizeInBits, channelCount);
         }
 
-        if (TDebug.TraceAudioFileReader) {
-            TDebug.out("WaveAudioFileReader.readFormatChunk():");
-            TDebug.out("  read values: wFormatTag=" + formatCode
-                    + ", nChannels=" + channelCount
-                    + ", nSamplesPerSec=" + sampleRate
-                    + ", nAvgBytesPerSec=" + avgBytesPerSecond
-                    + ", nBlockAlign==" + blockAlign
-                    + debugAdd);
-            TDebug.out("  constructed values: "
-                    + "encoding=" + encoding
-                    + ", sampleRate=" + ((float) sampleRate)
-                    + ", sampleSizeInBits=" + sampleSizeInBits
-                    + ", channels=" + channelCount
-                    + ", frameSize=" + frameSize
-                    + ", frameRate=" + frameRate);
-        }
+        logger.log(Level.TRACE, "WaveAudioFileReader.readFormatChunk():");
+        logger.log(Level.TRACE, "  read values: wFormatTag=" + formatCode
+                + ", nChannels=" + channelCount
+                + ", nSamplesPerSec=" + sampleRate
+                + ", nAvgBytesPerSec=" + avgBytesPerSecond
+                + ", nBlockAlign==" + blockAlign
+                + debugAdd);
+        logger.log(Level.TRACE, "  constructed values: "
+                + "encoding=" + encoding
+                + ", sampleRate=" + ((float) sampleRate)
+                + ", sampleSizeInBits=" + sampleSizeInBits
+                + ", channels=" + channelCount
+                + ", frameSize=" + frameSize
+                + ", frameRate=" + frameRate);
 
         // go to next chunk
         advanceChunk(dis, chunkLength, read);
@@ -224,15 +220,15 @@ public class WaveAudioFileReader extends TAudioFileReader {
                 false);
     }
 
+    @Override
     protected AudioFileFormat getAudioFileFormat(InputStream inputStream, long lFileLengthInBytes)
             throws UnsupportedAudioFileException, IOException {
         DataInputStream dataInputStream = new DataInputStream(inputStream);
         int magic = dataInputStream.readInt();
         if (magic != WaveTool.WAVE_RIFF_MAGIC) {
-            throw new UnsupportedAudioFileException(
-                    "not a WAVE file: wrong header magic");
+            throw new UnsupportedAudioFileException("not a WAVE file: wrong header magic");
         }
-        long totalLength = readLittleEndianInt(dataInputStream) & 0xFFFFFFFFL; // unsigned
+        long totalLength = readLittleEndianInt(dataInputStream) & 0xffff_ffffL; // unsigned
         magic = dataInputStream.readInt();
         if (magic != WaveTool.WAVE_WAVE_MAGIC) {
             throw new UnsupportedAudioFileException("not a WAVE file: wrong header magic");
@@ -246,15 +242,11 @@ public class WaveAudioFileReader extends TAudioFileReader {
 
         long frameLength = dataChunkLength / format.getFrameSize();
 
-        if (TDebug.TraceAudioFileReader) {
-            TDebug.out("WaveAudioFileReader.getAudioFileFormat(): total length: "
+        logger.log(Level.TRACE, "WaveAudioFileReader.getAudioFileFormat(): total length: "
                     + totalLength + ", frame length = " + frameLength);
-        }
         return new TAudioFileFormat(AudioFileFormat.Type.WAVE,
                 format,
                 (int) frameLength,
                 (int) (totalLength + WaveTool.CHUNK_HEADER_SIZE));
     }
 }
-
-/* WaveAudioFileReader.java */

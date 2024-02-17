@@ -1,10 +1,4 @@
 /*
- * MidiConstants.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2002 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,10 +14,6 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.midi.file;
 
 
@@ -31,6 +21,7 @@ package org.tritonus.midi.file;
  * Constants for Standard Midi Files reading and writing.
  */
 public interface MidiConstants {
+
     /**
      * Header magic constant.
      * Has the value "MThd".
@@ -45,5 +36,4 @@ public interface MidiConstants {
 }
 
 
-/* MidiConstants.java */
 

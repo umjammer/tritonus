@@ -1,10 +1,4 @@
 /*
- * OpcodeClass.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2002 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,10 +14,6 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.saol.engine.opcodes;
 
 
@@ -31,6 +21,7 @@ package org.tritonus.saol.engine.opcodes;
  * The Math Opcodes (Section 5.9.4).
  */
 public class OpcodeClass {
+
     /**
      * Opcode class type: no instance needed.
      * This means the opcode is implemented as a static method
@@ -49,7 +40,6 @@ public class OpcodeClass {
      */
     public static final int TYPE_OPCODE_INSTANCE = 2;
 
-
     /**
      * The name of the opcode class.
      * A fully qualified class name (package.class).
@@ -62,7 +52,6 @@ public class OpcodeClass {
      * and TYPE_OPCODE_INSTANCE.
      */
     private int m_nType;
-
 
     /**
      * Constructor.
@@ -80,7 +69,6 @@ public class OpcodeClass {
 
     }
 
-
     /**
      * Retrieves the name of the opcode class.
      *
@@ -91,7 +79,6 @@ public class OpcodeClass {
     public String getName() {
         return m_strName;
     }
-
 
     /**
      * Retrieves the type of the opcode class.
@@ -106,4 +93,3 @@ public class OpcodeClass {
 }
 
 
-/* OpcodeClass.java */

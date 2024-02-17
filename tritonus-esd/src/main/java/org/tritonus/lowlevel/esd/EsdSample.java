@@ -1,10 +1,4 @@
 /*
- * EsdSample.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 1999 by Matthias Pfisterer
  *
  *
@@ -22,15 +16,12 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.lowlevel.esd;
 
 
 public class EsdSample
         extends Esd {
+
     /**
      * Holds socket fd to EsounD.
      * This variable is only used by native code.
@@ -49,15 +40,12 @@ public class EsdSample
     @SuppressWarnings("unused")
     private long m_lNativeId;
 
-
     static {
         Esd.loadNativeLibrary();
     }
 
-
     public EsdSample() {
     }
-
 
     /**
      * Opens the connection to esd and starts uploading the sample data.
@@ -69,7 +57,6 @@ public class EsdSample
      */
     public native void open(int nFormat, int nSampleRate, int nLength);
 //		throws IOException;
-
 
     /**
      * Uploads a piece of data for the sample.
@@ -83,19 +70,16 @@ public class EsdSample
     public native int write(byte[] abData, int nOffset, int nLength);
     //throws IOException;
 
-
     /**
      * Closes the connection to esd.
      * Use only if you are completely done with this sample.
      */
     public native void close();
 
-
     /**
      * Play the sample once.
      */
     public native void play();
-
 
     /**
      * Play the sample indefinitely.
@@ -128,4 +112,3 @@ public class EsdSample
 }
 
 
-/* EsdSample.java */

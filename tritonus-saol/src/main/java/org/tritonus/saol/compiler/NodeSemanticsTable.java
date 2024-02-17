@@ -1,10 +1,4 @@
 /*
- * NodeSemanticsTable.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2002 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,10 +14,6 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.saol.compiler;
 
 import java.util.HashMap;
@@ -33,7 +23,7 @@ import org.tritonus.saol.sablecc.node.Node;
 
 /**
  * The instrument table.
- * TODO: use generics
+ * TODO use generics
  */
 public class NodeSemanticsTable extends HashMap<Node, NodeSemantics> {
 
@@ -46,4 +36,4 @@ public class NodeSemanticsTable extends HashMap<Node, NodeSemantics> {
     }
 }
 
-/* NodeSemanticsTable.java */
+

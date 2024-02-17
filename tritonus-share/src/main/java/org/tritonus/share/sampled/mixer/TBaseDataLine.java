@@ -1,10 +1,4 @@
 /*
- * TBaseDataLine.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 1999 - 2004 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,71 +14,45 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.share.sampled.mixer;
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.util.Collection;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.Control;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
 
-import org.tritonus.share.TDebug;
+import static java.lang.System.getLogger;
 
 
 /**
  * Base class for implementing SourceDataLine or TargetDataLine.
  */
-public abstract class TBaseDataLine
-        extends TDataLine {
-    public TBaseDataLine(TMixer mixer,
-                         DataLine.Info info) {
-        super(mixer,
-                info);
+public abstract class TBaseDataLine extends TDataLine {
+
+    private static final Logger logger= getLogger("org.tritonus.TraceDataLine");
+
+    public TBaseDataLine(TMixer mixer, DataLine.Info info) {
+        super(mixer, info);
     }
 
-
-    public TBaseDataLine(TMixer mixer,
-                         DataLine.Info info,
-                         Collection<Control> controls) {
-        super(mixer,
-                info,
-                controls);
+    public TBaseDataLine(TMixer mixer, DataLine.Info info, Collection<Control> controls) {
+        super(mixer, info, controls);
     }
 
+    public void open(AudioFormat format, int nBufferSize) throws LineUnavailableException {
+        logger.log(Level.TRACE, "TBaseDataLine.open(AudioFormat, int): called with buffer size: " + nBufferSize);
 
-    public void open(AudioFormat format, int nBufferSize)
-            throws LineUnavailableException {
-        if (TDebug.TraceDataLine) {
-            TDebug.out("TBaseDataLine.open(AudioFormat, int): called with buffer size: " + nBufferSize);
-        }
         setBufferSize(nBufferSize);
         open(format);
     }
 
+    public void open(AudioFormat format) throws LineUnavailableException {
+        logger.log(Level.TRACE, "TBaseDataLine.open(AudioFormat): called");
 
-    public void open(AudioFormat format)
-            throws LineUnavailableException {
-        if (TDebug.TraceDataLine) {
-            TDebug.out("TBaseDataLine.open(AudioFormat): called");
-        }
         setFormat(format);
         open();
     }
-
-
-    // IDEA: move to TDataLine or TLine?
-    // necessary and wise at all?
-    protected void finalize() {
-        if (isOpen()) {
-            close();
-        }
-    }
 }
-
-
-/* TBaseDataLine.java */
-

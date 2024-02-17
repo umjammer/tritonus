@@ -1,7 +1,6 @@
 /*
  * AuAudioFileReaderTestCase.java
  */
-
 /*
  *  Copyright (c) 2001 - 2002 by Matthias Pfisterer
  *
@@ -23,10 +22,10 @@ package org.tritonus.test;
 
 public class AuAudioFileReaderTestCase
         extends BaseAudioFileReaderTestCase {
+
     public AuAudioFileReaderTestCase() {
         setResourcePrefix("au");
     }
 }
 
 
-/* AuAudioFileReaderTestCase.java */

@@ -23,7 +23,7 @@ import org.tritonus.saol.sablecc.node.TInteger;
 
 /**
  * GlobalsSearcher.java
- *
+ * <p>
  * This file is part of Tritonus: http://www.tritonus.org/
  */
 public class GlobalsSearcher extends DepthFirstAdapter {
@@ -38,6 +38,7 @@ public class GlobalsSearcher extends DepthFirstAdapter {
         return m_saolGlobals;
     }
 
+    @Override
     public void outASrateRtparam(ASrateRtparam node) {
         TInteger integer = node.getInteger();
         String strInt = integer.getText();
@@ -76,4 +77,4 @@ public class GlobalsSearcher extends DepthFirstAdapter {
 //  }
 }
 
-/* GlobalsSearcher.java */
+

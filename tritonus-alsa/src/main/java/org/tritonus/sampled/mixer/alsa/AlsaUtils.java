@@ -1,10 +1,4 @@
 /*
- * AlsaUtils.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 1999 - 2001 by Matthias Pfisterer
  *
  *
@@ -22,10 +16,6 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.sampled.mixer.alsa;
 
 import javax.sound.sampled.AudioFormat;
@@ -36,6 +26,7 @@ import org.tritonus.share.sampled.AudioFormats;
 
 
 public class AlsaUtils {
+
     private static AudioFormat[] sm_aFormatTable = new AudioFormat[32];
 
     static {
@@ -169,11 +160,9 @@ public class AlsaUtils {
                 true);
     }
 
-
     public static AudioFormat getAlsaFormat(int nAudioFormat) {
         return sm_aFormatTable[nAudioFormat];
     }
-
 
     public static int getAlsaFormat(AudioFormat audioFormat) {
         for (int nFormat = 0; nFormat < sm_aFormatTable.length; nFormat++) {
@@ -186,4 +175,3 @@ public class AlsaUtils {
 }
 
 
-/* AlsaUtils.java */

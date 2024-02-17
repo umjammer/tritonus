@@ -1,8 +1,3 @@
-/*
- * LawDecoder.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2007 by Florian Bomers
@@ -21,10 +16,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.sampled.convert;
 
@@ -92,7 +83,7 @@ public class LawDecoder extends TEncodingFormatConversionProvider {
                                                 AudioInputStream sourceStream) {
         AudioFormat sourceFormat = sourceStream.getFormat();
         // the non-conversion case
-        // TODO: does this work OK when some fields are
+        // TODO does this work OK when some fields are
         // AudioSystem.NOT_SPECIFIED ?
         if (AudioFormats.matches(sourceFormat, targetFormat)) {
             return sourceStream;
@@ -128,6 +119,7 @@ public class LawDecoder extends TEncodingFormatConversionProvider {
     }
 
     static class FromUlawStream extends TSynchronousFilteredAudioInputStream {
+
         private int convertType;
 
         public FromUlawStream(AudioInputStream sourceStream,
@@ -197,6 +189,7 @@ public class LawDecoder extends TEncodingFormatConversionProvider {
     }
 
     static class FromAlawStream extends TSynchronousFilteredAudioInputStream {
+
         private int convertType;
 
         public FromAlawStream(AudioInputStream sourceStream,

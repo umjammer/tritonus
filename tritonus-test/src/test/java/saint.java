@@ -22,7 +22,9 @@ import org.tritonus.lowlevel.saint.Saint;
 
 
 public class saint {
+
     private static class SupportedFormat {
+
         private String m_strName;
         private int m_nNumber;
         private AudioFormat.Encoding m_encoding;
@@ -99,7 +101,6 @@ public class saint {
             };
 
     private static final int DEFAULT_FORMAT = 2;
-
 
     public static void main(String[] args)
             throws IOException {
@@ -185,7 +186,7 @@ public class saint {
                     saint.getSamplingRate(),
                     SUPPORTED_FORMATS[nOutputFormatIndex].getSampleSize(),
                     saint.getChannelCount(),
-                    // TODO: 24 bit is not handled correctely!!!
+                    // TODO 24 bit is not handled correctely!!!
                     saint.getChannelCount() * SUPPORTED_FORMATS[nOutputFormatIndex].getSampleSize() / 8,
                     saint.getSamplingRate(),
                     SUPPORTED_FORMATS[nOutputFormatIndex].getBigEndian());
@@ -194,7 +195,7 @@ public class saint {
             SourceDataLine line = null;
             try {
                 line = (SourceDataLine) AudioSystem.getLine(info);
-                // TODO: (Tritonus) check if calling without arguments should work
+                // TODO (Tritonus) check if calling without arguments should work
                 line.open(format);
                 line.start();
             } catch (LineUnavailableException e) {
@@ -210,14 +211,12 @@ public class saint {
         }
     }
 
-
     public static void
     printUsageAndExit() {
         System.out.println("usage:");
         System.out.println("\t[TODO]:");
         System.exit(1);
     }
-
 
     public static void
     printVersionAndExit() {
@@ -227,4 +226,3 @@ public class saint {
 }
 
 
-/* saint.java */

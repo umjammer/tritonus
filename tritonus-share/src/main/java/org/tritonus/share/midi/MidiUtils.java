@@ -1,10 +1,4 @@
 /*
- * MidiUtils.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 1999 by Matthias Pfisterer
  *
  *
@@ -22,58 +16,53 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.share.midi;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 
-import org.tritonus.share.TDebug;
+import static java.lang.System.getLogger;
 
 
 /**
  * Helper methods for reading and writing MIDI files.
  */
-public class MidiUtils {
+public final class MidiUtils {
+
+    private static final Logger logger= getLogger("org.tritonus.TraceAllExceptions");
+
+    private MidiUtils() {}
+
     public static int getUnsignedInteger(byte b) {
         return (b < 0) ? b + 256 : b;
     }
-
 
     public static int get14bitValue(int nLSB, int nMSB) {
         return (nLSB & 0x7F) | ((nMSB & 0x7F) << 7);
     }
 
-
     public static int get14bitMSB(int nValue) {
         return (nValue >> 7) & 0x7F;
     }
 
-
     public static int get14bitLSB(int nValue) {
         return nValue & 0x7F;
     }
-
 
     public static byte[] getVariableLengthQuantity(long lValue) {
         ByteArrayOutputStream data = new ByteArrayOutputStream();
         try {
             writeVariableLengthQuantity(lValue, data);
         } catch (IOException e) {
-            if (TDebug.TraceAllExceptions) {
-                TDebug.out(e);
-            }
+            logger.log(Level.ERROR, e.getMessage(), e);
         }
         return data.toByteArray();
     }
 
-
-    public static int writeVariableLengthQuantity(long lValue, OutputStream outputStream)
-            throws IOException {
+    public static int writeVariableLengthQuantity(long lValue, OutputStream outputStream) throws IOException {
         int nLength = 0;
         // IDEA: use a loop
         boolean bWritingStarted = false;
@@ -110,4 +99,3 @@ public class MidiUtils {
 }
 
 
-/* MidiUtils.java */

@@ -33,8 +33,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * Tests for class javax.sound.midi.MidiMessage.
  */
-public class TempoTestCase
-        extends BaseSequencerTestCase {
+public class TempoTestCase extends BaseSequencerTestCase {
+
     private static final float DELTA = 1.0E-9F;
     private static final float MPQ0 = 500000;
     private static final float BPM0 = 120;
@@ -43,14 +43,12 @@ public class TempoTestCase
     private static final float MPQ2 = 416666.66F;
     private static final float BPM2 = 144;
 
-    private static final byte[] TEMPOTEXT =
-            {
-                    't', 'e', 'm', 'p', 'o'
-            };
+    private static final byte[] TEMPOTEXT = {
+            't', 'e', 'm', 'p', 'o'
+    };
 
-
-    protected void checkSequencer(Sequencer seq)
-            throws Exception {
+    @Override
+    protected void checkSequencer(Sequencer seq) throws Exception {
         // initial tempo
         checkTempoValues("initial", seq, MPQ0, BPM0, 1.0F);
 
@@ -107,7 +105,6 @@ public class TempoTestCase
         checkTempoValues("after close()", seq, MPQ2, BPM2, 3.0F);
     }
 
-
     private void checkTempoValues(String strMessagePrefix,
                                   Sequencer seq,
                                   float fExpectedMPQ,
@@ -118,9 +115,7 @@ public class TempoTestCase
         assertEquals(fExpectedFactor, seq.getTempoFactor(), DELTA, strMessagePrefix + " tempo factor");
     }
 
-
-    private static Sequence createSequence()
-            throws Exception {
+    private static Sequence createSequence() throws Exception {
         Sequence sequence = new Sequence(Sequence.PPQ, 480);
         Track track = sequence.createTrack();
         for (long lTick = 0; lTick < 100000; lTick += 1000) {
@@ -132,19 +127,19 @@ public class TempoTestCase
         return sequence;
     }
 
+    private static class TempoDetector implements MetaEventListener {
 
-    private static class TempoDetector
-            implements MetaEventListener {
         private long[] m_alArrivalTimes;
 
-
+        @Override
         public void meta(MetaMessage message) {
             if (message.getType() == 6) {
-                System.arraycopy(m_alArrivalTimes, 0, m_alArrivalTimes, 1, 9);
+                for (int i = 0; i < 9; i++) {
+                    m_alArrivalTimes[i] = m_alArrivalTimes[i + 1];
+                }
                 m_alArrivalTimes[0] = System.currentTimeMillis();
             }
         }
-
 
         public float getTempoInMPQ() {
             return 0.0F;
@@ -153,4 +148,3 @@ public class TempoTestCase
 }
 
 
-/* TempoTestCase.java */

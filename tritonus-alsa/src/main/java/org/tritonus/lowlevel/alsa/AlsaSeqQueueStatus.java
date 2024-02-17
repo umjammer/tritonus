@@ -1,10 +1,4 @@
 /*
- * AlsaSeqQueueStatus.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 1999 - 2001 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,23 +15,21 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.lowlevel.alsa;
 
-import org.tritonus.share.TDebug;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
+
+import static java.lang.System.getLogger;
 
 
 public class AlsaSeqQueueStatus {
+
+    private static final Logger logger = getLogger("org.tritonus.TraceAlsaSeqNative");
+
     static {
         Alsa.loadNativeLibrary();
-        if (TDebug.TraceAlsaSeqNative) {
-            setTrace(true);
-        }
     }
-
 
     /**
      * Holds the pointer to snd_seq_queue_status_t
@@ -46,27 +38,18 @@ public class AlsaSeqQueueStatus {
      */
     /*private*/ long m_lNativeHandle;
 
-
     public AlsaSeqQueueStatus() {
-        if (TDebug.TraceAlsaSeqNative) {
-            TDebug.out("AlsaSeq.QueueStatus.<init>(): begin");
-        }
+        //
+            logger.log(Level.TRACE, "AlsaSeq.QueueStatus.<init>(): begin");
+
         int nReturn = malloc();
         if (nReturn < 0) {
             throw new RuntimeException("malloc of port_info failed");
         }
-        if (TDebug.TraceAlsaSeqNative) {
-            TDebug.out("AlsaSeq.QueueStatus.<init>(): end");
-        }
+        // TraceAlsaSeqNative
+            logger.log(Level.TRACE, "AlsaSeq.QueueStatus.<init>(): end");
+
     }
-
-
-    protected void finalize() {
-        // TODO: call free()
-        // call super.finalize() first or last?
-        // and introduce a flag if free() has already been called?
-    }
-
 
     private native int malloc();
 
@@ -86,4 +69,3 @@ public class AlsaSeqQueueStatus {
 }
 
 
-/* AlsaSeqQueueStatus.java */

@@ -39,6 +39,8 @@ import org.junit.jupiter.api.Assertions;
  */
 public class IllegalStateTestCase
         extends BaseSequencerTestCase {
+
+    @Override
     protected void checkSequencer(Sequencer seq)
             throws Exception {
         // Sequencer is closed
@@ -55,7 +57,6 @@ public class IllegalStateTestCase
         seq.close();
     }
 
-
     private void checkOpenRequired(Sequencer seq, boolean bOpen)
             throws Exception {
         boolean bExpectingException = !bOpen;
@@ -64,7 +65,6 @@ public class IllegalStateTestCase
         checkMethod(seq, "startRecording()", bExpectingException, bOpen);
         checkMethod(seq, "stopRecording()", bExpectingException, bOpen);
     }
-
 
     private void checkOpenNotRequired(Sequencer seq, boolean bOpen)
             throws Exception {
@@ -103,7 +103,6 @@ public class IllegalStateTestCase
         checkMethod(seq, "addControllerEventListener()", bExpectingException, bOpen);
         checkMethod(seq, "removeControllerEventListener()", bExpectingException, bOpen);
     }
-
 
     private void checkMethod(Sequencer seq, String strMethodName,
                              boolean bExceptionExpected, boolean bOpen)
@@ -197,14 +196,12 @@ public class IllegalStateTestCase
         }
     }
 
-
     private static Sequence createSequence()
             throws Exception {
         Sequence sequence = new Sequence(Sequence.PPQ, 480);
         sequence.createTrack();
         return sequence;
     }
-
 
     private static InputStream createSequenceInputStream()
             throws Exception {
@@ -215,7 +212,6 @@ public class IllegalStateTestCase
         InputStream inputStream = new ByteArrayInputStream(data);
         return inputStream;
     }
-
 
     private static String constructErrorMessage(Sequencer seq,
                                                 String strMethodName,
@@ -229,17 +225,19 @@ public class IllegalStateTestCase
         return strMessage;
     }
 
-
     private static class DummyMetaEventListener
             implements MetaEventListener {
+
+        @Override
         public void meta(MetaMessage meta) {
             // DO NOTHING
         }
     }
 
-
     private static class DummyControllerEventListener
             implements ControllerEventListener {
+
+        @Override
         public void controlChange(ShortMessage event) {
             // DO NOTHING
         }
@@ -247,4 +245,3 @@ public class IllegalStateTestCase
 }
 
 
-/* IllegalStateTestCase.java */

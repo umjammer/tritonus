@@ -1,10 +1,4 @@
 /*
- * MathOpcodes.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2002 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,10 +14,6 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.saol.engine.opcodes;
 
 import org.tritonus.saol.compiler.WidthAndRate;
@@ -33,8 +23,8 @@ import org.tritonus.saol.compiler.WidthAndRate;
  * The Math Opcodes (Section 5.9.4).
  */
 public class MathOpcodes {
-    private static final float LOG_10 = (float) Math.log(10.0);
 
+    private static final float LOG_10 = (float) Math.log(10.0);
 
     public static void buildOpcodeTable(OpcodeTable opcodeTable) {
         OpcodeClass opcodeClass = new OpcodeClass("org.tritonus.saol.engine.opcodes.MathOpcodes", OpcodeClass.TYPE_STATIC);
@@ -62,71 +52,57 @@ public class MathOpcodes {
 
     }
 
-
     public static float _int(float x) {
         return (float) ((long) x);
     }
-
 
     public static float frac(float x) {
         return x - _int(x);
     }
 
-
     public static float dbamp(float x) {
         return 90.0F + 20.0F * log10(x);
     }
-
 
     public static float ampdb(float x) {
         return pow(10.0F, (x - 90.0F) / 20.0F);
     }
 
-
     public static float abs(float x) {
         return Math.abs(x);
     }
-
 
     public static float sgn(float x) {
         return (x < 0.0F) ? -1.0F : ((x > 0.0F) ? +1.0F : 0.0F);
     }
 
-
     public static float exp(float x) {
         return (float) Math.exp(x);
     }
-
 
     public static float log(float x) {
         return (float) Math.log(x);
     }
 
-
     public static float sqrt(float x) {
         return (float) Math.sqrt(x);
     }
-
 
     public static float sin(float x) {
         return (float) Math.sin(x);
     }
 
-
     public static float cos(float x) {
         return (float) Math.cos(x);
     }
-
 
     public static float atan(float x) {
         return (float) Math.atan(x);
     }
 
-
     public static float pow(float x, float y) {
         return (float) Math.pow(x, y);
     }
-
 
     public static float log10(float x) {
   /* Uses the formula:
@@ -136,26 +112,21 @@ public class MathOpcodes {
         return (float) Math.log(x) * (1 / LOG_10);
     }
 
-
     public static float asin(float x) {
         return (float) Math.asin(x);
     }
-
 
     public static float acos(float x) {
         return (float) Math.acos(x);
     }
 
-
     public static float ceil(float x) {
         return (float) Math.ceil(x);
     }
 
-
     public static float floor(float x) {
         return (float) Math.floor(x);
     }
-
 
     public static float min(float[] x) {
         switch (x.length) {
@@ -173,7 +144,6 @@ public class MathOpcodes {
             return fMin;
         }
     }
-
 
     public static float max(float[] x) {
         switch (x.length) {
@@ -194,4 +164,3 @@ public class MathOpcodes {
 }
 
 
-/* MathOpcodes.java */

@@ -1,10 +1,4 @@
 /*
- * GSMFormatConversionProvider.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 1999 - 2001 by Matthias Pfisterer
  *  Copyright (c) 2001 by Florian Bomers
  *
@@ -29,6 +23,8 @@ package org.tritonus.sampled.convert.gsm;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.util.Arrays;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -38,11 +34,11 @@ import org.tritonus.lowlevel.gsm.GSMDecoder;
 import org.tritonus.lowlevel.gsm.GsmConstants;
 import org.tritonus.lowlevel.gsm.GsmFrameFormat;
 import org.tritonus.lowlevel.gsm.InvalidGSMFrameException;
-import org.tritonus.share.TDebug;
 import org.tritonus.share.sampled.AudioFormats;
 import org.tritonus.share.sampled.convert.TAsynchronousFilteredAudioInputStream;
 import org.tritonus.share.sampled.convert.TSimpleFormatConversionProvider;
 
+import static java.lang.System.getLogger;
 import static org.tritonus.sampled.convert.gsm.GsmEncodings.MS_GSM_ENCODING;
 import static org.tritonus.sampled.convert.gsm.GsmEncodings.TOAST_GSM_ENCODING;
 
@@ -52,29 +48,28 @@ import static org.tritonus.sampled.convert.gsm.GsmEncodings.TOAST_GSM_ENCODING;
  *
  * @author Matthias Pfisterer
  */
-public class GSMDecoderFormatConversionProvider extends
-        TSimpleFormatConversionProvider
-// extends TEncodingFormatConversionProvider
-        implements GsmConstants {
+public class GSMDecoderFormatConversionProvider extends TSimpleFormatConversionProvider
+        /* TEncodingFormatConversionProvider */ implements GsmConstants {
+
+    private static final Logger logger = getLogger("org.tritonus.TraceAudioConverter");
 
     /**
      * Debugging (profiling) hack.
      */
     private static final boolean MEASURE_DECODING_TIME = false;
 
-    private static final AudioFormat[] SOURCE_FORMATS = {//
-            new AudioFormat(TOAST_GSM_ENCODING, 8000.0F, -1, 1, 33, 50.0F,
-                    false),//
-            new AudioFormat(TOAST_GSM_ENCODING, 8000.0F, -1, 1, 33, 50.0F, true),//
-            new AudioFormat(MS_GSM_ENCODING, 8000.0F, -1, 1, 65, 25.0F, false),//
-            new AudioFormat(MS_GSM_ENCODING, 8000.0F, -1, 1, 65, 25.0F, true),//
+    private static final AudioFormat[] SOURCE_FORMATS = {
+            new AudioFormat(TOAST_GSM_ENCODING, 8000.0F, -1, 1, 33, 50.0F, false),
+            new AudioFormat(TOAST_GSM_ENCODING, 8000.0F, -1, 1, 33, 50.0F, true),
+            new AudioFormat(MS_GSM_ENCODING, 8000.0F, -1, 1, 65, 25.0F, false),
+            new AudioFormat(MS_GSM_ENCODING, 8000.0F, -1, 1, 65, 25.0F, true),
     };
 
-    private static final AudioFormat[] TARGET_FORMATS = { //
+    private static final AudioFormat[] TARGET_FORMATS = {
             new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 8000.0F, 16, 1, 2,
-                    8000.0F, false),//
+                    8000.0F, false),
             new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 8000.0F, 16, 1, 2,
-                    8000.0F, true) //
+                    8000.0F, true)
     };
 
     /**
@@ -82,49 +77,32 @@ public class GSMDecoderFormatConversionProvider extends
      */
     public GSMDecoderFormatConversionProvider() {
         super(Arrays.asList(SOURCE_FORMATS), Arrays.asList(TARGET_FORMATS));
-        if (TDebug.TraceAudioConverter) {
-            TDebug.out("GSMFormatConversionProvider.<init>(): begin");
-        }
-        if (TDebug.TraceAudioConverter) {
-            TDebug.out("GSMFormatConversionProvider.<init>(): end");
-        }
+        logger.log(Level.TRACE, "GSMFormatConversionProvider.<init>(): begin");
+
+        logger.log(Level.TRACE, "GSMFormatConversionProvider.<init>(): end");
     }
 
-    public AudioInputStream getAudioInputStream(AudioFormat targetFormat,
-                                                AudioInputStream audioInputStream) {
-        if (TDebug.TraceAudioConverter) {
-            TDebug
-                    .out("GSMFormatConversionProvider.getAudioInputStream(): begin");
-            TDebug.out("GSMFormatConversionProvider.getAudioInputStream():");
-            TDebug.out("checking if conversion supported");
-            TDebug.out("from: " + audioInputStream.getFormat());
-            TDebug.out("to: " + targetFormat);
-        }
+    @Override
+    public AudioInputStream getAudioInputStream(AudioFormat targetFormat, AudioInputStream audioInputStream) {
+        logger.log(Level.TRACE, "GSMFormatConversionProvider.getAudioInputStream(): begin");
+        logger.log(Level.TRACE, "GSMFormatConversionProvider.getAudioInputStream():");
+        logger.log(Level.TRACE, "checking if conversion supported");
+        logger.log(Level.TRACE, "from: " + audioInputStream.getFormat());
+        logger.log(Level.TRACE, "to: " + targetFormat);
 
-        targetFormat = getDefaultTargetFormat(targetFormat, audioInputStream
-                .getFormat());
+        targetFormat = getDefaultTargetFormat(targetFormat, audioInputStream.getFormat());
         if (isConversionSupported(targetFormat, audioInputStream.getFormat())) {
-            if (TDebug.TraceAudioConverter) {
-                TDebug
-                        .out("GSMFormatConversionProvider.getAudioInputStream():");
-                TDebug
-                        .out("conversion supported; trying to create DecodedGSMAudioInputStream");
-            }
-            return new DecodedGSMAudioInputStream(targetFormat,
-                    audioInputStream);
+            logger.log(Level.TRACE, "GSMFormatConversionProvider.getAudioInputStream():");
+            logger.log(Level.TRACE, "conversion supported; trying to create DecodedGSMAudioInputStream");
+            return new DecodedGSMAudioInputStream(targetFormat, audioInputStream);
         } else {
-            if (TDebug.TraceAudioConverter) {
-                TDebug
-                        .out("GSMFormatConversionProvider.getAudioInputStream():");
-                TDebug
-                        .out("conversion not supported; throwing IllegalArgumentException");
-            }
+            logger.log(Level.TRACE, "GSMFormatConversionProvider.getAudioInputStream():");
+            logger.log(Level.TRACE, "conversion not supported; throwing IllegalArgumentException");
             throw new IllegalArgumentException("conversion not supported");
         }
     }
 
-    protected AudioFormat getDefaultTargetFormat(AudioFormat targetFormat,
-                                                 AudioFormat sourceFormat) {
+    protected AudioFormat getDefaultTargetFormat(AudioFormat targetFormat, AudioFormat sourceFormat) {
         // return first of the matching formats
         // pre-condition: the predefined target formats (FORMATS2) must be
         // well-defined !
@@ -142,8 +120,8 @@ public class GSMDecoderFormatConversionProvider extends
      * AudioInputStream) to decode a GSM stream. This class contains the logic
      * of maintaining buffers and calling the decoder.
      */
-    private static class DecodedGSMAudioInputStream extends
-            TAsynchronousFilteredAudioInputStream {
+    private static class DecodedGSMAudioInputStream extends TAsynchronousFilteredAudioInputStream {
+
         /*
          * Seems like DataInputStream (opposite to InputStream) is only needed
          * for readFully(). readFully-behaviour should perhaps be implemented in
@@ -152,48 +130,39 @@ public class GSMDecoderFormatConversionProvider extends
         private DataInputStream m_encodedStream;
         private GSMDecoder m_decoder;
 
-        /*
+        /**
          * Holds one encoded GSM frame.
          */
         private byte[] m_abFrameBuffer;
         private byte[] m_abSampleBuffer;
 
-        public DecodedGSMAudioInputStream(AudioFormat outputFormat,
-                                          AudioInputStream inputStream) {
-            super(
-                    outputFormat,
-                    inputStream.getFrameLength() == AudioSystem.NOT_SPECIFIED ? AudioSystem.NOT_SPECIFIED
-                            : inputStream.getFrameLength()
-                            * getSamplesPerFrame(inputStream
-                            .getFormat()));
-            if (TDebug.TraceAudioConverter) {
-                TDebug.out("DecodedGSMAudioInputStream.<init>(): begin");
-            }
+        public DecodedGSMAudioInputStream(AudioFormat outputFormat, AudioInputStream inputStream) {
+            super(outputFormat,
+                    inputStream.getFrameLength() == AudioSystem.NOT_SPECIFIED
+                            ? AudioSystem.NOT_SPECIFIED
+                            : inputStream.getFrameLength() * getSamplesPerFrame(inputStream.getFormat()));
+            logger.log(Level.TRACE, "DecodedGSMAudioInputStream.<init>(): begin");
+
             m_encodedStream = new DataInputStream(inputStream);
-            GsmFrameFormat gsmFrameFormat = getGsmFrameFormat(inputStream
-                    .getFormat());
+            GsmFrameFormat gsmFrameFormat = getGsmFrameFormat(inputStream.getFormat());
             int sampleBufferSize = gsmFrameFormat.getSamplesPerFrame() * 2;
             m_decoder = new GSMDecoder(gsmFrameFormat);
             m_abFrameBuffer = new byte[inputStream.getFormat().getFrameSize()];
             m_abSampleBuffer = new byte[sampleBufferSize];
-            if (TDebug.TraceAudioConverter) {
-                TDebug.out("DecodedGSMAudioInputStream.<init>(): end");
-            }
+
+            logger.log(Level.TRACE, "DecodedGSMAudioInputStream.<init>(): end");
         }
 
+        @Override
         public void execute() {
-            if (TDebug.TraceAudioConverter) {
-                TDebug.out("DecodedGSMAudioInputStream.execute(): begin");
-            }
+            logger.log(Level.TRACE, "DecodedGSMAudioInputStream.execute(): begin");
+
             try {
                 m_encodedStream.readFully(m_abFrameBuffer);
             } catch (IOException e) {
-                /*
-                 * Not only errors, but also EOF is caught here.
-                 */
-                if (TDebug.TraceAllExceptions) {
-                    TDebug.out(e);
-                }
+                // Not only errors, but also EOF is caught here.
+                logger.log(Level.ERROR, e.getMessage(), e);
+
                 getCircularBuffer().close();
                 return;
             }
@@ -204,31 +173,24 @@ public class GSMDecoderFormatConversionProvider extends
                 if (MEASURE_DECODING_TIME) {
                     lTimestamp1 = System.currentTimeMillis();
                 }
-                m_decoder.decode(m_abFrameBuffer, 0, m_abSampleBuffer, 0,
-                        isBigEndian());
+                m_decoder.decode(m_abFrameBuffer, 0, m_abSampleBuffer, 0, isBigEndian());
                 // testing test hack
-                // m_abBuffer[0] = 0;
+//                m_abBuffer[0] = 0;
                 if (MEASURE_DECODING_TIME) {
                     lTimestamp2 = System.currentTimeMillis();
-                    System.out.println("GSM decode (ms): "
-                            + (lTimestamp2 - lTimestamp1));
+                    logger.log(Level.DEBUG, "GSM decode (ms): " + (lTimestamp2 - lTimestamp1));
                 }
             } catch (InvalidGSMFrameException e) {
-                if (TDebug.TraceAllExceptions) {
-                    TDebug.out(e);
-                }
+                logger.log(Level.ERROR, e.getMessage(), e);
+
                 getCircularBuffer().close();
                 return;
             }
 
             getCircularBuffer().write(m_abSampleBuffer);
-            if (TDebug.TraceAudioConverter) {
-                TDebug
-                        .out("DecodedGSMAudioInputStream.execute(): decoded GSM frame written");
-            }
-            if (TDebug.TraceAudioConverter) {
-                TDebug.out("DecodedGSMAudioInputStream.execute(): end");
-            }
+            logger.log(Level.TRACE, "DecodedGSMAudioInputStream.execute(): decoded GSM frame written");
+
+            logger.log(Level.TRACE, "DecodedGSMAudioInputStream.execute(): end");
         }
 
         private static int getSamplesPerFrame(AudioFormat audioFormat) {
@@ -249,11 +211,10 @@ public class GSMDecoderFormatConversionProvider extends
             return getFormat().isBigEndian();
         }
 
+        @Override
         public void close() throws IOException {
             super.close();
             m_encodedStream.close();
         }
     }
 }
-
-/* GSMFormatConversionProvider.java */

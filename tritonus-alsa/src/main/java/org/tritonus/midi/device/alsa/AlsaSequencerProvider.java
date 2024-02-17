@@ -1,10 +1,4 @@
 /*
- * AlsaSequencerProvider.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 1999 by Matthias Pfisterer
  *
  *
@@ -22,29 +16,28 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.midi.device.alsa;
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.spi.MidiDeviceProvider;
 
 import org.tritonus.share.GlobalInfo;
-import org.tritonus.share.TDebug;
 import org.tritonus.share.midi.TMidiDevice;
 
+import static java.lang.System.getLogger;
 
-public class AlsaSequencerProvider
-        extends MidiDeviceProvider {
+
+public class AlsaSequencerProvider extends MidiDeviceProvider {
+
+    private static final Logger logger = getLogger("org.tritonus.TraceMidiDeviceProvider");
+
     private static MidiDevice.Info sm_info;
 
-
     public AlsaSequencerProvider() {
-        if (TDebug.TraceMidiDeviceProvider) {
-            TDebug.out("AlsaSequencerProvider.<init>(): begin");
-        }
+        logger.log(Level.TRACE, "AlsaSequencerProvider.<init>(): begin");
+
         synchronized (AlsaSequencerProvider.class) {
             if (sm_info == null) {
                 sm_info = new TMidiDevice.Info(
@@ -54,29 +47,26 @@ public class AlsaSequencerProvider
                         GlobalInfo.getVersion());
             }
         }
-        if (TDebug.TraceMidiDeviceProvider) {
-            TDebug.out("AlsaSequencerProvider.<init>(): end");
-        }
+
+        logger.log(Level.TRACE, "AlsaSequencerProvider.<init>(): end");
     }
 
-
+    @Override
     public MidiDevice.Info[] getDeviceInfo() {
-        if (TDebug.TraceMidiDeviceProvider) {
-            TDebug.out("AlsaSequencerProvider.getDeviceInfo(): begin");
-        }
+        logger.log(Level.TRACE, "AlsaSequencerProvider.getDeviceInfo(): begin");
+
         MidiDevice.Info[] infos = new MidiDevice.Info[1];
         infos[0] = sm_info;
-        if (TDebug.TraceMidiDeviceProvider) {
-            TDebug.out("AlsaSequencerProvider.getDeviceInfo(): end");
-        }
+
+        logger.log(Level.TRACE, "AlsaSequencerProvider.getDeviceInfo(): end");
+
         return infos;
     }
 
-
+    @Override
     public MidiDevice getDevice(MidiDevice.Info info) {
-        if (TDebug.TraceMidiDeviceProvider) {
-            TDebug.out("AlsaSequencerProvider.getDevice(): begin");
-        }
+        logger.log(Level.TRACE, "AlsaSequencerProvider.getDevice(): begin");
+
         MidiDevice device = null;
         if (info != null && info.equals(sm_info)) {
             device = new AlsaSequencer(sm_info);
@@ -84,12 +74,11 @@ public class AlsaSequencerProvider
         if (device == null) {
             throw new IllegalArgumentException("no device for " + info);
         }
-        if (TDebug.TraceMidiDeviceProvider) {
-            TDebug.out("AlsaSequencerProvider.getDevice(): end");
-        }
+
+        logger.log(Level.TRACE, "AlsaSequencerProvider.getDevice(): end");
+
         return device;
     }
 }
 
 
-/* AlsaSequencerProvider.java */

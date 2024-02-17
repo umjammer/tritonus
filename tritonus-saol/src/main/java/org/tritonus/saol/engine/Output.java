@@ -1,10 +1,4 @@
 /*
- * Output.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2002 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,10 +14,6 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.saol.engine;
 
 
@@ -37,13 +27,13 @@ package org.tritonus.saol.engine;
  * @author Matthias Pfisterer
  */
 public interface Output {
+
     /**
      * Gives the width of this output.
      *
      * @returns width of the output (number of channels)
      */
     int getWidth();
-
 
     /**
      * Initiate the cumulation of a sample value.
@@ -53,7 +43,6 @@ public interface Output {
      */
     void clear();
 
-
     /**
      * Add the sample value of one instrument.
      * This method can be called by instrument's a-cycle
@@ -62,7 +51,6 @@ public interface Output {
      * The current hacky version allows only for mono samples.
      */
     void output(float fSample);
-
 
     /**
      * Add sample values of one instrument.
@@ -75,4 +63,3 @@ public interface Output {
 }
 
 
-/* Output.java */

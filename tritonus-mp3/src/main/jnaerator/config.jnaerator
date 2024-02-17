@@ -1,0 +1,13 @@
+-I /opt/homebrew/include
+
+-root vavi.sound.sampled.jna
+
+//-parseInOneChunk
+-runtime JNA
+
+//-o "$(DIR)/../java" // overwrite versioned files instead of writing to target/generated-sources/java
+
+//-v
+//-choicesOut "$(DIR)/lame.choices"
+
+/opt/homebrew/include/lame/lame.h

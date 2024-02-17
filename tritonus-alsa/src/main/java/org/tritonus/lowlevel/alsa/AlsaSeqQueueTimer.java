@@ -1,10 +1,4 @@
 /*
- * AlsaSeqQueueTimer.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 1999 - 2001 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,52 +15,39 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.lowlevel.alsa;
 
-import org.tritonus.share.TDebug;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
+
+import static java.lang.System.getLogger;
 
 
 public class AlsaSeqQueueTimer {
+
+    private static final Logger logger = getLogger("org.tritonus.TraceAlsaSeqNative");
+
     static {
         Alsa.loadNativeLibrary();
-        if (TDebug.TraceAlsaSeqNative) {
-            setTrace(true);
-        }
     }
-
 
     /**
      * Holds the pointer to snd_seq_queue_timer_t
      * for the native code.
      * This must be long to be 64bit-clean.
      */
-    /*private*/ long m_lNativeHandle;
-
+    /* private */ long m_lNativeHandle;
 
     public AlsaSeqQueueTimer() {
-        if (TDebug.TraceAlsaSeqNative) {
-            TDebug.out("AlsaSeq.QueueTimer.<init>(): begin");
-        }
+        logger.log(Level.TRACE, "AlsaSeq.QueueTimer.<init>(): begin");
+
         int nReturn = malloc();
         if (nReturn < 0) {
             throw new RuntimeException("malloc of port_info failed");
         }
-        if (TDebug.TraceAlsaSeqNative) {
-            TDebug.out("AlsaSeq.QueueTimer.<init>(): end");
-        }
+
+        logger.log(Level.TRACE, "AlsaSeq.QueueTimer.<init>(): end");
     }
-
-
-    protected void finalize() {
-        // TODO: call free()
-        // call super.finalize() first or last?
-        // and introduce a flag if free() has already been called?
-    }
-
 
     private native int malloc();
 
@@ -76,18 +57,17 @@ public class AlsaSeqQueueTimer {
 
     public native int getType();
 
-    // TODO:
-    // public native ?? getTimerId();
+    // TODO
+//    public native ?? getTimerId();
+
     public native int getResolution();
 
     public native void setType(int nType);
 
-    // TODO:
-    // public native void setId(???);
+    // TODO
+//    public native void setId(???);
+
     public native void setResolution(int nResolution);
 
     private static native void setTrace(boolean bTrace);
 }
-
-
-/* AlsaSeqQueueTimer.java */

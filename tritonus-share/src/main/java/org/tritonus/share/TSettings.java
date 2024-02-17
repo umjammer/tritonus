@@ -1,10 +1,4 @@
 /*
- * TSettings.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 1999 - 2001 by Matthias Pfisterer
  *
  *
@@ -22,40 +16,24 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.share;
 
-import java.security.AccessControlException;
-
-
 public class TSettings {
+
     public static boolean SHOW_ACCESS_CONTROL_EXCEPTIONS = false;
     private static final String PROPERTY_PREFIX = "tritonus.";
 
-
     public static boolean AlsaUsePlughw = getBooleanProperty("AlsaUsePlughw");
-
 
     private static boolean getBooleanProperty(String strName) {
         String strPropertyName = PROPERTY_PREFIX + strName;
-        String strValue = "false";
-        try {
-            strValue = System.getProperty(strPropertyName, "false");
-        } catch (AccessControlException e) {
-            if (SHOW_ACCESS_CONTROL_EXCEPTIONS) {
-                TDebug.out(e);
-            }
-        }
-        // TDebug.out("property: " + strPropertyName + "=" + strValue);
+        String strValue = System.getProperty(strPropertyName, "false");
+        // logger.log(Level.TRACE, "property: " + strPropertyName + "=" + strValue);
         boolean bValue = strValue.equalsIgnoreCase("true");
-        // TDebug.out("bValue: " + bValue);
+        // logger.log(Level.TRACE, "bValue: " + bValue);
         return bValue;
     }
 }
 
 
-/* TSettings.java */
 

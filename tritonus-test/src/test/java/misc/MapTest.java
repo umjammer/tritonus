@@ -4,6 +4,7 @@ import java.util.Map;
 
 
 public class MapTest {
+
     public Map<String, Object> properties() {
         return null;
     }
@@ -12,6 +13,7 @@ public class MapTest {
 
 class MapTest2
         extends MapTest {
+
     public Map properties() {
         return null;
     }

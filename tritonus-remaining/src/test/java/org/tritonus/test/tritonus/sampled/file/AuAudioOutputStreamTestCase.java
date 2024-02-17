@@ -1,7 +1,6 @@
 /*
  * AuAudioOutputStreamTestCase.java
  */
-
 /*
  *  Copyright (c) 2001 - 2002 by Matthias Pfisterer
  *
@@ -29,9 +28,10 @@ import org.tritonus.share.sampled.file.TDataOutputStream;
 
 public class AuAudioOutputStreamTestCase
         extends BaseAudioOutputStreamTestCase {
+
     private static final int EXPECTED_ADDITIONAL_HEADER_LENGTH = 20;
 
-
+    @Override
     protected AudioOutputStream createAudioOutputStreamImpl(
             AudioFormat audioFormat,
             long nLength,
@@ -42,11 +42,11 @@ public class AuAudioOutputStreamTestCase
                 dataOutputStream);
     }
 
-
     /*
       nLength has to be < 255, or the implementation of this method
       has to be changed
      */
+    @Override
     protected byte[] getExpectedHeaderData(AudioFormat audioFormat,
                                            int nLength,
                                            boolean bSeekable,
@@ -71,27 +71,25 @@ public class AuAudioOutputStreamTestCase
         return abExpectedHeaderData;
     }
 
-
     private byte getEncoding(AudioFormat format) {
         // works only for simple cases
         return (byte) (format.getSampleSizeInBits() / 8 + 1);
     }
 
-
+    @Override
     protected int getExpectedAdditionalHeaderLength() {
         return EXPECTED_ADDITIONAL_HEADER_LENGTH;
     }
 
-
+    @Override
     protected boolean getBigEndian() {
         return true;
     }
 
-
+    @Override
     protected boolean is8bitUnsigned() {
         return false;
     }
 }
 
 
-/* AuAudioOutputStreamTestCase.java */

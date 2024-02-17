@@ -1,10 +1,4 @@
 /*
- * THeaderlessAudioFileWriter.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2000 by Florian Bomers
  *  Copyright (c) 2000 - 2002 by Matthias Pfisterer
  *
@@ -21,18 +15,16 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.share.sampled.file;
 
 import java.io.IOException;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.util.Collection;
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioFormat;
 
-import org.tritonus.share.TDebug;
+import static java.lang.System.getLogger;
 
 
 /**
@@ -45,41 +37,30 @@ import org.tritonus.share.TDebug;
  * @author Florian Bomers
  * @author Matthias Pfisterer
  */
-public class THeaderlessAudioFileWriter
-        extends TAudioFileWriter {
+public class THeaderlessAudioFileWriter extends TAudioFileWriter {
+
+    private static final Logger logger= getLogger("org.tritonus.TraceAudioFileWriter");
+
     protected THeaderlessAudioFileWriter(Collection<AudioFileFormat.Type> fileTypes,
                                          Collection<AudioFormat> audioFormats) {
         super(fileTypes, audioFormats);
-        if (TDebug.TraceAudioFileWriter) {
-            TDebug.out("THeaderlessAudioFileWriter.<init>(): begin");
-        }
-        if (TDebug.TraceAudioFileWriter) {
-            TDebug.out("THeaderlessAudioFileWriter.<init>(): end");
-        }
-    }
+        logger.log(Level.TRACE, "THeaderlessAudioFileWriter.<init>(): begin");
 
+        logger.log(Level.TRACE, "THeaderlessAudioFileWriter.<init>(): end");
+    }
 
     @Override
     protected AudioOutputStream getAudioOutputStream(
             AudioFormat audioFormat,
             long lLengthInBytes,
             AudioFileFormat.Type fileType,
-            TDataOutputStream dataOutputStream)
-            throws IOException {
-        if (TDebug.TraceAudioFileWriter) {
-            TDebug.out("THeaderlessAudioFileWriter.getAudioOutputStream(): begin");
-        }
-        AudioOutputStream aos = new HeaderlessAudioOutputStream(
-                audioFormat,
-                lLengthInBytes,
-                dataOutputStream);
-        if (TDebug.TraceAudioFileWriter) {
-            TDebug.out("THeaderlessAudioFileWriter.getAudioOutputStream(): end");
-        }
+            TDataOutputStream dataOutputStream) throws IOException {
+        logger.log(Level.TRACE, "THeaderlessAudioFileWriter.getAudioOutputStream(): begin");
+
+        AudioOutputStream aos = new HeaderlessAudioOutputStream(audioFormat, lLengthInBytes, dataOutputStream);
+
+        logger.log(Level.TRACE, "THeaderlessAudioFileWriter.getAudioOutputStream(): end");
+
         return aos;
     }
-
 }
-
-
-/* THeaderlessAudioFileWriter.java */

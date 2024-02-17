@@ -1,10 +1,4 @@
 /*
- * SystemOutput.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2002 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,10 +13,6 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.saol.engine;
 
@@ -40,6 +30,7 @@ import java.io.IOException;
  */
 public interface SystemOutput
         extends Output {
+
     /**
      * Writes the accumulated sample values to the output media.
      * This method must be called by the engine after all
@@ -51,7 +42,6 @@ public interface SystemOutput
      */
     void emit()
             throws IOException;
-
 
     /**
      * Closes the output destination.
@@ -65,4 +55,3 @@ public interface SystemOutput
 }
 
 
-/* SystemOutput.java */

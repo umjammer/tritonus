@@ -1,10 +1,4 @@
 /*
- * CddaURLStreamHandlerFactory.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2001 - 2002 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,10 +14,6 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.sampled.cdda;
 
 import java.net.URLStreamHandler;
@@ -32,9 +22,10 @@ import java.net.URLStreamHandlerFactory;
 
 public class CddaURLStreamHandlerFactory
         implements URLStreamHandlerFactory {
+
     private static URLStreamHandler m_cddaHandler = null;
 
-
+    @Override
     public URLStreamHandler createURLStreamHandler(String strProtocol) {
         URLStreamHandler handler = null;
 

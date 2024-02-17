@@ -1,10 +1,4 @@
 /*
- * CddaUtils.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2001 by Matthias Pfisterer
  *
  *
@@ -22,10 +16,6 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.lowlevel.cdda;
 
 import org.tritonus.lowlevel.cdda.cdparanoia.CdparanoiaMidLevel;
@@ -35,7 +25,8 @@ import org.tritonus.lowlevel.cdda.cdparanoia.CdparanoiaMidLevel;
  * Gets the preferred CDDA implementation.
  */
 public class CddaUtils {
-    // TODO: use some automatic lookup mechanism.
+
+    // TODO use some automatic lookup mechanism.
     public static CddaMidLevel getCddaMidLevel() {
         CddaMidLevel cddaMidLevel = new CdparanoiaMidLevel();
         // CddaMidLevel cddaMidLevel = new CookedIoctlMidLevel();
@@ -44,4 +35,3 @@ public class CddaUtils {
 }
 
 
-/* CddaUtils.java */

@@ -1,7 +1,6 @@
 /*
  * SkipTest.java
  */
-
 /*
  *  Copyright (c) 1999, 2000 by Matthias Pfisterer
  *
@@ -31,10 +30,10 @@ import javax.sound.sampled.AudioSystem;
 
 
 public class SkipTest {
+
     private static final int LOAD_METHOD_STREAM = 1;
     private static final int LOAD_METHOD_FILE = 2;
     private static final int LOAD_METHOD_URL = 3;
-
 
     public static void main(String[] args) {
         if (args.length == 0) {
@@ -156,7 +155,6 @@ public class SkipTest {
         }
     }
 
-
     private static void printUsageAndExit() {
         System.out.println("SkipTest: usage:");
         System.out.println("\tjava SkipTest <audiofile> <skip>");
@@ -167,4 +165,3 @@ public class SkipTest {
 }
 
 
-/* SkipTest.java */

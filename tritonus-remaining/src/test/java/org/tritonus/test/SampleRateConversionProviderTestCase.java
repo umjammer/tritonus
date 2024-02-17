@@ -1,7 +1,6 @@
 /*
  * SampleRateConversionProviderTestCase.java
  */
-
 /*
  *  Copyright (c) 2001 - 2002 by Matthias Pfisterer
  *
@@ -23,10 +22,10 @@ package org.tritonus.test;
 
 public class SampleRateConversionProviderTestCase
         extends BaseFormatConversionProviderTestCase {
+
     public SampleRateConversionProviderTestCase() {
         setResourcePrefix("samplerate");
     }
 }
 
 
-/* SampleRateConversionProviderTestCase.java */

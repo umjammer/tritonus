@@ -1,7 +1,6 @@
 /*
  * CddaMidLevelTest.java
  */
-
 /*
  *  Copyright (c) 2001 - 2002 by Matthias Pfisterer
  *
@@ -40,6 +39,7 @@ import org.tritonus.lowlevel.cdda.CddaUtils;
 
 
 public class CddaMidLevelTest {
+
     public static void main(String[] args) {
         boolean bTocOnly = true;
         int nTrack = 0;
@@ -52,7 +52,7 @@ public class CddaMidLevelTest {
         CddaMidLevel cddaMidLevel = CddaUtils.getCddaMidLevel();
         InputStream tocInputStream = null;
         try {
-            tocInputStream = cddaMidLevel.getTocAsXml("TODO:");
+            tocInputStream = cddaMidLevel.getTocAsXml("TODO");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -75,7 +75,7 @@ public class CddaMidLevelTest {
             Line.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
             abData = new byte[2352 * 8];
             try {
-                track = cddaMidLevel.getTrack("TODO:", nTrack);
+                track = cddaMidLevel.getTrack("TODO", nTrack);
             } catch (IOException e) {
                 e.printStackTrace();
             }

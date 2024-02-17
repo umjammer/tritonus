@@ -1,7 +1,6 @@
 /*
  * BufferingTest.java
  */
-
 /*
  *  Copyright (c) 1999, 2000 by Matthias Pfisterer
  *
@@ -27,6 +26,7 @@ import java.io.IOException;
 
 
 public class BufferingTest {
+
     public static void main(String[] args)
             throws IOException {
 //   byte[] abData = new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
@@ -66,4 +66,3 @@ public class BufferingTest {
 }
 
 
-/* BufferingTest.java */

@@ -1,10 +1,4 @@
 /*
- * AlsaSequencerReceiver.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 1999 by Matthias Pfisterer
  *
  *
@@ -22,17 +16,13 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.midi.device.alsa;
 
 
 public interface AlsaSequencerReceiver {
+
     boolean subscribeTo(int nClient, int nPort);
 }
 
 
-/* AlsaSequencerReceiver.java */
 

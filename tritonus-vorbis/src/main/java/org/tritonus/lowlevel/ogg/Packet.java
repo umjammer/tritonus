@@ -1,10 +1,4 @@
 /*
- * Packet.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2000 - 2001 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,87 +15,118 @@
  */
 
 /*
-|<---            this code is formatted to fit into 80 columns             --->|
+|<---            this code is formatted to fit into 80 columns             --.|
 */
 
 package org.tritonus.lowlevel.ogg;
 
-import org.tritonus.share.TDebug;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
+
+import vavi.sound.sampled.jna.ogg.OggLibrary;
+import vavi.sound.sampled.jna.ogg.ogg_packet;
+
+import static java.lang.System.getLogger;
 
 
 /**
  * Wrapper for ogg_packet.
  */
 public class Packet {
-    static {
-        Ogg.loadNativeLibrary();
-        if (TDebug.TraceOggNative) {
-            setTrace(true);
-        }
-    }
 
+    private static final Logger logger = getLogger(Packet.class.getName());
 
     /**
      * Holds the pointer to ogg_packet
-     * for the native code.
+     * for the code.
      * This must be long to be 64bit-clean.
      */
-    @SuppressWarnings("unused")
-    private long m_lNativeHandle;
+    private ogg_packet handle;
 
+    public ogg_packet getHandle() {
+        return handle;
+    }
 
     public Packet() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("Packet.<init>(): begin");
-        }
+        logger.log(Level.TRACE, "<init>: begin");
+
         int nReturn = malloc();
         if (nReturn < 0) {
             throw new RuntimeException("malloc of ogg_packet failed");
         }
-        if (TDebug.TraceOggNative) {
-            TDebug.out("Packet.<init>(): end");
-        }
+
+        logger.log(Level.TRACE, "<init>: end");
     }
 
+    private int malloc() {
+        logger.log(Level.TRACE, "malloc: begin");
 
-    protected void finalize() {
-        // TODO: call free()
-        // call super.finalize() first or last?
-        // and introduce a flag if free() has already been called?
+        handle = new ogg_packet();
+        logger.log(Level.TRACE, String.format("malloc: handle: %s", handle));
+
+        logger.log(Level.TRACE, "malloc: end");
+
+        return 0;
     }
 
+    public void free() {
+        logger.log(Level.TRACE, "free: begin");
 
-    private native int malloc();
+        handle = null;
 
-    public native void free();
-
+        logger.log(Level.TRACE, "free: end");
+    }
 
     /**
      * Calls ogg_packet_clear().
      */
-    public native void clear();
+    public void clear() {
+        logger.log(Level.TRACE, "clear: begin");
 
+        OggLibrary.INSTANCE.ogg_packet_clear(handle);
+
+        logger.log(Level.TRACE, "clear: end");
+    }
 
     /**
      * Accesses packet and bytes.
      */
-    public native byte[] getData();
+    public byte[] getData() {
+        logger.log(Level.TRACE, "getData: begin");
 
+        byte[] abData = new byte[handle.bytes.intValue()];
+        handle.packet.read(0, abData, 0, handle.bytes.intValue());
+
+        logger.log(Level.TRACE, "getData: end");
+
+        return abData;
+    }
 
     /**
      * Accesses b_o_s.
      */
-    public native boolean isBos();
+    public boolean isBos() {
+        logger.log(Level.TRACE, "isBos: begin");
 
+        logger.log(Level.TRACE, String.format("isBos: b_o_s: %d", handle.b_o_s.intValue()));
+
+        boolean bReturn = handle.b_o_s.intValue() != 0;
+
+        logger.log(Level.TRACE, "isBos: end");
+
+        return bReturn;
+    }
 
     /**
      * Accesses e_o_s.
      */
-    public native boolean isEos();
+    public boolean isEos() {
+        logger.log(Level.TRACE, "isEos: begin");
 
+        boolean bReturn = handle.e_o_s.intValue() != 0;
 
-    private static native void setTrace(boolean bTrace);
+        logger.log(Level.TRACE, "isEos: end");
+
+        return bReturn;
+    }
 }
-
-
-/* Packet.java */

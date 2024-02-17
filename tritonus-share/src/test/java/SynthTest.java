@@ -4,6 +4,7 @@ import javax.sound.midi.Synthesizer;
 
 
 public class SynthTest {
+
     public static void main(String[] args)
             throws Exception {
         Synthesizer synth = MidiSystem.getSynthesizer();

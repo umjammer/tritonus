@@ -31,29 +31,26 @@ import org.junit.jupiter.api.Test;
  * Base class for testsof javax.sound.midi.Sequencer.
  */
 public abstract class BaseSequencerTestCase {
-    private static final boolean IGNORE_SUN_SEQUENCER = true;
 
+    private static final boolean IGNORE_SUN_SEQUENCER = true;
 
     /**
      * Iterate over all available Sequencers.
      */
     @Test
-    public void testSeqencer()
-            throws Exception {
+    public void testSeqencer() throws Exception {
         MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();
         for (MidiDevice.Info info : infos) {
             MidiDevice device = MidiSystem.getMidiDevice(info);
             if (device instanceof Sequencer &&
-                    !(device.getDeviceInfo().getVendor().contains("Sun"))) {
+                    device.getClass().getPackage().getName().contains("tritonus")) {
                 System.out.println("testing seq: " + device);
                 checkSequencer((Sequencer) device);
             }
         }
     }
 
-
-    protected abstract void checkSequencer(Sequencer seq)
-            throws Exception;
+    protected abstract void checkSequencer(Sequencer seq) throws Exception;
 
     /**
      * Get the prefix for error messages (containing the sequencer's name).
@@ -64,4 +61,3 @@ public abstract class BaseSequencerTestCase {
 }
 
 
-/* BaseSequencerTestCase.java */

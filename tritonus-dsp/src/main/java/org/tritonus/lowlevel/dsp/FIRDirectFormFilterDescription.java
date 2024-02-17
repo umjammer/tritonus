@@ -1,7 +1,6 @@
 /*
  * This file is part of Tritonus: http://www.tritonus.org/
  */
-
 /*
  *  Copyright (c) 2002 by Matthias Pfisterer
  *
@@ -28,6 +27,7 @@ package org.tritonus.lowlevel.dsp;
  * Description of a direct form Finite Impulse Response (FIR) filter.
  */
 public class FIRDirectFormFilterDescription implements FilterDescription {
+
     /**
      * The filter coefficients.
      */

@@ -1,10 +1,4 @@
 /*
- * TNotifier.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 1999 by Matthias Pfisterer
  *
  *
@@ -22,12 +16,10 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.share;
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EventObject;
@@ -35,28 +27,30 @@ import java.util.List;
 import javax.sound.sampled.LineEvent;
 import javax.sound.sampled.LineListener;
 
+import static java.lang.System.getLogger;
 
-public class TNotifier
-        extends Thread {
+
+public class TNotifier extends Thread {
+
+    private static final Logger logger= getLogger("org.tritonus.TraceAllExceptions");
+
     public static class NotifyEntry {
+
         private EventObject m_event;
         private List<LineListener> m_listeners;
-
 
         public NotifyEntry(EventObject event, Collection<LineListener> listeners) {
             m_event = event;
             m_listeners = new ArrayList<>(listeners);
         }
 
-
         public void deliver() {
-            // TDebug.out("%% TNotifier.NotifyEntry.deliver(): called.");
+//logger.log(Level.DEBUG, "%% TNotifier.NotifyEntry.deliver(): called.");
             for (LineListener listener : m_listeners) {
                 listener.update((LineEvent) m_event);
             }
         }
     }
-
 
     public static TNotifier notifier;
 
@@ -66,41 +60,36 @@ public class TNotifier
         notifier.start();
     }
 
-
     /**
      * The queue of events to deliver.
      * The entries are of class NotifyEntry.
      */
     private final List<NotifyEntry> m_entries;
 
-
     public TNotifier() {
         super("Tritonus Notifier");
         m_entries = new ArrayList<>();
     }
 
-
     public void addEntry(EventObject event, Collection<LineListener> listeners) {
-        // TDebug.out("%% TNotifier.addEntry(): called.");
+//        logger.log(Level.TRACE, "%% TNotifier.addEntry(): called.");
         synchronized (m_entries) {
             m_entries.add(new NotifyEntry(event, listeners));
             m_entries.notifyAll();
         }
-        // TDebug.out("%% TNotifier.addEntry(): completed.");
+//        logger.log(Level.TRACE, "%% TNotifier.addEntry(): completed.");
     }
 
-
+    @Override
     public void run() {
         while (true) {
             NotifyEntry entry;
             synchronized (m_entries) {
-                while (m_entries.size() == 0) {
+                while (m_entries.isEmpty()) {
                     try {
                         m_entries.wait();
                     } catch (InterruptedException e) {
-                        if (TDebug.TraceAllExceptions) {
-                            TDebug.out(e);
-                        }
+                        logger.log(Level.TRACE, e);
                     }
                 }
                 entry = m_entries.remove(0);
@@ -111,4 +100,3 @@ public class TNotifier
 }
 
 
-/* TNotifier.java */

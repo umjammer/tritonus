@@ -1,0 +1,16 @@
+-I /opt/homebrew/include
+
+-root vavi.sound.sampled.jna
+
+//-parseInOneChunk
+-runtime JNA
+
+//-o "$(DIR)/../java" // overwrite versioned files instead of writing to target/generated-sources/java
+
+//-v
+//-choicesOut "$(DIR)/vorbis.choices"
+
+/opt/homebrew/include/ogg/ogg.h
+/opt/homebrew/include/vorbis/vorbisfile.h
+/opt/homebrew/include/vorbis/codec.h
+/opt/homebrew/include/vorbis/vorbisenc.h

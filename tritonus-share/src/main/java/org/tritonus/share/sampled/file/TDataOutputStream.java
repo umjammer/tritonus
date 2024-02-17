@@ -1,8 +1,3 @@
-/*
- * TDataOutputStream.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999 by Florian Bomers
@@ -22,10 +17,6 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.share.sampled.file;
 
 import java.io.DataOutput;
@@ -41,24 +32,20 @@ import java.io.IOException;
  */
 public interface TDataOutputStream
         extends DataOutput {
-    boolean supportsSeek();
 
+    boolean supportsSeek();
 
     void seek(long position)
             throws IOException;
 
-
     long getFilePointer()
             throws IOException;
-
 
     long length()
             throws IOException;
 
-
     void writeLittleEndian32(int value)
             throws IOException;
-
 
     void writeLittleEndian16(short value)
             throws IOException;
@@ -68,4 +55,3 @@ public interface TDataOutputStream
 }
 
 
-/* TDataOutputStream.java */

@@ -1,10 +1,4 @@
 /*
- * TEnumControl.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2001 by Matthias Pfisterer
  *
  *
@@ -22,56 +16,45 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.share.sampled.mixer;
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import javax.sound.sampled.EnumControl;
 
-import org.tritonus.share.TDebug;
+import static java.lang.System.getLogger;
 
 
 /**
  * Base class for classes implementing Line.
  */
-public class TEnumControl
-        extends EnumControl
-        implements TControllable {
-    private TControlController m_controller;
+public class TEnumControl extends EnumControl implements TControllable {
 
+    private static final Logger logger= getLogger("org.tritonus.TraceControl");
 
-    public TEnumControl(EnumControl.Type type,
-                        Object[] aValues,
-                        Object value) {
-        super(type,
-                aValues,
-                value);
-        if (TDebug.TraceControl) {
-            TDebug.out("TEnumControl.<init>: begin");
-        }
+    private final TControlController m_controller;
+
+    public TEnumControl(EnumControl.Type type, Object[] aValues, Object value) {
+        super(type, aValues, value);
+        logger.log(Level.TRACE, "TEnumControl.<init>: begin");
+
         m_controller = new TControlController();
-        if (TDebug.TraceControl) {
-            TDebug.out("TEnumControl.<init>: end");
-        }
+
+        logger.log(Level.TRACE, "TEnumControl.<init>: end");
     }
 
-
+    @Override
     public void setParentControl(TCompoundControl compoundControl) {
         m_controller.setParentControl(compoundControl);
     }
 
-
+    @Override
     public TCompoundControl getParentControl() {
         return m_controller.getParentControl();
     }
 
-
+    @Override
     public void commit() {
         m_controller.commit();
     }
 }
-
-
-/* TEnumControl.java */

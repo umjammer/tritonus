@@ -1,10 +1,4 @@
 /*
- * UserOpcodeEntry.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2002 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,10 +14,6 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.saol.compiler;
 
 import org.tritonus.saol.sablecc.node.AOpcodedeclOpcodedecl;
@@ -34,9 +24,9 @@ import org.tritonus.saol.sablecc.node.AOpcodedeclOpcodedecl;
  * This class is used for entries in the opcode table.
  */
 public class UserOpcodeEntry {
+
     private String m_strOpcodeName;
     private AOpcodedeclOpcodedecl m_startNode;
-
 
     public UserOpcodeEntry(String strOpcodeName,
                            AOpcodedeclOpcodedecl startNode) {
@@ -44,11 +34,9 @@ public class UserOpcodeEntry {
         m_startNode = startNode;
     }
 
-
     public String getOpcodeName() {
         return m_strOpcodeName;
     }
-
 
     public AOpcodedeclOpcodedecl getStartNode() {
         return m_startNode;
@@ -56,4 +44,3 @@ public class UserOpcodeEntry {
 }
 
 
-/* UserOpcodeEntry.java */

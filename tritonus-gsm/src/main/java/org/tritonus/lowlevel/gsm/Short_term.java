@@ -25,7 +25,7 @@ public class Short_term {
 
     /**
      * @param LARc IN coded log area ratio [0..7]
-     * @param s IN/OUT signal [0..159]
+     * @param s    IN/OUT signal [0..159]
      */
     public void Gsm_Short_Term_Analysis_Filter(Gsm_State S, short[] LARc, short[] s)
             throws ArrayIndexOutOfBoundsException {
@@ -40,7 +40,7 @@ public class Short_term {
 
         if (array_index0 < 0 || array_index0 > 1 || array_index1 < 0 || array_index1 > 1) {
             throw new ArrayIndexOutOfBoundsException("Gsm_Short_Term_Synthesis_Filter: Indexing LARpp "
-                            + "incorrectly. Should be >= 0 and <= 1");
+                    + "incorrectly. Should be >= 0 and <= 1");
         }
 
         short[] LARpp_j = S.getLARppIndexed(array_index0);
@@ -67,8 +67,8 @@ public class Short_term {
 
     /**
      * @param LARcr IN received log area ratios [0..7]
-     * @param wt IN received d [0..159]
-     * @param s OUT signal s [0..159]
+     * @param wt    IN received d [0..159]
+     * @param s     OUT signal s [0..159]
      */
     public void Gsm_Short_Term_Synthesis_Filter(Gsm_State S, short[] LARcr, short[] wt, int[] s)
             throws ArrayIndexOutOfBoundsException {
@@ -112,7 +112,7 @@ public class Short_term {
     }
 
     /**
-     * @param LARc coded log area ratio [0..7]  IN
+     * @param LARc  coded log area ratio [0..7]  IN
      * @param LARpp out: decoded ..
      */
     public static void Decoding_of_the_coded_Log_Area_Ratios(short[] LARc, short[] LARpp) {
@@ -149,12 +149,13 @@ public class Short_term {
     }
 
     /**
-     *  Within each frame of 160 analyzed speech samples the short term
-     *  analysis and synthesis filters operate with four different sets of
-     *  coefficients, derived from the previous set of decoded LARs(LARpp(j-1))
-     *  and the actual set of decoded LARs (LARpp(j))
-     *
+     * Within each frame of 160 analyzed speech samples the short term
+     * analysis and synthesis filters operate with four different sets of
+     * coefficients, derived from the previous set of decoded LARs(LARpp(j-1))
+     * and the actual set of decoded LARs (LARpp(j))
+     * <p>
      * (Initial value: LARpp(j-1)[1..8] = 0.)
+     *
      * @since 4.2.9 Computation of the quantized reflection coefficients
      * @since 4.2.9.1 Interpolation of the LARpp[1..8] to get the LARp[1..8]
      */
@@ -193,8 +194,9 @@ public class Short_term {
      * The input of this method is the interpolated LARp[0..7] array.
      * The reflection coefficients, rp[i], are used in the analysis
      * filter and in the synthesis filter.
-     * @since 4.2.9.2
+     *
      * @param LARp IN/OUT [0..7]
+     * @since 4.2.9.2
      */
     public static void LARp_to_rp(short[] LARp) {
         short temp;
@@ -206,13 +208,13 @@ public class Short_term {
                 LARp[i] = (short) (-((temp < 11059)
                         ? temp << 1
                         : ((temp < 20070) ? temp + 11059
-                                          : Add.GSM_ADD((short) (temp >> 2), (short) 26112))));
+                        : Add.GSM_ADD((short) (temp >> 2), (short) 26112))));
             } else {
                 temp = LARp[i];
                 LARp[i] = (short) ((temp < 11059)
                         ? temp << 1
                         : ((temp < 20070) ? temp + 11059
-                                          : Add.GSM_ADD((short) (temp >> 2), (short) 26112)));
+                        : Add.GSM_ADD((short) (temp >> 2), (short) 26112)));
             }
         }
     }
@@ -226,8 +228,9 @@ public class Short_term {
      * k_start (for arrays d[..] and s[..]) and stops with index k_end
      * (k_start and k_end are defined in 4.2.9.1).  This procedure also
      * needs to keep the array u[0..7] in memory for each call.
-     * @param rp IN [0..7]
-     * @param k_n k_end - k_start
+     *
+     * @param rp      IN [0..7]
+     * @param k_n     k_end - k_start
      * @param s_index IN/OUT [0..n-1]
      */
     private void Short_term_analysis_filtering(Gsm_State S, short[] rp, int k_n, short[] s, int s_index) {
@@ -257,9 +260,9 @@ public class Short_term {
 
     /**
      * @param rrp IN [0..7]
-     * @param k k_end - k_start
-     * @param wt IN [0..k-1]
-     * @param sr OUT [0..k-1]
+     * @param k   k_end - k_start
+     * @param wt  IN [0..k-1]
+     * @param sr  OUT [0..k-1]
      */
     public static void Short_term_synthesis_filtering(
             Gsm_State S, short[] rrp, int k, short[] wt, int[] sr, int wt_sr_index_start) {

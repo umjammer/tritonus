@@ -1,10 +1,4 @@
 /*
- * WhiteNoise.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2002 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,6 +24,7 @@ import java.util.Random;
 
 
 public class WhiteNoise implements Source {
+
     private Random m_random;
 
     public WhiteNoise() {
@@ -40,10 +35,11 @@ public class WhiteNoise implements Source {
         m_random = random;
     }
 
+    @Override
     public float process() {
         float fOutput = m_random.nextFloat() * 2.0F - 1.0F;
         return fOutput;
     }
 }
 
-/* WhiteNoise.java */
+

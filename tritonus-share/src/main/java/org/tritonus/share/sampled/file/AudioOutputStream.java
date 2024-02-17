@@ -1,10 +1,4 @@
 /*
- * AudioOutputStream.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2000 by Matthias Pfisterer
  *
  *
@@ -21,10 +15,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.share.sampled.file;
 
@@ -99,4 +89,4 @@ public interface AudioOutputStream {
     void close() throws IOException;
 }
 
-/* AudioOutputStream.java */
+

@@ -1,7 +1,6 @@
 /*
  * Util.java
  */
-
 /*
  *  Copyright (c) 2001 - 2002 by Matthias Pfisterer
  *
@@ -26,13 +25,13 @@ import java.io.IOException;
 
 
 public class Util {
+
     public static void dumpByteArray(byte[] ab) {
         for (byte b : ab) {
             System.out.print(" " + b);
         }
         System.out.println();
     }
-
 
     // returns true if equal
     public static boolean compareByteArrays(byte[] ab1, int nOffset1, byte[] ab2, int nOffset2, int nLength) {
@@ -43,7 +42,6 @@ public class Util {
         }
         return true;
     }
-
 
     public static byte[] getByteArrayFromFile(File file)
             throws IOException {
@@ -61,7 +59,6 @@ public class Util {
         return abData;
     }
 
-
     public static void sleep(long milliseconds) {
         try {
             Thread.sleep(milliseconds);
@@ -71,4 +68,3 @@ public class Util {
 }
 
 
-/* Util.java */

@@ -1,7 +1,6 @@
 /*
  * AuZeroDataLengthAudioFileReaderTestCase.java
  */
-
 /*
  *  Copyright (c) 2001 - 2002 by Matthias Pfisterer
  *
@@ -23,10 +22,10 @@ package org.tritonus.test;
 
 public class AuZeroDataLengthAudioFileReaderTestCase
         extends BaseAudioFileReaderTestCase {
+
     public AuZeroDataLengthAudioFileReaderTestCase() {
         setResourcePrefix("au_zero_data_length");
     }
 }
 
 
-/* AuZeroDataLengthAudioFileReaderTestCase.java */

@@ -1,10 +1,4 @@
 /*
- * AudioFormatSet.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2000 by Florian Bomers
  *
  *
@@ -22,12 +16,9 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.share.sampled;
 
+import java.io.Serial;
 import java.util.Collection;
 import javax.sound.sampled.AudioFormat;
 
@@ -57,6 +48,8 @@ import org.tritonus.share.ArraySet;
  */
 
 public class AudioFormatSet extends ArraySet<AudioFormat> {
+
+    @Serial
     private static final long serialVersionUID = 1;
 
     protected static final AudioFormat[] EMPTY_FORMAT_ARRAY = new AudioFormat[0];
@@ -128,12 +121,10 @@ public class AudioFormatSet extends ArraySet<AudioFormat> {
         return null;
     }
 
-
-    // $$mp: TODO: remove; should be obsolete
+    // $$mp: TODO remove; should be obsolete
     public AudioFormat[] toAudioFormatArray() {
         return toArray(EMPTY_FORMAT_ARRAY);
     }
-
 
     @Override
     public void add(int index, AudioFormat element) {
@@ -146,4 +137,4 @@ public class AudioFormatSet extends ArraySet<AudioFormat> {
     }
 }
 
-/* AudioFormatSet.java */
+

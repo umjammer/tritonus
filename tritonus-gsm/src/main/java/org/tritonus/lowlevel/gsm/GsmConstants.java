@@ -11,6 +11,7 @@ package org.tritonus.lowlevel.gsm;
  * @see GsmFrameFormat
  */
 public interface GsmConstants {
+
     /**
      * Samples per frame in toast frame format.
      */

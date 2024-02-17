@@ -1,10 +1,4 @@
 /*
- * TreeDivider.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2002 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,29 +14,30 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.saol.compiler;
+
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 
 import org.tritonus.saol.sablecc.analysis.DepthFirstAdapter;
 import org.tritonus.saol.sablecc.node.AGlobaldeclGlobaldecl;
 import org.tritonus.saol.sablecc.node.AInstrdeclInstrdecl;
 import org.tritonus.saol.sablecc.node.AOpcodedeclOpcodedecl;
 import org.tritonus.saol.sablecc.node.ATemplatedeclTemplatedecl;
-import org.tritonus.share.TDebug;
+
+import static java.lang.System.getLogger;
 
 
-public class TreeDivider
-        extends DepthFirstAdapter {
+public class TreeDivider extends DepthFirstAdapter {
+
+    private static final Logger logger = getLogger(TreeDivider.class.getName());
+    
     private static final boolean DEBUG = true;
 
     private InstrumentTable m_instrumentTable;
     private UserOpcodeTable m_opcodeTable;
     private TemplateTable m_templateTable;
     private AGlobaldeclGlobaldecl m_globalNode;
-
 
     public TreeDivider(InstrumentTable instrumentTable,
                        UserOpcodeTable opcodeTable,
@@ -53,32 +48,31 @@ public class TreeDivider
         m_globalNode = null;
     }
 
-
     public AGlobaldeclGlobaldecl getGlobalNode() {
         return m_globalNode;
     }
 
-
+    @Override
     public void inAInstrdeclInstrdecl(AInstrdeclInstrdecl node) {
         String strInstrumentName = node.getIdentifier().getText();
         InstrumentEntry instrument = new InstrumentEntry(strInstrumentName, node);
         m_instrumentTable.add(instrument);
     }
 
-
+    @Override
     public void inAOpcodedeclOpcodedecl(AOpcodedeclOpcodedecl node) {
         String strOpcodeName = node.getIdentifier().getText();
         UserOpcodeEntry opcode = new UserOpcodeEntry(strOpcodeName, node);
         m_opcodeTable.add(opcode);
     }
 
-
+    @Override
     public void inAGlobaldeclGlobaldecl(AGlobaldeclGlobaldecl node) {
-        TDebug.out("TreeDivider.inAGlobaldeclGlobaldecl()");
+        logger.log(Level.TRACE, "TreeDivider.inAGlobaldeclGlobaldecl()");
         m_globalNode = node;
     }
 
-
+    @Override
     public void inATemplatedeclTemplatedecl(ATemplatedeclTemplatedecl node) {
         // hack to make compile
         String strTemplateName = "---";
@@ -89,4 +83,3 @@ public class TreeDivider
 }
 
 
-/* TreeDivider.java */

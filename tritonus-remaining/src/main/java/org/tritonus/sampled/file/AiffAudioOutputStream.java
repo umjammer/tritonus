@@ -1,10 +1,4 @@
 /*
- * AiffAudioOutputStream.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2000 by Florian Bomers
  *
  *
@@ -22,20 +16,19 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.sampled.file;
 
 import java.io.IOException;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 
-import org.tritonus.share.TDebug;
 import org.tritonus.share.sampled.file.TAudioOutputStream;
 import org.tritonus.share.sampled.file.TDataOutputStream;
+
+import static java.lang.System.getLogger;
 
 
 /**
@@ -44,6 +37,8 @@ import org.tritonus.share.sampled.file.TDataOutputStream;
  * @author Florian Bomers
  */
 public class AiffAudioOutputStream extends TAudioOutputStream {
+
+    private static final Logger logger= getLogger("org.tritonus.TraceAudioOutputStream");
 
     // this constant is used for chunk lengths when the length is not known yet
     private static final int LENGTH_NOT_KNOWN = -1;
@@ -56,14 +51,10 @@ public class AiffAudioOutputStream extends TAudioOutputStream {
                                  TDataOutputStream dataOutputStream) {
         // always do backpatching if the stream supports seeking, in case the
         // reported stream length is longer than the actual data
-        super(audioFormat,
-                lLength,
-                dataOutputStream,
-                dataOutputStream.supportsSeek());
+        super(audioFormat, lLength, dataOutputStream, dataOutputStream.supportsSeek());
         // AIFF files cannot exceed 2GB
-        if (lLength != AudioSystem.NOT_SPECIFIED && lLength > 0x7FFFFFFFL) {
-            throw new IllegalArgumentException(
-                    "AIFF files cannot be larger than 2GB.");
+        if (lLength != AudioSystem.NOT_SPECIFIED && lLength > 0x7FFF_FFFFL) {
+            throw new IllegalArgumentException("AIFF files cannot be larger than 2GB.");
         }
         // IDEA: write AIFF file instead of AIFC when encoding=PCM ?
         m_FileType = fileType;
@@ -81,17 +72,14 @@ public class AiffAudioOutputStream extends TAudioOutputStream {
         // AIFF requires big endian
         requireEndianness(true);
 
-        if (TDebug.TraceAudioOutputStream) {
-            TDebug.out("Writing " + m_FileType + ": " + audioFormat.getSampleSizeInBits()
-                    + " bits, " + audioFormat.getEncoding());
-        }
+        logger.log(Level.TRACE, "Writing " + m_FileType + ": " + audioFormat.getSampleSizeInBits() +
+                    " bits, " + audioFormat.getEncoding());
     }
 
-    protected void writeHeader()
-            throws IOException {
-        if (TDebug.TraceAudioOutputStream) {
-            TDebug.out("AiffAudioOutputStream.writeHeader(): called.");
-        }
+    @Override
+    protected void writeHeader() throws IOException {
+        logger.log(Level.TRACE, "AiffAudioOutputStream.writeHeader(): called.");
+
         AudioFormat format = getFormat();
         boolean bIsAifc = m_FileType.equals(AudioFileFormat.Type.AIFC);
         long lLength = getLength();
@@ -104,16 +92,16 @@ public class AiffAudioOutputStream extends TAudioOutputStream {
             nCommChunkSize += 6;
         }
         int nHeaderSize = 4          // magic
-                + 8 + nCommChunkSize  // COMM chunk
-                + 8;                // header of SSND chunk
+                + 8 + nCommChunkSize // COMM chunk
+                + 8;                 // header of SSND chunk
         if (bIsAifc) {
             // add length for FVER chunk
             nHeaderSize += 12;
         }
         // if patching the header, and the length has not been known at first
         // writing of the header, just truncate the size fields, don't throw an exception
-        if (lLength != AudioSystem.NOT_SPECIFIED && lLength + nHeaderSize > 0x7FFFFFFFL) {
-            lLength = 0x7FFFFFFFL - nHeaderSize;
+        if (lLength != AudioSystem.NOT_SPECIFIED && lLength + nHeaderSize > 0x7FFF_FFFFL) {
+            lLength = 0x7FFF_FFFFL - nHeaderSize;
         }
         // chunks must be on word-boundaries
         long lSSndChunkSize = (lLength != AudioSystem.NOT_SPECIFIED) ?
@@ -149,35 +137,33 @@ public class AiffAudioOutputStream extends TAudioOutputStream {
         if (bIsAifc) {
             dos.writeInt(nFormatCode);
             dos.writeShort(0); // no encoding name
-            // TODO: write encoding.toString() ??
+            // TODO write encoding.toString() ??
         }
 
         // write header of SSND chunk
         dos.writeInt(AiffTool.AIFF_SSND_MAGIC);
         // don't use lSSndChunkSize here !
-        dos.writeInt((lLength != AudioSystem.NOT_SPECIFIED)
-                ? ((int) (lLength + 8)) : LENGTH_NOT_KNOWN);
+        dos.writeInt((lLength != AudioSystem.NOT_SPECIFIED) ? (int) (lLength + 8) : LENGTH_NOT_KNOWN);
         // 8 information bytes of no interest
         dos.writeInt(0); // offset
         dos.writeInt(0); // blocksize
     }
 
-
-    protected void patchHeader()
-            throws IOException {
+    @Override
+    protected void patchHeader() throws IOException {
         TDataOutputStream tdos = getDataOutputStream();
         tdos.seek(0);
         setLengthFromCalculatedLength();
         writeHeader();
     }
 
+    @Override
     public void close() throws IOException {
         long nBytesWritten = getCalculatedLength();
 
         if ((nBytesWritten % 2) == 1) {
-            if (TDebug.TraceAudioOutputStream) {
-                TDebug.out("AiffOutputStream.close(): adding padding byte");
-            }
+            logger.log(Level.TRACE, "AiffOutputStream.close(): adding padding byte");
+
             // extra byte for to align on word boundaries
             TDataOutputStream tdos = getDataOutputStream();
             tdos.writeByte(0);
@@ -188,7 +174,7 @@ public class AiffAudioOutputStream extends TAudioOutputStream {
 
     public void writeIeeeExtended(TDataOutputStream dos, float sampleRate) throws IOException {
         // currently, only integer sample rates are written
-        // TODO: real conversion
+        // TODO real conversion
         // I don't know exactly how much I have to shift left the mantisse for normalisation
         // now I do it so that there are any bits set in the first 5 bits
         int nSampleRate = (int) sampleRate;
@@ -198,11 +184,7 @@ public class AiffAudioOutputStream extends TAudioOutputStream {
             nSampleRate <<= 1;
         }
         dos.writeShort(16414 - ieeeExponent); // exponent
-        dos.writeInt(nSampleRate);          // mantisse high double word
-        dos.writeInt(0);                    // mantisse low double word
+        dos.writeInt(nSampleRate);              // mantisse high double word
+        dos.writeInt(0);                     // mantisse low double word
     }
-
-
 }
-
-/* AiffAudioOutputStream.java */

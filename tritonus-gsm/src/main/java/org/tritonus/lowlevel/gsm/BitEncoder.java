@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 
 public class BitEncoder {
+
     public enum AllocationMode {
         MSBitFirst, LSBitFirst
     }

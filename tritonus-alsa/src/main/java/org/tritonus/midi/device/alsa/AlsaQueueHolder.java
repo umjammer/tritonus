@@ -1,10 +1,4 @@
 /*
- * AlsaQueueHolder.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2001 by Matthias Pfisterer
  *
  *
@@ -22,10 +16,6 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.midi.device.alsa;
 
 import org.tritonus.lowlevel.alsa.AlsaSeq;
@@ -35,6 +25,7 @@ import org.tritonus.lowlevel.alsa.AlsaSeq;
  * A representation of a physical MIDI port based on the ALSA sequencer.
  */
 public class AlsaQueueHolder {
+
     /**
      * The object interfacing to the ALSA sequencer.
      */
@@ -44,7 +35,6 @@ public class AlsaQueueHolder {
      * ALSA queue number.
      */
     private int m_nQueue;
-
 
     /**
      *
@@ -57,7 +47,6 @@ public class AlsaQueueHolder {
         }
     }
 
-
     /**
      * Returns the allocated queue
      *
@@ -67,20 +56,10 @@ public class AlsaQueueHolder {
         return m_nQueue;
     }
 
-
     /**
      * Frees the queue.
      */
     public void close() {
         m_aSequencer.freeQueue(getQueue());
     }
-
-
-    protected void finalize() {
-        close();
-    }
 }
-
-
-/* AlsaQueueHolder.java */
-

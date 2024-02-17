@@ -1,10 +1,4 @@
 /*
- * TCompoundControl.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2001 by Matthias Pfisterer
  *
  *
@@ -22,54 +16,46 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.share.sampled.mixer;
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import javax.sound.sampled.CompoundControl;
 import javax.sound.sampled.Control;
 
-import org.tritonus.share.TDebug;
+import static java.lang.System.getLogger;
 
 
 /**
  * Base class for classes implementing Line.
  */
-public class TCompoundControl
-        extends CompoundControl
-        implements TControllable {
-    private TControlController m_controller;
+public class TCompoundControl extends CompoundControl implements TControllable {
 
+    private static final Logger logger= getLogger("org.tritonus.TraceControl");
 
-    public TCompoundControl(CompoundControl.Type type,
-                            Control[] aMemberControls) {
+    private final TControlController m_controller;
+
+    public TCompoundControl(CompoundControl.Type type, Control[] aMemberControls) {
         super(type, aMemberControls);
-        if (TDebug.TraceControl) {
-            TDebug.out("TCompoundControl.<init>: begin");
-        }
+        logger.log(Level.TRACE, "TCompoundControl.<init>: begin");
+
         m_controller = new TControlController();
-        if (TDebug.TraceControl) {
-            TDebug.out("TCompoundControl.<init>: end");
-        }
+
+        logger.log(Level.TRACE, "TCompoundControl.<init>: end");
     }
 
-
+    @Override
     public void setParentControl(TCompoundControl compoundControl) {
         m_controller.setParentControl(compoundControl);
     }
 
-
+    @Override
     public TCompoundControl getParentControl() {
         return m_controller.getParentControl();
     }
 
-
+    @Override
     public void commit() {
         m_controller.commit();
     }
 }
-
-
-/* TCompoundControl.java */

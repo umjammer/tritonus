@@ -9,6 +9,7 @@ import org.tritonus.test.tritonus.sampled.convert.AbstractFormatConversionProvid
 
 public abstract class AbstractGsmFormatConversionProviderTest extends
         AbstractFormatConversionProviderTest {
+
     /**
      * Encoding for the "toast" frame format. Corresponds to
      * {@link GsmFrameFormat#TOAST}.
@@ -25,6 +26,7 @@ public abstract class AbstractGsmFormatConversionProviderTest extends
 
     private FormatConversionProvider formatConversionProvider;
 
+    @Override
     protected final FormatConversionProvider getFormatConversionProvider() {
         return formatConversionProvider;
     }

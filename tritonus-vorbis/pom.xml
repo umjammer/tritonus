@@ -5,149 +5,67 @@
   <parent>
     <groupId>org.tritonus</groupId>
     <artifactId>tritonus</artifactId>
-    <version>0.3.12</version>
+    <version>0.3.13</version>
   </parent>
 
   <artifactId>tritonus-vorbis</artifactId>
-  <packaging>jar</packaging>
 
+  <packaging>jar</packaging>
   <name>Tritonus vorbis Module</name>
+
+  <properties>
+    <!-- latest is 0.13-SNAPSHOT, need to run on java 1.8 (bridj? blocks) -->
+    <jnaerator.version>0.13-SNAPSHOT</jnaerator.version>
+  </properties>
 
   <profiles>
     <profile>
-      <id>local (not on jitpack)</id>
+      <!-- mvn -P jnaerator jnaerator:generate -->
+      <id>jnaerator</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.nativelibs4java</groupId>
+            <artifactId>maven-jnaerator-plugin</artifactId>
+            <version>${jnaerator.version}</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>generate</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <javaOutputDirectory>${project.build.sourceDirectory}</javaOutputDirectory>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>local</id>
       <activation>
-        <property>
-          <name>env.JITPACK</name>
-          <value>!true</value>
-        </property>
-        <os>
-          <family>mac</family>
-        </os>
+        <file>
+          <exists>${basedir}/local.properties</exists>
+        </file>
       </activation>
       <build>
         <plugins>
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
-            <artifactId>native-maven-plugin</artifactId>
-            <version>1.0-alpha-11</version>
-            <extensions>true</extensions>
-            <configuration>
-              <javahClassNames>
-                <javahClassName>org.tritonus.sampled.file.vorbis.VorbisAudioFileReader</javahClassName>
-                <javahClassName>org.tritonus.sampled.convert.vorbis.VorbisFormatConversionProvider</javahClassName>
-                <javahClassName>org.tritonus.lowlevel.ogg.Buffer</javahClassName>
-                <javahClassName>org.tritonus.lowlevel.ogg.SyncState</javahClassName>
-                <javahClassName>org.tritonus.lowlevel.ogg.Packet</javahClassName>
-                <javahClassName>org.tritonus.lowlevel.ogg.Ogg</javahClassName>
-                <javahClassName>org.tritonus.lowlevel.ogg.StreamState</javahClassName>
-                <javahClassName>org.tritonus.lowlevel.ogg.Page</javahClassName>
-                <javahClassName>org.tritonus.lowlevel.vorbis.Block</javahClassName>
-                <javahClassName>org.tritonus.lowlevel.vorbis.Info</javahClassName>
-                <javahClassName>org.tritonus.lowlevel.vorbis.DspState</javahClassName>
-                <javahClassName>org.tritonus.lowlevel.vorbis.Comment</javahClassName>
-              </javahClassNames>
-              <javahSearchJNIFromDependencies>false</javahSearchJNIFromDependencies>
-              <javahOS>darwin</javahOS>
-              <compilerProvider>generic-classic</compilerProvider>
-              <compilerStartOptions>
-                <compilerStartOption>-g -Wall -O2 -fomit-frame-pointer -fPIC</compilerStartOption>
-                <!-- unless locating jdk includes, cause error why??? -->
-                <compilerStartOption>-arch x86_64
-                  -I${java.home}/../include
-                  -I${java.home}/../include/darwin
-                </compilerStartOption>
-              </compilerStartOptions>
-              <sources>
-                <source>
-                  <directory>src/main/native</directory>
-                  <fileNames>
-                    <fileName>common/common.c</fileName>
-                    <fileName>org_tritonus_lowlevel_ogg_Buffer.c</fileName>
-                    <fileName>org_tritonus_lowlevel_ogg_Packet.c</fileName>
-                    <fileName>org_tritonus_lowlevel_ogg_Page.c</fileName>
-                    <fileName>org_tritonus_lowlevel_ogg_StreamState.c</fileName>
-                    <fileName>org_tritonus_lowlevel_ogg_SyncState.c</fileName>
-                    <fileName>org_tritonus_lowlevel_vorbis_Block.c</fileName>
-                    <fileName>org_tritonus_lowlevel_vorbis_Comment.c</fileName>
-                    <fileName>org_tritonus_lowlevel_vorbis_DspState.c</fileName>
-                    <fileName>org_tritonus_lowlevel_vorbis_Info.c</fileName>
-                  </fileNames>
-                </source>
-              </sources>
-              <linkerStartOptions>
-                <linkerStartOption>-dynamiclib -arch x86_64
-                  -L/usr/local/lib -logg -lvorbis -lvorbisenc
-                </linkerStartOption>
-              </linkerStartOptions>
-              <linkerFinalName/>
-              <linkerEndOptions>
-                <linkerEndOption>-o ${project.build.directory}/libtritonusvorbis.dylib</linkerEndOption>
-              </linkerEndOptions>
-            </configuration>
+            <artifactId>properties-maven-plugin</artifactId>
+            <version>1.1.0</version>
             <executions>
               <execution>
-                <id>compile-ogg-vorbis</id>
-                <phase>compile</phase>
+                <phase>initialize</phase>
                 <goals>
-                  <goal>javah</goal>
-                  <goal>compile</goal>
-                  <goal>link</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-install-plugin</artifactId>
-            <version>3.0.0-M1</version>
-            <executions>
-              <execution>
-                <id>install-library</id>
-                <phase>install</phase>
-                <goals>
-                  <goal>install-file</goal>
+                  <goal>read-project-properties</goal>
                 </goals>
                 <configuration>
-                  <groupId>${project.groupId}</groupId>
-                  <artifactId>${project.artifactId}</artifactId>
-                  <version>${project.parent.version}</version>
-                  <packaging>dylib</packaging>
-                  <file>${project.build.directory}/libtritonusvorbis.dylib</file>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-
-          <plugin>
-            <!-- because of maven deploy-file uploads source, jar also -->
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <version>1.6.0</version>
-            <executions>
-              <execution>
-                <id>deploy-library</id>
-                <phase>deploy</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <executable>mvn</executable>
-                  <arguments>
-                    <argument>deploy:deploy-file</argument>
-                    <argument>-DgroupId=${project.groupId}</argument>
-                    <argument>-DartifactId=${project.artifactId}</argument>
-                    <argument>-Dversion=${project.parent.version}</argument>
-                    <argument>-Dpackaging=dylib</argument>
-                    <argument>-Dfile=${project.build.directory}/libtritonusvorbis.dylib</argument>
-                    <argument>-DgeneratePom=false</argument>
-                    <argument>-DrepositoryId=github</argument>
-                    <argument>-Durl=https://maven.pkg.github.com/umjammer/tritonus</argument>
-                    <argument>-DgeneratePom=false</argument>
-                    <argument>-s</argument>
-                    <argument>${env.GITHUB_WORKSPACE}/settings.xml</argument>
-                  </arguments>
+                  <files>
+                    <file>${basedir}/local.properties</file>
+                  </files>
                 </configuration>
               </execution>
             </executions>
@@ -161,30 +79,35 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.10.1</version>
-        <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
-          <encoding>UTF-8</encoding>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.0.0-M7</version>
         <configuration>
-          <forkMode>once</forkMode>
-          <argLine>-Djava.library.path=${project.build.directory}</argLine>
+          <reuseForks>true</reuseForks>
+          <argLine>
+            -Djava.util.logging.config.file=src/test/resources/logging.properties
+            -Djna.library.path=${native.library.path}
+            -Dvavi.test.volume=0.02
+          </argLine>
         </configuration>
       </plugin>
     </plugins>
   </build>
 
+  <repositories>
+    <repository>
+      <id>jitpack.io</id>
+      <url>https://jitpack.io</url>
+    </repository>
+  </repositories>
+
   <dependencies>
     <dependency>
       <groupId>org.tritonus</groupId>
       <artifactId>tritonus-remaining</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>net.java.dev.jna</groupId>
+      <artifactId>jna</artifactId>
     </dependency>
 
     <dependency>
@@ -202,6 +125,18 @@
       <groupId>org.tritonus</groupId>
       <artifactId>tritonus-remaining</artifactId>
       <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.github.umjammer</groupId>
+      <artifactId>vavi-commons</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>${vavi-sound.groupId}</groupId>
+      <artifactId>vavi-sound</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

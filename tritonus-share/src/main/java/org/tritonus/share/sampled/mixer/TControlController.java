@@ -1,10 +1,4 @@
 /*
- * TControlController.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2001 by Matthias Pfisterer
  *
  *
@@ -22,20 +16,21 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.share.sampled.mixer;
 
-import org.tritonus.share.TDebug;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
+
+import static java.lang.System.getLogger;
 
 
 /**
  * Base class for classes implementing Line.
  */
-public class TControlController
-        implements TControllable {
+public class TControlController implements TControllable {
+
+    private static final Logger logger= getLogger("org.tritonus.TraceControl");
+
     /**
      * The parent (compound) control.
      * In case this control is part of a compound control, the parentControl
@@ -43,25 +38,23 @@ public class TControlController
      */
     private TCompoundControl m_parentControl;
 
-
     public TControlController() {
     }
 
-
+    @Override
     public void setParentControl(TCompoundControl compoundControl) {
         m_parentControl = compoundControl;
     }
 
-
+    @Override
     public TCompoundControl getParentControl() {
         return m_parentControl;
     }
 
-
+    @Override
     public void commit() {
-        if (TDebug.TraceControl) {
-            TDebug.out("TControlController.commit(): called [" + this.getClass().getName() + "]");
-        }
+        logger.log(Level.TRACE, "TControlController.commit(): called [" + this.getClass().getName() + "]");
+
         if (getParentControl() != null) {
             getParentControl().commit();
         }
@@ -69,4 +62,3 @@ public class TControlController
 }
 
 
-/* TControlController.java */

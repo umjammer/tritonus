@@ -118,7 +118,7 @@ public class FormatConversionProviderTest {
 
     private static FormatConversionProvider getProvider(String strProviderClassName) throws Exception {
         Class<?> providerClass = Class.forName(strProviderClassName);
-        FormatConversionProvider provider = (FormatConversionProvider) providerClass.newInstance();
+        FormatConversionProvider provider = (FormatConversionProvider) providerClass.getDeclaredConstructor().newInstance();
         return provider;
     }
 
@@ -127,39 +127,37 @@ public class FormatConversionProviderTest {
     }
 
     private static String getAudioFormatStringImpl0(AudioFormat audioFormat) {
-        StringBuilder strBuf = new StringBuilder();
-        strBuf.append(audioFormat.getEncoding().toString());
-        strBuf.append(", ");
-        strBuf.append(audioFormat.getSampleRate());
-        strBuf.append(" Hz , ");
-        strBuf.append(audioFormat.getSampleSizeInBits());
-        strBuf.append(" bit , ");
-        strBuf.append(audioFormat.getChannels());
-        strBuf.append(" ch, ");
-        strBuf.append(audioFormat.getFrameSize());
-        strBuf.append(" byte, ");
-        strBuf.append(audioFormat.getFrameRate());
-        strBuf.append(" Hz, ");
-        strBuf.append(audioFormat.isBigEndian() ? "BE" : "le");
-        return strBuf.toString();
+        String strBuf = audioFormat.getEncoding().toString() +
+                ", " +
+                audioFormat.getSampleRate() +
+                " Hz , " +
+                audioFormat.getSampleSizeInBits() +
+                " bit , " +
+                audioFormat.getChannels() +
+                " ch, " +
+                audioFormat.getFrameSize() +
+                " byte, " +
+                audioFormat.getFrameRate() +
+                " Hz, " +
+                (audioFormat.isBigEndian() ? "BE" : "le");
+        return strBuf;
     }
 
     private static String getAudioFormatStringImpl1(AudioFormat audioFormat) {
-        StringBuilder strBuf = new StringBuilder();
-        strBuf.append("enc: ");
-        strBuf.append(audioFormat.getEncoding().toString());
-        strBuf.append(", sr: ");
-        strBuf.append(audioFormat.getSampleRate());
-        strBuf.append(", ss: ");
-        strBuf.append(audioFormat.getSampleSizeInBits());
-        strBuf.append(", ch: ");
-        strBuf.append(audioFormat.getChannels());
-        strBuf.append(", fs: ");
-        strBuf.append(audioFormat.getFrameSize());
-        strBuf.append(", fr: ");
-        strBuf.append(audioFormat.getFrameRate());
-        strBuf.append(audioFormat.isBigEndian() ? ", BE" : ", le");
-        return strBuf.toString();
+        String strBuf = "enc: " +
+                audioFormat.getEncoding().toString() +
+                ", sr: " +
+                audioFormat.getSampleRate() +
+                ", ss: " +
+                audioFormat.getSampleSizeInBits() +
+                ", ch: " +
+                audioFormat.getChannels() +
+                ", fs: " +
+                audioFormat.getFrameSize() +
+                ", fr: " +
+                audioFormat.getFrameRate() +
+                (audioFormat.isBigEndian() ? ", BE" : ", le");
+        return strBuf;
     }
 
     private static void out(Encoding[] aEncodings) {
@@ -177,4 +175,4 @@ public class FormatConversionProviderTest {
     }
 }
 
-/* FormatConversionProviderTest.java */
+

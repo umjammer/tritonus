@@ -1,10 +1,4 @@
 /*
- * JorbisAudioFileReader.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2001 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,14 +14,12 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.sampled.file.jorbis;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
@@ -38,25 +30,27 @@ import com.jcraft.jogg.Packet;
 import com.jcraft.jogg.Page;
 import com.jcraft.jogg.StreamState;
 import com.jcraft.jogg.SyncState;
-import org.tritonus.share.TDebug;
 import org.tritonus.share.sampled.file.TAudioFileFormat;
 import org.tritonus.share.sampled.file.TAudioFileReader;
+
+import static java.lang.System.getLogger;
 
 
 /**
  * @author Matthias Pfisterer
  */
-public class JorbisAudioFileReader
-        extends TAudioFileReader {
+public class JorbisAudioFileReader extends TAudioFileReader {
+
+    private static final Logger logger= getLogger("org.tritonus.TraceAudioFileReader");
+
     private static final int INITAL_READ_LENGTH = 4096;
     private static final int MARK_LIMIT = INITAL_READ_LENGTH + 1;
-
 
     public JorbisAudioFileReader() {
         super(MARK_LIMIT, true);
     }
 
-
+    @Override
     protected AudioFileFormat getAudioFileFormat(InputStream inputStream, long lFileSizeInBytes)
             throws UnsupportedAudioFileException, IOException {
         // sync and verify incoming physical bitstream
@@ -143,11 +137,11 @@ public class JorbisAudioFileReader
         float fSampleRate = oggPacketBuffer.read(32);
 
         // These are only used for error checking.
-        /*int bitrate_upper =*/
+        // int bitrate_upper =
         oggPacketBuffer.read(32);
-        /*int bitrate_nominal =*/
+        // int bitrate_nominal =
         oggPacketBuffer.read(32);
-        /*int bitrate_lower =*/
+        // int bitrate_lower =
         oggPacketBuffer.read(32);
 
         int[] blocksizes = new int[2];
@@ -162,33 +156,25 @@ public class JorbisAudioFileReader
             throw new UnsupportedAudioFileException("not a Vorbis stream: illegal values in initial header");
         }
 
+        logger.log(Level.TRACE, "JorbisAudioFileReader.getAudioFileFormat(): channels: " + nChannels);
 
-        if (TDebug.TraceAudioFileReader) {
-            TDebug.out("JorbisAudioFileReader.getAudioFileFormat(): channels: " + nChannels);
-        }
-        if (TDebug.TraceAudioFileReader) {
-            TDebug.out("JorbisAudioFileReader.getAudioFileFormat(): rate: " + fSampleRate);
-        }
+        logger.log(Level.TRACE, "JorbisAudioFileReader.getAudioFileFormat(): rate: " + fSampleRate);
 
-  /*
-    If the file size is known, we derive the number of frames
-    ('frame size') from it.
-    If the values don't fit into integers, we leave them at
-    NOT_SPECIFIED. 'Unknown' is considered less incorrect than
-    a wrong value.
-  */
+        // If the file size is known, we derive the number of frames
+        // ('frame size') from it.
+        // If the values don't fit into integers, we leave them at
+        // NOT_SPECIFIED. 'Unknown' is considered less incorrect than
+        // a wrong value.
         // [fb] not specifying it causes Sun's Wave file writer to write rubbish
         int nByteSize = AudioSystem.NOT_SPECIFIED;
-        if (lFileSizeInBytes != AudioSystem.NOT_SPECIFIED
-                && lFileSizeInBytes <= Integer.MAX_VALUE) {
+        if (lFileSizeInBytes != AudioSystem.NOT_SPECIFIED && lFileSizeInBytes <= Integer.MAX_VALUE) {
             nByteSize = (int) lFileSizeInBytes;
         }
         int nFrameSize = AudioSystem.NOT_SPECIFIED;
-  /* Can we calculate a useful size?
-     Peeking into ogginfo gives the insight that the only
-     way seems to be reading through the file. This is
-     something we do not want, at least not by default.
-  */
+        // Can we calculate a useful size?
+        // Peeking into ogginfo gives the insight that the only
+        // way seems to be reading through the file. This is
+        // something we do not want, at least not by default.
         // nFrameSize = (int) (lFileSizeInBytes / ...;
 
         AudioFormat format = new AudioFormat(
@@ -199,9 +185,8 @@ public class JorbisAudioFileReader
                 AudioSystem.NOT_SPECIFIED,
                 AudioSystem.NOT_SPECIFIED,
                 true); // this value is chosen arbitrarily
-        if (TDebug.TraceAudioFileReader) {
-            TDebug.out("JorbisAudioFileReader.getAudioFileFormat(): AudioFormat: " + format);
-        }
+        logger.log(Level.TRACE, "JorbisAudioFileReader.getAudioFileFormat(): AudioFormat: " + format);
+
         AudioFileFormat.Type type = new AudioFileFormat.Type("Ogg", "ogg");
         AudioFileFormat audioFileFormat =
                 new TAudioFileFormat(
@@ -209,13 +194,9 @@ public class JorbisAudioFileReader
                         format,
                         nFrameSize,
                         nByteSize);
-        if (TDebug.TraceAudioFileReader) {
-            TDebug.out("JorbisAudioFileReader.getAudioFileFormat(): AudioFileFormat: " + audioFileFormat);
-        }
+
+        logger.log(Level.TRACE, "JorbisAudioFileReader.getAudioFileFormat(): AudioFileFormat: " + audioFileFormat);
+
         return audioFileFormat;
     }
 }
-
-
-/* JorbisAudioFileReader.java */
-

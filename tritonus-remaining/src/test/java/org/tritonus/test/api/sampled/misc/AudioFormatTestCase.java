@@ -1,7 +1,6 @@
 /*
  * AudioFormatTestCase.java
  */
-
 /*
  *  Copyright (c) 2003 - 2004 by Matthias Pfisterer
  *
@@ -36,6 +35,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 
 public class AudioFormatTestCase {
+
     @Test
     public void testNoMap() {
         AudioFormat fileFormat = new AudioFormat(
@@ -47,12 +47,10 @@ public class AudioFormatTestCase {
         assertNull(result);
     }
 
-
     @Test
     public void testNullMap() {
         assertThrows(NullPointerException.class, () -> new AudioFormat(null, 0.0F, 0, 0, 0, 0.0F, false, null));
     }
-
 
     @Test
     public void testEmptyMap() {
@@ -64,7 +62,6 @@ public class AudioFormatTestCase {
         Object result = propReturn.get("bitrate");
         assertNull(result);
     }
-
 
     @Test
     public void testCopying() {
@@ -79,7 +76,6 @@ public class AudioFormatTestCase {
         assertEquals(22.5F, result);
     }
 
-
     @Test
     public void testUnmodifiable() {
         Map<String, Object> prop = new HashMap<>();
@@ -92,7 +88,6 @@ public class AudioFormatTestCase {
         } catch (UnsupportedOperationException e) {
         }
     }
-
 
     @Test
     public void testGet() {
@@ -108,4 +103,3 @@ public class AudioFormatTestCase {
 }
 
 
-/* AudioFormatTestCase.java */

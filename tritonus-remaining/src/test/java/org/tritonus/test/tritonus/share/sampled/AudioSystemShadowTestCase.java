@@ -1,7 +1,6 @@
 /*
  * AudioSystemShadowTestCase.java
  */
-
 /*
  *  Copyright (c) 2001 - 2002 by Matthias Pfisterer
  *
@@ -44,7 +43,6 @@ class AudioSystemShadowTestCase {
         // Util.dumpByteArray(abResultingData);
         checkTDataOutputStream2(abResultingData);
     }
-
 
     @Test
     public void testGetDataOutputStreamOutputStream() throws Exception {

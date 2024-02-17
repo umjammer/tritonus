@@ -17,12 +17,16 @@
 package org.tritonus.debug;
 
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
+
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
-import org.tritonus.share.TDebug;
+
+import static java.lang.System.getLogger;
 
 
 /**
@@ -30,6 +34,8 @@ import org.tritonus.share.TDebug;
  */
 @Aspect /* privileged aspect */
 abstract class AJDebugVorbis extends Utils {
+
+    private static final Logger logger = getLogger("org.tritonus.TraceAllExceptions");
 
     @Pointcut("handler(Throwable+)")
     public void allExceptions() {
@@ -39,16 +45,17 @@ abstract class AJDebugVorbis extends Utils {
             "execution(* org.tritonus.sampled.convert.jorbis.JorbisFormatConversionProvider.*(..)) ||" +
             "execution(org.tritonus.sampled.convert.jorbis.JorbisFormatConversionProvider.DecodedJorbisAudioInputStream.new(..)) ||" +
             "execution(* org.tritonus.sampled.convert.jorbis.JorbisFormatConversionProvider.DecodedJorbisAudioInputStream.*(..))")
-    public void AudioConverterCalls() {}
+    public void AudioConverterCalls() {
+    }
 
 //    @Pointcut("call(* SourceDataLine+.*(..))")
 //    public void sourceDataLine() {}
-
-    // currently not used
-
+//
+//    // currently not used
+//
 //    @Pointcut("execution(* JavaSoundToneGenerator.playTone(..)) && call(JavaSoundToneGenerator.ToneThread.new(..))")
 //    public void printVelocity() {}
-
+//
 //    @Pointcut("execution(protected void JavaSoundAudioPlayer.doRealize() throws Exception)")
 //    public void tracedCall() {}
 
@@ -56,25 +63,20 @@ abstract class AJDebugVorbis extends Utils {
 
     @Before("AudioConverterCalls()")
     public void beforeAudioConverterCalls(JoinPoint thisJoinPoint) {
-        if (TDebug.TraceAudioConverter) {
+        if (logger.isLoggable(Level.TRACE)) {
             outEnteringJoinPoint(thisJoinPoint);
         }
     }
 
     @After("AudioConverterCalls()")
     public void afterAudioConverterCalls(JoinPoint thisJoinPoint) {
-        if (TDebug.TraceAudioConverter) {
+        if (logger.isLoggable(Level.TRACE)) {
             outLeavingJoinPoint(thisJoinPoint);
         }
     }
 
     @Before("allExceptions() && args(t)")
     public void beforeThrowable(Throwable t) {
-        if (TDebug.TraceAllExceptions) {
-            TDebug.out(t);
-        }
+        logger.log(Level.ERROR, t.getMessage(), t);
     }
 }
-
-/* AJDebug.java */
-

@@ -21,11 +21,12 @@
 package org.tritonus.lowlevel.gsm;
 
 public abstract class Gsm_Def {
-    // TODO: (GSM) use Short.MIN/MAX_VALUE
+
+    // TODO (GSM) use Short.MIN/MAX_VALUE
     public static final short MIN_WORD = -32768;
     public static final short MAX_WORD = 32767;
 
-    // TODO: (GSM) use Integer.MIN/MAX_VALUE
+    // TODO (GSM) use Integer.MIN/MAX_VALUE
     public static final int MIN_LONGWORD = -2147483648;
     public static final int MAX_LONGWORD = 2147483647;
 

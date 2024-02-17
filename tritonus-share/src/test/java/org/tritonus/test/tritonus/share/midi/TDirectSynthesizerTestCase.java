@@ -174,64 +174,80 @@ class TDirectSynthesizerTestCase {
             }
         }
 
+        @Override
         public int getMaxPolyphony() {
             return 16;
         }
 
+        @Override
         public long getLatency() {
             return 0;
         }
 
+        @Override
         public MidiChannel[] getChannels() {
             return m_channels;
         }
 
+        @Override
         public VoiceStatus[] getVoiceStatus() {
             return null;
         }
 
+        @Override
         public boolean isSoundbankSupported(Soundbank soundbank) {
             return false;
         }
 
+        @Override
         public boolean loadInstrument(Instrument instrument) {
             return false;
         }
 
+        @Override
         public void unloadInstrument(Instrument instrument) {
         }
 
+        @Override
         public boolean remapInstrument(Instrument from, Instrument to) {
             return false;
         }
 
+        @Override
         public Soundbank getDefaultSoundbank() {
             return null;
         }
 
+        @Override
         public Instrument[] getAvailableInstruments() {
             return null;
         }
 
+        @Override
         public Instrument[] getLoadedInstruments() {
             return null;
         }
 
+        @Override
         public boolean loadAllInstruments(Soundbank soundbank) {
             return false;
         }
 
+        @Override
         public void unloadAllInstruments(Soundbank soundbank) {
         }
 
+        @Override
         public boolean loadInstruments(Soundbank soundbank, Patch[] patchList) {
             return false;
         }
 
+        @Override
         public void unloadInstruments(Soundbank soundbank, Patch[] patchList) {
         }
 
         public static class TestChannel implements MidiChannel {
+
             private Type m_nType;
             private int m_nValue1;
             private int m_nValue2;
@@ -257,114 +273,140 @@ class TDirectSynthesizerTestCase {
                 return m_nValue2;
             }
 
+            @Override
             public void allNotesOff() {
             }
 
+            @Override
             public void allSoundOff() {
             }
 
+            @Override
             public void controlChange(int nController, int nValue) {
                 m_nType = Type.CONTROL_CHANGE;
                 m_nValue1 = nController;
                 m_nValue2 = nValue;
             }
 
+            @Override
             public int getChannelPressure() {
                 return 0;
             }
 
+            @Override
             public int getController(int nController) {
                 return 0;
             }
 
+            @Override
             public boolean getMono() {
                 return false;
             }
 
+            @Override
             public boolean getMute() {
                 return false;
             }
 
+            @Override
             public boolean getOmni() {
                 return false;
             }
 
+            @Override
             public int getPitchBend() {
                 return 0;
             }
 
+            @Override
             public int getPolyPressure(int nNoteNumber) {
                 return 0;
             }
 
+            @Override
             public int getProgram() {
                 return 0;
             }
 
+            @Override
             public boolean getSolo() {
                 return false;
             }
 
+            @Override
             public boolean localControl(boolean bOn) {
                 return false;
             }
 
+            @Override
             public void noteOff(int nNoteNumber, int nVelocity) {
                 m_nType = Type.NOTEOFF;
                 m_nValue1 = nNoteNumber;
                 m_nValue2 = nVelocity;
             }
 
+            @Override
             public void noteOff(int nNoteNumber) {
             }
 
+            @Override
             public void noteOn(int nNoteNumber, int nVelocity) {
                 m_nType = Type.NOTEON;
                 m_nValue1 = nNoteNumber;
                 m_nValue2 = nVelocity;
             }
 
+            @Override
             public void programChange(int nBank, int nProgram) {
                 m_nType = Type.BANK_PROGRAM;
                 m_nValue1 = nBank;
                 m_nValue2 = nProgram;
             }
 
+            @Override
             public void programChange(int nProgram) {
                 m_nType = Type.PROGRAM;
                 m_nValue1 = nProgram;
                 m_nValue2 = 0;
             }
 
+            @Override
             public void resetAllControllers() {
             }
 
+            @Override
             public void setChannelPressure(int nPressure) {
                 m_nType = Type.CHANNEL_PRESSURE;
                 m_nValue1 = nPressure;
                 m_nValue2 = 0;
             }
 
+            @Override
             public void setMono(boolean bMono) {
             }
 
+            @Override
             public void setMute(boolean bMute) {
             }
 
+            @Override
             public void setOmni(boolean bOmni) {
             }
 
+            @Override
             public void setPitchBend(int nBend) {
                 m_nType = Type.PITCHBEND;
                 m_nValue1 = nBend;
             }
 
+            @Override
             public void setPolyPressure(int nNoteNumber, int nPressure) {
                 m_nType = Type.POLY_PRESSURE;
                 m_nValue1 = nNoteNumber;
                 m_nValue2 = nPressure;
             }
 
+            @Override
             public void setSolo(boolean bSolo) {
             }
         }
@@ -397,4 +439,4 @@ class TDirectSynthesizerTestCase {
     }
 }
 
-/* TDirectSynthesizerTestCase.java */
+

@@ -21,59 +21,51 @@
 package org.tritonus.lowlevel.gsm;
 
 public class Lpc {
+
     private int[] L_ACF = new int[9];
 
-    public void Gsm_LPC_Analysis(short[] so, /* 0..159 signals IN/OUT */
-                                 short[] LARc) /* 0..7 LARc's OUT */ {
+    /**
+     * @param so 0..159 signals IN/OUT
+     * @param LARc 0..7 LARc's OUT
+     */
+    public void Gsm_LPC_Analysis(short[] so, short[] LARc) {
         Autocorrelation(so);
         Reflection_coefficients(LARc);
         Transformation_to_Log_Area_Ratios(LARc);
         Quantization_and_coding(LARc);
     }
 
-    private void Autocorrelation(short[] so) /* [0..159] IN/OUT */
-            throws IllegalArgumentException {
+    /**
+     * @param so [0..159] IN/OUT
+     */
+    private void Autocorrelation(short[] so) throws IllegalArgumentException {
         int i, sp_index = 0;
         short temp, smax = 0, scalauto;
 
-        /*
-         * Dynamic scaling of the array s[0..159]
-         */
+        // Dynamic scaling of the array s[0..159]
 
-        /*
-         * Search for the maximum.
-         */
+        // Search for the maximum.
         for (int k = 0; k <= 159; k++) {
             temp = Add.GSM_ADD(so[k], (short) 0);
             if (temp > smax)
                 smax = temp;
         }
 
-        /*
-         * Computation of the scaling factor.
-         */
+        // Computation of the scaling factor.
         if (smax == 0) {
             scalauto = 0;
         } else {
             if (!(smax > 0)) {
-                throw new IllegalArgumentException("Autocorrelation: smax = "
-                        + smax + " should be > 0.");
+                throw new IllegalArgumentException("Autocorrelation: smax = " + smax + " should be > 0.");
             }
-            scalauto = (short) (4 - Add.gsm_norm(smax << 16)); /*
-             * sub(4,.
-             * .)
-             */
+            scalauto = (short) (4 - Add.gsm_norm(smax << 16)); // sub(4, ..)
         }
 
-        /*
-         * Scaling of the array s[0...159]
-         */
+        // Scaling of the array s[0...159]
 
         if (scalauto > 0) {
             if (!(scalauto <= 4)) {
-                throw new IllegalArgumentException(
-                        "Autocorrelation: scalauto = " + scalauto
-                                + " should be <= 4.");
+                throw new IllegalArgumentException("Autocorrelation: scalauto = " + scalauto + " should be <= 4.");
             }
             switch (scalauto) {
             case 1:
@@ -102,9 +94,8 @@ public class Lpc {
             }
         }
 
-        /*
-         * Compute the L_ACF[..].
-         */
+        // Compute the L_ACF[..].
+
         short[] sp = so;
         short sl = sp[sp_index];
 
@@ -184,9 +175,7 @@ public class Lpc {
             L_ACF[k] <<= 1;
         }
 
-        /*
-         * Rescaling of the array s[0..159]
-         */
+        // Rescaling of the array s[0..159]
         if (scalauto > 0) {
             if (!(scalauto <= 4)) {
                 throw new IllegalArgumentException("Autocorrelation: scalauto = " + scalauto + " should be <= 4.");
@@ -252,28 +241,23 @@ public class Lpc {
             r[r_index] = Add.gsm_div(temp, P[0]);
 
             if (!(r[r_index] >= 0)) {
-                throw new IllegalArgumentException(
-                        "Reflection_coefficients: r[" + r_index + "] = "
-                                + r[r_index] + " should be >= 0");
+                throw new IllegalArgumentException("Reflection_coefficients: r[" + r_index + "] = " + r[r_index] +
+                        " should be >= 0");
             }
 
             if (P[1] > 0) {
-                /* r[n] = sub(0, r[n]) */
+                // r[n] = sub(0, r[n])
                 r[r_index] = (short) (-(r[r_index]));
             }
 
             if (r[r_index] == Gsm_Def.MIN_WORD) {
-                throw new IllegalArgumentException(
-                        "Reflection_coefficients: r[" + r_index + "] = "
-                                + r[r_index] + " should not be "
-                                + Gsm_Def.MIN_WORD);
+                throw new IllegalArgumentException("Reflection_coefficients: r[" + r_index + "] = " +
+                        r[r_index] + " should not be " + Gsm_Def.MIN_WORD);
             }
             if (n == 8)
                 return;
 
-            /*
-             * Schur recursion
-             */
+            // Schur recursion
             temp = Add.GSM_MULT_R(P[1], r[r_index]);
             P[0] = Add.GSM_ADD(P[0], temp);
 
@@ -289,11 +273,12 @@ public class Lpc {
 
     /**
      * The following scaling for r[..] and LAR[..] has been used:
-     *
+     * <p>
      * r[..] = integer( real_r[..]*32768. ); -1 <= real_r < 1. LAR[..] =
      * integer( real_LAR[..] * 16384 ); with -1.625 <= real_LAR <= 1.625
-     * @since 4.2.6
+     *
      * @param r IN/OUT 0..7
+     * @since 4.2.6
      */
     private void Transformation_to_Log_Area_Ratios(short[] r) throws IllegalArgumentException {
 
@@ -331,7 +316,7 @@ public class Lpc {
 
             if (r[i] == Gsm_Def.MIN_WORD) {
                 throw new IllegalArgumentException("Transformation_to_Log_Area_Ratios: r[" + i + "] = "
-                                + r[i] + " should not be = " + Gsm_Def.MIN_WORD);
+                        + r[i] + " should not be = " + Gsm_Def.MIN_WORD);
             }
         }
     }
@@ -339,12 +324,13 @@ public class Lpc {
     /**
      * This procedure needs four tables; the following equations give the
      * optimum scaling for the constants:
-     *
+     * <p>
      * A[0..7] = integer( real_A[0..7] * 1024 ) B[0..7] = integer( real_B[0..7]
      * * 512 ) MAC[0..7] = maximum of the LARc[0..7] MIC[0..7] = minimum of the
      * LARc[0..7]
-     * @since 4.2.7
+     *
      * @param LAR IN/OUT [0..7]
+     * @since 4.2.7
      */
     private void Quantization_and_coding(short[] LAR) {
         int index = 0;

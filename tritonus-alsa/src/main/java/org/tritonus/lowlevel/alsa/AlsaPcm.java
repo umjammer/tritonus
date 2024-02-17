@@ -1,10 +1,4 @@
 /*
- * AlsaPcm.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2000 - 2001 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,19 +14,13 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.lowlevel.alsa;
 
-import org.tritonus.share.TDebug;
-
-
 /**
- * TODO:
+ * TODO
  */
 public class AlsaPcm {
+
     public static final int SND_PCM_STREAM_PLAYBACK = 0;
     /** Capture stream */
     public static final int SND_PCM_STREAM_CAPTURE = 1;
@@ -49,7 +37,6 @@ public class AlsaPcm {
     public static final int SND_PCM_ACCESS_RW_INTERLEAVED = 3;
     /** snd_pcm_readn/snd_pcm_writen access */
     public static final int SND_PCM_ACCESS_RW_NONINTERLEAVED = 4;
-
 
     public static final int SND_PCM_FORMAT_UNKNOWN = -1;
     public static final int SND_PCM_FORMAT_S8 = 0;
@@ -80,58 +67,53 @@ public class AlsaPcm {
     public static final int SND_PCM_FORMAT_SPECIAL = 31;
     // currently missing: cpu endianedd formats
 
-/*
-  #ifdef SND_LITTLE_ENDIAN
-  public static final int SND_PCM_SFMT_S16 =  SND_PCM_SFMT_S16_LE
-  public static final int SND_PCM_SFMT_U16  SND_PCM_SFMT_U16_LE
-  public static final int SND_PCM_SFMT_S24  SND_PCM_SFMT_S24_LE
-  public static final int SND_PCM_SFMT_U24  SND_PCM_SFMT_U24_LE
-  public static final int SND_PCM_SFMT_S32  SND_PCM_SFMT_S32_LE
-  public static final int SND_PCM_SFMT_U32  SND_PCM_SFMT_U32_LE
-  public static final int SND_PCM_SFMT_FLOAT  SND_PCM_SFMT_FLOAT_LE
-  public static final int SND_PCM_SFMT_FLOAT64  SND_PCM_SFMT_FLOAT64_LE
-  public static final int SND_PCM_SFMT_IEC958_SUBFRAME SND_PCM_SFMT_IEC958_SUBFRAME_LE
-  #endif
-  #ifdef SND_BIG_ENDIAN
-  public static final int SND_PCM_SFMT_S16  SND_PCM_SFMT_S16_BE
-  public static final int SND_PCM_SFMT_U16  SND_PCM_SFMT_U16_BE
-  public static final int SND_PCM_SFMT_S24  SND_PCM_SFMT_S24_BE
-  public static final int SND_PCM_SFMT_U24  SND_PCM_SFMT_U24_BE
-  public static final int SND_PCM_SFMT_S32  SND_PCM_SFMT_S32_BE
-  public static final int SND_PCM_SFMT_U32  SND_PCM_SFMT_U32_BE
-  public static final int SND_PCM_SFMT_FLOAT  SND_PCM_SFMT_FLOAT_BE
-  public static final int SND_PCM_SFMT_FLOAT64  SND_PCM_SFMT_FLOAT64_BE
-  public static final int SND_PCM_SFMT_IEC958_SUBFRAME SND_PCM_SFMT_IEC958_SUBFRAME_BE
-  #endif
-*/
+//#ifdef SND_LITTLE_ENDIAN
+//    public static final int SND_PCM_SFMT_S16 =  SND_PCM_SFMT_S16_LE
+//    public static final int SND_PCM_SFMT_U16  SND_PCM_SFMT_U16_LE
+//    public static final int SND_PCM_SFMT_S24  SND_PCM_SFMT_S24_LE
+//    public static final int SND_PCM_SFMT_U24  SND_PCM_SFMT_U24_LE
+//    public static final int SND_PCM_SFMT_S32  SND_PCM_SFMT_S32_LE
+//    public static final int SND_PCM_SFMT_U32  SND_PCM_SFMT_U32_LE
+//    public static final int SND_PCM_SFMT_FLOAT  SND_PCM_SFMT_FLOAT_LE
+//    public static final int SND_PCM_SFMT_FLOAT64  SND_PCM_SFMT_FLOAT64_LE
+//    public static final int SND_PCM_SFMT_IEC958_SUBFRAME SND_PCM_SFMT_IEC958_SUBFRAME_LE
+//#endif
+//#ifdef SND_BIG_ENDIAN
+//    public static final int SND_PCM_SFMT_S16  SND_PCM_SFMT_S16_BE
+//    public static final int SND_PCM_SFMT_U16  SND_PCM_SFMT_U16_BE
+//    public static final int SND_PCM_SFMT_S24  SND_PCM_SFMT_S24_BE
+//    public static final int SND_PCM_SFMT_U24  SND_PCM_SFMT_U24_BE
+//    public static final int SND_PCM_SFMT_S32  SND_PCM_SFMT_S32_BE
+//    public static final int SND_PCM_SFMT_U32  SND_PCM_SFMT_U32_BE
+//    public static final int SND_PCM_SFMT_FLOAT  SND_PCM_SFMT_FLOAT_BE
+//    public static final int SND_PCM_SFMT_FLOAT64  SND_PCM_SFMT_FLOAT64_BE
+//    public static final int SND_PCM_SFMT_IEC958_SUBFRAME SND_PCM_SFMT_IEC958_SUBFRAME_BE
+//#endif
 
-/*
-  #ifdef SND_LITTLE_ENDIAN
-  public static final int SND_PCM_FMT_S16 =   SND_PCM_FMT_S16_LE
-  public static final int SND_PCM_FMT_U16   SND_PCM_FMT_U16_LE
-  public static final int SND_PCM_FMT_S24   SND_PCM_FMT_S24_LE
-  public static final int SND_PCM_FMT_U24   SND_PCM_FMT_U24_LE
-  public static final int SND_PCM_FMT_S32   SND_PCM_FMT_S32_LE
-  public static final int SND_PCM_FMT_U32   SND_PCM_FMT_U32_LE
-  public static final int SND_PCM_FMT_FLOAT  SND_PCM_FMT_FLOAT_LE
-  public static final int SND_PCM_FMT_FLOAT64  SND_PCM_FMT_FLOAT64_LE
-  public static final int SND_PCM_FMT_IEC958_SUBFRAME SND_PCM_FMT_IEC958_SUBFRAME_LE
-  #endif
-  #ifdef SND_BIG_ENDIAN
-  public static final int SND_PCM_FMT_S16   SND_PCM_FMT_S16_BE
-  public static final int SND_PCM_FMT_U16   SND_PCM_FMT_U16_BE
-  public static final int SND_PCM_FMT_S24   SND_PCM_FMT_S24_BE
-  public static final int SND_PCM_FMT_U24   SND_PCM_FMT_U24_BE
-  public static final int SND_PCM_FMT_S32   SND_PCM_FMT_S32_BE
-  public static final int SND_PCM_FMT_U32   SND_PCM_FMT_U32_BE
-  public static final int SND_PCM_FMT_FLOAT  SND_PCM_FMT_FLOAT_BE
-  public static final int SND_PCM_FMT_FLOAT64  SND_PCM_FMT_FLOAT64_BE
-  public static final int SND_PCM_FMT_IEC958_SUBFRAME SND_PCM_FMT_IEC958_SUBFRAME_BE
-  #endif
-*/
+//#ifdef SND_LITTLE_ENDIAN
+//  public static final int SND_PCM_FMT_S16 =   SND_PCM_FMT_S16_LE
+//  public static final int SND_PCM_FMT_U16   SND_PCM_FMT_U16_LE
+//  public static final int SND_PCM_FMT_S24   SND_PCM_FMT_S24_LE
+//  public static final int SND_PCM_FMT_U24   SND_PCM_FMT_U24_LE
+//  public static final int SND_PCM_FMT_S32   SND_PCM_FMT_S32_LE
+//  public static final int SND_PCM_FMT_U32   SND_PCM_FMT_U32_LE
+//  public static final int SND_PCM_FMT_FLOAT  SND_PCM_FMT_FLOAT_LE
+//  public static final int SND_PCM_FMT_FLOAT64  SND_PCM_FMT_FLOAT64_LE
+//  public static final int SND_PCM_FMT_IEC958_SUBFRAME SND_PCM_FMT_IEC958_SUBFRAME_LE
+//#endif
+//#ifdef SND_BIG_ENDIAN
+//  public static final int SND_PCM_FMT_S16   SND_PCM_FMT_S16_BE
+//  public static final int SND_PCM_FMT_U16   SND_PCM_FMT_U16_BE
+//  public static final int SND_PCM_FMT_S24   SND_PCM_FMT_S24_BE
+//  public static final int SND_PCM_FMT_U24   SND_PCM_FMT_U24_BE
+//  public static final int SND_PCM_FMT_S32   SND_PCM_FMT_S32_BE
+//  public static final int SND_PCM_FMT_U32   SND_PCM_FMT_U32_BE
+//  public static final int SND_PCM_FMT_FLOAT  SND_PCM_FMT_FLOAT_BE
+//  public static final int SND_PCM_FMT_FLOAT64  SND_PCM_FMT_FLOAT64_BE
+//  public static final int SND_PCM_FMT_IEC958_SUBFRAME SND_PCM_FMT_IEC958_SUBFRAME_BE
+//#endif
 
-
-    /** PCM state (snd_pcm_state_t) */
+    // PCM state (snd_pcm_state_t)
     /** Open */
     public static final int SND_PCM_STATE_OPEN = 0;
     /** Setup installed */
@@ -147,35 +129,27 @@ public class AlsaPcm {
     /** Paused */
     public static final int SND_PCM_STATE_PAUSED = 6;
 
-
-/** PCM start mode (snd_pcm_start_t) */
+    // PCM start mode (snd_pcm_start_t)
     /** Automatic start on data read/write */
     public static final int SND_PCM_START_DATA = 0;
     /** Explicit start */
     public static final int SND_PCM_START_EXPLICIT = 1;
 
-
-/** PCM xrun mode (snd_pcm_xrun_t) */
+    // PCM xrun mode (snd_pcm_xrun_t)
     /** Xrun detection disabled */
     public static final int SND_PCM_XRUN_NONE = 0;
     /** Stop on xrun detection */
     public static final int SND_PCM_XRUN_STOP = 1;
 
-
-/** PCM timestamp mode (snd_pcm_tstamp_t) */
+    // PCM timestamp mode (snd_pcm_tstamp_t)
     /** No timestamp */
     public static final int SND_PCM_TSTAMP_NONE = 0;
     /** Update mmap'ed timestamp */
     public static final int SND_PCM_TSTAMP_MMAP = 1;
 
-
     static {
         Alsa.loadNativeLibrary();
-        if (TDebug.TraceAlsaPcmNative) {
-            setTrace(true);
-        }
     }
-
 
     /**
      * Holds the pointer to snd_pcm_t for the native code.
@@ -184,23 +158,16 @@ public class AlsaPcm {
     @SuppressWarnings("unused")
     private long m_lNativeHandle;
 
-
     /**
      * For parameter documentation, see open().
      */
-    public AlsaPcm(String strPcmName,
-                   int nDirection,
-                   int nMode)
-            throws Exception {
+    public AlsaPcm(String strPcmName, int nDirection, int nMode) throws Exception {
         int nReturn;
-        nReturn = open(strPcmName,
-                nDirection,
-                nMode);
+        nReturn = open(strPcmName, nDirection, nMode);
         if (nReturn < 0) {
             throw new Exception(Alsa.getStringError(nReturn));
         }
     }
-
 
     /**
      * Calls snd_pcm_open().
@@ -209,28 +176,22 @@ public class AlsaPcm {
      * @param nDirection one of SND_PCM_STREAM_PLAYBACK, SND_PCM_STREAM_CAPTURE.
      * @param nMode      optional file open modes (non-blocking,...)
      */
-    private native int open(String strPcmName,
-                            int nDirection,
-                            int nMode);
-
+    private native int open(String strPcmName, int nDirection, int nMode);
 
     /**
      * Calls snd_pcm_close().
      */
     public native int close();
 
-
     /**
      * Calls snd_pcm_hw_params_any().
      */
     public native int getAnyHWParams(AlsaPcmHWParams hwParams);
 
-
     /**
      * Calls snd_pcm_hw_params_set_access().
      */
     public native int setHWParamsAccess(AlsaPcmHWParams hwParams, int nAccess);
-
 
     /**
      * Calls snd_pcm_hw_params_set_format().
@@ -267,7 +228,6 @@ public class AlsaPcm {
      */
     public native int setHWParams(AlsaPcmHWParams hwParams);
 
-
     public native int getSWParams(AlsaPcmSWParams swParams);
 
     public native int setSWParamsStartMode(AlsaPcmSWParams swParams, int n);
@@ -282,7 +242,7 @@ public class AlsaPcm {
 
     public native int setSWParamsXferAlign(AlsaPcmSWParams swParams, int n);
 
-    // TODO: should be long (snd_pcm_uframes_t)
+    // TODO should be long (snd_pcm_uframes_t)
     public native int setSWParamsStartThreshold(AlsaPcmSWParams swParams, int n);
 
     public native int setSWParamsStopThreshold(AlsaPcmSWParams swParams, int n);
@@ -305,6 +265,3 @@ public class AlsaPcm {
 
     public static native void setTrace(boolean bTrace);
 }
-
-
-/* AlsaPcm.java */

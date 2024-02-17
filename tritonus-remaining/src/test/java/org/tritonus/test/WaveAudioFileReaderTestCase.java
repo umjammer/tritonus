@@ -1,7 +1,6 @@
 /*
  * WaveAudioFileReaderTestCase.java
  */
-
 /*
  *  Copyright (c) 2001 - 2002 by Matthias Pfisterer
  *
@@ -23,10 +22,10 @@ package org.tritonus.test;
 
 public class WaveAudioFileReaderTestCase
         extends BaseAudioFileReaderTestCase {
+
     public WaveAudioFileReaderTestCase() {
         setResourcePrefix("wave");
     }
 }
 
 
-/* WaveAudioFileReaderTestCase.java */

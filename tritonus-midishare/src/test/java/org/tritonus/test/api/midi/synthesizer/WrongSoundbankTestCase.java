@@ -35,6 +35,8 @@ import static org.junit.jupiter.api.Assertions.fail;
  */
 public class WrongSoundbankTestCase
         extends BaseSynthesizerTestCase {
+
+    @Override
     protected void checkSynthesizer(Synthesizer synth)
             throws Exception {
         WrongSoundbank sb = new WrongSoundbank();
@@ -107,7 +109,6 @@ public class WrongSoundbankTestCase
         }
     }
 
-
     protected static String constructErrorMessage(Synthesizer synth,
                                                   String strMethodName,
                                                   boolean bOpen) {
@@ -117,44 +118,53 @@ public class WrongSoundbankTestCase
                 strMessage, bOpen);
     }
 
-
     private static class WrongSoundbank implements Soundbank {
+
         public class WrongInstrument extends Instrument {
+
             public WrongInstrument() {
                 super(WrongSoundbank.this, null, null, null);
             }
 
+            @Override
             public Object getData() {
                 return null;
             }
         }
 
+        @Override
         public String getDescription() {
             return null;
         }
 
+        @Override
         public Instrument getInstrument(Patch patch) {
             return new WrongInstrument();
         }
 
+        @Override
         public Instrument[] getInstruments() {
             Instrument[] instruments = new Instrument[1];
             instruments[0] = new WrongInstrument();
             return instruments;
         }
 
+        @Override
         public String getName() {
             return null;
         }
 
+        @Override
         public SoundbankResource[] getResources() {
             return null;
         }
 
+        @Override
         public String getVendor() {
             return null;
         }
 
+        @Override
         public String getVersion() {
             return null;
         }
@@ -162,4 +172,3 @@ public class WrongSoundbankTestCase
 }
 
 
-/* WrongSoundbankTestCase.java */

@@ -1,8 +1,3 @@
-/*
- * TMidiChannel.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2006 by Matthias Pfisterer
@@ -21,10 +16,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.share.midi;
 
@@ -47,23 +38,23 @@ import javax.sound.midi.MidiChannel;
  */
 public abstract class TMidiChannel
         implements MidiChannel {
+
     private int m_nChannel;
 
     protected TMidiChannel(int nChannel) {
         m_nChannel = nChannel;
     }
 
-
     protected int getChannel() {
         return m_nChannel;
     }
 
-
+    @Override
     public void noteOff(int nNoteNumber) {
         noteOff(nNoteNumber, 0);
     }
 
-
+    @Override
     public void programChange(int nBank, int nProgram) {
         int nBankMSB = nBank >> 7;
         int nBankLSB = nBank & 0x7F;
@@ -72,50 +63,49 @@ public abstract class TMidiChannel
         programChange(nProgram);
     }
 
-
+    @Override
     public void resetAllControllers() {
         controlChange(121, 0);
     }
 
-
+    @Override
     public void allNotesOff() {
         controlChange(123, 0);
     }
 
-
+    @Override
     public void allSoundOff() {
         controlChange(120, 0);
     }
 
-
+    @Override
     public boolean localControl(boolean bOn) {
         controlChange(122, bOn ? 127 : 0);
         return getController(122) >= 64;
     }
 
-
+    @Override
     public void setMono(boolean bMono) {
-        // TODO: check this
+        // TODO check this
         controlChange(bMono ? 126 : 127, 0);
     }
 
-
+    @Override
     public boolean getMono() {
-        // TODO: check this
+        // TODO check this
         return getController(126) == 0;
     }
 
-
+    @Override
     public void setOmni(boolean bOmni) {
         controlChange(bOmni ? 125 : 124, 0);
     }
 
-
+    @Override
     public boolean getOmni() {
-        // TODO: check this
+        // TODO check this
         return getController(125) == 0;
     }
 }
 
 
-/* TMidiChannel.java */

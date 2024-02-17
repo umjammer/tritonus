@@ -33,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class SyncModesTestCase
         extends BaseSequencerTestCase {
+
     private static final Sequencer.SyncMode[] MASTER_SYNC_MODES =
             {
                     Sequencer.SyncMode.INTERNAL_CLOCK,
@@ -47,7 +48,7 @@ public class SyncModesTestCase
                     Sequencer.SyncMode.MIDI_TIME_CODE
             };
 
-
+    @Override
     protected void checkSequencer(Sequencer seq)
             throws Exception {
         Sequencer.SyncMode syncMode;
@@ -82,7 +83,6 @@ public class SyncModesTestCase
         checkSyncModeAccepted(seq, Sequencer.SyncMode.INTERNAL_CLOCK, true);
     }
 
-
     private void checkSyncModeAccepted(Sequencer seq,
                                        Sequencer.SyncMode syncMode,
                                        boolean bMaster) {
@@ -97,16 +97,13 @@ public class SyncModesTestCase
         }
     }
 
-
     private boolean isMasterSyncMode(SyncMode syncMode) {
         return contains(MASTER_SYNC_MODES, syncMode);
     }
 
-
     private boolean isSlaveSyncMode(SyncMode syncMode) {
         return contains(SLAVE_SYNC_MODES, syncMode);
     }
-
 
     private boolean contains(SyncMode[] list, SyncMode test) {
         for (SyncMode syncMode : list) {
@@ -116,7 +113,6 @@ public class SyncModesTestCase
         }
         return false;
     }
-
 
     private static String constructErrorMessage(Sequencer seq,
                                                 Sequencer.SyncMode syncMode,
@@ -129,4 +125,3 @@ public class SyncModesTestCase
 }
 
 
-/* SyncModesTestCase.java */

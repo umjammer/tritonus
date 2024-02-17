@@ -29,6 +29,7 @@ import org.junit.jupiter.api.Test;
 
 
 public class AudioInputStreamTestCase {
+
     @Test
     public void testConstructorNullPointers() {
         @SuppressWarnings("unused") AudioInputStream ais = null;
@@ -41,14 +42,11 @@ public class AudioInputStreamTestCase {
         }
 
         // jdk source throws npe when format is null.
-//  try
-//  {
-//   ais = new AudioInputStream(is, null, AudioSystem.NOT_SPECIFIED);
-//   Assertions.fail("no NullpointerException thrown for null AudioFormat");
-//  }
-//  catch (NullPointerException e)
-//  {
-//  }
+//        try {
+//            ais = new AudioInputStream(is, null, AudioSystem.NOT_SPECIFIED);
+//            Assertions.fail("no NullpointerException thrown for null AudioFormat");
+//        } catch (NullPointerException e) {
+//        }
     }
 
 
@@ -100,4 +98,3 @@ public class AudioInputStreamTestCase {
 }
 
 
-/* AudioInputStreamTestCase.java */

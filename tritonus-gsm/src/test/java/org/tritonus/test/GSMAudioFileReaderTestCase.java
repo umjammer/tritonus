@@ -1,7 +1,6 @@
 /*
  * GSMAudioFileReaderTestCase.java
  */
-
 /*
  *  Copyright (c) 2001 - 2002 by Matthias Pfisterer
  *
@@ -23,6 +22,7 @@ package org.tritonus.test;
 
 public class GSMAudioFileReaderTestCase
         extends BaseAudioFileReaderTestCase {
+
     public GSMAudioFileReaderTestCase() {
         setResourcePrefix("gsm");
         setCheckRealLengths(false);
@@ -30,4 +30,3 @@ public class GSMAudioFileReaderTestCase
 }
 
 
-/* GSMAudioFileReaderTestCase.java */

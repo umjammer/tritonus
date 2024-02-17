@@ -32,6 +32,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class GetVoiceStatusTestCase
         extends BaseSynthesizerTestCase {
+
+    @Override
     protected void checkSynthesizer(Synthesizer synth)
             throws Exception {
         VoiceStatus[] status;
@@ -50,4 +52,3 @@ public class GetVoiceStatusTestCase
 }
 
 
-/* GetVoiceStatusTestCase.java */

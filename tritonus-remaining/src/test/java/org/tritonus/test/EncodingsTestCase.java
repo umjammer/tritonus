@@ -1,7 +1,6 @@
 /*
  * EncodingsTestCase.java
  */
-
 /*
  *  Copyright (c) 2001 - 2002 by Matthias Pfisterer
  *
@@ -33,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * Tests for class org.tritonus.share.sampled.Encodings.
  */
 public class EncodingsTestCase {
+
     @Test
     public void testGetEncodings() {
         AudioFormat.Encoding[] aEncodings = Encodings.getEncodings();
@@ -43,4 +43,3 @@ public class EncodingsTestCase {
 }
 
 
-/* EncodingsTestCase.java */

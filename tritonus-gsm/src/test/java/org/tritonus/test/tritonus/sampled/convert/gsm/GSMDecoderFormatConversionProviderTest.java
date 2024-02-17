@@ -19,6 +19,7 @@ import static javax.sound.sampled.AudioSystem.NOT_SPECIFIED;
 
 public class GSMDecoderFormatConversionProviderTest extends
         AbstractGsmFormatConversionProviderTest {
+
     @BeforeEach
     public void setUp() throws Exception {
         setFormatConversionProvider(new GSMDecoderFormatConversionProvider());

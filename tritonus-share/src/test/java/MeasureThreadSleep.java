@@ -6,6 +6,7 @@
 
 
 public class MeasureThreadSleep {
+
     public static void main(String[] args) {
         if (args.length == 0 || args.length > 2) {
             printUsageAndExit();
@@ -36,13 +37,11 @@ public class MeasureThreadSleep {
         }
     }
 
-
     private static void printUsageAndExit() {
         out("MeasureThreadSleep: usage:");
         out("\tjava MeasureThreadSleep <milliseconds> [<nanoseconds>]");
         System.exit(1);
     }
-
 
     private static void out(String strMessage) {
         System.out.println(strMessage);
@@ -52,4 +51,3 @@ public class MeasureThreadSleep {
 }
 
 
-/* MeasureThreadSleep.java */

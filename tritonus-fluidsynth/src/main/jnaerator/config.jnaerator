@@ -1,0 +1,27 @@
+-I /opt/homebrew/include
+
+-root vavi.sound.midi.fluidsynth.jna
+
+//-parseInOneChunk
+-runtime JNA
+
+//-o "$(DIR)/../java" // overwrite versioned files instead of writing to target/generated-sources/java
+
+//-v
+//-choicesOut "$(DIR)/fluidsynth.choices"
+
+/opt/homebrew/include/fluidsynth/synth.h
+/opt/homebrew/include/fluidsynth/sfont.h
+/opt/homebrew/include/fluidsynth/audio.h
+/opt/homebrew/include/fluidsynth/midi.h
+/opt/homebrew/include/fluidsynth/voice.h
+/opt/homebrew/include/fluidsynth/event.h
+/opt/homebrew/include/fluidsynth/gen.h
+/opt/homebrew/include/fluidsynth/ladspa.h
+/opt/homebrew/include/fluidsynth/log.h
+/opt/homebrew/include/fluidsynth/misc.h
+/opt/homebrew/include/fluidsynth/mod.h
+/opt/homebrew/include/fluidsynth/seqbind.h
+/opt/homebrew/include/fluidsynth/settings.h
+/opt/homebrew/include/fluidsynth/shell.h
+/opt/homebrew/include/fluidsynth/types.h

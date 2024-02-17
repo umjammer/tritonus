@@ -1,6 +1,7 @@
 package org.tritonus.lowlevel.gsm;
 
 public class BitDecoder {
+
     public enum AllocationMode {
         MSBitFirst, LSBitFirst
     }

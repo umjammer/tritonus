@@ -1,10 +1,4 @@
 /*
- * FIRWindow.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2002 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,6 +24,7 @@ package org.tritonus.lowlevel.dsp;
  * Window for FIR filter design using the windowing method.
  */
 public interface FIRWindow {
+
     /**
      * Get an array containing the window coefficients.
      *

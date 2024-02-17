@@ -1,8 +1,3 @@
-/*
- * TDirectSynthesizer.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2004 by Matthias Pfisterer
@@ -21,10 +16,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.share.midi;
 
@@ -50,6 +41,7 @@ import javax.sound.midi.Synthesizer;
 public abstract class TDirectSynthesizer
         extends TMidiDevice
         implements Synthesizer {
+
     /**
      * Initialize this class.
      * This sets the info from the passed one, sets the open status
@@ -63,7 +55,6 @@ public abstract class TDirectSynthesizer
         super(info, false, true);
     }
 
-
     /**
      * Obtains the MidiChannel with the specified number.
      *
@@ -74,10 +65,10 @@ public abstract class TDirectSynthesizer
         return getChannels()[nChannel];
     }
 
-
     /**
      * Handles MIDI messages coming in from Receivers.
      */
+    @Override
     protected void receive(MidiMessage message, long lTimeStamp) {
         if (message instanceof ShortMessage) {
             ShortMessage shortMsg = (ShortMessage) message;
@@ -121,4 +112,3 @@ public abstract class TDirectSynthesizer
 }
 
 
-/* TDirectSynthesizer.java */

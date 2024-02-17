@@ -1,10 +1,4 @@
 /*
- * TSimpleFormatConversionProvider.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 1999 - 2004 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,46 +15,45 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.share.sampled.convert;
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.util.Collection;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 
 import org.tritonus.share.ArraySet;
-import org.tritonus.share.TDebug;
 import org.tritonus.share.sampled.AudioFormats;
+
+import static java.lang.System.getLogger;
 
 
 /**
  * This is a base class for FormatConversionProviders that can convert
  * from each source encoding/format to each target encoding/format.
  * If this is not the case, use TEncodingFormatConversionProvider.
- *
- * <p>Overriding classes must
+ * <p>
+ * Overriding classes must
  * provide a constructor that calls the protected constructor of this class and override
  * <code>AudioInputStream getAudioInputStream(AudioFormat targetFormat, AudioInputStream sourceStream)</code>.
  * The latter method should be able to handle the case that all fields are NOT_SPECIFIED
  * and provide appropriate default values.
- *
+ * <p>
+ * TODO
+ *  - declare a constant ALL_BUT_SAME_VALUE (==-2) or so that can be used in format lists
+ *  - consistent implementation of replacing NOT_SPECIFIED when not given in conversion
+ * </p>
  * @author Matthias Pfisterer
  */
+public abstract class TSimpleFormatConversionProvider extends TFormatConversionProvider {
 
-// todo:
-// - declare a constant ALL_BUT_SAME_VALUE (==-2) or so that can be used in format lists
-// - consistent implementation of replacing NOT_SPECIFIED when not given in conversion
+    private static final Logger logger= getLogger("org.tritonus.TraceAudioConverter");
 
-public abstract class TSimpleFormatConversionProvider
-        extends TFormatConversionProvider {
     private Collection<AudioFormat.Encoding> m_sourceEncodings;
     private Collection<AudioFormat.Encoding> m_targetEncodings;
     private Collection<AudioFormat> m_sourceFormats;
     private Collection<AudioFormat> m_targetFormats;
-
 
     protected TSimpleFormatConversionProvider(
             Collection<AudioFormat> sourceFormats,
@@ -79,56 +72,45 @@ public abstract class TSimpleFormatConversionProvider
         collectEncodings(m_targetFormats, m_targetEncodings);
     }
 
-
     /**
      * Disables this FormatConversionProvider.
      * This may be useful when e.g. native libraries are not present.
-     * TODO: enable method, better implementation
+     * TODO enable method, better implementation
      */
     protected void disable() {
-        if (TDebug.TraceAudioConverter) {
-            TDebug.out("TSimpleFormatConversionProvider.disable(): disabling " + getClass().getName());
-        }
+        logger.log(Level.TRACE, "TSimpleFormatConversionProvider.disable(): disabling " + getClass().getName());
+
         m_sourceEncodings = new ArraySet<>();
         m_targetEncodings = new ArraySet<>();
         m_sourceFormats = new ArraySet<>();
         m_targetFormats = new ArraySet<>();
     }
 
-
-    private static void collectEncodings(Collection<AudioFormat> formats,
-                                         Collection<AudioFormat.Encoding> encodings) {
+    private static void collectEncodings(Collection<AudioFormat> formats, Collection<AudioFormat.Encoding> encodings) {
         for (AudioFormat format : formats) {
             encodings.add(format.getEncoding());
         }
     }
-
 
     @Override
     public AudioFormat.Encoding[] getSourceEncodings() {
         return m_sourceEncodings.toArray(EMPTY_ENCODING_ARRAY);
     }
 
-
     @Override
     public AudioFormat.Encoding[] getTargetEncodings() {
         return m_targetEncodings.toArray(EMPTY_ENCODING_ARRAY);
     }
 
-
-    // overwritten of FormatConversionProvider
     @Override
     public boolean isSourceEncodingSupported(AudioFormat.Encoding sourceEncoding) {
         return m_sourceEncodings.contains(sourceEncoding);
     }
 
-
-    // overwritten of FormatConversionProvider
     @Override
     public boolean isTargetEncodingSupported(AudioFormat.Encoding targetEncoding) {
         return m_targetEncodings.contains(targetEncoding);
     }
-
 
     /**
      * This implementation assumes that the converter can convert
@@ -145,7 +127,6 @@ public abstract class TSimpleFormatConversionProvider
         }
     }
 
-
     /**
      * This implementation assumes that the converter can convert
      * from each of its source formats to each of its target
@@ -161,17 +142,14 @@ public abstract class TSimpleFormatConversionProvider
         }
     }
 
-
-    // TODO: check if necessary
+    // TODO check if necessary
     protected boolean isAllowedSourceEncoding(AudioFormat.Encoding sourceEncoding) {
         return m_sourceEncodings.contains(sourceEncoding);
     }
 
-
     protected boolean isAllowedTargetEncoding(AudioFormat.Encoding targetEncoding) {
         return m_targetEncodings.contains(targetEncoding);
     }
-
 
     protected boolean isAllowedSourceFormat(AudioFormat sourceFormat) {
         for (AudioFormat format : m_sourceFormats) {
@@ -181,7 +159,6 @@ public abstract class TSimpleFormatConversionProvider
         }
         return false;
     }
-
 
     protected boolean isAllowedTargetFormat(AudioFormat targetFormat) {
         for (AudioFormat format : m_targetFormats) {
@@ -212,11 +189,12 @@ public abstract class TSimpleFormatConversionProvider
     /**
      * Utility method to check whether these values match,
      * taking into account AudioSystem.NOT_SPECIFIED.
-     *
+     * <p>
+     * $$fb 2000-08-16: moved from TEncodingFormatConversionProvider
+     * </p>
      * @return true if any of the values is AudioSystem.NOT_SPECIFIED
      * or both values have the same value.
      */
-    //$$fb 2000-08-16: moved from TEncodingFormatConversionProvider
     protected static boolean doMatch(int i1, int i2) {
         return i1 == AudioSystem.NOT_SPECIFIED
                 || i2 == AudioSystem.NOT_SPECIFIED
@@ -224,9 +202,9 @@ public abstract class TSimpleFormatConversionProvider
     }
 
     /**
+     * $$fb 2000-08-16: moved from TEncodingFormatConversionProvider
      * @see #doMatch(int, int)
      */
-    //$$fb 2000-08-16: moved from TEncodingFormatConversionProvider
     protected static boolean doMatch(float f1, float f2) {
         return f1 == AudioSystem.NOT_SPECIFIED
                 || f2 == AudioSystem.NOT_SPECIFIED
@@ -247,8 +225,9 @@ public abstract class TSimpleFormatConversionProvider
      * <p>
      * This method isn't used in TSimpleFormatConversionProvider - it is solely there
      * for inheriting classes.
+     * <p>
+     * $$fb 2000-08-16: moved from TEncodingFormatConversionProvider
      */
-    //$$fb 2000-08-16: moved from TEncodingFormatConversionProvider
     protected AudioFormat replaceNotSpecified(AudioFormat sourceFormat, AudioFormat targetFormat) {
         boolean bSetSampleSize = false;
         boolean bSetChannels = false;
@@ -274,14 +253,10 @@ public abstract class TSimpleFormatConversionProvider
                 || (targetFormat.getFrameSize() == AudioSystem.NOT_SPECIFIED
                 && sourceFormat.getFrameSize() != AudioSystem.NOT_SPECIFIED)) {
             // create new format in place of the original target format
-            float sampleRate = bSetSampleRate ?
-                    sourceFormat.getSampleRate() : targetFormat.getSampleRate();
-            float frameRate = bSetFrameRate ?
-                    sourceFormat.getFrameRate() : targetFormat.getFrameRate();
-            int sampleSize = bSetSampleSize ?
-                    sourceFormat.getSampleSizeInBits() : targetFormat.getSampleSizeInBits();
-            int channels = bSetChannels ?
-                    sourceFormat.getChannels() : targetFormat.getChannels();
+            float sampleRate = bSetSampleRate ? sourceFormat.getSampleRate() : targetFormat.getSampleRate();
+            float frameRate = bSetFrameRate ? sourceFormat.getFrameRate() : targetFormat.getFrameRate();
+            int sampleSize = bSetSampleSize ? sourceFormat.getSampleSizeInBits() : targetFormat.getSampleSizeInBits();
+            int channels = bSetChannels ? sourceFormat.getChannels() : targetFormat.getChannels();
             int frameSize = getFrameSize(
                     targetFormat.getEncoding(),
                     sampleRate,
@@ -311,8 +286,9 @@ public abstract class TSimpleFormatConversionProvider
      * If this does not reflect the way to calculate the right frame size,
      * inheriting classes should overwrite this method if they use
      * replaceNotSpecified(...). It is not used elsewhere in this class.
+     * <p>
+     * $$fb 2000-08-16: added
      */
-    //$$fb 2000-08-16: added
     protected int getFrameSize(
             AudioFormat.Encoding encoding,
             float sampleRate,
@@ -326,8 +302,4 @@ public abstract class TSimpleFormatConversionProvider
         }
         return ((sampleSize + 7) / 8) * channels;
     }
-
-
 }
-
-/* TSimpleFormatConversionProvider.java */

@@ -1,10 +1,4 @@
 /*
- * Alsa.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2000 - 2001 by Matthias Pfisterer
  *
  *
@@ -22,13 +16,12 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.lowlevel.alsa;
 
-import org.tritonus.share.TDebug;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
+
+import static java.lang.System.getLogger;
 
 
 /**
@@ -39,27 +32,24 @@ import org.tritonus.share.TDebug;
  * Currently, there is only one function remaining.
  */
 public class Alsa {
-    private static boolean sm_bIsLibraryAvailable = false;
 
+    private static final Logger logger = getLogger("org.tritonus.TraceAlsaNative");
+
+    private static boolean sm_bIsLibraryAvailable = false;
 
     static {
         Alsa.loadNativeLibrary();
     }
 
-
     public static void loadNativeLibrary() {
-        if (TDebug.TraceAlsaNative) {
-            TDebug.out("Alsa.loadNativeLibrary(): begin");
-        }
+        logger.log(Level.TRACE, "Alsa.loadNativeLibrary(): begin");
 
         if (!isLibraryAvailable()) {
             loadNativeLibraryImpl();
         }
-        if (TDebug.TraceAlsaNative) {
-            TDebug.out("Alsa.loadNativeLibrary(): end");
-        }
-    }
 
+        logger.log(Level.TRACE, "Alsa.loadNativeLibrary(): end");
+    }
 
     /**
      * Load the native library for alsa.
@@ -69,25 +59,18 @@ public class Alsa {
      * check if the library is already loaded.
      */
     private static void loadNativeLibraryImpl() {
-        if (TDebug.TraceAlsaNative) {
-            TDebug.out("Alsa.loadNativeLibraryImpl(): loading native library tritonusalsa");
-        }
+        logger.log(Level.TRACE, "Alsa.loadNativeLibraryImpl(): loading native library tritonusalsa");
+
         try {
             System.loadLibrary("tritonusalsa");
             // only reached if no exception occures
             sm_bIsLibraryAvailable = true;
         } catch (Error e) {
-            if (TDebug.TraceAlsaNative ||
-                    TDebug.TraceAllExceptions) {
-                TDebug.out(e);
-            }
-            // throw e;
+            logger.log(Level.ERROR, e.getMessage(), e);
         }
-        if (TDebug.TraceAlsaNative) {
-            TDebug.out("Alsa.loadNativeLibraryImpl(): loaded");
-        }
-    }
 
+        logger.log(Level.TRACE, "Alsa.loadNativeLibraryImpl(): loaded");
+    }
 
     /**
      * Returns whether the libraries are installed correctly.
@@ -96,9 +79,7 @@ public class Alsa {
         return sm_bIsLibraryAvailable;
     }
 
-
     public static native String getStringError(int nErrnum);
 }
 
 
-/* Alsa.java */

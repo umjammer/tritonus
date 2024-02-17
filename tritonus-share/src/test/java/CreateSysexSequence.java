@@ -1,7 +1,7 @@
 /*
  * CreateSysexSequence.java
  *
- * TODO: short description
+ * TODO short description
  */
 
 /*
@@ -42,6 +42,7 @@ import javax.sound.midi.Track;
  * [F7 F0 04 F7]
  */
 public class CreateSysexSequence {
+
     public static void main(String[] args)
             throws IOException, InvalidMidiDataException {
         if (args.length != 1) {
@@ -135,11 +136,9 @@ public class CreateSysexSequence {
         System.exit(0);
     }
 
-
     private static void out(String strMessage) {
         System.out.println(strMessage);
     }
 }
 
 
-/* CreateSysexSequence.java */

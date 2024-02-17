@@ -14,7 +14,7 @@ Chapter 8
 
 I've read this only briefly, so I can't say much. As an online resource for the MIDI standards, I found this more complete and more readable than the material presented on www.midi.org:
 http://crystal.apana.org.au/ghansper/midi_introduction/contents.html
-Especially in this chapters, some instructive figures would be helpful.
+Especially in these chapters, some instructive figures would be helpful.
 
 Chapter 9
 ---------
@@ -30,7 +30,7 @@ With timestamps, I see some problems.
 - There is a problem when a device A sends events to a device B with a different timebase. Device A timestamps the events with its current notation of time. It passes the message including th timestamp to a device B which is required to send the message. Now, let's say device B is capable of correcting for latencies, i.e. it will honour A's timestamps. All works well if A and B have the same notation of current time or if B has a later time, in which case it will consider all events to be in the past and try to send them immediately. However, if, say, B is 500 ms earlier than A it will delay all event by this amount, which is undesirable. The problem can be solved by having the transmitter correct the timestamp according to the difference in time between the two devices. This is currently not possible, because there is no way for a transmitter to retrieve the MidiDevice the Receiver it has to send to belongs to. Even if this is possible, the implementation is not very easy: since time must never go backwards and should not jump forewards, maintaining the time difference needs a sophisticated clock synchronization algorithm. If the current time difference differs from a previously measured time difference, it is not appropriate to just set the new amount. Instead, systematic drift has to be introduced to the time difference. Is it woth that effort? Perhaps the work should go into implementations that deliver messages as fast as possible.
 
 Connecting Transmitters to Receivers: Having a single object as both sequencer and synthesizer doesn't harm, but an implicit connection does. Getting the same object on calls to getSequencer() and getSynthesizer() to make a connection between them is no problem -- applications will not even notice that there are not two different object. However, assume that an application wants to use a sequencer to play a midi file via a midi port on an external synthesizer. Having the same file played on an internal synthesizer with no way to untie the implicit connection to shut down the boxes, not even a way to detect that situation is not acceptable for professional applications, e.g. sequencer applications. Additionally, assuming that they are the same object (with an implicit connections) leads to non-portable programming techniques.
-Connecting more that one device: It is not clear what a MidiDevice should return on getMaxTransmitters() and getMaxReceivers() if the device doesn't impose a restriction on the number of R/T.
+Connecting more than one device: It is not clear what a MidiDevice should return on getMaxTransmitters() and getMaxReceivers() if the device doesn't impose a restriction on the number of R/T.
 
 Chapter 11
 ----------

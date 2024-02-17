@@ -1,10 +1,4 @@
 /*
- * OpcodeSemanticsCheck.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2002 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,10 +14,6 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.saol.compiler;
 
 import org.tritonus.saol.sablecc.node.AAopcodeOptype;
@@ -38,6 +28,7 @@ import org.tritonus.saol.sablecc.node.AParamlistTailParamlistTail;
 
 public class OpcodeSemanticsCheck
         extends IOTCommonSemanticsCheck {
+
     private static final boolean DEBUG = true;
     private static final int[] LEGAL_VARIABLE_TYPES = new int[]
             {
@@ -50,7 +41,6 @@ public class OpcodeSemanticsCheck
 
     private VariableTable m_globalVariableTable;
     private VariableTable m_localVariableTable;
-
 
     public OpcodeSemanticsCheck(VariableTable globalVariableTable,
                                 VariableTable localVariableTable,
@@ -65,65 +55,67 @@ public class OpcodeSemanticsCheck
 ////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
 
-
+    @Override
     public void inAOpcodedeclOpcodedecl(AOpcodedeclOpcodedecl node) {
     }
 
+    @Override
     public void outAOpcodedeclOpcodedecl(AOpcodedeclOpcodedecl node) {
     }
 
-
+    @Override
     public void inAAopcodeOptype(AAopcodeOptype node) {
     }
 
-
+    @Override
     public void outAAopcodeOptype(AAopcodeOptype node) {
     }
 
+    @Override
     public void inAKopcodeOptype(AKopcodeOptype node) {
     }
 
-
+    @Override
     public void outAKopcodeOptype(AKopcodeOptype node) {
     }
 
-
+    @Override
     public void inAIopcodeOptype(AIopcodeOptype node) {
     }
 
-
+    @Override
     public void outAIopcodeOptype(AIopcodeOptype node) {
     }
 
-
+    @Override
     public void inAOpcodeOptype(AOpcodeOptype node) {
     }
 
-
+    @Override
     public void outAOpcodeOptype(AOpcodeOptype node) {
     }
 
-
+    @Override
     public void inAParamlistParamlist(AParamlistParamlist node) {
     }
 
-
+    @Override
     public void outAParamlistParamlist(AParamlistParamlist node) {
     }
 
-
+    @Override
     public void inAParamlistTailParamlistTail(AParamlistTailParamlistTail node) {
     }
 
-
+    @Override
     public void outAParamlistTailParamlistTail(AParamlistTailParamlistTail node) {
     }
 
-
+    @Override
     public void inAParamdeclParamdecl(AParamdeclParamdecl node) {
     }
 
-
+    @Override
     public void outAParamdeclParamdecl(AParamdeclParamdecl node) {
     }
 
@@ -132,21 +124,20 @@ public class OpcodeSemanticsCheck
 ////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
 
-
+    @Override
     protected VariableTable getOwnVariableTable() {
         return m_localVariableTable;
     }
 
-
+    @Override
     protected VariableTable getGlobalVariableTable() {
         return m_globalVariableTable;
     }
 
-
+    @Override
     protected int[] getLegalVariableTypes() {
         return LEGAL_VARIABLE_TYPES;
     }
 }
 
 
-/* OpcodeSemanticsCheck.java */

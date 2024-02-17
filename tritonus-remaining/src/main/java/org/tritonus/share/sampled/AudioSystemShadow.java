@@ -50,7 +50,7 @@ public class AudioSystemShadow {
         return new TNonSeekableDataOutputStream(stream);
     }
 
-    // TODO: lLengthInBytes actually should be lLengthInFrames (design problem of A.O.S.)
+    // TODO lLengthInBytes actually should be lLengthInFrames (design problem of A.O.S.)
     public static AudioOutputStream getAudioOutputStream(AudioFileFormat.Type type, AudioFormat audioFormat, long lLengthInBytes, TDataOutputStream dataOutputStream) {
         AudioOutputStream audioOutputStream = null;
 
@@ -80,4 +80,4 @@ public class AudioSystemShadow {
     }
 }
 
-/* AudioSystemShadow.java */
+

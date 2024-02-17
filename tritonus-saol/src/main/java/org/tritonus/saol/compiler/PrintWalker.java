@@ -43,6 +43,7 @@ public class PrintWalker extends DepthFirstAdapter {
         System.out.print(s);
     }
 
+    @Override
     public void defaultIn(Node node) {
         indent();
         System.out.print("in ");
@@ -51,6 +52,7 @@ public class PrintWalker extends DepthFirstAdapter {
         indent += INDENT_STEP;
     }
 
+    @Override
     public void defaultOut(Node node) {
         indent -= INDENT_STEP;
         indent();
@@ -59,6 +61,7 @@ public class PrintWalker extends DepthFirstAdapter {
         System.out.println(str);
     }
 
+    @Override
     public void defaultCase(Node node) {
         indent();
         System.out.print("case ");
@@ -80,4 +83,4 @@ public class PrintWalker extends DepthFirstAdapter {
     }
 }
 
-/* PrintWalker.java */
+

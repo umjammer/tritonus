@@ -1,7 +1,6 @@
 /*
  * WaveAudioOutputStreamTestCase.java
  */
-
 /*
  *  Copyright (c) 2001 - 2002 by Matthias Pfisterer
  *
@@ -33,6 +32,7 @@ class WaveAudioOutputStreamTestCase extends BaseAudioOutputStreamTestCase {
 
     private static final int EXPECTED_ADDITIONAL_HEADER_LENGTH = 0;
 
+    @Override
     protected AudioOutputStream createAudioOutputStreamImpl(
             AudioFormat audioFormat,
             long nLength,
@@ -47,6 +47,7 @@ class WaveAudioOutputStreamTestCase extends BaseAudioOutputStreamTestCase {
      * nLength has to be < 255, or the implementation of this method
      * has to be changed
      */
+    @Override
     protected byte[] getExpectedHeaderData(AudioFormat audioFormat,
                                            int nLength,
                                            boolean bSeekable,
@@ -80,29 +81,32 @@ class WaveAudioOutputStreamTestCase extends BaseAudioOutputStreamTestCase {
         return abExpectedHeaderData;
     }
 
-
     private byte getEncoding(AudioFormat format) {
         // works only for simple cases
         return (byte) (format.getSampleSizeInBits() / 8 + 1);
     }
 
+    @Override
     protected int getExpectedAdditionalHeaderLength() {
         return EXPECTED_ADDITIONAL_HEADER_LENGTH;
     }
 
+    @Override
     protected boolean getBigEndian() {
         return false;
     }
 
+    @Override
     protected boolean is8bitUnsigned() {
         return true;
     }
 
     // non-seekable, unknown length
+    @Override
     @Test
     @Disabled // TODO ???
     public void testAOS2() throws Exception {
     }
 }
 
-/* WaveAudioOutputStreamTestCase.java */
+

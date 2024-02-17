@@ -1,10 +1,4 @@
 /*
- * AlsaPcmSWParams.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2000 - 2001 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,19 +14,21 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.lowlevel.alsa;
 
-import org.tritonus.share.TDebug;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
+
+import static java.lang.System.getLogger;
 
 
 /**
- * TODO:
+ * TODO
  */
 public class AlsaPcmSWParams {
+
+    private static final Logger logger = getLogger("org.tritonus.TraceAlsaPcmNative");
+
     /**
      * Holds the pointer to snd_pcm_sw_params_t
      * for the native code.
@@ -41,27 +37,16 @@ public class AlsaPcmSWParams {
     @SuppressWarnings("unused")
     private long m_lNativeHandle;
 
-
     public AlsaPcmSWParams() {
-        if (TDebug.TraceAlsaPcmNative) {
-            TDebug.out("AlsaPcmSWParams.<init>(): begin");
-        }
+        logger.log(Level.TRACE, "AlsaPcmSWParams.<init>(): begin");
+
         int nReturn = malloc();
         if (nReturn < 0) {
             throw new RuntimeException("malloc of hw_params failed");
         }
-        if (TDebug.TraceAlsaPcmNative) {
-            TDebug.out("AlsaPcmSWParams.<init>(): end");
-        }
+
+        logger.log(Level.TRACE, "AlsaPcmSWParams.<init>(): end");
     }
-
-
-    protected void finalize() {
-        // TODO: call free()
-        // call super.finalize() first or last?
-        // and introduce a flag if free() has already been called?
-    }
-
 
     private native int malloc();
 
@@ -87,6 +72,3 @@ public class AlsaPcmSWParams {
 
     public native int getSilenceSize();
 }
-
-
-/* AlsaPcmSWParams.java */

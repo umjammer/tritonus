@@ -36,8 +36,8 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 
 public class MidiFileFormatTestCase {
-    private static final float DELTA = 1E-9F;
 
+    private static final float DELTA = 1E-9F;
 
     @Test
     public void testGetValues() {
@@ -46,7 +46,6 @@ public class MidiFileFormatTestCase {
         checkGetValues(2, -1.0F, 25, 725, 600000L, false);
         checkGetValues(2, -1.0F, 25, 725, 600000L, true);
     }
-
 
     private void checkGetValues(int nType, float fDivisionType,
                                 int nResolution, int nByteLength,
@@ -69,7 +68,6 @@ public class MidiFileFormatTestCase {
         assertEquals(lMicrosecondLength, fileFormat.getMicrosecondLength(), "microsecond length");
     }
 
-
     @Test
     public void testNoMap() {
         MidiFileFormat fileFormat = new MidiFileFormat(0, 0.0F, 0, 0, 0L);
@@ -80,12 +78,10 @@ public class MidiFileFormatTestCase {
         assertNull(result);
     }
 
-
     @Test
     public void testNullMap() {
         assertThrows(NullPointerException.class, () -> new MidiFileFormat(0, 0.0F, 0, 0, 0L, null));
     }
-
 
     @Test
     public void testEmptyMap() {
@@ -97,7 +93,6 @@ public class MidiFileFormatTestCase {
         Object result = propReturn.get("bitrate");
         assertNull(result);
     }
-
 
     @Test
     public void testCopying() {
@@ -112,7 +107,6 @@ public class MidiFileFormatTestCase {
         assertEquals(22.5F, result);
     }
 
-
     @Test
     public void testUnmodifiable() {
         Map<String, Object> prop = new HashMap<>();
@@ -125,7 +119,6 @@ public class MidiFileFormatTestCase {
         } catch (UnsupportedOperationException e) {
         }
     }
-
 
     @Test
     public void testGet() {
@@ -141,4 +134,3 @@ public class MidiFileFormatTestCase {
 }
 
 
-/* MidiFileFormatTestCase.java */

@@ -28,6 +28,7 @@ import javax.sound.midi.MidiSystem;
  * Base class for tests of javax.sound.midi.MidiDevice.
  */
 public abstract class BaseMidiDeviceTestCase {
+
     /**
      * Iterate over all available MidiDevices.
      */
@@ -41,7 +42,6 @@ public abstract class BaseMidiDeviceTestCase {
         }
     }
 
-
     /**
      * Get the prefix for error messages (containing the sequencer's name).
      */
@@ -49,12 +49,11 @@ public abstract class BaseMidiDeviceTestCase {
         return device.getDeviceInfo().getName();
     }
 
-
     protected interface Check {
+
         void check(MidiDevice device)
                 throws Exception;
     }
 }
 
 
-/* BaseMidiDeviceTestCase.java */

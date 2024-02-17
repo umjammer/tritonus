@@ -1,10 +1,4 @@
 /*
- * EsdUtils.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 1999, 2000 by Matthias Pfisterer
  *
  *
@@ -22,10 +16,6 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.sampled.mixer.esd;
 
 import javax.sound.sampled.AudioFormat;
@@ -34,6 +24,7 @@ import org.tritonus.lowlevel.esd.Esd;
 
 
 public class EsdUtils {
+
     public static int getEsdFormat(AudioFormat audioFormat) {
         int nChannels = audioFormat.getChannels();
         AudioFormat.Encoding encoding = audioFormat.getEncoding();
@@ -67,4 +58,3 @@ public class EsdUtils {
 }
 
 
-/* EsdUtils.java */

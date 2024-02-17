@@ -21,6 +21,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.PushbackReader;
 import java.io.Reader;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -31,7 +33,8 @@ import org.tritonus.saol.sablecc.node.AGlobaldeclGlobaldecl;
 import org.tritonus.saol.sablecc.node.AInstrdeclInstrdecl;
 import org.tritonus.saol.sablecc.node.Start;
 import org.tritonus.saol.sablecc.parser.Parser;
-import org.tritonus.share.TDebug;
+
+import static java.lang.System.getLogger;
 
 
 /*
@@ -40,7 +43,8 @@ import org.tritonus.share.TDebug;
  * This file is part of Tritonus: http://www.tritonus.org/
  */
 public class Compiler {
-    private static final boolean DEBUG = false;
+
+    private static final Logger logger = getLogger(Compiler.class.getName());
 
     private static final int ACTION_DUMP_TREE = 0;
     private static final int ACTION_COMPILE_INSTRUMENTS = 1;
@@ -74,9 +78,9 @@ public class Compiler {
             break;
 
         case ACTION_COMPILE_INSTRUMENTS:
-            TDebug.out("compiling instruments...");
+            logger.log(Level.TRACE, "compiling instruments...");
             m_instrumentMap = compileInstruments(tree);
-            TDebug.out("IM: " + m_instrumentMap);
+            logger.log(Level.TRACE, "IM: " + m_instrumentMap);
             break;
         }
     }
@@ -115,13 +119,11 @@ public class Compiler {
             GlobalsSearcher gsearcher = new GlobalsSearcher(saolGlobals);
             globalNode.apply(gsearcher);
         }
-        if (DEBUG) {
-            TDebug.out("a-rate: " + saolGlobals.getARate());
-            TDebug.out("k-rate: " + saolGlobals.getKRate());
-            TDebug.out("inchannels: " + saolGlobals.getInChannels());
-            TDebug.out("outchannels: " + saolGlobals.getOutChannels());
-            TDebug.out("interp: " + saolGlobals.getInterp());
-        }
+        logger.log(Level.DEBUG, "a-rate: " + saolGlobals.getARate());
+        logger.log(Level.DEBUG, "k-rate: " + saolGlobals.getKRate());
+        logger.log(Level.DEBUG, "inchannels: " + saolGlobals.getInChannels());
+        logger.log(Level.DEBUG, "outchannels: " + saolGlobals.getOutChannels());
+        logger.log(Level.DEBUG, "interp: " + saolGlobals.getInterp());
 
         VariableTable globalVariableTable = new VariableTable();
 
@@ -138,7 +140,7 @@ public class Compiler {
                     nodeSemanticsTable);
             startNode.apply(isc);
         }
-        // TODO: collection of variable tables, semantic checks
+        // TODO collection of variable tables, semantic checks
 
         /*
          * Compiling the instruments.
@@ -151,9 +153,9 @@ public class Compiler {
             node.apply(ic);
         }
 
-        if (DEBUG) {
+        if (logger.isLoggable(Level.DEBUG)) {
             for (String s : instrumentMap.keySet()) {
-                TDebug.out("" + s);
+                logger.log(Level.DEBUG, s);
             }
         }
         return instrumentMap;
@@ -161,10 +163,10 @@ public class Compiler {
 
     public Map<String, Class<AbstractInstrument>> getInstrumentMap() {
         if (m_nAction != ACTION_COMPILE_INSTRUMENTS) {
-            TDebug.out("I.M.: returning null");
+            logger.log(Level.TRACE, "I.M.: returning null");
             return null;
         }
-        TDebug.out("I.M.: " + m_instrumentMap);
+        logger.log(Level.TRACE, "I.M.: " + m_instrumentMap);
         return m_instrumentMap;
     }
 
@@ -180,7 +182,7 @@ public class Compiler {
         try {
             compiler.compile();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.log(Level.ERROR, e.getMessage(), e);
         }
     }
 }
