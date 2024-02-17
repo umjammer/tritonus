@@ -1,10 +1,4 @@
 /*
- * Ogg.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2000 - 2001 by Matthias Pfisterer
  *
  *
@@ -22,10 +16,6 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.lowlevel.ogg;
 
 /**
@@ -41,4 +31,4 @@ public class Ogg {
     }
 }
 
-/* Ogg.java */
+

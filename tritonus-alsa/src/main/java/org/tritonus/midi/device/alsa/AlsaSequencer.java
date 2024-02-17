@@ -1,8 +1,3 @@
-/*
- * AlsaSequencer.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999 - 2003 by Matthias Pfisterer
@@ -19,10 +14,6 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.midi.device.alsa;
 
@@ -69,7 +60,6 @@ public class AlsaSequencer
      */
     private static final int CLOCK_EVENT_TAG = 255;
 
-
     private AlsaSeq m_playbackAlsaSeq;
     private AlsaSeq m_recordingAlsaSeq;
     private int m_nRecordingPort;
@@ -91,7 +81,6 @@ public class AlsaSequencer
     private Sequencer.SyncMode m_oldSlaveSyncMode;
     private float m_fCachedRealMPQ;
 
-
     public AlsaSequencer(MidiDevice.Info info) {
         super(info,
                 Arrays.asList(MASTER_SYNC_MODES),
@@ -100,53 +89,43 @@ public class AlsaSequencer
         m_fCachedRealMPQ = -1.0F;
     }
 
-
     protected int getPlaybackClient() {
         int nClient = getPlaybackAlsaSeq().getClientId();
         return nClient;
     }
 
-
     protected int getPlaybackPort() {
         return m_nPlaybackPort;
     }
-
 
     protected int getRecordingClient() {
         int nClient = getRecordingAlsaSeq().getClientId();
         return nClient;
     }
 
-
     protected int getRecordingPort() {
         return m_nRecordingPort;
     }
-
 
     protected int getQueue() {
         return m_nQueue;
     }
 
-
     private AlsaSeqQueueStatus getQueueStatus() {
         return m_queueStatus;
     }
-
 
     private AlsaSeqQueueTempo getQueueTempo() {
         return m_queueTempo;
     }
 
-
     private AlsaSeq getPlaybackAlsaSeq() {
         return m_playbackAlsaSeq;
     }
 
-
     protected AlsaSeq getRecordingAlsaSeq() {
         return m_recordingAlsaSeq;
     }
-
 
     private void updateQueueStatus() {
         // TODO: error handling
@@ -154,7 +133,7 @@ public class AlsaSequencer
         getPlaybackAlsaSeq().getQueueStatus(getQueue(), getQueueStatus());
     }
 
-
+    @Override
     protected void openImpl() {
         m_recordingAlsaSeq = new AlsaSeq("Tritonus ALSA Sequencer (recording/synchronization)");
         m_nRecordingPort = getRecordingAlsaSeq().createPort("recording/synchronization port", AlsaSeq.SND_SEQ_PORT_CAP_WRITE | AlsaSeq.SND_SEQ_PORT_CAP_SUBS_WRITE | AlsaSeq.SND_SEQ_PORT_CAP_READ | AlsaSeq.SND_SEQ_PORT_CAP_SUBS_READ, 0, AlsaSeq.SND_SEQ_PORT_TYPE_APPLICATION, 0, 0, 0);
@@ -203,7 +182,7 @@ public class AlsaSequencer
         // m_syncThread.start();
     }
 
-
+    @Override
     protected void closeImpl() {
         m_playbackAlsaMidiIn.interrupt();
         m_playbackAlsaMidiIn = null;
@@ -226,7 +205,7 @@ public class AlsaSequencer
         m_allNotesOffEvent = null;
     }
 
-
+    @Override
     protected void startImpl() {
         if (getTickPosition() == 0) {
             startQueue();
@@ -248,7 +227,7 @@ public class AlsaSequencer
         }
     }
 
-
+    @Override
     protected void stopImpl() {
         stopQueue();
         sendAllNotesOff();
@@ -259,16 +238,16 @@ public class AlsaSequencer
         }
     }
 
-
+    @Override
     protected void setSequenceImpl() {
         if (m_loaderThread != null) {
             m_loaderThread.setLoading(getSequence() != null);
         }
     }
 
-
     /* TODO: can be implemented just with a flag?
      */
+    @Override
     public boolean isRunning() {
         boolean bRunning = false;
         if (isOpen()) {
@@ -282,38 +261,38 @@ public class AlsaSequencer
         return bRunning;
     }
 
-
+    @Override
     public void startRecording() {
         checkOpen(); // may throw IllegalStateException
         m_bRecording = true;
         start();
     }
 
-
+    @Override
     public void stopRecording() {
         checkOpen(); // may throw IllegalStateException
         m_bRecording = false;
     }
 
-
+    @Override
     public boolean isRecording() {
         return m_bRecording;
     }
 
-
     // name should be: enableRecording
+    @Override
     public void recordEnable(Track track, int nChannel) {
         // TODO: hacky
         m_track = track;
     }
 
-
     // name should be: disableRecording
+    @Override
     public void recordDisable(Track track) {
         // TODO:
     }
 
-
+    @Override
     protected void setTempoImpl(float fRealMPQ) {
         if (isOpen()) {
             if (TDebug.TraceSequencer) {
@@ -330,7 +309,7 @@ public class AlsaSequencer
         }
     }
 
-
+    @Override
     public long getTickPosition() {
         long lPosition;
         if (isOpen()) {
@@ -345,7 +324,7 @@ public class AlsaSequencer
         return lPosition;
     }
 
-
+    @Override
     public void setTickPosition(long lTick) {
         if (isOpen()) {
             int nSourcePort = getRecordingPort();
@@ -363,7 +342,7 @@ public class AlsaSequencer
         }
     }
 
-
+    @Override
     public long getMicrosecondPosition() {
         long lPosition;
         if (isOpen()) {
@@ -379,7 +358,7 @@ public class AlsaSequencer
         return lPosition;
     }
 
-
+    @Override
     public void setMicrosecondPosition(long lMicroseconds) {
         if (isOpen()) {
             long lNanoSeconds = lMicroseconds * 1000;
@@ -398,12 +377,12 @@ public class AlsaSequencer
         }
     }
 
-
+    @Override
     protected void setMasterSyncModeImpl(SyncMode syncMode) {
         // TODO:
     }
 
-
+    @Override
     protected void setSlaveSyncModeImpl(SyncMode syncMode) {
         if (isRunning()) {
             if (m_oldSlaveSyncMode.equals(Sequencer.SyncMode.NO_SYNC) && (syncMode.equals(Sequencer.SyncMode.MIDI_SYNC) || syncMode.equals(Sequencer.SyncMode.MIDI_TIME_CODE))) {
@@ -416,7 +395,7 @@ public class AlsaSequencer
         }
     }
 
-
+    @Override
     protected void setTrackEnabledImpl(int nTrack, boolean bEnabled) {
         /** If the enabled state changes to true, the events
          between the current playback position and the current
@@ -432,7 +411,6 @@ public class AlsaSequencer
         }
     }
 
-
     /*
       This method has to be synchronized because it is called
       from sendMessageTick() as well as from loadSequenceToNative().
@@ -440,7 +418,6 @@ public class AlsaSequencer
     protected synchronized void enqueueMessage(MidiMessage message, long lTick) {
         m_playbackAlsaMidiOut.enqueueMessage(message, lTick);
     }
-
 
     /**
      * Put a message into the queue.
@@ -462,21 +439,17 @@ public class AlsaSequencer
         enqueueMessage(message, lTick);
     }
 
-
     private void startQueue() {
         controlQueue(AlsaSeq.SND_SEQ_EVENT_START);
     }
-
 
     private void continueQueue() {
         controlQueue(AlsaSeq.SND_SEQ_EVENT_CONTINUE);
     }
 
-
     private void stopQueue() {
         controlQueue(AlsaSeq.SND_SEQ_EVENT_STOP);
     }
-
 
     private void controlQueue(int nType) {
         int nSourcePort = getPlaybackPort();
@@ -493,7 +466,6 @@ public class AlsaSequencer
                 nQueue, 0, 0);
     }
 
-
     /**
      * Send a real time START  event to the subscribers immediately.
      */
@@ -501,14 +473,12 @@ public class AlsaSequencer
         sendRealtimeEvent(AlsaSeq.SND_SEQ_EVENT_START);
     }
 
-
     /**
      * Send a real time STOP  event to the subscribers immediately.
      */
     private void sendStopEvent() {
         sendRealtimeEvent(AlsaSeq.SND_SEQ_EVENT_STOP);
     }
-
 
     private void sendRealtimeEvent(int nType) {
         sendQueueControlEvent(
@@ -523,7 +493,6 @@ public class AlsaSequencer
                 0, 0, 0);
     }
 
-
     // NOTE: also used for setting position and start/stop RT
     private void sendQueueControlEvent(
             int nType, int nFlags, int nTag, int nQueue, long lTime,
@@ -534,7 +503,6 @@ public class AlsaSequencer
         m_queueControlEvent.setQueueControl(nControlQueue, nControlValue, lControlTime);
         getPlaybackAlsaSeq().eventOutputDirect(m_queueControlEvent);
     }
-
 
     private void sendAllNotesOffEvent(int nChannel) {
         int nSourcePort = getPlaybackPort();
@@ -551,14 +519,12 @@ public class AlsaSequencer
         getPlaybackAlsaSeq().eventOutputDirect(m_allNotesOffEvent);
     }
 
-
     private void sendAllNotesOff() {
         // TODO: check if [0..15] or [1..16]
         for (int nChannel = 0; nChannel < 16; nChannel++) {
             sendAllNotesOffEvent(nChannel);
         }
     }
-
 
     /**
      * Receive a correctely timestamped event.
@@ -575,27 +541,26 @@ public class AlsaSequencer
         // TODO: entering an event into the sequence
     }
 
-
     /**
      * Receive an event from a Receiver.
      * This method is called by AlsaSequencer.AlsaSequencerReceiver
      * on receipt of a MidiMessage.
      */
+    @Override
     protected void receive(MidiMessage message, long lTimestamp) {
         lTimestamp = getTickPosition();
         receiveTimestamped(message, lTimestamp);
     }
 
-
     ///////////////////////////////////////////////////
 
-
+    @Override
     public Receiver getReceiver()
             throws MidiUnavailableException {
         return new AlsaSequencerReceiver();
     }
 
-
+    @Override
     public Transmitter getTransmitter()
             throws MidiUnavailableException {
         return new AlsaSequencerTransmitter();
@@ -604,10 +569,10 @@ public class AlsaSequencer
 
 /////////////////// INNER CLASSES //////////////////////////////////////
 
-
     /*private*/ public class PlaybackAlsaMidiInListener
             implements AlsaMidiIn.AlsaMidiInListener {
 
+        @Override
         public void dequeueEvent(MidiMessage message, long lTimestamp) {
             if (TDebug.TraceSequencer) {
                 TDebug.out("AlsaSequencer.PlaybackAlsaMidiInListener.dequeueEvent(): message: " + message);
@@ -640,10 +605,10 @@ public class AlsaSequencer
         }
     }
 
-
     /*private*/ public class RecordingAlsaMidiInListener
             implements AlsaMidiIn.AlsaMidiInListener {
 
+        @Override
         public void dequeueEvent(MidiMessage message, long lTimestamp) {
             if (TDebug.TraceSequencer) {
                 TDebug.out("AlsaSequencer.RecordingAlsaMidiInListener.dequeueEvent(): message: " + message);
@@ -651,7 +616,6 @@ public class AlsaSequencer
             AlsaSequencer.this.receiveTimestamped(message, lTimestamp);
         }
     }
-
 
     /*private*/ public class AlsaSequencerReceiver
             extends TReceiver
@@ -666,6 +630,7 @@ public class AlsaSequencer
          * @return true if subscription was established,
          * false otherwise
          */
+        @Override
         public boolean subscribeTo(int nClient, int nPort) {
             try {
                 AlsaSeqPortSubscribe portSubscribe = new AlsaSeqPortSubscribe();
@@ -683,22 +648,19 @@ public class AlsaSequencer
             }
         }
 
-
     }
-
 
     /*private*/ public class AlsaSequencerTransmitter
             extends TTransmitter {
 
         private boolean m_bReceiverSubscribed;
 
-
         public AlsaSequencerTransmitter() {
             super();
             m_bReceiverSubscribed = false;
         }
 
-
+        @Override
         public void setReceiver(Receiver receiver) {
             super.setReceiver(receiver);
             /*
@@ -716,12 +678,12 @@ public class AlsaSequencer
             }
         }
 
-
+        @Override
         public void send(MidiMessage message, long lTimeStamp) {
             /*
              * Send message via Java methods only if no
              * subscription was established. If there is a
-             * subscription, the message is routed inside of
+             * subscription, the message is routed inside
              * the ALSA sequencer.
              */
             if (!m_bReceiverSubscribed) {
@@ -729,13 +691,12 @@ public class AlsaSequencer
             }
         }
 
-
+        @Override
         public void close() {
             super.close();
             // TODO: remove subscription
         }
     }
-
 
     /**
      * Pre-loading events to the sequencer queue.
@@ -769,7 +730,6 @@ public class AlsaSequencer
         private Track[] m_aTracks;
         private int[] m_anTrackPositions;
 
-
         public LoaderThread() {
             // TODO: monitor changes in the number of tracks
             m_lLoadingPosition = 0;
@@ -783,7 +743,6 @@ public class AlsaSequencer
    */
             setLoading(getSequence() != null);
         }
-
 
         private void initTracks() {
             Sequence sequence = getSequence();
@@ -802,11 +761,9 @@ public class AlsaSequencer
             }
         }
 
-
         private boolean isLoading() {
             return m_bLoading;
         }
-
 
         public void setStartPosition(long lTicks) {
             // only to make sure...
@@ -814,7 +771,7 @@ public class AlsaSequencer
             m_lStartPosition = lTicks;
         }
 
-
+        @Override
         public void run() {
             while (isOpen()) {
                 do {
@@ -831,7 +788,6 @@ public class AlsaSequencer
                 }
             }
         }
-
 
         private void loadSequenceToNative() {
             initTracks();
@@ -886,7 +842,6 @@ public class AlsaSequencer
             }
         }
 
-
         private void processMessage(MidiMessage message, long lTick) {
             boolean bMessageConsumed = false;
             if (message instanceof MetaMessage) {
@@ -924,11 +879,11 @@ public class AlsaSequencer
 
     }
 
-
     // TODO: start/stop; on/off
     /*private*/ public class MasterSynchronizer
             extends Thread {
 
+        @Override
         public void run() {
             while (isOpen()) {
                 do {
@@ -964,4 +919,3 @@ public class AlsaSequencer
 }
 
 
-/* AlsaSequencer.java */

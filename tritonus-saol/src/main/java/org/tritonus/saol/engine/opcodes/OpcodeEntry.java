@@ -1,8 +1,3 @@
-/*
- * OpcodeEntry.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2002 by Matthias Pfisterer
@@ -20,10 +15,6 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.saol.engine.opcodes;
 
 
@@ -39,7 +30,6 @@ public class OpcodeEntry {
     private int m_nRate;
     // TODO: parameter description, including dummy params
 
-
     // if opcode and method name are the same
     public OpcodeEntry(String strOpcodeName,
                        OpcodeClass opcodeClass,
@@ -49,7 +39,6 @@ public class OpcodeEntry {
                 strOpcodeName,
                 nRate);
     }
-
 
     public OpcodeEntry(String strOpcodeName,
                        OpcodeClass opcodeClass,
@@ -61,21 +50,17 @@ public class OpcodeEntry {
         m_nRate = nRate;
     }
 
-
     public String getOpcodeName() {
         return m_strOpcodeName;
     }
-
 
     public OpcodeClass getOpcodeClass() {
         return m_opcodeClass;
     }
 
-
     public String getMethodName() {
         return m_strMethodName;
     }
-
 
     public int getRate() {
         return m_nRate;
@@ -83,4 +68,3 @@ public class OpcodeEntry {
 }
 
 
-/* OpcodeEntry.java */

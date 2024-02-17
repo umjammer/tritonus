@@ -28,6 +28,7 @@ public class oggpack_buffer extends Structure {
         super();
     }
 
+    @Override
     protected List<String> getFieldOrder() {
         return Arrays.asList("endbyte", "endbit", "buffer", "ptr", "storage");
     }
@@ -53,11 +54,8 @@ public class oggpack_buffer extends Structure {
 
     }
 
-    ;
-
     public static class ByValue extends oggpack_buffer implements Structure.ByValue {
 
     }
 
-    ;
 }

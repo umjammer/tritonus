@@ -1,8 +1,3 @@
-/*
- * AlsaSourceDataLine.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999 - 2001 by Matthias Pfisterer
@@ -19,10 +14,6 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.sampled.mixer.alsa;
 
@@ -45,7 +36,6 @@ public class AlsaSourceDataLine
 
     private byte[] m_abSwapBuffer;
 
-
     // TODO: has info object to change if format or buffer size are changed later?
     // no, but it has to represent the mixer's capabilities. So a fixed info per mixer.
     public AlsaSourceDataLine(AlsaDataLineMixer mixer, AudioFormat format, int nBufferSize)
@@ -65,7 +55,7 @@ public class AlsaSourceDataLine
         }
     }
 
-
+    @Override
     protected int getAlsaStreamType() {
         return AlsaPcm.SND_PCM_STREAM_PLAYBACK;
     }
@@ -81,7 +71,7 @@ public class AlsaSourceDataLine
   }
 */
 
-
+    @Override
     protected void stopImpl() {
         if (TDebug.TraceSourceDataLine) {
             TDebug.out("AlsaSourceDataLine.stopImpl(): called");
@@ -94,15 +84,15 @@ public class AlsaSourceDataLine
         // setStarted(false);
     }
 
-
+    @Override
     public int available() {
         // TODO:
         throwNYIException();
         return -1;
     }
 
-
     // TODO: check if should block
+    @Override
     public int write(byte[] abData, int nOffset, int nLength) {
         if (TDebug.TraceSourceDataLine) {
             TDebug.out("AlsaSourceDataLine.write(): begin");
@@ -123,7 +113,6 @@ public class AlsaSourceDataLine
         }
         return nReturn;
     }
-
 
     /**
      * Write data to the line.
@@ -176,23 +165,22 @@ public class AlsaSourceDataLine
         return nLength;
     }
 
-
+    @Override
     public void drain() {
         // TODO:
     }
 
-
+    @Override
     public void flush() {
         // TODO:
     }
 
-
     /**
      * dGain is logarithmic!!
      */
+    @Override
     protected void setGain(float dGain) {
     }
-
 
     /**
      * Throw a RuntimeException saying "not yet implemented".
@@ -200,7 +188,6 @@ public class AlsaSourceDataLine
     private void throwNYIException() {
         throw new RuntimeException("sorry, this feature is not yet implemented");
     }
-
 
     // IDEA: move inner classes to TBaseDataLine
     public class AlsaSourceDataLineGainControl
@@ -219,7 +206,6 @@ public class AlsaSourceDataLine
         // private float  m_fGain;
         // private boolean  m_bMuted;
 
-
         /*package*/ AlsaSourceDataLineGainControl() {
             super(FloatControl.Type.VOLUME, // or MASTER_GAIN ?
                     -96.0F, // MIN_GAIN,
@@ -234,7 +220,7 @@ public class AlsaSourceDataLine
             // m_bMuted = false; // should be included in a compund control?
         }
 
-
+        @Override
         public void setValue(float fGain) {
             fGain = Math.max(Math.min(fGain, getMaximum()), getMinimum());
             if (Math.abs(fGain - getValue()) > 1.0E9) {
@@ -253,14 +239,10 @@ public class AlsaSourceDataLine
   return MAX_GAIN;
   }
 
-
-
   public float getMinimum()
   {
   return MIN_GAIN;
   }
-
-
 
   public int getIncrements()
   {
@@ -268,14 +250,10 @@ public class AlsaSourceDataLine
   return GAIN_INCREMENTS;
   }
 
-
-
   public void fade(float fInitialGain, float fFinalGain, int nFrames)
   {
   // TODO:
   }
-
-
 
   public int getFadePrecision()
   {
@@ -283,14 +261,10 @@ public class AlsaSourceDataLine
   return -1;
   }
 
-
-
   public boolean getMute()
   {
   return m_bMuted;
   }
-
-
 
   public void setMute(boolean bMuted)
   {
@@ -309,9 +283,7 @@ public class AlsaSourceDataLine
   }
 */
 
-
     }
 }
 
 
-/* AlsaSourceDataLine.java */

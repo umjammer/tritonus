@@ -1,8 +1,3 @@
-/*
- * TAudioFormat.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2003 by Matthias Pfisterer
@@ -20,10 +15,6 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.share.sampled;
 
 import java.util.Collections;
@@ -37,7 +28,6 @@ public class TAudioFormat
 
     private Map<String, Object> m_properties;
     private Map<String, Object> m_unmodifiableProperties;
-
 
     public TAudioFormat(AudioFormat.Encoding encoding,
                         float sampleRate,
@@ -103,7 +93,6 @@ public class TAudioFormat
         initMaps(properties);
     }
 
-
     private void initMaps(Map<String, Object> properties) {
   /* Here, we make a shallow copy of the map. It's unclear if this
      is sufficient (or if a deep copy should be made).
@@ -115,7 +104,6 @@ public class TAudioFormat
         m_unmodifiableProperties = Collections.unmodifiableMap(m_properties);
     }
 
-
     @Override
     public Map<String, Object> properties() {
         if (m_properties == null) {
@@ -124,7 +112,6 @@ public class TAudioFormat
         return m_unmodifiableProperties;
     }
 
-
     @Override
     public Object getProperty(String key) {
         if (m_properties == null) {
@@ -132,7 +119,6 @@ public class TAudioFormat
         }
         return m_properties.get(key);
     }
-
 
     protected void setProperty(String key, Object value) {
         if (m_properties == null) {
@@ -143,4 +129,3 @@ public class TAudioFormat
 }
 
 
-/* TAudioFormat.java */

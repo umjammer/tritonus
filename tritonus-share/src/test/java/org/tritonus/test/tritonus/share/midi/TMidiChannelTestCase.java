@@ -35,7 +35,6 @@ public class TMidiChannelTestCase {
         assertEquals(CHANNEL, channel.getChannelNumber(), "channel number");
     }
 
-
     @Test
     public void testNoteOff() {
         TestMidiChannel channel = new TestMidiChannel(0);
@@ -59,14 +58,12 @@ public class TMidiChannelTestCase {
         assertEquals(0, channel.getNoteOffVelocity(), "noteOff() velocity");
     }
 
-
     @Test
     public void testProgramChange() {
         TestMidiChannel channel = new TestMidiChannel(0);
         doTestProgramChange(channel, 0, 0, 0);
         doTestProgramChange(channel, 127, 127, 127);
     }
-
 
     private void doTestProgramChange(TestMidiChannel channel, int nBankHigh,
                                      int nBankLow, int nProgram) {
@@ -85,7 +82,6 @@ public class TMidiChannelTestCase {
         assertEquals(nProgram, channel.getProgramChangeValue(), "programChange() program");
     }
 
-
     @Test
     public void testResetAllControllers() {
         TestMidiChannel channel = new TestMidiChannel(0);
@@ -93,7 +89,6 @@ public class TMidiChannelTestCase {
         assertEquals(121, channel.getSetControllerNumber(), "resetAllControllers(): controller");
         assertEquals(0, channel.getSetControllerValue(), "resetAllControllers(): value");
     }
-
 
     @Test
     public void testAllNotesOff() {
@@ -103,7 +98,6 @@ public class TMidiChannelTestCase {
         assertEquals(0, channel.getSetControllerValue(), "allNotesOff(): value");
     }
 
-
     @Test
     public void testAllSoundOff() {
         TestMidiChannel channel = new TestMidiChannel(0);
@@ -111,7 +105,6 @@ public class TMidiChannelTestCase {
         assertEquals(120, channel.getSetControllerNumber(), "allSoundOff(): controller");
         assertEquals(0, channel.getSetControllerValue(), "allSoundOff(): value");
     }
-
 
     @Test
     public void testLocalControl() {
@@ -126,7 +119,6 @@ public class TMidiChannelTestCase {
         assertEquals(0, channel.getSetControllerValue(), "localControl(false): value");
     }
 
-
     private static class TestMidiChannel
             extends TMidiChannel {
 
@@ -139,12 +131,10 @@ public class TMidiChannelTestCase {
         //  private int m_nGetControllerNumber;
         private int m_nProgramChangeValue;
 
-
         public TestMidiChannel(int nChannel) {
             super(nChannel);
             resetCachedValues();
         }
-
 
         /**
          * Used to obtain the return value of the protected super class method.
@@ -197,6 +187,7 @@ public class TMidiChannelTestCase {
         /**
          * Records the passed values.
          */
+        @Override
         public void controlChange(int nController, int nValue) {
             System.out.println("CC: " + nController + ": " + nValue);
             if (m_nSetControllerNumber != -1) {
@@ -208,62 +199,76 @@ public class TMidiChannelTestCase {
             }
         }
 
+        @Override
         public int getChannelPressure() {
             return 0;
         }
 
+        @Override
         public int getController(int nController) {
             return 0;
         }
 
+        @Override
         public boolean getMute() {
             return false;
         }
 
+        @Override
         public int getPitchBend() {
             return 0;
         }
 
+        @Override
         public int getPolyPressure(int nNoteNumber) {
             return 0;
         }
 
+        @Override
         public int getProgram() {
             return 0;
         }
 
+        @Override
         public boolean getSolo() {
             return false;
         }
 
+        @Override
         public void noteOff(int nNoteNumber, int nVelocity) {
             m_nNoteOffKey = nNoteNumber;
             m_nNoteOffVelocity = nVelocity;
         }
 
+        @Override
         public void noteOn(int nNoteNumber, int nVelocity) {
         }
 
+        @Override
         public void programChange(int nProgram) {
             m_nProgramChangeValue = nProgram;
         }
 
+        @Override
         public void setChannelPressure(int nPressure) {
         }
 
+        @Override
         public void setMute(boolean bMute) {
         }
 
+        @Override
         public void setPitchBend(int nBend) {
         }
 
+        @Override
         public void setPolyPressure(int nNoteNumber, int nPressure) {
         }
 
+        @Override
         public void setSolo(boolean bSolo) {
         }
     }
 }
 
 
-/* TDirectSynthesizerTestCase.java */

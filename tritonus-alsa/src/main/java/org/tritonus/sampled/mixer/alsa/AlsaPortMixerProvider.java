@@ -1,8 +1,3 @@
-/*
- * AlsaPortMixerProvider.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2001 - 2002 by Matthias Pfisterer
@@ -20,10 +15,6 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.sampled.mixer.alsa;
 
 import org.tritonus.lowlevel.alsa.Alsa;
@@ -36,7 +27,6 @@ public class AlsaPortMixerProvider
         extends TMixerProvider {
 
     private static boolean sm_bInitialized = false;
-
 
     public AlsaPortMixerProvider() {
         super();
@@ -60,7 +50,7 @@ public class AlsaPortMixerProvider
         }
     }
 
-
+    @Override
     protected void staticInit() {
         if (TDebug.TraceMixerProvider) {
             TDebug.out("AlsaPortMixerProvider.staticInit(): begin");
@@ -80,4 +70,3 @@ public class AlsaPortMixerProvider
 }
 
 
-/* AlsaPortMixerProvider.java */

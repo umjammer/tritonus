@@ -1,8 +1,3 @@
-/*
- * THeaderlessAudioFileWriter.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2000 by Florian Bomers
@@ -20,10 +15,6 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.share.sampled.file;
 
@@ -59,7 +50,6 @@ public class THeaderlessAudioFileWriter
         }
     }
 
-
     @Override
     protected AudioOutputStream getAudioOutputStream(
             AudioFormat audioFormat,
@@ -83,4 +73,3 @@ public class THeaderlessAudioFileWriter
 }
 
 
-/* THeaderlessAudioFileWriter.java */

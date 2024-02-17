@@ -1,8 +1,3 @@
-/*
- * TClip.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999 - 2004 by Matthias Pfisterer
@@ -20,10 +15,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.share.sampled.mixer;
 
@@ -48,12 +39,10 @@ public class TClip
     //private static final Class[] CONTROL_CLASSES = {/*GainControl.class*/};
     //private static final int BUFFER_FRAMES = 16384;
 
-
     public TClip(DataLine.Info info) {
         super(null, // TMixer
                 info);
     }
-
 
     public TClip(DataLine.Info info,
                  Collection<Control> controls) {
@@ -62,7 +51,7 @@ public class TClip
                 controls);
     }
 
-
+    @Override
     public void open(AudioFormat audioFormat,
                      byte[] abData,
                      int nOffset,
@@ -83,7 +72,7 @@ public class TClip
         }
     }
 
-
+    @Override
     public void open(AudioInputStream audioInputStream)
             throws LineUnavailableException, IOException {
         AudioFormat audioFormat = audioInputStream.getFormat();
@@ -142,46 +131,46 @@ public class TClip
   */
     }
 
-
+    @Override
     public int getFrameLength() {
         // TODO:
         return -1;
     }
 
-
+    @Override
     public long getMicrosecondLength() {
         // TODO:
         return -1;
     }
 
-
+    @Override
     public void setFramePosition(int nPosition) {
         // TOOD:
     }
 
-
+    @Override
     public void setMicrosecondPosition(long lPosition) {
         // TOOD:
     }
 
-
+    @Override
     public int getFramePosition() {
         // TOOD:
         return -1;
     }
 
-
+    @Override
     public long getMicrosecondPosition() {
         // TOOD:
         return -1;
     }
 
-
+    @Override
     public void setLoopPoints(int nStart, int nEnd) {
         // TOOD:
     }
 
-
+    @Override
     public void loop(int nCount) {
         if (TDebug.TraceClip) {
             TDebug.out("TClip.loop(int): called; count = " + nCount);
@@ -219,29 +208,29 @@ public class TClip
         // TOOD:
     }
 
-
+    @Override
     public void flush() {
         // TOOD:
     }
 
-
+    @Override
     public void drain() {
         // TOOD:
     }
 
-
+    @Override
     public void close() {
         // m_esdSample.free();
         // m_esdSample.close();
         // TOOD:
     }
 
-
+    @Override
     public void open() {
         // TODO:
     }
 
-
+    @Override
     public void start() {
         if (TDebug.TraceClip) {
             TDebug.out("TClip.start(): called");
@@ -256,22 +245,21 @@ public class TClip
         loop(0);
     }
 
-
+    @Override
     public void stop() {
         // TODO:
         // m_esdSample.kill();
     }
 
-
     /*
      * This method is enforced by DataLine, but doesn't make any
      * sense for Clips.
      */
+    @Override
     public int available() {
         return -1;
     }
 }
 
 
-/* TClip.java */
 

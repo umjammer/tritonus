@@ -1,8 +1,3 @@
-/*
- * AuAudioFileWriter.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999,2000,2001 by Florian Bomers
@@ -22,10 +17,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.sampled.file;
 
@@ -52,7 +43,6 @@ public class AuAudioFileWriter extends TAudioFileWriter {
                     AudioFileFormat.Type.AU
             };
 
-
     // IMPORTANT: this array depends on the AudioFormat.match() algorithm which takes
     //            AudioSystem.NOT_SPECIFIED into account !
     private static final AudioFormat[] AUDIO_FORMATS =
@@ -78,12 +68,13 @@ public class AuAudioFileWriter extends TAudioFileWriter {
                 Arrays.asList(AUDIO_FORMATS));
     }
 
-
+    @Override
     protected boolean isAudioFormatSupportedImpl(AudioFormat format,
                                                  AudioFileFormat.Type fileType) {
         return AuTool.getFormatCode(format) != AuTool.SND_FORMAT_UNSPECIFIED;
     }
 
+    @Override
     protected AudioOutputStream getAudioOutputStream(AudioFormat audioFormat,
                                                      long lLengthInBytes,
                                                      AudioFileFormat.Type fileType,
@@ -95,4 +86,4 @@ public class AuAudioFileWriter extends TAudioFileWriter {
 
 }
 
-/* AuAudioFileWriter.java */
+

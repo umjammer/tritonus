@@ -1,10 +1,4 @@
 /*
- * Comment.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2000 - 2001 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -205,4 +199,4 @@ public class Comment {
 //  public void headerOut(Packet packet);
 }
 
-/* Comment.java */
+

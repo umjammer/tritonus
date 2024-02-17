@@ -1,10 +1,4 @@
 /*
- * AlsaBaseDataLine.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 1999 - 2001 by Matthias Pfisterer
  *
  *
@@ -21,10 +15,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.sampled.mixer.alsa;
 
@@ -46,7 +36,6 @@ public abstract class AlsaBaseDataLine
         extends TBaseDataLine {
     // private static final Class[] CONTROL_CLASSES = {GainControl.class};
 
-
     private AlsaPcm m_alsaPcm;
     private boolean m_bSwapBytes;
 
@@ -54,7 +43,6 @@ public abstract class AlsaBaseDataLine
      * Only used if m_bSwapBytes is true.
      */
     private int m_nBytesPerSample;
-
 
     public AlsaBaseDataLine(AlsaDataLineMixer mixer, DataLine.Info info)
             throws LineUnavailableException {
@@ -68,9 +56,8 @@ public abstract class AlsaBaseDataLine
         }
     }
 
-
     public AlsaBaseDataLine(AlsaDataLineMixer mixer, DataLine.Info info,
-                            Collection controls)
+                            Collection<?> controls)
             throws LineUnavailableException {
         super(mixer,
                 info);
@@ -82,16 +69,13 @@ public abstract class AlsaBaseDataLine
         }
     }
 
-
     protected AlsaDataLineMixer getAlsaDataLineMixer() {
         return (AlsaDataLineMixer) getMixer();
     }
 
-
     protected AlsaPcm getAlsaPcm() {
         return m_alsaPcm;
     }
-
 
     /**
      * Returns the ALSA stream type of this line.
@@ -104,17 +88,15 @@ public abstract class AlsaBaseDataLine
      */
     protected abstract int getAlsaStreamType();
 
-
     protected boolean getSwapBytes() {
         return m_bSwapBytes;
     }
-
 
     protected int getBytesPerSample() {
         return m_nBytesPerSample;
     }
 
-
+    @Override
     protected void openImpl()
             throws LineUnavailableException {
         if (TDebug.TraceSourceDataLine) {
@@ -273,7 +255,7 @@ public abstract class AlsaBaseDataLine
         }
     }
 
-
+    @Override
     protected void closeImpl() {
         if (TDebug.TraceSourceDataLine) {
             TDebug.out("AlsaBaseDataLine.closeImpl(): begin");
@@ -295,7 +277,7 @@ public abstract class AlsaBaseDataLine
   }
 */
 
-
+    @Override
     protected void stopImpl() {
         if (TDebug.TraceSourceDataLine) {
             TDebug.out("AlsaBaseDataLine.stopImpl(): called");
@@ -308,29 +290,27 @@ public abstract class AlsaBaseDataLine
         // setStarted(false);
     }
 
-
+    @Override
     public int available() {
         // TODO:
         return -1;
     }
 
-
+    @Override
     public void drain() {
         // TODO:
     }
 
-
+    @Override
     public void flush() {
         // TODO:
     }
-
 
     /**
      * dGain is logarithmic!!
      */
     protected void setGain(float dGain) {
     }
-
 
     // IDEA: move inner classes to TBaseDataLine
     public class AlsaBaseDataLineGainControl
@@ -349,7 +329,6 @@ public abstract class AlsaBaseDataLine
         // private float  m_fGain;
         // private boolean  m_bMuted;
 
-
         /*package*/ AlsaBaseDataLineGainControl() {
             super(FloatControl.Type.VOLUME, // or MASTER_GAIN ?
                     -96.0F, // MIN_GAIN,
@@ -364,7 +343,7 @@ public abstract class AlsaBaseDataLine
             // m_bMuted = false; // should be included in a compund control?
         }
 
-
+        @Override
         public void setValue(float fGain) {
             fGain = Math.max(Math.min(fGain, getMaximum()), getMinimum());
             if (Math.abs(fGain - getValue()) > 1.0E9) {
@@ -383,14 +362,10 @@ public abstract class AlsaBaseDataLine
   return MAX_GAIN;
   }
 
-
-
   public float getMinimum()
   {
   return MIN_GAIN;
   }
-
-
 
   public int getIncrements()
   {
@@ -398,14 +373,10 @@ public abstract class AlsaBaseDataLine
   return GAIN_INCREMENTS;
   }
 
-
-
   public void fade(float fInitialGain, float fFinalGain, int nFrames)
   {
   // TODO:
   }
-
-
 
   public int getFadePrecision()
   {
@@ -413,14 +384,10 @@ public abstract class AlsaBaseDataLine
   return -1;
   }
 
-
-
   public boolean getMute()
   {
   return m_bMuted;
   }
-
-
 
   public void setMute(boolean bMuted)
   {
@@ -439,9 +406,7 @@ public abstract class AlsaBaseDataLine
   }
 */
 
-
     }
 }
 
 
-/* AlsaBaseDataLine.java */

@@ -57,6 +57,7 @@ public class vorbis_block extends Structure {
         super();
     }
 
+    @Override
     protected List<String> getFieldOrder() {
         return Arrays.asList("pcm", "opb", "lW", "W", "nW", "pcmend", "mode", "eofflag", "granulepos", "sequence", "vd", "localstore", "localtop", "localalloc", "totaluse", "reap", "glue_bits", "time_bits", "floor_bits", "res_bits", "internal");
     }
@@ -69,11 +70,8 @@ public class vorbis_block extends Structure {
 
     }
 
-    ;
-
     public static class ByValue extends vorbis_block implements Structure.ByValue {
 
     }
 
-    ;
 }

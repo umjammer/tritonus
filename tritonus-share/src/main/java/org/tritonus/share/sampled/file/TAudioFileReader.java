@@ -1,8 +1,3 @@
-/*
- * TAudioFileReader.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999 by Matthias Pfisterer
@@ -20,10 +15,6 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.share.sampled.file;
 
@@ -61,17 +52,14 @@ public abstract class TAudioFileReader
     private int m_nMarkLimit;
     private boolean m_bRereading;
 
-
     protected TAudioFileReader(int nMarkLimit) {
         this(nMarkLimit, false);
     }
-
 
     protected TAudioFileReader(int nMarkLimit, boolean bRereading) {
         m_nMarkLimit = nMarkLimit;
         m_bRereading = bRereading;
     }
-
 
     protected int getMarkLimit() {
         return m_nMarkLimit;
@@ -84,7 +72,6 @@ public abstract class TAudioFileReader
     private boolean isRereading() {
         return m_bRereading;
     }
-
 
     /**
      * Get an AudioFileFormat object for a File.
@@ -117,7 +104,6 @@ public abstract class TAudioFileReader
         return audioFileFormat;
     }
 
-
     /**
      * Get an AudioFileFormat object for a URL.
      * This method calls getAudioFileFormat(InputStream, long).
@@ -148,7 +134,6 @@ public abstract class TAudioFileReader
         }
         return audioFileFormat;
     }
-
 
     /**
      * Get an AudioFileFormat object for an InputStream.
@@ -188,7 +173,6 @@ public abstract class TAudioFileReader
         return audioFileFormat;
     }
 
-
     /**
      * Get an AudioFileFormat (internal implementation). Subclasses must
      * implement this method in a way specific to the file format they handle.
@@ -210,7 +194,6 @@ public abstract class TAudioFileReader
     protected abstract AudioFileFormat getAudioFileFormat(
             InputStream inputStream, long lFileLengthInBytes)
             throws UnsupportedAudioFileException, IOException;
-
 
     /**
      * Get an AudioInputStream object for a file.
@@ -245,7 +228,6 @@ public abstract class TAudioFileReader
         return audioInputStream;
     }
 
-
     /**
      * Get an AudioInputStream object for a URL.
      * This method calls getAudioInputStream(InputStream, long).
@@ -278,7 +260,6 @@ public abstract class TAudioFileReader
         }
         return audioInputStream;
     }
-
 
     /**
      * Get an AudioInputStream object for an InputStream.
@@ -331,7 +312,6 @@ public abstract class TAudioFileReader
         return audioInputStream;
     }
 
-
     /**
      * Get an AudioInputStream (internal implementation). This implementation
      * calls getAudioFileFormat() with the same arguments as passed in here.
@@ -378,11 +358,9 @@ public abstract class TAudioFileReader
         return audioInputStream;
     }
 
-
     protected static int calculateFrameSize(int nSampleSize, int nNumChannels) {
         return ((nSampleSize + 7) / 8) * nNumChannels;
     }
-
 
     private static long getDataLength(URL url)
             throws IOException {
@@ -396,7 +374,6 @@ public abstract class TAudioFileReader
         return lFileLengthInBytes;
     }
 
-
     public static int readLittleEndianInt(InputStream is)
             throws IOException {
         int b0 = is.read();
@@ -409,7 +386,6 @@ public abstract class TAudioFileReader
         return (b3 << 24) + (b2 << 16) + (b1 << 8) + (b0 << 0);
     }
 
-
     public static short readLittleEndianShort(InputStream is)
             throws IOException {
         int b0 = is.read();
@@ -419,8 +395,6 @@ public abstract class TAudioFileReader
         }
         return (short) ((b1 << 8) + (b0 << 0));
     }
-
-
 
     /*
      * C O N V E R T   F R O M   I E E E   E X T E N D E D
@@ -490,5 +464,4 @@ public abstract class TAudioFileReader
 }
 
 
-/* TAudioFileReader.java */
 

@@ -14,7 +14,6 @@ public class Instrument_tone
     private float y;
     private float init;
 
-
     public Instrument_tone() {
         a = 0.0F;
         x = 0.0F;
@@ -32,7 +31,7 @@ public class Instrument_tone
 //  {
 //  }
 
-
+    @Override
     public void doAPass(RTSystem rtSystem) {
         // TDebug.out("doAPass()");
         a = 0.196307F;
@@ -47,4 +46,3 @@ public class Instrument_tone
 }
 
 
-/* Instrument_tone.java */

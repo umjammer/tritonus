@@ -30,4 +30,3 @@ public class Aiff12bitAudioFileReaderTestCase
 }
 
 
-/* AiffAudioFileReaderTestCase.java */

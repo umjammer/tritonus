@@ -1,8 +1,3 @@
-/*
- * TemplateEntry.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2002 by Matthias Pfisterer
@@ -20,10 +15,6 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.saol.compiler;
 
 import org.tritonus.saol.sablecc.node.ATemplatedeclTemplatedecl;
@@ -34,18 +25,15 @@ public class TemplateEntry {
     private String m_strTemplateName;
     private ATemplatedeclTemplatedecl m_startNode;
 
-
     public TemplateEntry(String strTemplateName,
                          ATemplatedeclTemplatedecl startNode) {
         m_strTemplateName = strTemplateName;
         m_startNode = startNode;
     }
 
-
     public String getTemplateName() {
         return m_strTemplateName;
     }
-
 
     public ATemplatedeclTemplatedecl getStartNode() {
         return m_startNode;
@@ -53,4 +41,3 @@ public class TemplateEntry {
 }
 
 
-/* TemplateEntry.java */

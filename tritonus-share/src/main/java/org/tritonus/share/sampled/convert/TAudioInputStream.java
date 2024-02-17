@@ -1,8 +1,3 @@
-/*
- * TAudioInputStream.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2003 by Matthias Pfisterer
@@ -19,10 +14,6 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.share.sampled.convert;
 
@@ -52,7 +43,6 @@ public class TAudioInputStream
     private Map<String, Object> m_properties;
     private Map<String, Object> m_unmodifiableProperties;
 
-
     /**
      * Constructor without properties.
      * Creates an empty properties map.
@@ -63,7 +53,6 @@ public class TAudioInputStream
         super(inputStream, audioFormat, lLengthInFrames);
         initMaps(new HashMap<>());
     }
-
 
     /**
      * Constructor with properties.
@@ -79,7 +68,6 @@ public class TAudioInputStream
         initMaps(properties);
     }
 
-
     private void initMaps(Map<String, Object> properties) {
   /* Here, we make a shallow copy of the map. It's unclear if this
      is sufficient (of if a deep copy should be made).
@@ -87,7 +75,6 @@ public class TAudioInputStream
         m_properties = properties;
         m_unmodifiableProperties = Collections.unmodifiableMap(m_properties);
     }
-
 
     /**
      * Obtain a Map containing the properties.  This method returns a
@@ -100,7 +87,6 @@ public class TAudioInputStream
         return m_unmodifiableProperties;
     }
 
-
     /**
      * Set a property.  Unlike in AudioFormat and AudioFileFormat,
      * this method may be used anywhere by subclasses - it is not
@@ -112,4 +98,3 @@ public class TAudioInputStream
 }
 
 
-/* TAudioInputStream.java */

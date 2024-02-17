@@ -1,8 +1,3 @@
-/*
- * MidiUtils.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999 by Matthias Pfisterer
@@ -22,10 +17,6 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.share.midi;
 
 import java.io.ByteArrayOutputStream;
@@ -44,21 +35,17 @@ public class MidiUtils {
         return (b < 0) ? b + 256 : b;
     }
 
-
     public static int get14bitValue(int nLSB, int nMSB) {
         return (nLSB & 0x7F) | ((nMSB & 0x7F) << 7);
     }
-
 
     public static int get14bitMSB(int nValue) {
         return (nValue >> 7) & 0x7F;
     }
 
-
     public static int get14bitLSB(int nValue) {
         return nValue & 0x7F;
     }
-
 
     public static byte[] getVariableLengthQuantity(long lValue) {
         ByteArrayOutputStream data = new ByteArrayOutputStream();
@@ -71,7 +58,6 @@ public class MidiUtils {
         }
         return data.toByteArray();
     }
-
 
     public static int writeVariableLengthQuantity(long lValue, OutputStream outputStream)
             throws IOException {
@@ -111,4 +97,3 @@ public class MidiUtils {
 }
 
 
-/* MidiUtils.java */

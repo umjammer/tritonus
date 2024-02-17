@@ -1,8 +1,3 @@
-/*
- * CddaDriveListConnection.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2001 - 2002 by Matthias Pfisterer
@@ -19,10 +14,6 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.sampled.cdda;
 
@@ -45,7 +36,6 @@ public class CddaDriveListConnection
 
     private CddaMidLevel m_cddaMidLevel;
 
-
     // TODO: m_cdda.close();
     public CddaDriveListConnection(URL url) {
         super(url);
@@ -57,7 +47,7 @@ public class CddaDriveListConnection
         }
     }
 
-
+    @Override
     public void connect() {
         if (TDebug.TraceCdda) {
             TDebug.out("CddaDriveListConnection.connect(): begin");
@@ -71,18 +61,18 @@ public class CddaDriveListConnection
         }
     }
 
-
+    @Override
     public InputStream getInputStream()
             throws IOException {
         if (TDebug.TraceCdda) {
             TDebug.out("CddaDriveListConnection.getInputStream(): begin");
         }
         connect();
-        Iterator drivesIterator = m_cddaMidLevel.getDevices();
+        Iterator<String> drivesIterator = m_cddaMidLevel.getDevices();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream out = new PrintStream(baos);
         while (drivesIterator.hasNext()) {
-            String strDrive = (String) drivesIterator.next();
+            String strDrive = drivesIterator.next();
             out.print(strDrive + "\n");
         }
         byte[] abData = baos.toByteArray();

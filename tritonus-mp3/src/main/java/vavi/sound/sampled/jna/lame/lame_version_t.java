@@ -37,6 +37,7 @@ public class lame_version_t extends Structure {
         super();
     }
 
+    @Override
     protected List<String> getFieldOrder() {
         return Arrays.asList("major", "minor", "alpha", "beta", "psy_major", "psy_minor", "psy_alpha", "psy_beta", "features");
     }
@@ -70,11 +71,8 @@ public class lame_version_t extends Structure {
 
     }
 
-    ;
-
     public static class ByValue extends lame_version_t implements Structure.ByValue {
 
     }
 
-    ;
 }

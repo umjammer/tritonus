@@ -305,7 +305,7 @@ public interface LadspaLibrary extends Library {
      */
     int fluid_ladspa_effect_link(PointerByReference fx, Pointer effect_name, Pointer port_name, Pointer name);
 
-    public static class fluid_ladspa_fx_t extends PointerType {
+    class fluid_ladspa_fx_t extends PointerType {
 
         public fluid_ladspa_fx_t(Pointer address) {
             super(address);
@@ -316,5 +316,4 @@ public interface LadspaLibrary extends Library {
         }
     }
 
-    ;
 }

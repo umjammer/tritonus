@@ -25,7 +25,7 @@ public interface EventLibrary extends Library {
      * <i>native declaration : fluidsynth/event.h:40</i><br>
      * enum values
      */
-    public static interface fluid_seq_event_type {
+    interface fluid_seq_event_type {
 
         /**
          * < Note event with duration<br>
@@ -150,8 +150,6 @@ public interface EventLibrary extends Library {
          */
         int FLUID_SEQ_LASTEVENT = 23;
     }
-
-    ;
 
     /**
      * @startlifecycle{Sequencer Event}<br>
@@ -806,7 +804,7 @@ public interface EventLibrary extends Library {
      */
     int fluid_event_get_sfont_id(PointerByReference evt);
 
-    public static class FLUIDSYNTH_API extends PointerType {
+    class FLUIDSYNTH_API extends PointerType {
 
         public FLUIDSYNTH_API(Pointer address) {
             super(address);
@@ -817,5 +815,4 @@ public interface EventLibrary extends Library {
         }
     }
 
-    ;
 }

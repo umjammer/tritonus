@@ -1,8 +1,3 @@
-/*
- * TSynchronousFilteredAudioInputStream.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999,2000 by Florian Bomers
@@ -21,10 +16,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.share.sampled.convert;
 
@@ -122,7 +113,6 @@ public abstract class TSynchronousFilteredAudioInputStream
         m_enableFloatConversion = true;
     }
 
-
     /**
      * Override this method to do the actual conversion.
      * inBuffer starts always at index 0 (it is an internal buffer)
@@ -134,7 +124,6 @@ public abstract class TSynchronousFilteredAudioInputStream
      * outBuffer. The return value is in the format of this stream.
      */
     protected abstract int convert(byte[] inBuffer, byte[] outBuffer, int outByteOffset, int inFrameCount);
-
 
     /**
      * Override this method to provide in-place conversion of samples.
@@ -160,7 +149,6 @@ public abstract class TSynchronousFilteredAudioInputStream
         throw new RuntimeException("illegal call to convert(FloatSampleBuffer)");
     }
 
-
     @Override
     public int read()
             throws IOException {
@@ -179,7 +167,6 @@ public abstract class TSynchronousFilteredAudioInputStream
         }
         return temp[0] & 0xFF;
     }
-
 
     /** remove the temporary read buffer to save heap */
     private void clearBuffer() {
@@ -254,7 +241,6 @@ public abstract class TSynchronousFilteredAudioInputStream
         return nFramesConverted * newFrameSize;
     }
 
-
     @Override
     public long skip(long nSkip)
             throws IOException {
@@ -265,14 +251,12 @@ public abstract class TSynchronousFilteredAudioInputStream
         return skippedFrames * newFrameSize;
     }
 
-
     @Override
     public int available()
             throws IOException {
         int origAvailFrames = originalStream.available() / originalFrameSize;
         return origAvailFrames * newFrameSize;
     }
-
 
     @Override
     public void close()
@@ -282,20 +266,17 @@ public abstract class TSynchronousFilteredAudioInputStream
         clearBuffer();
     }
 
-
     @Override
     public void mark(int readlimit) {
         int readLimitFrames = readlimit / newFrameSize;
         originalStream.mark(readLimitFrames * originalFrameSize);
     }
 
-
     @Override
     public void reset()
             throws IOException {
         originalStream.reset();
     }
-
 
     @Override
     public boolean markSupported() {
@@ -304,14 +285,17 @@ public abstract class TSynchronousFilteredAudioInputStream
 
     // interface FloatSampleInput
 
+    @Override
     public int getChannels() {
         return format.getChannels();
     }
 
+    @Override
     public float getSampleRate() {
         return format.getSampleRate();
     }
 
+    @Override
     public boolean isDone() {
         // if this class was closed, never return open again
         if (EOF) return true;
@@ -329,6 +313,7 @@ public abstract class TSynchronousFilteredAudioInputStream
      * implementation requires that offset is 0 and sampleCount ==
      * buffer.getSampleCount().
      */
+    @Override
     public void read(FloatSampleBuffer buffer, int offset, int sampleCount) {
         try {
             // Case 1: reading cannot, but processing can be done in float
@@ -407,6 +392,7 @@ public abstract class TSynchronousFilteredAudioInputStream
         }
     }
 
+    @Override
     public void read(FloatSampleBuffer buffer) {
         read(buffer, 0, buffer.getSampleCount());
     }
@@ -414,4 +400,3 @@ public abstract class TSynchronousFilteredAudioInputStream
 }
 
 
-/* TSynchronousFilteredAudioInputStream.java */

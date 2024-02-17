@@ -32,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class GetDefaultSoundbankTestCase
         extends BaseSynthesizerTestCase {
 
+    @Override
     protected void checkSynthesizer(Synthesizer synth)
             throws Exception {
         synth.open();

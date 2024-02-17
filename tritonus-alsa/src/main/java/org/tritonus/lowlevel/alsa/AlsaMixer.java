@@ -1,8 +1,3 @@
-/*
- * AlsaMixer.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2001 by Matthias Pfisterer
@@ -20,10 +15,6 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.lowlevel.alsa;
 
 import org.tritonus.share.TDebug;
@@ -40,14 +31,12 @@ public class AlsaMixer {
     */
     /*private*/ long m_lNativeHandle;
 
-
     static {
         Alsa.loadNativeLibrary();
         if (TDebug.TraceAlsaMixerNative) {
             setTrace(true);
         }
     }
-
 
     public AlsaMixer(String strMixerName)
             throws Exception {
@@ -68,12 +57,10 @@ public class AlsaMixer {
         }
     }
 
-
     /**
      * Calls snd_mixer_open().
      */
     private native int open(int nMode);
-
 
     /**
      * Calls snd_mixer_attach().
@@ -91,18 +78,15 @@ public class AlsaMixer {
      */
     private native int load();
 
-
     /**
      * Calls snd_mixer_free().
      */
     private native int free();
 
-
     /**
      * Calls snd_mixer_close().
      */
     public native int close();
-
 
     // getCount() ??
 
@@ -119,9 +103,7 @@ public class AlsaMixer {
      */
     public native int readControlList(int[] anIndices, String[] astrNames);
 
-
     public static native void setTrace(boolean bTrace);
 }
 
 
-/* AlsaMixer.java */

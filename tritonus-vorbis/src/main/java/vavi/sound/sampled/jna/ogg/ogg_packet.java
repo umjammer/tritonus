@@ -37,6 +37,7 @@ public class ogg_packet extends Structure {
         super();
     }
 
+    @Override
     protected List<String> getFieldOrder() {
         return Arrays.asList("packet", "bytes", "b_o_s", "e_o_s", "granulepos", "packetno");
     }
@@ -69,11 +70,8 @@ public class ogg_packet extends Structure {
 
     }
 
-    ;
-
     public static class ByValue extends ogg_packet implements Structure.ByValue {
 
     }
 
-    ;
 }

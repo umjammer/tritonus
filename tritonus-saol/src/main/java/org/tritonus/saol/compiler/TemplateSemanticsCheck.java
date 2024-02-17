@@ -1,8 +1,3 @@
-/*
- * TemplateSemanticsCheck.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2002 by Matthias Pfisterer
@@ -19,10 +14,6 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.saol.compiler;
 
@@ -43,7 +34,6 @@ public class TemplateSemanticsCheck
     private VariableTable m_globalVariableTable;
     private VariableTable m_localVariableTable;
 
-
     public TemplateSemanticsCheck(VariableTable globalVariableTable,
                                   VariableTable localVariableTable,
                                   NodeSemanticsTable nodeSemanticsTable) {
@@ -62,21 +52,20 @@ public class TemplateSemanticsCheck
 ////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
 
-
+    @Override
     protected VariableTable getOwnVariableTable() {
         return m_localVariableTable;
     }
 
-
+    @Override
     protected VariableTable getGlobalVariableTable() {
         return m_globalVariableTable;
     }
 
-
+    @Override
     protected int[] getLegalVariableTypes() {
         return LEGAL_VARIABLE_TYPES;
     }
 }
 
 
-/* TemplateSemanticsCheck.java */

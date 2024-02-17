@@ -24,6 +24,7 @@ public class ogg_iovec_t extends Structure {
         super();
     }
 
+    @Override
     protected List<String> getFieldOrder() {
         return Arrays.asList("iov_base", "iov_len");
     }
@@ -43,11 +44,8 @@ public class ogg_iovec_t extends Structure {
 
     }
 
-    ;
-
     public static class ByValue extends ogg_iovec_t implements Structure.ByValue {
 
     }
 
-    ;
 }

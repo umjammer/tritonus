@@ -1,8 +1,3 @@
-/*
- * ImaAdpcmFormatConversionProvider.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2003 by Matthias Pfisterer
@@ -46,10 +41,6 @@ OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ******************************************************************/
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.sampled.convert;
 
 import java.util.Arrays;
@@ -73,7 +64,6 @@ public class ImaAdpcmFormatConversionProvider
     // only used as abbreviation
     private static final AudioFormat.Encoding IMA_ADPCM = new AudioFormat.Encoding("IMA_ADPCM");
     private static final AudioFormat.Encoding PCM_SIGNED = new AudioFormat.Encoding("PCM_SIGNED");
-
 
     private static final AudioFormat[] INPUT_FORMATS =
             {
@@ -112,7 +102,6 @@ public class ImaAdpcmFormatConversionProvider
                     15289, 16818, 18500, 20350, 22385, 24623, 27086, 29794, 32767
             };
 
-
     /**
      * Constructor.
      */
@@ -123,7 +112,7 @@ public class ImaAdpcmFormatConversionProvider
            false*/); // bidirectional .. constants UNIDIR../BIDIR..?
     }
 
-
+    @Override
     public AudioInputStream getAudioInputStream(AudioFormat targetFormat, AudioInputStream audioInputStream) {
         /** The AudioInputStream to return.
          */
@@ -169,7 +158,6 @@ public class ImaAdpcmFormatConversionProvider
         return convertedAudioInputStream;
     }
 
-
     // TODO: recheck !!
     protected AudioFormat getDefaultTargetFormat(AudioFormat targetFormat, AudioFormat sourceFormat) {
         if (TDebug.TraceAudioConverter) {
@@ -207,7 +195,6 @@ public class ImaAdpcmFormatConversionProvider
         return newTargetFormat;
     }
 
-
     /**
      * AudioInputStream returned on decoding of IMA ADPCM.
      * An instance of this class is returned if you call
@@ -220,7 +207,6 @@ public class ImaAdpcmFormatConversionProvider
             extends TSynchronousFilteredAudioInputStream {
 
         private ImaAdpcmState m_state;
-
 
         /**
          * Constructor.
@@ -236,7 +222,7 @@ public class ImaAdpcmFormatConversionProvider
             }
         }
 
-
+        @Override
         protected int convert(byte[] inBuffer, byte[] outBuffer, int outByteOffset, int inFrameCount) {
             if (TDebug.TraceAudioConverter) {
                 TDebug.out("DecodedImaAdpcmAudioInputStream.convert(): begin");
@@ -328,14 +314,12 @@ public class ImaAdpcmFormatConversionProvider
             return inFrameCount;
         }
 
-
         /**
          *
          */
         protected int getSampleSizeInBytes() {
             return getFormat().getFrameSize() / getFormat().getChannels();
         }
-
 
         /**
          * .
@@ -346,7 +330,6 @@ public class ImaAdpcmFormatConversionProvider
             return getFormat().getFrameSize();
         }
 
-
         /**
          * Returns if this stream (the decoded one) is big endian.
          *
@@ -356,7 +339,6 @@ public class ImaAdpcmFormatConversionProvider
             return getFormat().isBigEndian();
         }
     }
-
 
     /**
      * AudioInputStream returned on encoding to IMA ADPCM.
@@ -370,7 +352,6 @@ public class ImaAdpcmFormatConversionProvider
             extends TSynchronousFilteredAudioInputStream {
 
         private ImaAdpcmState m_state;
-
 
         /**
          * Constructor.
@@ -386,7 +367,7 @@ public class ImaAdpcmFormatConversionProvider
             }
         }
 
-
+        @Override
         protected int convert(byte[] inBuffer, byte[] outBuffer, int outByteOffset, int inFrameCount) {
             if (TDebug.TraceAudioConverter) {
                 TDebug.out("EncodedImaAdpcmAudioInputStream.convert(): begin");
@@ -499,14 +480,12 @@ public class ImaAdpcmFormatConversionProvider
             return inFrameCount;
         }
 
-
         /**
          *
          */
         protected int getSampleSizeInBytes() {
             return getFormat().getFrameSize() / getFormat().getChannels();
         }
-
 
         /**
          * .
@@ -517,7 +496,6 @@ public class ImaAdpcmFormatConversionProvider
             return getFormat().getFrameSize();
         }
 
-
         /**
          * Returns if this stream (the decoded one) is big endian.
          *
@@ -527,7 +505,6 @@ public class ImaAdpcmFormatConversionProvider
             return getFormat().isBigEndian();
         }
     }
-
 
     /**
      * persistent state of a IMA ADPCM decoder.
@@ -543,4 +520,3 @@ public class ImaAdpcmFormatConversionProvider
 }
 
 
-/* ImaAdpcmFormatConversionProvider.java */

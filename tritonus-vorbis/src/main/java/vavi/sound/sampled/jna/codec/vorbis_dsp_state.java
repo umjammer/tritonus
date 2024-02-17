@@ -51,6 +51,7 @@ public class vorbis_dsp_state extends Structure {
         super();
     }
 
+    @Override
     protected List<String> getFieldOrder() {
         return Arrays.asList("analysisp", "vi", "pcm", "pcmret", "pcm_storage", "pcm_current", "pcm_returned", "preextrapolate", "eofflag", "lW", "W", "nW", "centerW", "granulepos", "sequence", "glue_bits", "time_bits", "floor_bits", "res_bits", "backend_state");
     }
@@ -63,11 +64,8 @@ public class vorbis_dsp_state extends Structure {
 
     }
 
-    ;
-
     public static class ByValue extends vorbis_dsp_state implements Structure.ByValue {
 
     }
 
-    ;
 }

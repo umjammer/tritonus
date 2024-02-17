@@ -1,8 +1,3 @@
-/*
- * JorbisFormatConversionProvider.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999 - 2003 by Matthias Pfisterer
@@ -19,10 +14,6 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.sampled.convert.jorbis;
 
@@ -67,7 +58,6 @@ public class JorbisFormatConversionProvider
     private static final AudioFormat.Encoding VORBIS = new AudioFormat.Encoding("VORBIS");
     private static final AudioFormat.Encoding PCM_SIGNED = new AudioFormat.Encoding("PCM_SIGNED");
 
-
     private static final AudioFormat[] INPUT_FORMATS =
             {
                     // mono
@@ -81,7 +71,6 @@ public class JorbisFormatConversionProvider
                     // TODO: other channel configurations
             };
 
-
     private static final AudioFormat[] OUTPUT_FORMATS =
             {
                     // mono, 16 bit signed
@@ -92,7 +81,6 @@ public class JorbisFormatConversionProvider
                     new AudioFormat(PCM_SIGNED, -1.0F, 16, 2, 4, -1.0F, true),
                     // TODO: other channel configurations
             };
-
 
     /**
      * Constructor.
@@ -105,7 +93,7 @@ public class JorbisFormatConversionProvider
            false*/); // bidirectional .. constants UNIDIR../BIDIR..?
     }
 
-
+    @Override
     public AudioInputStream getAudioInputStream(AudioFormat targetFormat, AudioInputStream audioInputStream) {
         /** The AudioInputStream to return.
          */
@@ -141,7 +129,6 @@ public class JorbisFormatConversionProvider
         }
         return convertedAudioInputStream;
     }
-
 
     // TODO: recheck !!
     protected AudioFormat getDefaultTargetFormat(AudioFormat targetFormat, AudioFormat sourceFormat) {
@@ -179,7 +166,6 @@ public class JorbisFormatConversionProvider
         }
         return newTargetFormat;
     }
-
 
     /**
      * AudioInputStream returned on decoding of ogg vorbis.
@@ -223,7 +209,6 @@ public class JorbisFormatConversionProvider
         // TODO: introduce state variable
         private boolean m_bHeadersExpected;
 
-
         /**
          * Constructor.
          */
@@ -239,7 +224,6 @@ public class JorbisFormatConversionProvider
                 TDebug.out("DecodedJorbisAudioInputStream.<init>(): end");
             }
         }
-
 
         /**
          * Initializes all the jOrbis and jOgg vars that are used for song playback.
@@ -258,10 +242,10 @@ public class JorbisFormatConversionProvider
             m_oggSyncState.init();
         }
 
-
         /**
          * Callback from circular buffer.
          */
+        @Override
         public void execute() {
             if (TDebug.TraceAudioConverter) TDebug.out(">DecodedJorbisAudioInputStream.execute(): begin");
             if (m_bHeadersExpected) {
@@ -302,7 +286,6 @@ public class JorbisFormatConversionProvider
             if (TDebug.TraceAudioConverter) TDebug.out("<DecodedJorbisAudioInputStream.execute(): end");
         }
 
-
         /* The end of the vorbis stream is reached.
            So we shut down the logical bitstream and
            vorbis structures.
@@ -314,7 +297,6 @@ public class JorbisFormatConversionProvider
             m_vorbisInfo.clear();
             m_bHeadersExpected = true;
         }
-
 
         private void closePhysicalStream() {
             if (TDebug.TraceAudioConverter) TDebug.out("DecodedJorbisAudioInputStream.closePhysicalStream(): begin");
@@ -332,7 +314,6 @@ public class JorbisFormatConversionProvider
             if (TDebug.TraceAudioConverter) TDebug.out("DecodedJorbisAudioInputStream.closePhysicalStream(): end");
         }
 
-
         /**
          * Read and process all three vorbis headers.
          */
@@ -342,7 +323,6 @@ public class JorbisFormatConversionProvider
             readCommentAndCodebookHeaders();
             processComments();
         }
-
 
         /**
          * Read the vorbis identification header.
@@ -366,7 +346,6 @@ public class JorbisFormatConversionProvider
             }
         }
 
-
         /**
          * Read the comment header and the codebook header pages.
          */
@@ -379,7 +358,6 @@ public class JorbisFormatConversionProvider
                 }
             }
         }
-
 
         /**
          *
@@ -416,7 +394,6 @@ public class JorbisFormatConversionProvider
             if (TDebug.TraceAudioConverter) TDebug.out(currComment);
         }
 
-
         /**
          * Setup structures needed for vorbis decoding.
          * Precondition: m_vorbisInfo has to be initialized completely
@@ -429,7 +406,6 @@ public class JorbisFormatConversionProvider
             _pcmf = new float[1][][];
             _index = new int[m_vorbisInfo.channels];
         }
-
 
         /**
          * Decode a packet of vorbis data.
@@ -461,7 +437,6 @@ public class JorbisFormatConversionProvider
                 getCircularBuffer().write(convbuffer, 0, getFrameSize() * bout);
             }
         }
-
 
         /**
          * Scale and clip the sample and write it to convbuffer.
@@ -517,7 +492,6 @@ public class JorbisFormatConversionProvider
             }
         }
 
-
         /**
          * Read an ogg packet.
          * This method does everything necessary to read an ogg
@@ -543,7 +517,6 @@ public class JorbisFormatConversionProvider
                 }
             }
         }
-
 
         /**
          * Read an ogg page.
@@ -577,7 +550,6 @@ public class JorbisFormatConversionProvider
             }
         }
 
-
         /**
          * Read raw data from to ogg bitstream.
          * Reads from  {@ #m_oggBitStream m_oggBitStream} a
@@ -595,14 +567,12 @@ public class JorbisFormatConversionProvider
             return m_oggBitStream.read(buffer, nStart, nLength);
         }
 
-
         /**
          *
          */
         private int getSampleSizeInBytes() {
             return getFormat().getFrameSize() / getFormat().getChannels();
         }
-
 
         /**
          * .
@@ -613,7 +583,6 @@ public class JorbisFormatConversionProvider
             return getFormat().getFrameSize();
         }
 
-
         /**
          * Returns if this stream (the decoded one) is big endian.
          *
@@ -623,10 +592,10 @@ public class JorbisFormatConversionProvider
             return getFormat().isBigEndian();
         }
 
-
         /**
          *
          */
+        @Override
         public void close() throws IOException {
             super.close();
             m_oggBitStream.close();
@@ -636,4 +605,3 @@ public class JorbisFormatConversionProvider
 }
 
 
-/* JorbisFormatConversionProvider.java */

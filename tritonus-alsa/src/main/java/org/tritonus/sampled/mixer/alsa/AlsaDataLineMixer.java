@@ -1,8 +1,3 @@
-/*
- * AlsaDataLineMixer.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999 - 2004 by Matthias Pfisterer
@@ -20,10 +15,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.sampled.mixer.alsa;
 
@@ -65,7 +56,6 @@ public class AlsaDataLineMixer
      */
     private String m_strPcmName;
 
-
     public static String getDeviceNamePrefix() {
         if (TSettings.AlsaUsePlughw) {
             return "plughw";
@@ -73,7 +63,6 @@ public class AlsaDataLineMixer
             return "hw";
         }
     }
-
 
     public static String getPcmName(int nCard) {
         String strPcmName = getDeviceNamePrefix()
@@ -84,16 +73,13 @@ public class AlsaDataLineMixer
         return strPcmName;
     }
 
-
     public AlsaDataLineMixer() {
         this(0);
     }
 
-
     public AlsaDataLineMixer(int nCard) {
         this(getPcmName(nCard));
     }
-
 
     public AlsaDataLineMixer(String strPcmName) {
         super(new TMixerInfo(
@@ -131,16 +117,14 @@ public class AlsaDataLineMixer
         }
     }
 
-
     public String getPcmName() {
         return m_strPcmName;
     }
 
-
     //////////////// Line //////////////////////////////////////
 
-
     // TODO: allow real close and reopen of mixer
+    @Override
     public void open() {
         if (TDebug.TraceMixer) {
             TDebug.out("AlsaDataLineMixer.open(): begin");
@@ -153,7 +137,7 @@ public class AlsaDataLineMixer
         }
     }
 
-
+    @Override
     public void close() {
         if (TDebug.TraceMixer) {
             TDebug.out("AlsaDataLineMixer.close(): begin");
@@ -166,10 +150,9 @@ public class AlsaDataLineMixer
         }
     }
 
-
     //////////////// Mixer //////////////////////////////////////
 
-
+    @Override
     public int getMaxLines(Line.Info info) {
         if (TDebug.TraceMixer) {
             TDebug.out("AlsaDataLineMixer.getMaxLines(): begin");
@@ -181,11 +164,10 @@ public class AlsaDataLineMixer
         return 0;
     }
 
-
     //////////////// private //////////////////////////////////////
 
-
     // nBufferSize is in bytes!
+    @Override
     protected SourceDataLine getSourceDataLine(AudioFormat format, int nBufferSize)
             throws LineUnavailableException {
         if (TDebug.TraceMixer) {
@@ -209,8 +191,8 @@ public class AlsaDataLineMixer
         return sourceDataLine;
     }
 
-
     // nBufferSize is in bytes!
+    @Override
     protected TargetDataLine getTargetDataLine(AudioFormat format, int nBufferSize)
             throws LineUnavailableException {
         if (TDebug.TraceMixer) {
@@ -228,7 +210,7 @@ public class AlsaDataLineMixer
         return targetDataLine;
     }
 
-
+    @Override
     protected Clip getClip(AudioFormat format)
             throws LineUnavailableException {
         if (TDebug.TraceMixer) {
@@ -240,7 +222,6 @@ public class AlsaDataLineMixer
         }
         return clip;
     }
-
 
     /*
       nDirection: should be AlsaPcm.SND_PCM_STREAM_PLAYBACK or
@@ -312,7 +293,6 @@ public class AlsaDataLineMixer
         return supportedFormats;
     }
 
-
     private static void addChanneledAudioFormats(
             Collection<AudioFormat> collection,
             AudioFormat protoAudioFormat,
@@ -333,7 +313,6 @@ public class AlsaDataLineMixer
         }
     }
 
-
     // TODO: better name
     // TODO: calculation of frame size is not perfect
     private static AudioFormat getChanneledAudioFormat(AudioFormat audioFormat, int nChannels) {
@@ -350,4 +329,3 @@ public class AlsaDataLineMixer
 }
 
 
-/* AlsaDataLineMixer.java */

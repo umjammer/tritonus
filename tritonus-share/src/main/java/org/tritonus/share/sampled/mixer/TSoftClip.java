@@ -1,8 +1,3 @@
-/*
- * TSoftClip.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999 by Matthias Pfisterer
@@ -21,10 +16,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.share.sampled.mixer;
 
@@ -49,7 +40,6 @@ public class TSoftClip
     //private static final Class[] CONTROL_CLASSES = {/*GainControl.class*/};
     private static final int BUFFER_SIZE = 16384;
 
-
     //$$fb the following field is never used
     //private Mixer   m_mixer;
     private SourceDataLine m_line;
@@ -73,7 +63,7 @@ public class TSoftClip
         m_line = (SourceDataLine) AudioSystem.getLine(info);
     }
 
-
+    @Override
     public void open(AudioInputStream audioInputStream)
             throws LineUnavailableException, IOException {
         AudioFormat audioFormat = audioInputStream.getFormat();
@@ -115,7 +105,7 @@ public class TSoftClip
         // open();
     }
 
-
+    @Override
     public int getFrameLength() {
         if (isOpen()) {
             return getBufferSize() / getFormat().getFrameSize();
@@ -124,7 +114,7 @@ public class TSoftClip
         }
     }
 
-
+    @Override
     public long getMicrosecondLength() {
         if (isOpen()) {
             return (long) (getFrameLength() * getFormat().getFrameRate() * 1000000);
@@ -133,34 +123,34 @@ public class TSoftClip
         }
     }
 
-
+    @Override
     public void setFramePosition(int nPosition) {
         // TOOD:
     }
 
-
+    @Override
     public void setMicrosecondPosition(long lPosition) {
         // TOOD:
     }
 
-
+    @Override
     public int getFramePosition() {
         // TOOD:
         return -1;
     }
 
-
+    @Override
     public long getMicrosecondPosition() {
         // TOOD:
         return -1;
     }
 
-
+    @Override
     public void setLoopPoints(int nStart, int nEnd) {
         // TOOD:
     }
 
-
+    @Override
     public void loop(int nCount) {
         if (TDebug.TraceClip) {
             TDebug.out("TSoftClip.loop(int): called; count = " + nCount);
@@ -184,29 +174,29 @@ public class TSoftClip
         // TOOD:
     }
 
-
+    @Override
     public void flush() {
         // TOOD:
     }
 
-
+    @Override
     public void drain() {
         // TOOD:
     }
 
-
+    @Override
     public void close() {
         // m_esdSample.free();
         // m_esdSample.close();
         // TOOD:
     }
 
-
+    @Override
     public void open() {
         // TODO:
     }
 
-
+    @Override
     public void start() {
         if (TDebug.TraceClip) {
             TDebug.out("TSoftClip.start(): called");
@@ -221,22 +211,22 @@ public class TSoftClip
         loop(0);
     }
 
-
+    @Override
     public void stop() {
         // TODO:
         // m_esdSample.kill();
     }
 
-
     /*
      * This method is enforced by DataLine, but doesn't make any
      * sense for Clips.
      */
+    @Override
     public int available() {
         return -1;
     }
 
-
+    @Override
     public void run() {
         while (m_nRepeatCount >= 0) {
             m_line.write(m_abClip, 0, m_abClip.length);
@@ -247,5 +237,4 @@ public class TSoftClip
 }
 
 
-/* TSoftClip.java */
 

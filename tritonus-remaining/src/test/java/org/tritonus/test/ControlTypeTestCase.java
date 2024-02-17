@@ -25,7 +25,7 @@ import javax.sound.sampled.Control;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 // import javax.sound.sampled.BooleanControl;
 
 
@@ -47,7 +47,6 @@ public class ControlTypeTestCase {
                 new TestControlType(strTypeName);
     }
 
-
     /**
      * Checks equals().
      * The test checks if an object is considered equal to
@@ -61,7 +60,6 @@ public class ControlTypeTestCase {
         assertEquals(type, type, "self-identity");
     }
 
-
     /**
      * Checks equals().
      * The test checks if two objects are considered unequal,
@@ -73,9 +71,8 @@ public class ControlTypeTestCase {
         String strTypeName = "TeSt";
         Control.Type type0 = new TestControlType(strTypeName);
         Control.Type type1 = new TestControlType(strTypeName);
-        assertFalse(type0.equals(type1), "unequality");
+        assertNotEquals(type0, type1, "unequality");
     }
-
 
     /**
      * Checks hashCode().
@@ -89,7 +86,6 @@ public class ControlTypeTestCase {
         Control.Type type = new TestControlType(strTypeName);
         assertEquals(type.hashCode(), type.hashCode(), "hash code");
     }
-
 
     /**
      * Checks toString().
@@ -106,7 +102,6 @@ public class ControlTypeTestCase {
         assertEquals(strTypeName, strReturnedTypeName, "toString() result");
     }
 
-
     /**
      * Inner class used to get around protected constructor.
      */
@@ -120,4 +115,3 @@ public class ControlTypeTestCase {
 }
 
 
-/* ControlTypeTestCase.java */

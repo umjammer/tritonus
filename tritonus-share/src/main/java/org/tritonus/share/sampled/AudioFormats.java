@@ -1,8 +1,3 @@
-/*
- * AudioFormats.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999,2000 by Matthias Pfisterer
@@ -23,10 +18,6 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.share.sampled;
 
 import javax.sound.sampled.AudioFormat;
@@ -41,13 +32,11 @@ public class AudioFormats {
                 || i1 == i2;
     }
 
-
     private static boolean doMatch(float f1, float f2) {
         return f1 == AudioSystem.NOT_SPECIFIED
                 || f2 == AudioSystem.NOT_SPECIFIED
                 || Math.abs(f1 - f2) < 1.0e-9;
     }
-
 
     /**
      * Tests whether 2 AudioFormats have matching formats.
@@ -118,4 +107,3 @@ public class AudioFormats {
 }
 
 
-/* AudioFormats.java */

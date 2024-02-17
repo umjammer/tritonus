@@ -1,8 +1,3 @@
-/*
- * SampleRateConversionProvider.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2001,2006,2008 by Florian Bomers
@@ -160,7 +155,7 @@ public class SampleRateConversionProvider extends
             }
             // for convenience, add some often used sample rates as output
             // this may help applications that do not handle NOT_SPECIFIED
-            if (result.size() > 0
+            if (!result.isEmpty()
                     && sourceSampleRate != AudioSystem.NOT_SPECIFIED) {
                 int count = result.size();
                 for (int i = 0; i < count; i++) {
@@ -780,33 +775,22 @@ public class SampleRateConversionProvider extends
 
         // interface FloatSampleInput
 
-        /*
-         * (non-Javadoc)
-         *
-         * @see org.tritonus.share.sampled.FloatSampleInput#getChannels()
-         */
+        @Override
         public int getChannels() {
             return getFormat().getChannels();
         }
 
-        /*
-         * (non-Javadoc)
-         *
-         * @see org.tritonus.share.sampled.FloatSampleInput#getSampleRate()
-         */
+        @Override
         public float getSampleRate() {
             return getFormat().getSampleRate();
         }
 
-        /*
-         * (non-Javadoc)
-         *
-         * @see org.tritonus.share.sampled.FloatSampleInput#isDone()
-         */
+        @Override
         public boolean isDone() {
             return isClosed();
         }
 
+        @Override
         public void read(FloatSampleBuffer outBuffer) {
             read(outBuffer, 0, outBuffer.getSampleCount());
         }
@@ -826,6 +810,7 @@ public class SampleRateConversionProvider extends
          *                                  not match
          * @see #setConversionAlgorithm(int)
          */
+        @Override
         @SuppressWarnings("cast")
         public void read(FloatSampleBuffer outBuffer, int offset, int count) {
             if (isClosed() || count == 0) {

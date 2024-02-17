@@ -26,6 +26,7 @@ public abstract class AbstractGsmFormatConversionProviderTest extends
 
     private FormatConversionProvider formatConversionProvider;
 
+    @Override
     protected final FormatConversionProvider getFormatConversionProvider() {
         return formatConversionProvider;
     }

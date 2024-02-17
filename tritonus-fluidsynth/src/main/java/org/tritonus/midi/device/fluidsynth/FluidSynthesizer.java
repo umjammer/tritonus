@@ -94,7 +94,7 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
             int sfontID = loadSoundFont(sfontFile);
             setDefaultSoundBank(sfontID);
             String strBankOffset = System.getProperty("tritonus.fluidsynth.defaultsoundbankoffset");
-            if (strBankOffset != null && !strBankOffset.equals("")) {
+            if (strBankOffset != null && !strBankOffset.isEmpty()) {
                 setBankOffset(sfontID, Integer.parseInt(strBankOffset));
             }
         }
@@ -113,12 +113,6 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
         defaultbankSfontID = sfontID;
     }
 
-    @Override
-    protected void finalize() {
-        if (TDebug.TraceSynthesizer) TDebug.out("finalize: " + Long.toHexString(Pointer.nativeValue(synth.getValue())));
-        close();
-    }
-
     public int loadSoundFont(String filename) {
         int sfont_id;
         if (synth == null) {
@@ -135,7 +129,7 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
     }
 
     public void setGain(float gain) {
-        SynthLibrary.INSTANCE.fluid_synth_set_gain(synth, (float) gain);
+        SynthLibrary.INSTANCE.fluid_synth_set_gain(synth, gain);
     }
 
     /**
@@ -535,4 +529,4 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
     }
 }
 
-/* FluidSynthesizer.java */
+

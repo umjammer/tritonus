@@ -1,10 +1,4 @@
 /*
- * TFormatConversionProvider.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 1999, 2000 by Matthias Pfisterer
  *
  *
@@ -21,10 +15,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.share.sampled.convert;
 
@@ -48,7 +38,6 @@ public abstract class TFormatConversionProvider
     protected static final AudioFormat.Encoding[] EMPTY_ENCODING_ARRAY = new AudioFormat.Encoding[0];
     protected static final AudioFormat[] EMPTY_FORMAT_ARRAY = new AudioFormat[0];
 
-
     // $$fb2000-10-04: use AudioSystem.NOT_SPECIFIED for all fields.
     @Override
     public AudioInputStream getAudioInputStream(AudioFormat.Encoding targetEncoding, AudioInputStream audioInputStream) {
@@ -67,7 +56,6 @@ public abstract class TFormatConversionProvider
         }
         return getAudioInputStream(targetFormat, audioInputStream);
     }
-
 
     /**
      * WARNING: this method uses <code>getTargetFormats(AudioFormat.Encoding, AudioFormat)</code>
@@ -110,7 +98,6 @@ public abstract class TFormatConversionProvider
         return false;
     }
 
-
     /**
      * WARNING: this method uses <code>getTargetFormats(AudioFormat.Encoding, AudioFormat)</code>
      * which may create infinite loops if the latter is overwritten.
@@ -150,4 +137,3 @@ public abstract class TFormatConversionProvider
 }
 
 
-/* TFormatConversionProvider.java */

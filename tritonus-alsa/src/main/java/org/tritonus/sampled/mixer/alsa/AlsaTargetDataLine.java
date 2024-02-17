@@ -1,8 +1,3 @@
-/*
- * AlsaTargetDataLine.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999 - 2001 by Matthias Pfisterer
@@ -19,10 +14,6 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.sampled.mixer.alsa;
 
@@ -44,7 +35,6 @@ public class AlsaTargetDataLine
 
     private byte[] m_abSwapBuffer;
 
-
     public AlsaTargetDataLine(AlsaDataLineMixer mixer, AudioFormat format, int nBufferSize)
             throws LineUnavailableException {
         // TODO: use an info object that represents the mixer's capabilities (all possible formats for the line)
@@ -56,7 +46,7 @@ public class AlsaTargetDataLine
           format, nBufferSize*/);
     }
 
-
+    @Override
     protected int getAlsaStreamType() {
         return AlsaPcm.SND_PCM_STREAM_CAPTURE;
     }
@@ -78,7 +68,7 @@ public class AlsaTargetDataLine
   }
 */
 
-
+    @Override
     protected void stopImpl() {
         if (TDebug.TraceTargetDataLine) {
             TDebug.out("AlsaTargetDataLine.stopImpl(): called.");
@@ -89,14 +79,14 @@ public class AlsaTargetDataLine
         }
     }
 
-
+    @Override
     public int available() {
         // TODO:
         return -1;
     }
 
-
     // TODO: check if should block
+    @Override
     public int read(byte[] abData, int nOffset, int nLength) {
         if (TDebug.TraceTargetDataLine) {
             TDebug.out("AlsaTargetDataLine.read(): called.");
@@ -120,7 +110,6 @@ public class AlsaTargetDataLine
         }
         return nBytesRead;
     }
-
 
     // TODO: check if should block
     public int readImpl(byte[] abData, int nOffset, int nLength) {
@@ -149,29 +138,27 @@ public class AlsaTargetDataLine
         return nBytesRead;
     }
 
-
+    @Override
     public void drain() {
         // TODO:
     }
 
-
+    @Override
     public void flush() {
         // TODO:
     }
-
 
     public long getPosition() {
         // TODO:
         return 0;
     }
 
-
     /**
      * fGain is logarithmic!!
      */
+    @Override
     protected void setGain(float fGain) {
     }
-
 
     public class AlsaTargetDataLineGainControl
             extends FloatControl {
@@ -189,7 +176,6 @@ public class AlsaTargetDataLine
         // private float  m_fGain;
         // private boolean  m_bMuted;
 
-
         /*package*/ AlsaTargetDataLineGainControl() {
             super(FloatControl.Type.VOLUME, // or MASTER_GAIN ?
                     -96.0F, // MIN_GAIN,
@@ -204,7 +190,7 @@ public class AlsaTargetDataLine
             // m_bMuted = false; // should be included in a compund control?
         }
 
-
+        @Override
         public void setValue(float fGain) {
             fGain = Math.max(Math.min(fGain, getMaximum()), getMinimum());
             if (Math.abs(fGain - getValue()) > 1.0E9) {
@@ -223,14 +209,10 @@ public class AlsaTargetDataLine
   return MAX_GAIN;
   }
 
-
-
   public float getMinimum()
   {
   return MIN_GAIN;
   }
-
-
 
   public int getIncrements()
   {
@@ -238,14 +220,10 @@ public class AlsaTargetDataLine
   return GAIN_INCREMENTS;
   }
 
-
-
   public void fade(float fInitialGain, float fFinalGain, int nFrames)
   {
   // TODO:
   }
-
-
 
   public int getFadePrecision()
   {
@@ -253,14 +231,10 @@ public class AlsaTargetDataLine
   return -1;
   }
 
-
-
   public boolean getMute()
   {
   return m_bMuted;
   }
-
-
 
   public void setMute(boolean bMuted)
   {
@@ -279,9 +253,7 @@ public class AlsaTargetDataLine
   }
 */
 
-
     }
 }
 
 
-/* AlsaTargetDataLine.java */

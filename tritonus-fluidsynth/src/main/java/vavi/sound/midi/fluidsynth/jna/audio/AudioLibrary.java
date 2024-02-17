@@ -22,12 +22,10 @@ public interface AudioLibrary extends Library {
     AudioLibrary INSTANCE = Native.load(AudioLibrary.JNA_LIBRARY_NAME, AudioLibrary.class);
 
     /** <i>native declaration : fluidsynth/audio.h</i> */
-    public interface fluid_audio_func_t extends Callback {
+    interface fluid_audio_func_t extends Callback {
 
         int apply(Pointer data, int len, int nfx, PointerByReference fx, int nout, PointerByReference out);
     }
-
-    ;
 
     /**
      * @startlifecycle{Audio Driver}<br>
@@ -87,7 +85,7 @@ public interface AudioLibrary extends Library {
      * @endlifecycle<br> Original signature : <code>int fluid_audio_driver_register(const char**)</code><br>
      * <i>native declaration : fluidsynth/audio.h:122</i>
      */
-    int fluid_audio_driver_register(String adrivers[]);
+    int fluid_audio_driver_register(String[] adrivers);
 
     /**
      * @startlifecycle{File Renderer}<br>
@@ -149,7 +147,7 @@ public interface AudioLibrary extends Library {
      */
     int fluid_file_set_encoding_quality(PointerByReference dev, double q);
 
-    public static class fluid_audio_driver_t extends PointerType {
+    class fluid_audio_driver_t extends PointerType {
 
         public fluid_audio_driver_t(Pointer address) {
             super(address);
@@ -160,9 +158,7 @@ public interface AudioLibrary extends Library {
         }
     }
 
-    ;
-
-    public static class fluid_file_renderer_t extends PointerType {
+    class fluid_file_renderer_t extends PointerType {
 
         public fluid_file_renderer_t(Pointer address) {
             super(address);
@@ -173,5 +169,4 @@ public interface AudioLibrary extends Library {
         }
     }
 
-    ;
 }

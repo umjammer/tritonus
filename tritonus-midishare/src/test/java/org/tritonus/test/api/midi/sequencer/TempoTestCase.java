@@ -50,7 +50,7 @@ public class TempoTestCase
                     't', 'e', 'm', 'p', 'o'
             };
 
-
+    @Override
     protected void checkSequencer(Sequencer seq)
             throws Exception {
         System.err.println(seq.getDeviceInfo().getName());
@@ -122,7 +122,6 @@ public class TempoTestCase
         }
     }
 
-
     private void checkTempoValues(String strMessagePrefix,
                                   Sequencer seq,
                                   float fExpectedMPQ,
@@ -132,7 +131,6 @@ public class TempoTestCase
         assertEquals(fExpectedBPM, seq.getTempoInBPM(), DELTA, strMessagePrefix + " tempo in BPM");
         assertEquals(fExpectedFactor, seq.getTempoFactor(), DELTA, strMessagePrefix + " tempo factor");
     }
-
 
     private static Sequence createSequence()
             throws Exception {
@@ -147,20 +145,20 @@ public class TempoTestCase
         return sequence;
     }
 
-
     private static class TempoDetector
             implements MetaEventListener {
 
         private long[] m_alArrivalTimes;
 
-
+        @Override
         public void meta(MetaMessage message) {
             if (message.getType() == 6) {
-                System.arraycopy(m_alArrivalTimes, 0, m_alArrivalTimes, 1, 9);
+                for (int i = 0; i < 9; i++) {
+                    m_alArrivalTimes[i] = m_alArrivalTimes[i + 1];
+                }
                 m_alArrivalTimes[0] = System.currentTimeMillis();
             }
         }
-
 
         public float getTempoInMPQ() {
             return 0.0F;
@@ -169,4 +167,3 @@ public class TempoTestCase
 }
 
 
-/* TempoTestCase.java */

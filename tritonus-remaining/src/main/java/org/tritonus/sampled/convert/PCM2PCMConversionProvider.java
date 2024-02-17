@@ -1,8 +1,3 @@
-/*
- * PCM2PCMConversionProvider.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2000,2006,2007 by Florian Bomers
@@ -148,6 +143,7 @@ public class PCM2PCMConversionProvider extends TSimpleFormatConversionProvider {
     private static final int CONVERT_FLOAT = 100; // all other conversions
     private static final int CONVERT_NONE = 101; // no conversion necessary
 
+    @Override
     public AudioInputStream getAudioInputStream(AudioFormat targetFormat,
                                                 AudioInputStream sourceStream) {
         AudioFormat sourceFormat = sourceStream.getFormat();
@@ -186,6 +182,7 @@ public class PCM2PCMConversionProvider extends TSimpleFormatConversionProvider {
         throw new IllegalArgumentException("format conversion not supported");
     }
 
+    @Override
     public AudioFormat[] getTargetFormats(AudioFormat.Encoding targetEncoding,
                                           AudioFormat sourceFormat) {
         if (TDebug.TraceAudioConverter) {
@@ -219,6 +216,7 @@ public class PCM2PCMConversionProvider extends TSimpleFormatConversionProvider {
      * method overidden due to the difficult situation with the channel count
      * and the possible conversions possible.
      */
+    @Override
     public boolean isConversionSupported(AudioFormat targetFormat,
                                          AudioFormat sourceFormat) {
         targetFormat = replaceNotSpecified(sourceFormat, targetFormat);

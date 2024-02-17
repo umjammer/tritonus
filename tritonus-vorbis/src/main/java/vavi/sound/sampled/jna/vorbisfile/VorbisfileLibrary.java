@@ -29,151 +29,117 @@ public interface VorbisfileLibrary extends Library {
     NativeLibrary JNA_NATIVE_LIB = NativeLibrary.getInstance(VorbisfileLibrary.JNA_LIBRARY_NAME);
     VorbisfileLibrary INSTANCE = Native.load(VorbisfileLibrary.JNA_LIBRARY_NAME, VorbisfileLibrary.class);
     /** <i>native declaration : List<String>vorbis/vorbisfile.h</i> */
-    int NOTOPEN = (int) 0;
+    int NOTOPEN = 0;
     /** <i>native declaration : List<String>vorbis/vorbisfile.h</i> */
-    int PARTOPEN = (int) 1;
+    int PARTOPEN = 1;
     /** <i>native declaration : List<String>vorbis/vorbisfile.h</i> */
-    int OPENED = (int) 2;
+    int OPENED = 2;
     /** <i>native declaration : List<String>vorbis/vorbisfile.h</i> */
-    int STREAMSET = (int) 3;
+    int STREAMSET = 3;
     /** <i>native declaration : List<String>vorbis/vorbisfile.h</i> */
-    int INITSET = (int) 4;
+    int INITSET = 4;
 
     /** <i>native declaration : List<String>vorbis/vorbisfile.h:73</i> */
-    public interface OV_CALLBACKS_DEFAULT_expression_callback extends Callback {
+    interface OV_CALLBACKS_DEFAULT_expression_callback extends Callback {
 
         NativeLong apply(Pointer voidPtr1, NativeLong size_t1, NativeLong size_t2, Pointer voidPtr2);
     }
-
-    ;
 
     /** <i>native declaration : List<String>vorbis/vorbisfile.h:74</i> */
-    public interface OV_CALLBACKS_DEFAULT_expression_callback2 extends Callback {
+    interface OV_CALLBACKS_DEFAULT_expression_callback2 extends Callback {
 
         int apply(Pointer voidPtr1, int int1);
     }
-
-    ;
 
     /** <i>native declaration : List<String>vorbis/vorbisfile.h:75</i> */
-    public interface OV_CALLBACKS_DEFAULT_expression_callback3 extends Callback {
+    interface OV_CALLBACKS_DEFAULT_expression_callback3 extends Callback {
 
         int apply(Pointer voidPtr1);
     }
-
-    ;
 
     /** <i>native declaration : List<String>vorbis/vorbisfile.h:76</i> */
-    public interface OV_CALLBACKS_DEFAULT_expression_callback4 extends Callback {
+    interface OV_CALLBACKS_DEFAULT_expression_callback4 extends Callback {
 
         NativeLong apply(Pointer voidPtr1);
     }
-
-    ;
 
     /** <i>native declaration : List<String>vorbis/vorbisfile.h:80</i> */
-    public interface OV_CALLBACKS_NOCLOSE_expression_callback extends Callback {
+    interface OV_CALLBACKS_NOCLOSE_expression_callback extends Callback {
 
         NativeLong apply(Pointer voidPtr1, NativeLong size_t1, NativeLong size_t2, Pointer voidPtr2);
     }
-
-    ;
 
     /** <i>native declaration : List<String>vorbis/vorbisfile.h:81</i> */
-    public interface OV_CALLBACKS_NOCLOSE_expression_callback2 extends Callback {
+    interface OV_CALLBACKS_NOCLOSE_expression_callback2 extends Callback {
 
         int apply(Pointer voidPtr1, int int1);
     }
-
-    ;
 
     /** <i>native declaration : List<String>vorbis/vorbisfile.h:82</i> */
-    public interface OV_CALLBACKS_NOCLOSE_expression_callback3 extends Callback {
+    interface OV_CALLBACKS_NOCLOSE_expression_callback3 extends Callback {
 
         int apply(Pointer voidPtr1);
     }
-
-    ;
 
     /** <i>native declaration : List<String>vorbis/vorbisfile.h:83</i> */
-    public interface OV_CALLBACKS_NOCLOSE_expression_callback4 extends Callback {
+    interface OV_CALLBACKS_NOCLOSE_expression_callback4 extends Callback {
 
         NativeLong apply(Pointer voidPtr1);
     }
-
-    ;
 
     /** <i>native declaration : List<String>vorbis/vorbisfile.h:87</i> */
-    public interface OV_CALLBACKS_STREAMONLY_expression_callback extends Callback {
+    interface OV_CALLBACKS_STREAMONLY_expression_callback extends Callback {
 
         NativeLong apply(Pointer voidPtr1, NativeLong size_t1, NativeLong size_t2, Pointer voidPtr2);
     }
-
-    ;
 
     /** <i>native declaration : List<String>vorbis/vorbisfile.h:88</i> */
-    public interface OV_CALLBACKS_STREAMONLY_expression_callback2 extends Callback {
+    interface OV_CALLBACKS_STREAMONLY_expression_callback2 extends Callback {
 
         int apply(Pointer voidPtr1, int int1);
     }
 
-    ;
-
     /** <i>native declaration : List<String>vorbis/vorbisfile.h:89</i> */
-    public interface OV_CALLBACKS_STREAMONLY_expression_callback3 extends Callback {
+    interface OV_CALLBACKS_STREAMONLY_expression_callback3 extends Callback {
 
         int apply(Pointer voidPtr1);
     }
 
-    ;
-
     /** <i>native declaration : List<String>vorbis/vorbisfile.h:90</i> */
-    public interface OV_CALLBACKS_STREAMONLY_expression_callback4 extends Callback {
+    interface OV_CALLBACKS_STREAMONLY_expression_callback4 extends Callback {
 
         NativeLong apply(Pointer voidPtr1);
     }
 
-    ;
-
     /** <i>native declaration : List<String>vorbis/vorbisfile.h:94</i> */
-    public interface OV_CALLBACKS_STREAMONLY_NOCLOSE_expression_callback extends Callback {
+    interface OV_CALLBACKS_STREAMONLY_NOCLOSE_expression_callback extends Callback {
 
         NativeLong apply(Pointer voidPtr1, NativeLong size_t1, NativeLong size_t2, Pointer voidPtr2);
     }
 
-    ;
-
     /** <i>native declaration : List<String>vorbis/vorbisfile.h:95</i> */
-    public interface OV_CALLBACKS_STREAMONLY_NOCLOSE_expression_callback2 extends Callback {
+    interface OV_CALLBACKS_STREAMONLY_NOCLOSE_expression_callback2 extends Callback {
 
         int apply(Pointer voidPtr1, int int1);
     }
 
-    ;
-
     /** <i>native declaration : List<String>vorbis/vorbisfile.h:96</i> */
-    public interface OV_CALLBACKS_STREAMONLY_NOCLOSE_expression_callback3 extends Callback {
+    interface OV_CALLBACKS_STREAMONLY_NOCLOSE_expression_callback3 extends Callback {
 
         int apply(Pointer voidPtr1);
     }
 
-    ;
-
     /** <i>native declaration : List<String>vorbis/vorbisfile.h:97</i> */
-    public interface OV_CALLBACKS_STREAMONLY_NOCLOSE_expression_callback4 extends Callback {
+    interface OV_CALLBACKS_STREAMONLY_NOCLOSE_expression_callback4 extends Callback {
 
         NativeLong apply(Pointer voidPtr1);
     }
 
-    ;
-
     /** <i>native declaration : List<String>vorbis/vorbisfile.h:190</i> */
-    public interface ov_read_filter_filter_callback extends Callback {
+    interface ov_read_filter_filter_callback extends Callback {
 
         void apply(PointerByReference pcm, NativeLong channels, NativeLong samples, Pointer filter_param);
     }
-
-    ;
 
     /**
      * a few sets of convenient callbacks, especially for use under<br>
@@ -473,7 +439,7 @@ public interface VorbisfileLibrary extends Library {
      */
     int ov_halfrate_p(OggVorbis_File vf);
 
-    public static class FILE extends PointerType {
+    class FILE extends PointerType {
 
         public FILE(Pointer address) {
             super(address);
@@ -484,5 +450,4 @@ public interface VorbisfileLibrary extends Library {
         }
     }
 
-    ;
 }

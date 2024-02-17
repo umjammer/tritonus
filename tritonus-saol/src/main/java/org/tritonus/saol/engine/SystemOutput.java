@@ -1,8 +1,3 @@
-/*
- * SystemOutput.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2002 by Matthias Pfisterer
@@ -19,10 +14,6 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.saol.engine;
 
@@ -53,7 +44,6 @@ public interface SystemOutput
     void emit()
             throws IOException;
 
-
     /**
      * Closes the output destination.
      * This method must be called by the engine after execution,
@@ -66,4 +56,3 @@ public interface SystemOutput
 }
 
 
-/* SystemOutput.java */

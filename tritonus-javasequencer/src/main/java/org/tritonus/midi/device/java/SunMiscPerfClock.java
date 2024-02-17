@@ -1,8 +1,3 @@
-/*
- * SunMiscPerfClock.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2003 by Matthias Pfisterer
@@ -20,10 +15,6 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.midi.device.java;
 
 /**
@@ -35,11 +26,9 @@ public class SunMiscPerfClock
 
     private long m_nanos;
 
-
     public SunMiscPerfClock() {
         m_nanos = System.nanoTime();
     }
-
 
     /**
      * Retrieve system time in microseconds.
@@ -47,10 +36,10 @@ public class SunMiscPerfClock
      *
      * @return the system time in microseconds
      */
+    @Override
     public long getMicroseconds() {
         return (System.nanoTime() - m_nanos) / 1000;
     }
 }
 
 
-/* SunMiscPerfClock.java */

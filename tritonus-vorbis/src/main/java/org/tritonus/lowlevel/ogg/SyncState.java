@@ -1,10 +1,4 @@
 /*
- * SyncState.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2000 - 2001 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,10 +13,6 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.lowlevel.ogg;
 
@@ -183,4 +173,4 @@ public class SyncState {
     }
 }
 
-/* SyncState.java */
+

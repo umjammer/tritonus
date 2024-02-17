@@ -577,22 +577,16 @@ public abstract class AbstractFormatConversionProviderTest {
      * @param sourceFormat              the AudioFormat of the source AudioInputStream
      * @param sourceFrameLength         the frame length of the source AudioInputStream (can be
      *                                  <code>AudioSystem.NOT_SPECIFIED</code>)
-     * @param expectedTargetAudioFormat the expected AudioFormat of the resulting AudioInputStream
-     * @param expectedTargetFrameLength the expected frame length of the resulting AudioInputStream
-     *                                  (can be <code>AudioSystem.NOT_SPECIFIED</code>)
      * @throws AssertionFailedError if the AudioFormat or the frame length of the resulting
      *                              AudioInputStream do not match the expected values
      * @see FormatConversionProvider#getAudioInputStream(AudioFormat,
      * AudioInputStream)
      */
     protected void testGetAudioInputStreamAudioFormatUnsupported(
-            AudioFormat targetAudioFormat, AudioFormat sourceFormat,
-            int sourceFrameLength) {
-        AudioInputStream sourceStream = new AudioInputStream(null,
-                sourceFormat, sourceFrameLength);
+            AudioFormat targetAudioFormat, AudioFormat sourceFormat, int sourceFrameLength) {
+        AudioInputStream sourceStream = new AudioInputStream(null, sourceFormat, sourceFrameLength);
         try {
-            getFormatConversionProvider().getAudioInputStream(
-                    targetAudioFormat, sourceStream);
+            getFormatConversionProvider().getAudioInputStream(targetAudioFormat, sourceStream);
             Assertions.fail("Expecting IllegalArgumentException");
         } catch (IllegalArgumentException e) {
             // DO NOTHING
@@ -611,10 +605,8 @@ public abstract class AbstractFormatConversionProviderTest {
      */
     private void checkAudioInputStream(AudioInputStream actualAudioInputStream,
                                        AudioFormat expectedAudioFormat, long expectedFrameLength) {
-        assertTrue(expectedAudioFormat
-                .matches(actualAudioInputStream.getFormat()), "AudioInputStream.getFormat()");
-        assertEquals(expectedFrameLength,
-                actualAudioInputStream.getFrameLength(), "AudioInputStream.getFrameLength()");
+        assertTrue(expectedAudioFormat.matches(actualAudioInputStream.getFormat()), "AudioInputStream.getFormat()");
+        assertEquals(expectedFrameLength, actualAudioInputStream.getFrameLength(), "AudioInputStream.getFrameLength()");
     }
 
     /**
@@ -624,8 +616,7 @@ public abstract class AbstractFormatConversionProviderTest {
      * @param audioFormat
      * @return
      */
-    private static boolean contains(Collection<AudioFormat> audioFormats,
-                                    AudioFormat audioFormat) {
+    private static boolean contains(Collection<AudioFormat> audioFormats, AudioFormat audioFormat) {
         for (AudioFormat format : audioFormats) {
             if (format.matches(audioFormat)) {
                 return true;

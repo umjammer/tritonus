@@ -1,8 +1,3 @@
-/*
- * TMidiConfig.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999 - 2004 by Matthias Pfisterer
@@ -21,10 +16,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.core;
 
@@ -58,7 +49,6 @@ public class TMidiConfig {
     private static MidiDevice.Info sm_defaultSequencerInfo = null;
     private static MidiDevice.Info sm_defaultSynthesizerInfo = null;
 
-
     static {
         init();
     }
@@ -68,7 +58,6 @@ public class TMidiConfig {
      */
     private TMidiConfig() {
     }
-
 
     /**
      * Initialize the collections of providers and the default devices.
@@ -84,7 +73,6 @@ public class TMidiConfig {
         // ... TODO:
     }
 
-
     private static void registerMidiDeviceProviders() {
         ProviderRegistrationAction action;
         action = obj -> {
@@ -93,7 +81,6 @@ public class TMidiConfig {
         };
         TInit.registerClasses(MidiDeviceProvider.class, action);
     }
-
 
     private static void registerMidiFileReaders() {
         ProviderRegistrationAction action;
@@ -104,7 +91,6 @@ public class TMidiConfig {
         TInit.registerClasses(MidiFileReader.class, action);
     }
 
-
     private static void registerMidiFileWriters() {
         ProviderRegistrationAction action;
         action = obj -> {
@@ -113,7 +99,6 @@ public class TMidiConfig {
         };
         TInit.registerClasses(MidiFileWriter.class, action);
     }
-
 
     private static void registerSoundbankReaders() {
         ProviderRegistrationAction action;
@@ -124,9 +109,7 @@ public class TMidiConfig {
         TInit.registerClasses(SoundbankReader.class, action);
     }
 
-
     //////////////////////////////////////////////////////////////////
-
 
     public static synchronized void addMidiDeviceProvider(MidiDeviceProvider provider) {
         // TDebug.out("MidiDeviceProvider: " + provider);
@@ -167,17 +150,14 @@ public class TMidiConfig {
         }
     }
 
-
     public static synchronized void removeMidiDeviceProvider(MidiDeviceProvider provider) {
         getMidiDeviceProvidersImpl().remove(provider);
         // TODO: change default infos
     }
 
-
     public static synchronized Iterator<MidiDeviceProvider> getMidiDeviceProviders() {
         return getMidiDeviceProvidersImpl().iterator();
     }
-
 
     private static synchronized Set<MidiDeviceProvider> getMidiDeviceProvidersImpl() {
         if (sm_midiDeviceProviders == null) {
@@ -187,23 +167,19 @@ public class TMidiConfig {
         return sm_midiDeviceProviders;
     }
 
-
     public static synchronized void addMidiFileReader(MidiFileReader reader) {
         if (TDebug.TraceMidiConfig) TDebug.out("TMidiConfig.addMidiFileReader(): adding " + reader);
         getMidiFileReadersImpl().add(reader);
         if (TDebug.TraceMidiConfig) TDebug.out("TMidiConfig.addMidiFileReader(): size " + sm_midiFileReaders.size());
     }
 
-
     public static synchronized void removeMidiFileReader(MidiFileReader reader) {
         getMidiFileReadersImpl().remove(reader);
     }
 
-
     public static synchronized Iterator<MidiFileReader> getMidiFileReaders() {
         return getMidiFileReadersImpl().iterator();
     }
-
 
     private static synchronized Set<MidiFileReader> getMidiFileReadersImpl() {
         if (sm_midiFileReaders == null) {
@@ -213,21 +189,17 @@ public class TMidiConfig {
         return sm_midiFileReaders;
     }
 
-
     public static synchronized void addMidiFileWriter(MidiFileWriter reader) {
         getMidiFileWritersImpl().add(reader);
     }
-
 
     public static synchronized void removeMidiFileWriter(MidiFileWriter reader) {
         getMidiFileWritersImpl().remove(reader);
     }
 
-
     public static synchronized Iterator<MidiFileWriter> getMidiFileWriters() {
         return getMidiFileWritersImpl().iterator();
     }
-
 
     private static synchronized Set<MidiFileWriter> getMidiFileWritersImpl() {
         if (sm_midiFileWriters == null) {
@@ -237,21 +209,17 @@ public class TMidiConfig {
         return sm_midiFileWriters;
     }
 
-
     public static synchronized void addSoundbankReader(SoundbankReader reader) {
         getSoundbankReadersImpl().add(reader);
     }
-
 
     public static synchronized void removeSoundbankReader(SoundbankReader reader) {
         getSoundbankReadersImpl().remove(reader);
     }
 
-
     public static synchronized Iterator<SoundbankReader> getSoundbankReaders() {
         return getSoundbankReadersImpl().iterator();
     }
-
 
     private static synchronized Set<SoundbankReader> getSoundbankReadersImpl() {
         if (sm_soundbankReaders == null) {
@@ -261,21 +229,17 @@ public class TMidiConfig {
         return sm_soundbankReaders;
     }
 
-
     public static MidiDevice.Info getDefaultMidiInDeviceInfo() {
         return sm_defaultMidiInDeviceInfo;
     }
-
 
     public static MidiDevice.Info getDefaultMidiOutDeviceInfo() {
         return sm_defaultMidiOutDeviceInfo;
     }
 
-
     public static MidiDevice.Info getDefaultSynthesizerInfo() {
         return sm_defaultSynthesizerInfo;
     }
-
 
     public static MidiDevice.Info getDefaultSequencerInfo() {
         return sm_defaultSequencerInfo;
@@ -283,4 +247,3 @@ public class TMidiConfig {
 }
 
 
-/* TMidiConfig.java */

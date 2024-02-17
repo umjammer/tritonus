@@ -77,143 +77,107 @@ public interface SfontLibrary extends Library {
         int FLUID_SAMPLETYPE_ROM = 0x8000;
     }
 
-    ;
-
     /** <i>native declaration : include/fluidsynth/sfont.h</i> */
-    public interface fluid_sfloader_load_t extends Callback {
+    interface fluid_sfloader_load_t extends Callback {
 
         PointerByReference apply(Pointer loader, Pointer filename);
     }
 
-    ;
-
     /** <i>native declaration : include/fluidsynth/sfont.h</i> */
-    public interface fluid_sfloader_free_t extends Callback {
+    interface fluid_sfloader_free_t extends Callback {
 
         void apply(Pointer loader);
     }
 
-    ;
-
     /** <i>native declaration : include/fluidsynth/sfont.h</i> */
-    public interface fluid_sfloader_callback_open_t extends Callback {
+    interface fluid_sfloader_callback_open_t extends Callback {
 
         Pointer apply(Pointer filename);
     }
 
-    ;
-
     /** <i>native declaration : include/fluidsynth/sfont.h</i> */
-    public interface fluid_sfloader_callback_read_t extends Callback {
+    interface fluid_sfloader_callback_read_t extends Callback {
 
         int apply(Pointer buf, long count, Pointer handle);
     }
 
-    ;
-
     /** <i>native declaration : include/fluidsynth/sfont.h</i> */
-    public interface fluid_sfloader_callback_seek_t extends Callback {
+    interface fluid_sfloader_callback_seek_t extends Callback {
 
         int apply(Pointer handle, long offset, int origin);
     }
 
-    ;
-
     /** <i>native declaration : include/fluidsynth/sfont.h</i> */
-    public interface fluid_sfloader_callback_close_t extends Callback {
+    interface fluid_sfloader_callback_close_t extends Callback {
 
         int apply(Pointer handle);
     }
 
-    ;
-
     /** <i>native declaration : include/fluidsynth/sfont.h</i> */
-    public interface fluid_sfloader_callback_tell_t extends Callback {
+    interface fluid_sfloader_callback_tell_t extends Callback {
 
         long apply(Pointer handle);
     }
 
-    ;
-
     /** <i>native declaration : include/fluidsynth/sfont.h</i> */
-    public interface fluid_sfont_get_name_t extends Callback {
+    interface fluid_sfont_get_name_t extends Callback {
 
         String apply(Pointer sfont);
     }
 
-    ;
-
     /** <i>native declaration : include/fluidsynth/sfont.h</i> */
-    public interface fluid_sfont_get_preset_t extends Callback {
+    interface fluid_sfont_get_preset_t extends Callback {
 
         PointerByReference apply(Pointer sfont, int bank, int prenum);
     }
 
-    ;
-
     /** <i>native declaration : include/fluidsynth/sfont.h</i> */
-    public interface fluid_sfont_iteration_start_t extends Callback {
+    interface fluid_sfont_iteration_start_t extends Callback {
 
         void apply(Pointer sfont);
     }
 
-    ;
-
     /** <i>native declaration : include/fluidsynth/sfont.h</i> */
-    public interface fluid_sfont_iteration_next_t extends Callback {
+    interface fluid_sfont_iteration_next_t extends Callback {
 
         PointerByReference apply(Pointer sfont);
     }
 
-    ;
-
     /** <i>native declaration : include/fluidsynth/sfont.h</i> */
-    public interface fluid_sfont_free_t extends Callback {
+    interface fluid_sfont_free_t extends Callback {
 
         int apply(Pointer sfont);
     }
 
-    ;
-
     /** <i>native declaration : include/fluidsynth/sfont.h</i> */
-    public interface fluid_preset_get_name_t extends Callback {
+    interface fluid_preset_get_name_t extends Callback {
 
         String apply(Pointer preset);
     }
 
-    ;
-
     /** <i>native declaration : include/fluidsynth/sfont.h</i> */
-    public interface fluid_preset_get_banknum_t extends Callback {
+    interface fluid_preset_get_banknum_t extends Callback {
 
         int apply(Pointer preset);
     }
 
-    ;
-
     /** <i>native declaration : include/fluidsynth/sfont.h</i> */
-    public interface fluid_preset_get_num_t extends Callback {
+    interface fluid_preset_get_num_t extends Callback {
 
         int apply(Pointer preset);
     }
 
-    ;
-
     /** <i>native declaration : include/fluidsynth/sfont.h</i> */
-    public interface fluid_preset_noteon_t extends Callback {
+    interface fluid_preset_noteon_t extends Callback {
 
         int apply(Pointer preset, Pointer synth, int chan, int key, int vel);
     }
 
-    ;
-
     /** <i>native declaration : include/fluidsynth/sfont.h</i> */
-    public interface fluid_preset_free_t extends Callback {
+    interface fluid_preset_free_t extends Callback {
 
         void apply(Pointer preset);
     }
-
-    ;
 
     /**
      * @startlifecycle{SoundFont Loader}<br>
@@ -650,8 +614,6 @@ public interface SfontLibrary extends Library {
         }
     }
 
-    ;
-
     class fluid_sfloader_t extends PointerType {
 
         public fluid_sfloader_t(Pointer address) {
@@ -662,8 +624,6 @@ public interface SfontLibrary extends Library {
             super();
         }
     }
-
-    ;
 
     class fluid_preset_t extends PointerType {
 
@@ -676,8 +636,6 @@ public interface SfontLibrary extends Library {
         }
     }
 
-    ;
-
     class fluid_synth_t extends PointerType {
 
         public fluid_synth_t(Pointer address) {
@@ -689,5 +647,4 @@ public interface SfontLibrary extends Library {
         }
     }
 
-    ;
 }

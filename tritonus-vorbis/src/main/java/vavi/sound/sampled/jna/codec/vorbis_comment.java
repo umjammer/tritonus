@@ -29,6 +29,7 @@ public class vorbis_comment extends Structure {
         super();
     }
 
+    @Override
     protected List<String> getFieldOrder() {
         return Arrays.asList("user_comments", "comment_lengths", "comments", "vendor");
     }
@@ -54,11 +55,8 @@ public class vorbis_comment extends Structure {
 
     }
 
-    ;
-
     public static class ByValue extends vorbis_comment implements Structure.ByValue {
 
     }
 
-    ;
 }

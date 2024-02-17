@@ -31,32 +31,35 @@ public class Rpe {
     private static final int ENCODE = 0;
     private static final int DECODE = 1;
 
-    private short[] x = new short[40]; /* signal [0..39] OUT */
+    /** signal [0..39] OUT */
+    private short[] x = new short[40];
 
-    public void Gsm_RPE_Encoding(short[] e, /* -5..-1][0..39][40..44 IN/OUT */
-                                 short[] xmaxc, /* [0..3] Coded maximum amplitude OUT */
-                                 short[] Mc, /* [0..3] RPE grid selection OUT */
-                                 int xmaxc_Mc_index, /* Ref. point for xmaxc and Mc */
-                                 short[] xMc, /* [0..12] OUT */
-                                 int xMc_index /* Ref. for xmc, '+=13' */) {
+    /**
+     *
+     * @param e -5..-1][0..39][40..44 IN/OUT
+     * @param xmaxc [0..3] Coded maximum amplitude OUT
+     * @param Mc [0..3] RPE grid selection OUT
+     * @param xmaxc_Mc_index Ref. point for xmaxc and Mc
+     * @param xMc [0..12] OUT
+     * @param xMc_index Ref. for xmc, '+=13'
+     */
+    public void Gsm_RPE_Encoding(short[] e, short[] xmaxc, short[] Mc, int xmaxc_Mc_index, short[] xMc, int xMc_index) {
         short[] xM = new short[13];
         short[] xMp = new short[13];
 
-        Weighting_filter(e); /* Sets up the private data member 'x[40]' */
-        RPE_grid_selection(xM, Mc, xmaxc_Mc_index); /* Sets up xM[13] */
+        Weighting_filter(e); // Sets up the private data member 'x[40]'
+        RPE_grid_selection(xM, Mc, xmaxc_Mc_index); // Sets up xM[13]
 
-        /*
-         * Sets up xmc (13 array locations starting from xMc_index), xmaxc (one
-         * array location at xmaxc_Mc_index), exp_in and mant_in
-         */
+        // Sets up xmc (13 array locations starting from xMc_index), xmaxc (one
+        // array location at xmaxc_Mc_index), exp_in and mant_in
         APCM_quantization(xM, xMc, xMc_index, xmaxc, xmaxc_Mc_index);
-        /* Sets up xMp[13] */
+        // Sets up xMp[13]
         APCM_inverse_quantization(xMc, xMp, xMc_index, ENCODE);
 
         RPE_grid_positioning(Mc[xmaxc_Mc_index], xMp, e, ENCODE);
     }
 
-    /*
+    /**
      * The coefficients of the weighting filter are stored in a table (see table
      * 4.4). The following scaling is used:
      *
@@ -86,13 +89,13 @@ public class Rpe {
              * see an elegant way to optimize this. Do you?
              */
 
-            /* #define STEP( i, H ) (e[ k + i ] * H) */
+            // #define STEP( i, H ) (e[ k + i ] * H)
 
             L_result += (e[k + 0] * -134) + (e[k + 1] * -374)
-                    /* + STEP( 2, 0 ) no sense in adding zero */
+                    // + STEP( 2, 0 ) no sense in adding zero
                     + (e[k + 3] * 2054) + (e[k + 4] * 5741) + (e[k + 5] * 8192)
                     + (e[k + 6] * 5741) + (e[k + 7] * 2054)
-                    /* + STEP( 8, 0 ) no sense in adding zero */
+                    // + STEP( 8, 0 ) no sense in adding zero
                     + (e[k + 9] * -374) + (e[k + 10] * -134);
 
             /*
@@ -107,20 +110,20 @@ public class Rpe {
         }
     }
 
-    /*
+    /**
      * The signal x[0..39] is used to select the RPE grid which is represented
      * by Mc.
      */
-    private void RPE_grid_selection(short[] xM, /* [0..12] OUT */
-                                    short[] Mc_out, /* OUT */
+    private void RPE_grid_selection(short[] xM, // [0..12] OUT
+                                    short[] Mc_out, // OUT
                                     int Mc_index) {
         int L_result;
-        int EM; /* xxx should be L_EM? */
+        int EM; // xxx should be L_EM?
         short Mc = 0;
 
         int L_common_0_3;
 
-        /* common part of 0 and 3 */
+        // common part of 0 and 3
 
         L_result = 0;
 
@@ -130,12 +133,12 @@ public class Rpe {
 
         L_common_0_3 = L_result;
 
-        /* i = 0 */
+        // i = 0
         L_result += STEP(0, 0);
-        L_result <<= 1; /* implicit in L_MULT */
+        L_result <<= 1; // implicit in L_MULT
         EM = L_result;
 
-        /* i = 1 */
+        // i = 1
         L_result = 0;
         L_result += STEP(1, 0) + STEP(1, 1) + STEP(1, 2) + STEP(1, 3)
                 + STEP(1, 4) + STEP(1, 5) + STEP(1, 6) + STEP(1, 7)
@@ -148,7 +151,7 @@ public class Rpe {
             EM = L_result;
         }
 
-        /* i = 2 */
+        // i = 2
         L_result = 0;
         L_result += STEP(2, 0) + STEP(2, 1) + STEP(2, 2) + STEP(2, 3)
                 + STEP(2, 4) + STEP(2, 5) + STEP(2, 6) + STEP(2, 7)
@@ -161,7 +164,7 @@ public class Rpe {
             EM = L_result;
         }
 
-        /* i = 3 */
+        // i = 3
         L_result = L_common_0_3;
         L_result += STEP(3, 12);
         L_result <<= 1;
@@ -186,9 +189,9 @@ public class Rpe {
         return (L_temp * L_temp);
     }
 
-    private void APCM_quantization(short[] xM, /* [0..12] IN */
-                                   short[] xMc, /* [0..12] OUT */
-                                   int xMc_index, short[] xmaxc_out, /* OUT */
+    private void APCM_quantization(short[] xM, // [0..12] IN
+                                   short[] xMc, // [0..12] OUT
+                                   int xMc_index, short[] xmaxc_out, // OUT
                                    int xmaxc_index) throws IllegalArgumentException {
 
         int itest;
@@ -227,7 +230,7 @@ public class Rpe {
             }
 
             if (itest == 0) {
-                exp++; /* exp = add (exp, 1) */
+                exp++; // exp = add (exp, 1)
             }
         }
 
@@ -277,8 +280,8 @@ public class Rpe {
                     + mant + " is out of range. Should be >= 0 and <= 7");
         }
 
-        temp1 = (short) (6 - exp); /* normalization by the exponent */
-        temp2 = Gsm_Def.gsm_NRFAC[mant]; /* inverse mantissa */
+        temp1 = (short) (6 - exp); // normalization by the exponent
+        temp2 = Gsm_Def.gsm_NRFAC[mant]; // inverse mantissa
 
         for (int i = 0; i <= 12; i++) {
             if (!(temp1 >= 0 && temp1 < 16)) {
@@ -289,7 +292,7 @@ public class Rpe {
             temp = (short) (xM[i] << temp1);
             temp = Add.GSM_MULT(temp, temp2);
             temp = Add.SASR(temp, 12);
-            xMc[i + xMc_index] = (short) (temp + 4); /* see note below */
+            xMc[i + xMc_index] = (short) (temp + 4); // see note below
         }
 
         /*
@@ -335,7 +338,7 @@ public class Rpe {
         if (METHOD_ID == ENCODE) {
             exp_in = exp;
             mant_in = mant;
-        } else { /* DECODE */
+        } else { // DECODE
             exp_out = exp;
             mant_out = mant;
         }
@@ -345,13 +348,13 @@ public class Rpe {
      * From Gsm_Decoder
      * xmaxc short array
      */
-                                      short Mc_elem, /* From Gsm_Decoder Mc short array */
-                                      int xmc_start, /* Starting point for the three bit part of xmc */
-                                      short[] xmc, /* [0..12], 3 bits IN */
+                                      short Mc_elem, // From Gsm_Decoder Mc short array
+                                      int xmc_start, // Starting point for the three bit part of xmc
+                                      short[] xmc, // [0..12], 3 bits IN
                                       short[] erp /* [0..39] OUT */) {
         short[] xMp = new short[13];
 
-        /* exp_out and mant_out are modified in this method */
+        // exp_out and mant_out are modified in this method
         APCM_quantization_xmaxc_to_exp_mant(xmaxc_elem, DECODE);
 
         APCM_inverse_quantization(xmc, xMp, xmc_start, DECODE);
@@ -364,15 +367,15 @@ public class Rpe {
      * obtain the xMp[0..12] array. Table 4.6 is used to get the mantissa of
      * xmaxc (FAC[0..7]).
      */
-    public void APCM_inverse_quantization(short[] xmc, /* [0..12] IN */
-                                          short[] xMp, /* [0..12] OUT */
+    public void APCM_inverse_quantization(short[] xmc, // [0..12] IN
+                                          short[] xMp, // [0..12] OUT
                                           int xmc_start, int METHOD_ID) throws IllegalArgumentException {
         short temp, temp1, temp2, temp3;
 
         if (METHOD_ID == ENCODE) {
             temp1 = Gsm_Def.gsm_FAC[mant_in];
             temp2 = Add.GSM_SUB((short) 6, exp_in);
-        } else { /* DECODE */
+        } else { // DECODE
             temp1 = Gsm_Def.gsm_FAC[mant_out];
             temp2 = Add.GSM_SUB((short) 6, exp_out);
         }
@@ -381,14 +384,14 @@ public class Rpe {
         xMp_point = 0;
 
         for (int i = 0; i < 13; i++) {
-            /* restore sign */
+            // restore sign
             temp = (short) ((xmc[xmc_start++] << 1) - 7);
-            if (!(temp <= 7 && temp >= -7)) { /* 4 bit signed */
+            if (!(temp <= 7 && temp >= -7)) { // 4 bit signed
                 throw new IllegalArgumentException(
                         "APCM_inverse_quantization: temp = " + temp
                                 + " is out of range. Should be >= -7 and <= 7");
             }
-            temp = (short) (temp << 12); /* 16 bit signed */
+            temp = (short) (temp << 12); // 16 bit signed
             temp = Add.GSM_MULT_R(temp1, temp);
             temp = Add.GSM_ADD(temp, temp3);
             xMp[xMp_point++] = Add.gsm_asr(temp, temp2);
@@ -401,9 +404,9 @@ public class Rpe {
      * grid position selection and the xMp[0..12] decoded RPE samples which are
      * upsampled by a factor of 3 by inserting zero values.
      */
-    public static void RPE_grid_positioning(short Mc, /* grid position IN */
-                                            short[] xMp, /* [0..12] IN */
-                                            short[] ep, /* [0..39] OUT */
+    public static void RPE_grid_positioning(short Mc, // grid position IN
+                                            short[] xMp, // [0..12] IN
+                                            short[] ep, // [0..39] OUT
                                             int METHOD_ID) throws IllegalArgumentException {
         int i = 13;
         int xMp_index = 0;
@@ -411,7 +414,7 @@ public class Rpe {
 
         if (METHOD_ID == ENCODE) {
             ep_index = 5;
-        } else { /* Decode */
+        } else { // Decode
             ep_index = 0;
         }
 

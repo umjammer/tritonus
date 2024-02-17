@@ -42,14 +42,12 @@ public abstract class BaseMixerTestCase {
         }
     }
 
-
     /**
      * Get the prefix for error messages (containing the sequencer's name).
      */
     protected static String getMessagePrefix(Mixer mixer) {
         return mixer.getMixerInfo().getName();
     }
-
 
     protected interface Check {
 
@@ -59,4 +57,3 @@ public abstract class BaseMixerTestCase {
 }
 
 
-/* BaseMixerTestCase.java */

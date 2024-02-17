@@ -1,8 +1,3 @@
-/*
- * TAudioConfig.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999 - 2004 by Matthias Pfisterer
@@ -47,13 +42,11 @@ public class TAudioConfig {
 
     private static Mixer.Info sm_defaultMixerInfo;
 
-
     /**
      * Constructor to prevent instantiation.
      */
     private TAudioConfig() {
     }
-
 
     private static void registerAudioFileReaders() {
         ProviderRegistrationAction action;
@@ -64,7 +57,6 @@ public class TAudioConfig {
         TInit.registerClasses(AudioFileReader.class, action);
     }
 
-
     private static void registerAudioFileWriters() {
         ProviderRegistrationAction action;
         action = obj -> {
@@ -73,7 +65,6 @@ public class TAudioConfig {
         };
         TInit.registerClasses(AudioFileWriter.class, action);
     }
-
 
     private static void registerFormatConversionProviders() {
         ProviderRegistrationAction action;
@@ -84,7 +75,6 @@ public class TAudioConfig {
         TInit.registerClasses(FormatConversionProvider.class, action);
     }
 
-
     private static void registerMixerProviders() {
         ProviderRegistrationAction action;
         action = obj -> {
@@ -94,24 +84,19 @@ public class TAudioConfig {
         TInit.registerClasses(MixerProvider.class, action);
     }
 
-
     ////////////////////////////////////////////////////////////////
-
 
     public static synchronized void addAudioFileReader(AudioFileReader provider) {
         getAudioFileReadersImpl().add(provider);
     }
 
-
     public static synchronized void removeAudioFileReader(AudioFileReader provider) {
         getAudioFileReadersImpl().remove(provider);
     }
 
-
     public static synchronized Iterator<AudioFileReader> getAudioFileReaders() {
         return getAudioFileReadersImpl().iterator();
     }
-
 
     private static synchronized Set<AudioFileReader> getAudioFileReadersImpl() {
         if (sm_audioFileReaders == null) {
@@ -121,21 +106,17 @@ public class TAudioConfig {
         return sm_audioFileReaders;
     }
 
-
     public static synchronized void addAudioFileWriter(AudioFileWriter provider) {
         getAudioFileWritersImpl().add(provider);
     }
-
 
     public static synchronized void removeAudioFileWriter(AudioFileWriter provider) {
         getAudioFileWritersImpl().remove(provider);
     }
 
-
     public static synchronized Iterator<AudioFileWriter> getAudioFileWriters() {
         return getAudioFileWritersImpl().iterator();
     }
-
 
     private static synchronized Set<AudioFileWriter> getAudioFileWritersImpl() {
         if (sm_audioFileWriters == null) {
@@ -145,21 +126,17 @@ public class TAudioConfig {
         return sm_audioFileWriters;
     }
 
-
     public static synchronized void addFormatConversionProvider(FormatConversionProvider provider) {
         getFormatConversionProvidersImpl().add(provider);
     }
-
 
     public static synchronized void removeFormatConversionProvider(FormatConversionProvider provider) {
         getFormatConversionProvidersImpl().remove(provider);
     }
 
-
     public static synchronized Iterator<FormatConversionProvider> getFormatConversionProviders() {
         return getFormatConversionProvidersImpl().iterator();
     }
-
 
     private static synchronized Set<FormatConversionProvider> getFormatConversionProvidersImpl() {
         if (sm_formatConversionProviders == null) {
@@ -169,21 +146,17 @@ public class TAudioConfig {
         return sm_formatConversionProviders;
     }
 
-
     public static synchronized void addMixerProvider(MixerProvider provider) {
         getMixerProvidersImpl().add(provider);
     }
-
 
     public static synchronized void removeMixerProvider(MixerProvider provider) {
         getMixerProvidersImpl().remove(provider);
     }
 
-
     public static synchronized Iterator<MixerProvider> getMixerProviders() {
         return getMixerProvidersImpl().iterator();
     }
-
 
     private static synchronized Set<MixerProvider> getMixerProvidersImpl() {
         if (sm_mixerProviders == null) {
@@ -193,7 +166,6 @@ public class TAudioConfig {
         return sm_mixerProviders;
     }
 
-
     // TODO: a way to set the default mixer
     public static Mixer.Info getDefaultMixerInfo() {
         return sm_defaultMixerInfo;
@@ -202,4 +174,3 @@ public class TAudioConfig {
 }
 
 
-/* TAudioConfig.java */

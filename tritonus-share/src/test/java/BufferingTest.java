@@ -1,7 +1,6 @@
 /*
  * BufferingTest.java
  */
-
 /*
  *  Copyright (c) 1999, 2000 by Matthias Pfisterer
  *
@@ -67,4 +66,3 @@ public class BufferingTest {
 }
 
 
-/* BufferingTest.java */

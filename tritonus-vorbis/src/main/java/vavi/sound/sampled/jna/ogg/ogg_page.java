@@ -27,6 +27,7 @@ public class ogg_page extends Structure {
         super();
     }
 
+    @Override
     protected List<String> getFieldOrder() {
         return Arrays.asList("header", "header_len", "body", "body_len");
     }
@@ -51,11 +52,8 @@ public class ogg_page extends Structure {
 
     }
 
-    ;
-
     public static class ByValue extends ogg_page implements Structure.ByValue {
 
     }
 
-    ;
 }

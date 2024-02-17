@@ -1,8 +1,3 @@
-/*
- * CddaStreamHandler.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2001 - 2002 by Matthias Pfisterer
@@ -20,10 +15,6 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.sampled.cdda;
 
 import java.net.URL;
@@ -36,12 +27,13 @@ import org.tritonus.share.TDebug;
 public class CddaStreamHandler
         extends URLStreamHandler {
 
+    @Override
     public URLConnection openConnection(URL url) {
         if (TDebug.TraceCdda) {
             TDebug.out("CddaStreamHandler.openConnection():begin");
         }
         URLConnection connection;
-        if (url.getFile().equals("")) {
+        if (url.getFile().isEmpty()) {
             connection = new CddaDriveListConnection(url);
         } else if (url.getRef() == null) {
             connection = new CddaTocConnection(url);

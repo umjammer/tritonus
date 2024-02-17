@@ -60,4 +60,4 @@ public abstract class BaseSequencerTestCase {
     }
 }
 
-/* BaseSequencerTestCase.java */
+

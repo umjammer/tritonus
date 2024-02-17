@@ -1,8 +1,3 @@
-/*
- * CddaTocConnection.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2001 - 2002 by Matthias Pfisterer
@@ -19,10 +14,6 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.sampled.cdda;
 
@@ -46,7 +37,6 @@ public class CddaTocConnection
 
     private CddaMidLevel m_cddaMidLevel;
 
-
     // TODO: m_cdda.close();
     public CddaTocConnection(URL url) {
         super(url);
@@ -59,14 +49,14 @@ public class CddaTocConnection
         }
     }
 
-
+    @Override
     public void connect() {
         if (TDebug.TraceCdda) {
             TDebug.out("CddaTocConnection.connect(): begin");
         }
         if (!connected) {
             m_cddaMidLevel = CddaUtils.getCddaMidLevel();
-            if (m_strDevice.equals("")) {
+            if (m_strDevice.isEmpty()) {
                 m_strDevice = m_cddaMidLevel.getDefaultDevice();
             }
             connected = true;
@@ -76,7 +66,7 @@ public class CddaTocConnection
         }
     }
 
-
+    @Override
     public InputStream getInputStream()
             throws IOException {
         if (TDebug.TraceCdda) {
@@ -90,7 +80,6 @@ public class CddaTocConnection
         }
         return inputStream;
     }
-
 
     private String getDevice() {
         return m_strDevice;

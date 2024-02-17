@@ -1,8 +1,3 @@
-/*
- * CookedIoctlMidLevel.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2001 by Matthias Pfisterer
@@ -21,10 +16,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.lowlevel.cdda.cooked_ioctl;
 
@@ -48,11 +39,10 @@ import org.tritonus.share.sampled.convert.TAsynchronousFilteredAudioInputStream;
 public class CookedIoctlMidLevel
         implements CddaMidLevel {
 
-    private static int PCM_FRAMES_PER_CDDA_FRAME = 588;
-    private static AudioFormat CDDA_FORMAT = new AudioFormat(
+    private static final int PCM_FRAMES_PER_CDDA_FRAME = 588;
+    private static final AudioFormat CDDA_FORMAT = new AudioFormat(
             AudioFormat.Encoding.PCM_SIGNED,
             44100.0F, 16, 2, 4, 44100.0F, false);
-
 
     public CookedIoctlMidLevel() {
         if (TDebug.TraceCdda) {
@@ -63,22 +53,22 @@ public class CookedIoctlMidLevel
         }
     }
 
-
-    public Iterator getDevices() {
+    @Override
+    public Iterator<String> getDevices() {
         // TODO: hack!! should be replaced by a real search
         String[] astrDevices = {"/dev/cdrom"};
         // TODO: should make list immutable
         List<String> devicesList = Arrays.asList(astrDevices);
-        Iterator iterator = devicesList.iterator();
+        Iterator<String> iterator = devicesList.iterator();
         return iterator;
     }
 
-
+    @Override
     public String getDefaultDevice() {
         return "/dev/cdrom";
     }
 
-
+    @Override
     public InputStream getTocAsXml(String strDevice)
             throws IOException {
         if (TDebug.TraceCdda) {
@@ -118,7 +108,7 @@ public class CookedIoctlMidLevel
         return bais;
     }
 
-
+    @Override
     public AudioInputStream getTrack(String strDevice, int nTrack)
             throws IOException {
         if (TDebug.TraceCdda) {
@@ -131,18 +121,15 @@ public class CookedIoctlMidLevel
         return audioInputStream;
     }
 
-
     private static class CddaAudioInputStream
             extends TAsynchronousFilteredAudioInputStream {
 
         private static final int BUFFER_SIZE = CddaMidLevel.FRAME_SIZE;
 
-
         /**
          *
          */
         private CookedIoctl m_cookedIoctl;
-
 
         /**
          * This variable gets initialized to the total number of cdda
@@ -151,13 +138,11 @@ public class CookedIoctlMidLevel
          */
         private int m_nCddaFrameCount;
 
-
         /**
          * This variable contains the number of the cdda
          * frame where the current track begins.
          */
         private int m_nStartFrame;
-
 
         /**
          * This variable contains the number of the cdda
@@ -165,12 +150,10 @@ public class CookedIoctlMidLevel
          */
         private int m_nEndFrame;
 
-
         /**
          * Buffer for reading cdda frames.
          */
         private byte[] m_abData;
-
 
         /**
          * Track number.
@@ -211,50 +194,42 @@ public class CookedIoctlMidLevel
             }
         }
 
-
         private long getTrackLengthInPcmFrames() {
             int nCddaFrames = getTrackLengthInCddaFrames();
             long lLength = (long) nCddaFrames * PCM_FRAMES_PER_CDDA_FRAME;
             return lLength;
         }
 
-
         private int getTrackLengthInCddaFrames() {
             int nLength = getEndFrame() - getStartFrame() + 1;
             return nLength;
         }
 
-
         private int getStartFrame() {
             return m_nStartFrame;
         }
-
 
         private int getEndFrame() {
             return m_nEndFrame;
         }
 
-
         private int getTrack() {
             return m_nTrack;
         }
-
 
         private int getCurrentFrameNumber() {
             return m_nCddaFrameCount + m_nStartFrame;
         }
 
-
         private void increaseCurrentFrameNumber() {
             m_nCddaFrameCount++;
         }
-
 
         private boolean isEndOfTrackReached() {
             return m_nCddaFrameCount >= getTrackLengthInCddaFrames();
         }
 
-
+        @Override
         public void execute() {
             if (TDebug.TraceCdda) {
                 TDebug.out("CddaAudioInputStream.execute(): begin");
@@ -290,7 +265,7 @@ public class CookedIoctlMidLevel
             }
         }
 
-
+        @Override
         public void close()
                 throws IOException {
             m_cookedIoctl.close();

@@ -1,8 +1,3 @@
-/*
- * EsdRecordingStream.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999 by Matthias Pfisterer
@@ -22,10 +17,6 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.lowlevel.esd;
 
 import org.tritonus.share.TDebug;
@@ -42,7 +33,6 @@ public class EsdRecordingStream
     @SuppressWarnings("unused")
     private long m_lNativeHandle;
 
-
     static {
         Esd.loadNativeLibrary();
         if (TDebug.TraceEsdRecordingStreamNative) {
@@ -50,16 +40,13 @@ public class EsdRecordingStream
         }
     }
 
-
     public EsdRecordingStream() {
     }
-
 
     /**
      * Opens the connection to esd and initiates a stream.
      */
     public native void open(int nFormat, int nSampleRate);
-
 
     /**
      * Reads a block of data to esd.
@@ -71,7 +58,6 @@ public class EsdRecordingStream
      */
     public native int read(byte[] abData, int nOffset, int nLength);
 
-
     /**
      * Closes the connection to esd.
      * With this call, all resources inside esd associated with
@@ -81,9 +67,7 @@ public class EsdRecordingStream
      */
     public native void close();
 
-
     private static native void setTrace(boolean bTrace);
 }
 
 
-/* EsdRecordingStream.java */

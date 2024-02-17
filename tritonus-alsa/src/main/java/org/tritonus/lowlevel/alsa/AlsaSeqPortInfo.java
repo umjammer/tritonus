@@ -1,8 +1,3 @@
-/*
- * AlsaSeqPortInfo.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999 - 2001 by Matthias Pfisterer
@@ -21,10 +16,6 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.lowlevel.alsa;
 
 import org.tritonus.share.TDebug;
@@ -39,14 +30,12 @@ public class AlsaSeqPortInfo {
         }
     }
 
-
     /**
      * Holds the pointer to snd_seq_port_info_t
      * for the native code.
      * This must be long to be 64bit-clean.
      */
     /*private*/ long m_lNativeHandle;
-
 
     public AlsaSeqPortInfo() {
         if (TDebug.TraceAlsaSeqNative) {
@@ -61,24 +50,13 @@ public class AlsaSeqPortInfo {
         }
     }
 
-
-    protected void finalize() {
-        // TODO: call free()
-        // call super.finalize() first or last?
-        // and introduce a flag if free() has already been called?
-    }
-
-
     private native int malloc();
 
     public native void free();
 
-
     public native int getClient();
 
-
     public native int getPort();
-
 
     /**
      * Returns the name of the port.
@@ -86,27 +64,19 @@ public class AlsaSeqPortInfo {
      */
     public native String getName();
 
-
     public native int getCapability();
-
 
     public native int getType();
 
-
     public native int getMidiChannels();
-
 
     public native int getMidiVoices();
 
-
     public native int getSynthVoices();
-
 
     public native int getReadUse();
 
-
     public native int getWriteUse();
-
 
     public native int getPortSpecified();
 
@@ -114,4 +84,3 @@ public class AlsaSeqPortInfo {
 }
 
 
-/* AlsaSeqPortInfo.java */

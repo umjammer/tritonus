@@ -1,10 +1,4 @@
 /*
- * AlsaPcmHWParamsFormatMask.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2000 - 2001 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,10 +13,6 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.lowlevel.alsa;
 
@@ -42,7 +32,6 @@ public class AlsaPcmHWParamsFormatMask {
     @SuppressWarnings("unused")
     private long m_lNativeHandle;
 
-
     public AlsaPcmHWParamsFormatMask() {
         if (TDebug.TraceAlsaPcmNative) {
             TDebug.out("AlsaPcmHWParamsFormatMask.<init>(): begin");
@@ -56,19 +45,10 @@ public class AlsaPcmHWParamsFormatMask {
         }
     }
 
-
-    protected void finalize() {
-        // TODO: call free()
-        // call super.finalize() first or last?
-        // and introduce a flag if free() has already been called?
-    }
-
-
     /**
      * Calls snd_pcm_format_mask_malloc().
      */
     private native int malloc();
-
 
     /**
      * Calls snd_pcm_format_mask_free().
@@ -90,20 +70,15 @@ public class AlsaPcmHWParamsFormatMask {
      */
     public native boolean test(int nFormat);
 
-
     /**
      * Calls snd_pcm_format_mask_set().
      */
     public native void set(int nFormat);
 
-
     /**
      * Calls snd_pcm_format_mask_reset().
      */
     public native void reset(int nFormat);
-
-
 }
 
 
-/* AlsaPcmHWParamsFormatMask.java */

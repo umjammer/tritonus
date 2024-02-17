@@ -1,8 +1,3 @@
-/*
- * SystemCurrentTimeMillisClock.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2003 by Matthias Pfisterer
@@ -20,10 +15,6 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.midi.device.java;
 
 
@@ -40,10 +31,10 @@ public class SystemCurrentTimeMillisClock
      *
      * @return the system time in microseconds
      */
+    @Override
     public long getMicroseconds() {
         return System.currentTimeMillis() * 1000;
     }
 }
 
 
-/* SystemCurrentTimeMillisClock.java */

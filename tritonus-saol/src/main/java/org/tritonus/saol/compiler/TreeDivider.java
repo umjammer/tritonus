@@ -1,8 +1,3 @@
-/*
- * TreeDivider.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2002 by Matthias Pfisterer
@@ -19,10 +14,6 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.saol.compiler;
 
@@ -44,7 +35,6 @@ public class TreeDivider
     private TemplateTable m_templateTable;
     private AGlobaldeclGlobaldecl m_globalNode;
 
-
     public TreeDivider(InstrumentTable instrumentTable,
                        UserOpcodeTable opcodeTable,
                        TemplateTable templateTable) {
@@ -54,32 +44,31 @@ public class TreeDivider
         m_globalNode = null;
     }
 
-
     public AGlobaldeclGlobaldecl getGlobalNode() {
         return m_globalNode;
     }
 
-
+    @Override
     public void inAInstrdeclInstrdecl(AInstrdeclInstrdecl node) {
         String strInstrumentName = node.getIdentifier().getText();
         InstrumentEntry instrument = new InstrumentEntry(strInstrumentName, node);
         m_instrumentTable.add(instrument);
     }
 
-
+    @Override
     public void inAOpcodedeclOpcodedecl(AOpcodedeclOpcodedecl node) {
         String strOpcodeName = node.getIdentifier().getText();
         UserOpcodeEntry opcode = new UserOpcodeEntry(strOpcodeName, node);
         m_opcodeTable.add(opcode);
     }
 
-
+    @Override
     public void inAGlobaldeclGlobaldecl(AGlobaldeclGlobaldecl node) {
         TDebug.out("TreeDivider.inAGlobaldeclGlobaldecl()");
         m_globalNode = node;
     }
 
-
+    @Override
     public void inATemplatedeclTemplatedecl(ATemplatedeclTemplatedecl node) {
         // hack to make compile
         String strTemplateName = "---";
@@ -90,4 +79,3 @@ public class TreeDivider
 }
 
 
-/* TreeDivider.java */

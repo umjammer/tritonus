@@ -10,7 +10,6 @@ public class URLTest {
         URL.setURLStreamHandlerFactory(new CddaURLStreamHandlerFactory());
     }
 
-
     public static void main(String[] args) {
         String strURL = args[0];
         URL url = null;

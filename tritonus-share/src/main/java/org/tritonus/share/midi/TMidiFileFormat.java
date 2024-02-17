@@ -1,8 +1,3 @@
-/*
- * TMidiFileFormat.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2000 by Matthias Pfisterer
@@ -22,10 +17,6 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.share.midi;
 
 import javax.sound.midi.MidiFileFormat;
@@ -42,7 +33,6 @@ public class TMidiFileFormat
 
     private int m_nTrackCount;
 
-
     public TMidiFileFormat(int nType,
                            float fDivisionType,
                            int nResolution,
@@ -57,11 +47,9 @@ public class TMidiFileFormat
         m_nTrackCount = nTrackCount;
     }
 
-
     public int getTrackCount() {
         return m_nTrackCount;
     }
 }
 
 
-/* TMidiFileFormat.java */

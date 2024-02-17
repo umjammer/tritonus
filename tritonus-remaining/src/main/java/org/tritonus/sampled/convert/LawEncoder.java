@@ -1,8 +1,3 @@
-/*
- * LawEncoder.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2007 by Florian Bomers
@@ -21,10 +16,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.sampled.convert;
 
@@ -175,7 +166,6 @@ public class LawEncoder extends TEncodingFormatConversionProvider {
                 src.getSampleRate(),
                 false);
     }
-
 
     static class ToUlawStream extends TSynchronousFilteredAudioInputStream {
 

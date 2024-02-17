@@ -1,8 +1,3 @@
-/*
- * TEncodingFormatConversionProvider.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2000 by Florian Bomers
@@ -21,10 +16,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.share.sampled.convert;
 
@@ -68,7 +59,6 @@ public abstract class TEncodingFormatConversionProvider
             Collection<AudioFormat> targetFormats) {
         super(sourceFormats, targetFormats);
     }
-
 
     /**
      * This implementation assumes that the converter can convert
@@ -119,4 +109,4 @@ public abstract class TEncodingFormatConversionProvider
 
 }
 
-/* TEncodingFormatConversionProvider.java */
+

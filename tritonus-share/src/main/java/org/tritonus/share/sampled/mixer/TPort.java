@@ -1,8 +1,3 @@
-/*
- * TPort.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999 - 2004 by Matthias Pfisterer
@@ -21,10 +16,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.share.sampled.mixer;
 
@@ -46,7 +37,6 @@ public class TPort
         super(mixer, info);
     }
 
-
     public TPort(TMixer mixer,
                  Line.Info info,
                  Collection<Control> controls) {
@@ -55,4 +45,3 @@ public class TPort
 }
 
 
-/* TPort.java */

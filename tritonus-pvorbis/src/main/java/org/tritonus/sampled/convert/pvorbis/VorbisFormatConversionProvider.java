@@ -1,8 +1,3 @@
-/*
- * VorbisFormatConversionProvider.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999 - 2004 by Matthias Pfisterer
@@ -20,10 +15,6 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.sampled.convert.pvorbis;
 
@@ -326,6 +317,7 @@ public class VorbisFormatConversionProvider extends TEncodingFormatConversionPro
             }
         }
 
+        @Override
         public void execute() {
             if (TDebug.TraceAudioConverter) {
                 logger.log(Level.TRACE, ">execute(): begin");
@@ -551,6 +543,7 @@ public class VorbisFormatConversionProvider extends TEncodingFormatConversionPro
         /**
          * Callback from circular buffer.
          */
+        @Override
         public void execute() {
             if (TDebug.TraceAudioConverter) {
                 logger.log(Level.TRACE, ">DecodedVorbisAudioInputStream.execute(): begin");

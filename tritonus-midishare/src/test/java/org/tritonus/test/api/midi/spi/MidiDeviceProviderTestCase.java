@@ -47,7 +47,6 @@ public class MidiDeviceProviderTestCase {
         });
     }
 
-
     private void checkIsDeviceSupported(MidiDevice.Info[] aSupportedInfos,
                                         MidiDevice.Info testInfo,
                                         boolean bExpectedResult)
@@ -55,7 +54,6 @@ public class MidiDeviceProviderTestCase {
         MidiDeviceProvider provider = new TestMidiDeviceProvider(aSupportedInfos);
         assertFalse(bExpectedResult ^ provider.isDeviceSupported(testInfo), "empty supported array");
     }
-
 
     /**
      * Concrete subclass of MidiDeviceProvider.
@@ -65,23 +63,21 @@ public class MidiDeviceProviderTestCase {
 
         MidiDevice.Info[] m_aSupportedInfos;
 
-
         public TestMidiDeviceProvider(MidiDevice.Info[] aSupportedInfos) {
             m_aSupportedInfos = aSupportedInfos;
         }
 
-
+        @Override
         public MidiDevice.Info[] getDeviceInfo() {
             return m_aSupportedInfos;
         }
 
-
+        @Override
         public MidiDevice getDevice(MidiDevice.Info info) {
             return null;
         }
 
     }
-
 
     /**
      * Accessible subclass of MidiDevice.Info.
@@ -97,4 +93,3 @@ public class MidiDeviceProviderTestCase {
 }
 
 
-/* MidiDeviceProviderTestCase.java */

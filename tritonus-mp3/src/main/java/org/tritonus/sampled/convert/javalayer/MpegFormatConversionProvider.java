@@ -134,7 +134,6 @@ public class MpegFormatConversionProvider extends TEncodingFormatConversionProvi
             new AudioFormat(MPEG2DOT5L3, -1.0F, -1, 2, -1, -1.0F, true),
     };
 
-
     private static final AudioFormat[] OUTPUT_FORMATS = {
             // mono, 16 bit signed
             new AudioFormat(PCM_SIGNED, -1.0F, 16, 1, 2, -1.0F, false),
@@ -321,6 +320,7 @@ public class MpegFormatConversionProvider extends TEncodingFormatConversionProvi
             m_decoder.setOutputBuffer(m_oBuffer);
         }
 
+        @Override
         public void execute() {
             try {
                 Header header = m_bitstream.readFrame();
@@ -347,8 +347,7 @@ public class MpegFormatConversionProvider extends TEncodingFormatConversionProvi
         }
 
         @Override
-        public void close()
-                throws IOException {
+        public void close() throws IOException {
             super.close();
             m_encodedStream.close();
         }
@@ -423,9 +422,9 @@ public class MpegFormatConversionProvider extends TEncodingFormatConversionProvi
         boolean failed = (failSupported == isConversionSupported) || (failAIS != (convertedAIS == null));
         if (failed || verbose) {
             if (failed) {
-                System.out.println("" + (testNum) + ".ERROR:");
+                System.out.println((testNum) + ".ERROR:");
             } else {
-                System.out.println("" + (testNum) + ".PASSED:");
+                System.out.println((testNum) + ".PASSED:");
             }
             System.out.println("    source: " + source);
             System.out.println("    target: " + target);
@@ -449,11 +448,10 @@ public class MpegFormatConversionProvider extends TEncodingFormatConversionProvi
                 }
             }
         } else if (!failed) {
-            System.out.println("" + (testNum) + ".OK");
+            System.out.println((testNum) + ".OK");
         }
         return failed ? 0 : 1;
     }
-
 
     /** unit test */
     public static void main(String[] args) {
@@ -508,4 +506,3 @@ public class MpegFormatConversionProvider extends TEncodingFormatConversionProvi
 }
 
 
-/* MpegFormatConversionProvider.java */

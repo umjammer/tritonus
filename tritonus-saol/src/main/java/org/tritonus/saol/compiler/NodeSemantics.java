@@ -33,7 +33,6 @@ public class NodeSemantics extends WidthAndRate {
         this(nWidth, nRate, null);
     }
 
-
     public NodeSemantics(Object aux) {
         this(WidthAndRate.WIDTH_UNKNOWN, WidthAndRate.RATE_UNKNOWN, aux);
     }
@@ -48,4 +47,4 @@ public class NodeSemantics extends WidthAndRate {
     }
 }
 
-/* NodeSemantics.java */
+

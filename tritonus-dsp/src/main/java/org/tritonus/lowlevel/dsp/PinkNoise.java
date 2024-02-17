@@ -1,8 +1,3 @@
-/*
- * PinkNoise.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2002 by Matthias Pfisterer
@@ -19,10 +14,6 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.lowlevel.dsp;
 
@@ -62,23 +53,20 @@ public class PinkNoise
     private Source m_whiteNoiseSource;
     private float m_b0, m_b1, m_b2, m_b3, m_b4, m_b5, m_b6;
 
-
     public PinkNoise(float fSampleRate) {
         this(fSampleRate, new WhiteNoise());
     }
 
-
     public PinkNoise(float fSampleRate, Random random) {
         this(fSampleRate, new WhiteNoise(random));
     }
-
 
     private PinkNoise(float fSampleRate, Source whiteNoiseSource) {
         // TODO: scale filter for sample rate
         m_whiteNoiseSource = whiteNoiseSource;
     }
 
-
+    @Override
     public float process() {
         float fWhite = m_whiteNoiseSource.process();
 
@@ -95,4 +83,3 @@ public class PinkNoise
 }
 
 
-/* PinkNoise.java */

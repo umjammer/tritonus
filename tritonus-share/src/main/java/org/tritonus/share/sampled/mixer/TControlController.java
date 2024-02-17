@@ -1,8 +1,3 @@
-/*
- * TControlController.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2001 by Matthias Pfisterer
@@ -22,10 +17,6 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.share.sampled.mixer;
 
 import org.tritonus.share.TDebug;
@@ -44,21 +35,20 @@ public class TControlController
      */
     private TCompoundControl m_parentControl;
 
-
     public TControlController() {
     }
 
-
+    @Override
     public void setParentControl(TCompoundControl compoundControl) {
         m_parentControl = compoundControl;
     }
 
-
+    @Override
     public TCompoundControl getParentControl() {
         return m_parentControl;
     }
 
-
+    @Override
     public void commit() {
         if (TDebug.TraceControl) {
             TDebug.out("TControlController.commit(): called [" + this.getClass().getName() + "]");
@@ -70,4 +60,3 @@ public class TControlController
 }
 
 
-/* TControlController.java */

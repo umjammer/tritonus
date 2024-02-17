@@ -1,8 +1,3 @@
-/*
- * TVolumeUtils.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999 by Matthias Pfisterer
@@ -20,10 +15,6 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.share.sampled;
 
 
@@ -32,11 +23,9 @@ public class TVolumeUtils {
     private static final double FACTOR1 = 20.0 / Math.log(10.0);
     private static final double FACTOR2 = 1 / 20.0;
 
-
     public static double lin2log(double dLinear) {
         return FACTOR1 * Math.log(dLinear);
     }
-
 
     public static double log2lin(double dLogarithmic) {
         return Math.pow(10.0, dLogarithmic * FACTOR2);
@@ -44,4 +33,3 @@ public class TVolumeUtils {
 }
 
 
-/* TVolumeUtils.java */

@@ -31,12 +31,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AlsaMixerTestCase {
 
-    private static final boolean DEBUG = true;
-
-
     @Test
-    public void testOpenClose()
-            throws Exception {
+    public void testOpenClose() throws Exception {
         int nDefaultMixerCard = 0;
         String strMixerName = "hw:" + nDefaultMixerCard;
         AlsaMixer mixer = new AlsaMixer(strMixerName);
@@ -46,20 +42,16 @@ public class AlsaMixerTestCase {
         mixer.close();
     }
 
-
     @Test
-    public void testControls()
-            throws Exception {
+    public void testControls() throws Exception {
         int nDefaultMixerCard = 0;
         String strMixerName = "hw:" + nDefaultMixerCard;
         AlsaMixer mixer = new AlsaMixer(strMixerName);
-        List controlsList = null; // mixer.getControls();
+        List<?> controlsList = null; // mixer.getControls();
         assertNotNull(controlsList);
-        assertTrue(controlsList.size() > 0);
+        assertTrue(!controlsList.isEmpty());
         mixer.close();
     }
-
 }
 
 
-/* AlsaMixerTestCase.java */

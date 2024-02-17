@@ -1,10 +1,4 @@
 /*
- * EsdTargetDataLine.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 1999, 2000 by Matthias Pfisterer
  *
  *
@@ -21,10 +15,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.sampled.mixer.esd;
 
@@ -47,7 +37,6 @@ public class EsdTargetDataLine
         implements TargetDataLine {
     // private static final Class[] CONTROL_CLASSES = {GainControl.class};
 
-
     private EsdRecordingStream m_esdStream;
     private boolean m_bSwapBytes;
     private byte[] m_abSwapBuffer;
@@ -56,7 +45,6 @@ public class EsdTargetDataLine
      * Only used if m_bSwapBytes is true.
      */
     private int m_nBytesPerSample;
-
 
     public EsdTargetDataLine(TMixer mixer, AudioFormat format, int nBufferSize)
             throws LineUnavailableException {
@@ -69,7 +57,7 @@ public class EsdTargetDataLine
             format, nBufferSize*/);
     }
 
-
+    @Override
     protected void openImpl() {
         if (TDebug.TraceTargetDataLine) {
             TDebug.out("EsdTargetDataLine.openImpl(): called.");
@@ -119,23 +107,21 @@ public class EsdTargetDataLine
   }
  }
 
-
-
  public void stop()
  {
   setStarted(false);
  }
 */
 
-
+    @Override
     public int available() {
         // TODO:
         return -1;
         // return m_nAvailable;
     }
 
-
     // TODO: check if should block
+    @Override
     public int read(byte[] abData, int nOffset, int nLength) {
         if (TDebug.TraceTargetDataLine) {
             TDebug.out("EsdTargetDataLine.read(): called.");
@@ -160,34 +146,31 @@ public class EsdTargetDataLine
         return nBytesRead;
     }
 
-
+    @Override
     public void closeImpl() {
         m_esdStream.close();
     }
 
-
+    @Override
     public void drain() {
         // TODO:
     }
 
-
+    @Override
     public void flush() {
         // TODO:
     }
-
 
     public long getPosition() {
         // TODO:
         return 0;
     }
 
-
     /**
      * fGain is logarithmic!!
      */
     protected void setGain(float fGain) {
     }
-
 
     public class EsdTargetDataLineGainControl
             extends FloatControl {
@@ -205,7 +188,6 @@ public class EsdTargetDataLine
         // private float		m_fGain;
         // private boolean		m_bMuted;
 
-
         /*package*/ EsdTargetDataLineGainControl() {
             super(FloatControl.Type.VOLUME,    // or MASTER_GAIN ?
                     -96.0F,    // MIN_GAIN,
@@ -220,7 +202,7 @@ public class EsdTargetDataLine
             // m_bMuted = false;	// should be included in a compund control?
         }
 
-
+        @Override
         public void setValue(float fGain) {
             fGain = Math.max(Math.min(fGain, getMaximum()), getMinimum());
             if (Math.abs(fGain - getValue()) > 1.0E9) {
@@ -239,14 +221,10 @@ public class EsdTargetDataLine
   return MAX_GAIN;
   }
 
-
-
   public float getMinimum()
   {
   return MIN_GAIN;
   }
-
-
 
   public int getIncrements()
   {
@@ -254,14 +232,10 @@ public class EsdTargetDataLine
   return GAIN_INCREMENTS;
   }
 
-
-
   public void fade(float fInitialGain, float fFinalGain, int nFrames)
   {
   // TODO:
   }
-
-
 
   public int getFadePrecision()
   {
@@ -269,14 +243,10 @@ public class EsdTargetDataLine
   return -1;
   }
 
-
-
   public boolean getMute()
   {
   return m_bMuted;
   }
-
-
 
   public void setMute(boolean bMuted)
   {
@@ -295,9 +265,7 @@ public class EsdTargetDataLine
   }
 */
 
-
     }
 }
 
 
-/* EsdTargetDataLine.java */

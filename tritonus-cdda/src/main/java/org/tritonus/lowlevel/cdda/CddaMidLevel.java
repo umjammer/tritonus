@@ -1,8 +1,3 @@
-/*
- * CddaMidLevel.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2001 by Matthias Pfisterer
@@ -22,10 +17,6 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.lowlevel.cdda;
 
 import java.io.IOException;
@@ -44,7 +35,6 @@ public interface CddaMidLevel {
      */
     int FRAME_SIZE = 2352;
 
-
     // TODO: document!!
 
     /**
@@ -57,8 +47,7 @@ public interface CddaMidLevel {
      * String starts with exactely one '/'.
      * Should only those drives returned that have an audio CD in?
      */
-    Iterator getDevices();
-
+    Iterator<String> getDevices();
 
     /**
      * Gives the default drive.
@@ -70,7 +59,6 @@ public interface CddaMidLevel {
      */
     String getDefaultDevice();
 
-
     InputStream getTocAsXml(String strDevice)
             throws IOException;
 
@@ -79,4 +67,3 @@ public interface CddaMidLevel {
 }
 
 
-/* CddaMidLevel.java */

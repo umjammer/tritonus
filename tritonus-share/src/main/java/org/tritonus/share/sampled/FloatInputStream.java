@@ -1,8 +1,3 @@
-/*
- * FloatInputStream.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2006 by Florian Bomers
@@ -124,6 +119,7 @@ public class FloatInputStream extends AudioInputStream implements
     }
 
     // interface FloatSampleInput
+    @Override
     public void read(FloatSampleBuffer outBuffer) {
         read(outBuffer, 0, outBuffer.getSampleCount());
     }
@@ -136,6 +132,7 @@ public class FloatInputStream extends AudioInputStream implements
         FloatSampleBuffer.checkFormatSupported(format);
     }
 
+    @Override
     public void read(FloatSampleBuffer buffer, int offset, int sampleCount) {
         if (sampleCount == 0 || isDone()) {
             buffer.setSampleCount(offset, true);
@@ -192,6 +189,7 @@ public class FloatInputStream extends AudioInputStream implements
      *
      * @see org.tritonus.share.sampled.FloatSampleInput#getChannels()
      */
+    @Override
     public int getChannels() {
         return getFormat().getChannels();
     }
@@ -201,6 +199,7 @@ public class FloatInputStream extends AudioInputStream implements
      *
      * @see org.tritonus.share.sampled.FloatSampleInput#getSampleRate()
      */
+    @Override
     public float getSampleRate() {
         return getFormat().getSampleRate();
     }
@@ -210,6 +209,7 @@ public class FloatInputStream extends AudioInputStream implements
      *
      * @see org.tritonus.share.sampled.FloatSampleInput#isDone()
      */
+    @Override
     public boolean isDone() {
         if (!eofReached && sourceInput != null) {
             return sourceInput.isDone();

@@ -1,8 +1,3 @@
-/*
- * AiffTool.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2000 by Florian Bomers
@@ -21,10 +16,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.sampled.file;
 
@@ -82,4 +73,4 @@ public class AiffTool {
 
 }
 
-/* AiffTool.java */
+

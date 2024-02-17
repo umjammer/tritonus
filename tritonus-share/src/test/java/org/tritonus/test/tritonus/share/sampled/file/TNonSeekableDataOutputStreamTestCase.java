@@ -31,19 +31,18 @@ public class TNonSeekableDataOutputStreamTestCase
 
     ByteArrayOutputStream m_baos;
 
-
     public TNonSeekableDataOutputStreamTestCase() {
         super(false);  // non seekable
     }
 
-
+    @Override
     protected TDataOutputStream createDataOutputStream()
             throws Exception {
         m_baos = new ByteArrayOutputStream();
         return new TNonSeekableDataOutputStream(m_baos);
     }
 
-
+    @Override
     protected byte[] getWrittenData()
             throws Exception {
         return m_baos.toByteArray();
@@ -51,4 +50,3 @@ public class TNonSeekableDataOutputStreamTestCase
 }
 
 
-/* TNonSeekableDataOutputStreamTestCase.java */

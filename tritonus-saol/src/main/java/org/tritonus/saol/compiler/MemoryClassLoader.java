@@ -1,8 +1,3 @@
-/*
- * MemoryClassLoader.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2002 by Matthias Pfisterer
@@ -20,10 +15,6 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.saol.compiler;
 
 import java.io.ByteArrayOutputStream;
@@ -33,12 +24,11 @@ import java.io.FileInputStream;
 public class MemoryClassLoader
         extends ClassLoader {
 
-    public Class findClass(String strName,
+    public Class<?> findClass(String strName,
                            byte[] classData) {
         Class<?> cls = defineClass(strName, classData, 0, classData.length);
         return cls;
     }
-
 
     /* For testing
      */
@@ -55,7 +45,7 @@ public class MemoryClassLoader
                 baos.write(buffer, 0, nRead);
             }
             MemoryClassLoader mcl = new MemoryClassLoader();
-            Class cls = mcl.findClass("Instrument", baos.toByteArray());
+            Class<?> cls = mcl.findClass("Instrument", baos.toByteArray());
             System.out.println("class loaded: " + cls.getName());
         } catch (Exception e) {
             e.printStackTrace();
@@ -64,4 +54,3 @@ public class MemoryClassLoader
 }
 
 
-/* MemoryClassLoader.java */

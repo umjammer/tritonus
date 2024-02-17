@@ -1,8 +1,3 @@
-/*
- * CdparanoiaMidLevel.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2001 by Matthias Pfisterer
@@ -21,10 +16,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.lowlevel.cdda.cdparanoia;
 
@@ -48,11 +39,10 @@ import org.tritonus.share.sampled.convert.TAsynchronousFilteredAudioInputStream;
 public class CdparanoiaMidLevel
         implements CddaMidLevel {
 
-    private static int PCM_FRAMES_PER_CDDA_FRAME = 588;
-    private static AudioFormat CDDA_FORMAT = new AudioFormat(
+    private static final int PCM_FRAMES_PER_CDDA_FRAME = 588;
+    private static final AudioFormat CDDA_FORMAT = new AudioFormat(
             AudioFormat.Encoding.PCM_SIGNED,
             44100.0F, 16, 2, 4, 44100.0F, false);
-
 
     public CdparanoiaMidLevel() {
         if (TDebug.TraceCdda) {
@@ -63,8 +53,8 @@ public class CdparanoiaMidLevel
         }
     }
 
-
-    public Iterator getDevices() {
+    @Override
+    public Iterator<String> getDevices() {
         if (TDebug.TraceCdda) {
             TDebug.out("CdparanoiaMidLevel.getDevices(): begin");
         }
@@ -72,19 +62,19 @@ public class CdparanoiaMidLevel
         String[] astrDevices = {"/dev/cdrom"};
         // TODO: should make list immutable
         List<String> devicesList = Arrays.asList(astrDevices);
-        Iterator iterator = devicesList.iterator();
+        Iterator<String> iterator = devicesList.iterator();
         if (TDebug.TraceCdda) {
             TDebug.out("CdparanoiaMidLevel.getDevices(): end");
         }
         return iterator;
     }
 
-
+    @Override
     public String getDefaultDevice() {
         return "/dev/cdrom";
     }
 
-
+    @Override
     public InputStream getTocAsXml(String strDevice)
             throws IOException {
         if (TDebug.TraceCdda) {
@@ -133,7 +123,7 @@ public class CdparanoiaMidLevel
         return bais;
     }
 
-
+    @Override
     public AudioInputStream getTrack(String strDevice, int nTrack)
             throws IOException {
         if (TDebug.TraceCdda) {
@@ -146,18 +136,15 @@ public class CdparanoiaMidLevel
         return audioInputStream;
     }
 
-
     private static class CddaAudioInputStream
             extends TAsynchronousFilteredAudioInputStream {
 
         private static final int BUFFER_SIZE = CddaMidLevel.FRAME_SIZE;
 
-
         /**
          *
          */
         private Cdparanoia m_cdparanoia;
-
 
         /**
          * This variable gets initialized to the total number of cdda
@@ -166,13 +153,11 @@ public class CdparanoiaMidLevel
          */
         private int m_nCddaFrameCount;
 
-
         /**
          * This variable contains the number of the cdda
          * frame where the current track begins.
          */
         private int m_nStartFrame;
-
 
         /**
          * This variable contains the number of the cdda
@@ -180,15 +165,12 @@ public class CdparanoiaMidLevel
          */
         private int m_nEndFrame;
 
-
         private int m_nLengthCount;
-
 
         /**
          * Buffer for reading cdda frames.
          */
         private byte[] m_abData;
-
 
         /**
          * Track number.
@@ -237,39 +219,32 @@ public class CdparanoiaMidLevel
             }
         }
 
-
         private long getTrackLengthInPcmFrames() {
             int nCddaFrames = getTrackLengthInCddaFrames();
             long lLength = (long) nCddaFrames * PCM_FRAMES_PER_CDDA_FRAME;
             return lLength;
         }
 
-
         private int getTrackLengthInCddaFrames() {
             int nLength = getEndFrame() - getStartFrame() + 1;
             return nLength;
         }
 
-
         private int getStartFrame() {
             return m_nStartFrame;
         }
-
 
         private int getEndFrame() {
             return m_nEndFrame;
         }
 
-
         private int getTrack() {
             return m_nTrack;
         }
 
-
         private int getCurrentFrameNumber() {
             return m_nCddaFrameCount + m_nStartFrame;
         }
-
 
         private void increaseCurrentFrameNumber() {
             m_nCddaFrameCount++;
@@ -281,12 +256,11 @@ public class CdparanoiaMidLevel
 //    return m_nCddaFrameCount >= getTrackLengthInCddaFrames();
 //   }
 
-
         private boolean isEndOfTrackReached() {
             return m_nLengthCount == 0;
         }
 
-
+        @Override
         public void execute() {
             if (TDebug.TraceCdda) {
                 TDebug.out("CddaAudioInputStream.execute(): begin");
@@ -326,7 +300,7 @@ public class CdparanoiaMidLevel
             }
         }
 
-
+        @Override
         public void close()
                 throws IOException {
             m_cdparanoia.close();

@@ -1,8 +1,3 @@
-/*
- * TCompoundControlType.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2001 by Matthias Pfisterer
@@ -19,10 +14,6 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.share.sampled.mixer;
 
@@ -49,4 +40,3 @@ public class TCompoundControlType
 }
 
 
-/* TCompoundControlType.java */

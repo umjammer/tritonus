@@ -1,8 +1,3 @@
-/*
- * AlsaSeqClientInfo.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999 - 2001 by Matthias Pfisterer
@@ -21,10 +16,6 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.lowlevel.alsa;
 
 import org.tritonus.share.TDebug;
@@ -39,14 +30,12 @@ public class AlsaSeqClientInfo {
         }
     }
 
-
     /**
      * Holds the pointer to snd_seq_port_info_t
      * for the native code.
      * This must be long to be 64bit-clean.
      */
     /*private*/ long m_lNativeHandle;
-
 
     public AlsaSeqClientInfo() {
         if (TDebug.TraceAlsaSeqNative) {
@@ -64,18 +53,9 @@ public class AlsaSeqClientInfo {
         }
     }
 
-
-    protected void finalize() {
-        // TODO: call free()
-        // call super.finalize() first or last?
-        // and introduce a flag if free() has already been called?
-    }
-
-
     private native int malloc();
 
     public native void free();
-
 
     public native int getClient();
 
@@ -93,13 +73,11 @@ public class AlsaSeqClientInfo {
 
     public native int getEventLost();
 
-
     public native void setClient(int nClient);
 
     public native void setName(String strName);
 
     public native void setBroadcastFilter(int nBroadcastFilter);
-
 
     public native void setErrorBounce(int nErrorBounce);
 
@@ -108,4 +86,3 @@ public class AlsaSeqClientInfo {
 }
 
 
-/* AlsaSeqClientInfo.java */

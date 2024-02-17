@@ -27,7 +27,9 @@ import javax.sound.midi.Transmitter;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
@@ -55,15 +57,14 @@ public class MidiDeviceTestCase
     public void testOpenClose()
             throws Exception {
         Check check = device -> {
-            assertTrue(!device.isOpen(), "closed");
+            assertFalse(device.isOpen(), "closed");
             device.open();
             assertTrue(device.isOpen(), "open");
             device.close();
-            assertTrue(!device.isOpen(), "closed");
+            assertFalse(device.isOpen(), "closed");
         };
         checkMidiDevice(check);
     }
-
 
     @Test
     public void testGetMicrosecondPosition()
@@ -81,7 +82,6 @@ public class MidiDeviceTestCase
         checkMidiDevice(check);
     }
 
-
     @Test
     public void testGetMaxReceivers()
             throws Exception {
@@ -92,7 +92,6 @@ public class MidiDeviceTestCase
         checkMidiDevice(check);
     }
 
-
     @Test
     public void testGetMaxTransmitters()
             throws Exception {
@@ -102,7 +101,6 @@ public class MidiDeviceTestCase
         };
         checkMidiDevice(check);
     }
-
 
     @Test
     public void testGetReceiver()
@@ -116,7 +114,7 @@ public class MidiDeviceTestCase
                     aReceivers[i] = device.getReceiver();
                     assertNotNull(aReceivers[i], "getReceiver()");
                     for (int j = 0; j < i - 1; j++) {
-                        assertTrue(aReceivers[i] != aReceivers[j], "Receiver objects unique");
+                        assertNotSame(aReceivers[i], aReceivers[j], "Receiver objects unique");
                     }
                 }
                 for (int i = 0; i < nMax; i++) {
@@ -126,7 +124,6 @@ public class MidiDeviceTestCase
         };
         checkMidiDevice(check);
     }
-
 
     @Test
     public void testGetReceivers()
@@ -145,15 +142,13 @@ public class MidiDeviceTestCase
                 assertEquals(nMax, device.getReceivers().size(), "getReceivers() length");
                 for (int i = 0; i < nMax; i++) {
                     aReceivers[i].close();
-                    assertTrue(!device.getReceivers().contains(aReceivers[i]),
-                            "Receiver not in getReceivers()");
+                    assertFalse(device.getReceivers().contains(aReceivers[i]), "Receiver not in getReceivers()");
                 }
             }
             assertEquals(0, device.getReceivers().size(), "getReceivers() length");
         };
         checkMidiDevice(check);
     }
-
 
     @Test
     public void testGetTransmitter()
@@ -167,7 +162,7 @@ public class MidiDeviceTestCase
                     aTransmitters[i] = device.getTransmitter();
                     assertNotNull(aTransmitters[i], "getTransmitter()");
                     for (int j = 0; j < i - 1; j++) {
-                        assertTrue(aTransmitters[i] != aTransmitters[j], "Transmitter objects unique");
+                        assertNotSame(aTransmitters[i], aTransmitters[j], "Transmitter objects unique");
                     }
                 }
                 for (int i = 0; i < nMax; i++) {
@@ -177,7 +172,6 @@ public class MidiDeviceTestCase
         };
         checkMidiDevice(check);
     }
-
 
     @Test
     public void testGetTransmitters()
@@ -196,8 +190,7 @@ public class MidiDeviceTestCase
                 assertEquals(nMax, device.getTransmitters().size(), "getTransmitters() length");
                 for (int i = 0; i < nMax; i++) {
                     aTransmitters[i].close();
-                    assertTrue(!device.getTransmitters().contains(aTransmitters[i]),
-                            "Transmitter not in getTransmitters()");
+                    assertFalse(device.getTransmitters().contains(aTransmitters[i]), "Transmitter not in getTransmitters()");
                 }
             }
             assertEquals(0, device.getTransmitters().size(), "getTransmitters() length");
@@ -207,4 +200,3 @@ public class MidiDeviceTestCase
 }
 
 
-/* MidiDeviceTestCase.java */

@@ -20,29 +20,29 @@ public interface VorbisencLibrary extends Library {
     NativeLibrary JNA_NATIVE_LIB = NativeLibrary.getInstance(VorbisencLibrary.JNA_LIBRARY_NAME);
     VorbisencLibrary INSTANCE = Native.load(VorbisencLibrary.JNA_LIBRARY_NAME, VorbisencLibrary.class);
     /** <i>native declaration : List<String>vorbis/vorbisenc.h</i> */
-    int OV_ECTL_RATEMANAGE2_GET = (int) 0x14;
+    int OV_ECTL_RATEMANAGE2_GET = 0x14;
     /** <i>native declaration : List<String>vorbis/vorbisenc.h</i> */
-    int OV_ECTL_RATEMANAGE2_SET = (int) 0x15;
+    int OV_ECTL_RATEMANAGE2_SET = 0x15;
     /** <i>native declaration : List<String>vorbis/vorbisenc.h</i> */
-    int OV_ECTL_LOWPASS_GET = (int) 0x20;
+    int OV_ECTL_LOWPASS_GET = 0x20;
     /** <i>native declaration : List<String>vorbis/vorbisenc.h</i> */
-    int OV_ECTL_LOWPASS_SET = (int) 0x21;
+    int OV_ECTL_LOWPASS_SET = 0x21;
     /** <i>native declaration : List<String>vorbis/vorbisenc.h</i> */
-    int OV_ECTL_IBLOCK_GET = (int) 0x30;
+    int OV_ECTL_IBLOCK_GET = 0x30;
     /** <i>native declaration : List<String>vorbis/vorbisenc.h</i> */
-    int OV_ECTL_IBLOCK_SET = (int) 0x31;
+    int OV_ECTL_IBLOCK_SET = 0x31;
     /** <i>native declaration : List<String>vorbis/vorbisenc.h</i> */
-    int OV_ECTL_COUPLING_GET = (int) 0x40;
+    int OV_ECTL_COUPLING_GET = 0x40;
     /** <i>native declaration : List<String>vorbis/vorbisenc.h</i> */
-    int OV_ECTL_COUPLING_SET = (int) 0x41;
+    int OV_ECTL_COUPLING_SET = 0x41;
     /** <i>native declaration : List<String>vorbis/vorbisenc.h</i> */
-    int OV_ECTL_RATEMANAGE_GET = (int) 0x10;
+    int OV_ECTL_RATEMANAGE_GET = 0x10;
     /** <i>native declaration : List<String>vorbis/vorbisenc.h</i> */
-    int OV_ECTL_RATEMANAGE_SET = (int) 0x11;
+    int OV_ECTL_RATEMANAGE_SET = 0x11;
     /** <i>native declaration : List<String>vorbis/vorbisenc.h</i> */
-    int OV_ECTL_RATEMANAGE_AVG = (int) 0x12;
+    int OV_ECTL_RATEMANAGE_AVG = 0x12;
     /** <i>native declaration : List<String>vorbis/vorbisenc.h</i> */
-    int OV_ECTL_RATEMANAGE_HARD = (int) 0x13;
+    int OV_ECTL_RATEMANAGE_HARD = 0x13;
 
     /**
      * This is the primary function within libvorbisenc for setting up managed<br>

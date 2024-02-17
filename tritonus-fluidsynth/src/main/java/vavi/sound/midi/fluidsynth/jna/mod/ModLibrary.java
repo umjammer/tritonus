@@ -28,7 +28,7 @@ public interface ModLibrary extends Library {
      * <i>native declaration : fluidsynth/mod.h:44</i><br>
      * enum values
      */
-    public static interface fluid_mod_flags {
+    interface fluid_mod_flags {
 
         /**
          * < Mapping function is positive<br>
@@ -87,15 +87,13 @@ public interface ModLibrary extends Library {
         int FLUID_MOD_SIN = 0x80;
     }
 
-    ;
-
     /**
      * General controller (if #FLUID_MOD_GC in flags).  This<br>
      * corresponds to SoundFont 2.04 PDF section 8.2.1<br>
      * <i>native declaration : fluidsynth/mod.h:64</i><br>
      * enum values
      */
-    public static interface fluid_mod_src {
+    interface fluid_mod_src {
 
         /**
          * < No source controller<br>
@@ -133,8 +131,6 @@ public interface ModLibrary extends Library {
          */
         int FLUID_MOD_PITCHWHEELSENS = 16;
     }
-
-    ;
 
     /**
      * @startlifecycle{Modulator}<br> Original signature : <code>fluid_mod_t* new_fluid_mod()</code><br>

@@ -182,6 +182,7 @@ public class Mp3LameFormatConversionProvider extends
         super(Arrays.asList(INPUT_FORMATS), Arrays.asList(OUTPUT_FORMATS));
     }
 
+    @Override
     public AudioInputStream getAudioInputStream(AudioFormat targetFormat,
                                                 AudioInputStream audioInputStream) {
         if (isConversionSupported(targetFormat, audioInputStream.getFormat())) {
@@ -193,6 +194,7 @@ public class Mp3LameFormatConversionProvider extends
         }
     }
 
+    @Override
     public AudioFormat[] getTargetFormats(AudioFormat.Encoding targetEncoding,
                                           AudioFormat sourceFormat) {
         if (TDebug.TraceAudioConverter) {
@@ -271,6 +273,7 @@ public class Mp3LameFormatConversionProvider extends
     }
 
     // implementation from TSimpleFormatConversionProvider
+    @Override
     protected int getFrameSize(AudioFormat.Encoding encoding, float sampleRate,
                                int sampleSize, int channels, float frameRate, boolean bigEndian,
                                int oldFrameSize) {
@@ -300,6 +303,7 @@ public class Mp3LameFormatConversionProvider extends
             encodedBuffer = new byte[encoder.getMP3BufferSize()];
         }
 
+        @Override
         public void execute() {
             try {
                 if (encoder == null) {
@@ -338,6 +342,7 @@ public class Mp3LameFormatConversionProvider extends
             }
         }
 
+        @Override
         public void close() throws IOException {
             super.close();
             pcmStream.close();

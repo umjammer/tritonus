@@ -1,8 +1,3 @@
-/*
- * GSMFormatConversionProvider.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999 - 2001 by Matthias Pfisterer
@@ -90,6 +85,7 @@ public class GSMDecoderFormatConversionProvider extends
         }
     }
 
+    @Override
     public AudioInputStream getAudioInputStream(AudioFormat targetFormat,
                                                 AudioInputStream audioInputStream) {
         if (TDebug.TraceAudioConverter) {
@@ -182,6 +178,7 @@ public class GSMDecoderFormatConversionProvider extends
             }
         }
 
+        @Override
         public void execute() {
             if (TDebug.TraceAudioConverter) {
                 TDebug.out("DecodedGSMAudioInputStream.execute(): begin");
@@ -250,6 +247,7 @@ public class GSMDecoderFormatConversionProvider extends
             return getFormat().isBigEndian();
         }
 
+        @Override
         public void close() throws IOException {
             super.close();
             m_encodedStream.close();
@@ -257,4 +255,4 @@ public class GSMDecoderFormatConversionProvider extends
     }
 }
 
-/* GSMFormatConversionProvider.java */
+

@@ -1,8 +1,3 @@
-/*
- * TSequencer.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999 - 2003 by Matthias Pfisterer
@@ -19,10 +14,6 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.share.midi;
 
@@ -55,9 +46,7 @@ public abstract class TSequencer
     // This is for use in Collection.toArray(Object[]).
     private static final SyncMode[] EMPTY_SYNCMODE_ARRAY = new SyncMode[0];
 
-
     private boolean m_bRunning;
-
 
     /**
      * The Sequence to play or to record to.
@@ -110,7 +99,6 @@ public abstract class TSequencer
      */
     private int m_nLoopCount;
 
-
     /**
      *
      */
@@ -143,7 +131,7 @@ public abstract class TSequencer
         setLoopCount(0);
     }
 
-
+    @Override
     public void setSequence(Sequence sequence)
             throws InvalidMidiDataException {
         // TODO: what if playing is in progress?
@@ -160,7 +148,6 @@ public abstract class TSequencer
         }
     }
 
-
     /**
      * Set Sequence.
      * Subclasses that need to be informed when a Sequence is set
@@ -171,49 +158,49 @@ public abstract class TSequencer
     protected void setSequenceImpl() {
     }
 
-
+    @Override
     public void setSequence(InputStream inputStream)
             throws InvalidMidiDataException, IOException {
         Sequence sequence = MidiSystem.getSequence(inputStream);
         setSequence(sequence);
     }
 
-
+    @Override
     public Sequence getSequence() {
         return m_sequence;
     }
 
-
+    @Override
     public void setLoopStartPoint(long lTick) {
         m_lLoopStartPoint = lTick;
     }
 
-
+    @Override
     public long getLoopStartPoint() {
         return m_lLoopStartPoint;
     }
 
-
+    @Override
     public void setLoopEndPoint(long lTick) {
         m_lLoopEndPoint = lTick;
     }
 
-
+    @Override
     public long getLoopEndPoint() {
         return m_lLoopEndPoint;
     }
 
-
+    @Override
     public void setLoopCount(int nLoopCount) {
         m_nLoopCount = nLoopCount;
     }
 
-
+    @Override
     public int getLoopCount() {
         return m_nLoopCount;
     }
 
-
+    @Override
     public synchronized void start() {
         checkOpen();
         if (!isRunning()) {
@@ -223,7 +210,6 @@ public abstract class TSequencer
         }
     }
 
-
     /**
      * Subclasses have to override this method to be notified of
      * starting.
@@ -231,7 +217,7 @@ public abstract class TSequencer
     protected void startImpl() {
     }
 
-
+    @Override
     public synchronized void stop() {
         checkOpen();
         if (isRunning()) {
@@ -240,7 +226,6 @@ public abstract class TSequencer
         }
     }
 
-
     /**
      * Subclasses have to override this method to be notified of
      * stopping.
@@ -248,11 +233,10 @@ public abstract class TSequencer
     protected void stopImpl() {
     }
 
-
+    @Override
     public synchronized boolean isRunning() {
         return m_bRunning;
     }
-
 
     /**
      * Checks if the Sequencer is open.
@@ -270,7 +254,6 @@ public abstract class TSequencer
         }
     }
 
-
     /**
      * Returns the resolution (ticks per quarter) of the current sequence.
      * If no sequence is set, a bogus default value != 0 is returned.
@@ -286,7 +269,6 @@ public abstract class TSequencer
         return nResolution;
     }
 
-
     protected void setRealTempo() {
         float fTempoFactor = getTempoFactor();
         if (fTempoFactor == 0.0F) {
@@ -299,45 +281,44 @@ public abstract class TSequencer
         setTempoImpl(fRealTempo);
     }
 
-
+    @Override
     public float getTempoInBPM() {
         float fBPM = MPQ_BPM_FACTOR / getTempoInMPQ();
         return fBPM;
     }
 
-
+    @Override
     public void setTempoInBPM(float fBPM) {
         float fMPQ = MPQ_BPM_FACTOR / fBPM;
         setTempoInMPQ(fMPQ);
     }
 
-
+    @Override
     public float getTempoInMPQ() {
         return m_fNominalTempoInMPQ;
     }
-
 
     /**
      * Sets the tempo.
      * Implementation classes are required to call this method for changing
      * the tempo in reaction to a tempo change event.
      */
+    @Override
     public void setTempoInMPQ(float fMPQ) {
         m_fNominalTempoInMPQ = fMPQ;
         setRealTempo();
     }
 
-
+    @Override
     public void setTempoFactor(float fFactor) {
         m_fTempoFactor = fFactor;
         setRealTempo();
     }
 
-
+    @Override
     public float getTempoFactor() {
         return m_fTempoFactor;
     }
-
 
     /**
      * Change the tempo of the native sequencer part.
@@ -348,8 +329,8 @@ public abstract class TSequencer
      */
     protected abstract void setTempoImpl(float fMPQ);
 
-
     // NOTE: has to be redefined if recording is done natively
+    @Override
     public long getTickLength() {
         long lLength = 0;
         if (getSequence() != null) {
@@ -358,8 +339,8 @@ public abstract class TSequencer
         return lLength;
     }
 
-
     // NOTE: has to be redefined if recording is done natively
+    @Override
     public long getMicrosecondLength() {
         long lLength = 0;
         if (getSequence() != null) {
@@ -368,27 +349,25 @@ public abstract class TSequencer
         return lLength;
     }
 
-
+    @Override
     public boolean addMetaEventListener(MetaEventListener listener) {
         synchronized (m_metaListeners) {
             return m_metaListeners.add(listener);
         }
     }
 
-
+    @Override
     public void removeMetaEventListener(MetaEventListener listener) {
         synchronized (m_metaListeners) {
             m_metaListeners.remove(listener);
         }
     }
 
-
     protected Iterator<MetaEventListener> getMetaEventListeners() {
         synchronized (m_metaListeners) {
             return m_metaListeners.iterator();
         }
     }
-
 
     protected void sendMetaMessage(MetaMessage message) {
         Iterator<MetaEventListener> iterator = getMetaEventListeners();
@@ -399,7 +378,7 @@ public abstract class TSequencer
         }
     }
 
-
+    @Override
     public int[] addControllerEventListener(ControllerEventListener listener, int[] anControllers) {
         synchronized (m_aControllerListeners) {
             if (anControllers == null) {
@@ -420,7 +399,6 @@ public abstract class TSequencer
         return getListenedControllers(listener);
     }
 
-
     private void addControllerListener(int i,
                                        ControllerEventListener listener) {
         if (m_aControllerListeners[i] == null) {
@@ -429,7 +407,7 @@ public abstract class TSequencer
         m_aControllerListeners[i].add(listener);
     }
 
-
+    @Override
     public int[] removeControllerEventListener(ControllerEventListener listener, int[] anControllers) {
         synchronized (m_aControllerListeners) {
             if (anControllers == null) {
@@ -449,14 +427,12 @@ public abstract class TSequencer
         return getListenedControllers(listener);
     }
 
-
     private void removeControllerListener(int i,
                                           ControllerEventListener listener) {
         if (m_aControllerListeners[i] != null) {
             m_aControllerListeners[i].add(listener);
         }
     }
-
 
     private int[] getListenedControllers(ControllerEventListener listener) {
         int[] anControllers = new int[128];
@@ -473,7 +449,6 @@ public abstract class TSequencer
         return anResultControllers;
     }
 
-
     protected void sendControllerEvent(ShortMessage message) {
         int nController = message.getData1();
         if (m_aControllerListeners[nController] != null) {
@@ -484,7 +459,6 @@ public abstract class TSequencer
         }
     }
 
-
     protected void notifyListeners(MidiMessage message) {
         if (message instanceof MetaMessage) {
             // IDEA: use extra thread for event delivery
@@ -494,12 +468,12 @@ public abstract class TSequencer
         }
     }
 
-
+    @Override
     public SyncMode getMasterSyncMode() {
         return m_masterSyncMode;
     }
 
-
+    @Override
     public void setMasterSyncMode(SyncMode syncMode) {
         if (m_masterSyncModes.contains(syncMode)) {
             if (!getMasterSyncMode().equals(syncMode)) {
@@ -511,7 +485,6 @@ public abstract class TSequencer
         }
     }
 
-
     /*
       This method is guaranteed only to be called if the sync mode really changes.
      */
@@ -519,18 +492,18 @@ public abstract class TSequencer
         // DO NOTHING
     }
 
-
+    @Override
     public SyncMode[] getMasterSyncModes() {
         SyncMode[] syncModes = m_masterSyncModes.toArray(EMPTY_SYNCMODE_ARRAY);
         return syncModes;
     }
 
-
+    @Override
     public SyncMode getSlaveSyncMode() {
         return m_slaveSyncMode;
     }
 
-
+    @Override
     public void setSlaveSyncMode(SyncMode syncMode) {
         if (m_slaveSyncModes.contains(syncMode)) {
             if (!getSlaveSyncMode().equals(syncMode)) {
@@ -542,7 +515,6 @@ public abstract class TSequencer
         }
     }
 
-
     /*
       This method is guaranteed only to be called if the sync mode really changes.
      */
@@ -550,13 +522,13 @@ public abstract class TSequencer
         // DO NOTHING
     }
 
-
+    @Override
     public SyncMode[] getSlaveSyncModes() {
         SyncMode[] syncModes = m_slaveSyncModes.toArray(EMPTY_SYNCMODE_ARRAY);
         return syncModes;
     }
 
-
+    @Override
     public boolean getTrackSolo(int nTrack) {
         boolean bSoloed = false;
         if (getSequence() != null) {
@@ -567,7 +539,7 @@ public abstract class TSequencer
         return bSoloed;
     }
 
-
+    @Override
     public void setTrackSolo(int nTrack, boolean bSolo) {
         if (getSequence() != null) {
             if (nTrack < getSequence().getTracks().length) {
@@ -585,11 +557,10 @@ public abstract class TSequencer
         }
     }
 
-
     protected void setTrackSoloImpl(int nTrack, boolean bSolo) {
     }
 
-
+    @Override
     public boolean getTrackMute(int nTrack) {
         boolean bMuted = false;
         if (getSequence() != null) {
@@ -600,7 +571,7 @@ public abstract class TSequencer
         return bMuted;
     }
 
-
+    @Override
     public void setTrackMute(int nTrack, boolean bMute) {
         if (getSequence() != null) {
             if (nTrack < getSequence().getTracks().length) {
@@ -618,14 +589,12 @@ public abstract class TSequencer
         }
     }
 
-
     protected void setTrackMuteImpl(int nTrack, boolean bMute) {
     }
 
-
     private void updateEnabled() {
         BitSet oldEnabledBitSet = (BitSet) m_enabledBitSet.clone();
-        boolean bSoloExists = m_soloBitSet.length() > 0;
+        boolean bSoloExists = !m_soloBitSet.isEmpty();
         if (bSoloExists) {
             m_enabledBitSet = (BitSet) m_soloBitSet.clone();
         } else {
@@ -648,7 +617,6 @@ public abstract class TSequencer
         }
     }
 
-
     /**
      * Shows that a track state has changed.
      * This method is called for each track where the enabled
@@ -662,11 +630,9 @@ public abstract class TSequencer
     protected void setTrackEnabledImpl(int nTrack, boolean bEnabled) {
     }
 
-
     protected boolean isTrackEnabled(int nTrack) {
         return m_enabledBitSet.get(nTrack);
     }
-
 
     /**
      * Sets the preloading intervall.
@@ -676,7 +642,6 @@ public abstract class TSequencer
      */
     public void setLatency(int nMilliseconds) {
     }
-
 
     /**
      * Get the preloading intervall.
@@ -690,4 +655,3 @@ public abstract class TSequencer
 }
 
 
-/* TSequencer.java */

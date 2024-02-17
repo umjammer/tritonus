@@ -1,8 +1,3 @@
-/*
- * SAOLGlobals.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2002 by Matthias Pfisterer
@@ -19,10 +14,6 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.saol.compiler;
 
@@ -41,7 +32,6 @@ public class SAOLGlobals {
     private int m_nOutChannels;
     private int m_nInterp;
 
-
     public SAOLGlobals() {
         this(DEFAULT_ARATE,
                 DEFAULT_KRATE,
@@ -49,7 +39,6 @@ public class SAOLGlobals {
                 DEFAULT_OUTCHANNELS,
                 DEFAULT_INTERP);
     }
-
 
     private SAOLGlobals(int nDefaultARate,
                         int nDefaultKRate,
@@ -63,51 +52,41 @@ public class SAOLGlobals {
         m_nInterp = nDefaultInterp;
     }
 
-
     public void setARate(int nARate) {
         m_nARate = nARate;
     }
-
 
     public int getARate() {
         return m_nARate;
     }
 
-
     public void setKRate(int nKRate) {
         m_nKRate = nKRate;
     }
-
 
     public int getKRate() {
         return m_nKRate;
     }
 
-
     public void setInChannels(int nInChannels) {
         m_nInChannels = nInChannels;
     }
-
 
     public int getInChannels() {
         return m_nInChannels;
     }
 
-
     public void setOutChannels(int nOutChannels) {
         m_nOutChannels = nOutChannels;
     }
-
 
     public int getOutChannels() {
         return m_nOutChannels;
     }
 
-
     public void setInterp(int nInterp) {
         m_nInterp = nInterp;
     }
-
 
     public int getInterp() {
         return m_nInterp;
@@ -115,4 +94,3 @@ public class SAOLGlobals {
 }
 
 
-/* SAOLGlobals.java */

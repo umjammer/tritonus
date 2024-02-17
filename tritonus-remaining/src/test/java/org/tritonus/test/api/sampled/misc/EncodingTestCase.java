@@ -25,7 +25,6 @@ import javax.sound.sampled.AudioFormat.Encoding;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -44,8 +43,8 @@ public class EncodingTestCase {
         Encoding encoding3 = new Encoding(strOtherEncodingName);
         assertEquals(encoding1, encoding2, "equals() for equal custom encodings");
         assertEquals(encoding2, encoding1, "equals() for equal custom encodings");
-        assertFalse(encoding1.equals(encoding3), "equals() for different custom encodings");
-        assertFalse(encoding3.equals(encoding1), "equals() for different custom encodings");
+        assertNotEquals(encoding1, encoding3, "equals() for different custom encodings");
+        assertNotEquals(encoding3, encoding1, "equals() for different custom encodings");
     }
 
     @Test
@@ -79,4 +78,3 @@ public class EncodingTestCase {
 }
 
 
-/* EncodingTestCase.java */

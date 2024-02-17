@@ -1,8 +1,3 @@
-/*
- * TConversionTool.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999,2000 by Florian Bomers
@@ -22,10 +17,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.share.sampled;
 
@@ -203,9 +194,7 @@ public class TConversionTool {
         }
     }
 
-
     ///////////////// conversion functions for byte arrays ////////////////////////////
-
 
     /**
      * Converts 2 bytes to a signed sample of type <code>short</code>.
@@ -583,7 +572,6 @@ public class TConversionTool {
             sampleCount--;
         }
     }
-
 
     // TODO: either direct 8bit pcm to ulaw, or better conversion from 8bit to 16bit
 
@@ -1046,4 +1034,4 @@ public class TConversionTool {
     }
 }
 
-/* TConversionTool.java */
+

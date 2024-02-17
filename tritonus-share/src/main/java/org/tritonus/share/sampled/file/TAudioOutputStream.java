@@ -1,8 +1,3 @@
-/*
- * TAudioOutputStream.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2000 by Matthias Pfisterer
@@ -21,10 +16,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.share.sampled.file;
 
@@ -97,20 +88,20 @@ public abstract class TAudioOutputStream
         }
     }
 
+    @Override
     public AudioFormat getFormat() {
         return m_audioFormat;
     }
-
 
     /**
      * Gives length of the stream.
      * This value is in bytes. It may be AudioSystem.NOT_SPECIFIED
      * to express that the length is unknown.
      */
+    @Override
     public long getLength() {
         return m_lLength;
     }
-
 
     /**
      * Gives number of bytes already written.
@@ -144,11 +135,11 @@ public abstract class TAudioOutputStream
         }
     }
 
-
     /**
      * Writes audio data to the destination (file or output stream).
      */
     // IDEA: use long?
+    @Override
     public int write(byte[] abData, int nOffset, int nLength)
             throws IOException {
         if (TDebug.TraceAudioOutputStream) {
@@ -186,19 +177,18 @@ public abstract class TAudioOutputStream
         return nLength;
     }
 
-
     /**
      * Writes the header of the audio file.
      */
     protected abstract void writeHeader()
             throws IOException;
 
-
     /**
      * Closes the stream.
      * This does write remaining buffered data to the destination,
      * backpatch the header, if necessary, and closes the destination.
      */
+    @Override
     public void close()
             throws IOException {
         if (TDebug.TraceAudioOutputStream) {
@@ -214,13 +204,11 @@ public abstract class TAudioOutputStream
         m_dataOutputStream.close();
     }
 
-
     protected void patchHeader()
             throws IOException {
         TDebug.out("TAudioOutputStream.patchHeader(): called");
         // DO NOTHING
     }
-
 
     protected void setLengthFromCalculatedLength() {
         m_lLength = m_lCalculatedLength;
@@ -228,4 +216,3 @@ public abstract class TAudioOutputStream
 }
 
 
-/* TAudioOutputStream.java */

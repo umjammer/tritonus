@@ -1,8 +1,3 @@
-/*
- * AudioFileTypes.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2000 by Florian Bomers
@@ -68,7 +63,7 @@ import org.tritonus.share.StringHashedSet;
 public class AudioFileTypes extends AudioFileFormat.Type {
 
     /** contains all known types */
-    private static StringHashedSet<AudioFileFormat.Type> types = new StringHashedSet<>();
+    private static final StringHashedSet<AudioFileFormat.Type> types = new StringHashedSet<>();
 
     // initially add the standard types
     static {
@@ -106,7 +101,7 @@ public class AudioFileTypes extends AudioFileFormat.Type {
      * <code>AudioFileFormat.Type</code> of the specified
      * name. If it does not exist in the internal list
      * of types, a new type is created and returned.
-     * If it a type of that name already exists (regardless
+     * If it is a type of that name already exists (regardless
      * of extension), it is returned. In this case it can
      * not be guaranteed that the extension is the same as
      * passed as parameter.<br>
@@ -150,5 +145,5 @@ public class AudioFileTypes extends AudioFileFormat.Type {
 
 }
 
-/* AudioFileTypes.java */
+
 

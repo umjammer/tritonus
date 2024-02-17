@@ -1,10 +1,4 @@
 /*
- * AlsaMidiDevice.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 1999 - 2001 by Matthias Pfisterer
  *
  *
@@ -21,10 +15,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.midi.device.alsa;
 
@@ -96,7 +86,6 @@ public class AlsaMidiDevice
      */
     private AlsaSeqEvent m_event = new AlsaSeqEvent();
 
-
     public AlsaMidiDevice(int nClient, int nPort, boolean bUseIn, boolean bUseOut) {
         this(new TMidiDevice.Info("ALSA MIDI port (" + nClient + ":" + nPort + ")",
                         GlobalInfo.getVendor(),
@@ -104,7 +93,6 @@ public class AlsaMidiDevice
                         GlobalInfo.getVersion()),
                 nClient, nPort, bUseIn, bUseOut);
     }
-
 
     protected AlsaMidiDevice(MidiDevice.Info info, int nClient, int nPort, boolean bUseIn, boolean bUseOut) {
         super(info, bUseIn, bUseOut);
@@ -118,32 +106,27 @@ public class AlsaMidiDevice
         }
     }
 
-
     protected AlsaSeq getAlsaSeq() {
         return m_alsaSeq;
     }
-
 
     protected int getOwnPort() {
         return m_nOwnPort;
     }
 
-
     protected int getPhysicalClient() {
         return m_nPhysicalClient;
     }
-
 
     protected int getPhysicalPort() {
         return m_nPhysicalPort;
     }
 
-
     private AlsaSeqQueueStatus getQueueStatus() {
         return m_queueStatus;
     }
 
-
+    @Override
     protected void openImpl() {
         if (TDebug.TraceMidiDevice) {
             TDebug.out("AlsaMidiDevice.openImpl(): begin");
@@ -189,7 +172,7 @@ public class AlsaMidiDevice
         }
     }
 
-
+    @Override
     protected void closeImpl() {
         if (TDebug.TraceMidiDevice) {
             TDebug.out("AlsaMidiDevice.closeImpl(): begin");
@@ -211,7 +194,6 @@ public class AlsaMidiDevice
         }
     }
 
-
     public long getMicroSecondPosition() {
         if (TDebug.TraceMidiDevice) {
             TDebug.out("AlsaMidiDevice.getMicroSecondPosition(): begin");
@@ -228,16 +210,13 @@ public class AlsaMidiDevice
         return lPosition;
     }
 
-
     private void startQueue() {
         controlQueue(AlsaSeq.SND_SEQ_EVENT_START);
     }
 
-
     private void stopQueue() {
         controlQueue(AlsaSeq.SND_SEQ_EVENT_STOP);
     }
-
 
     private void controlQueue(int nType) {
         m_event.setCommon(nType,
@@ -249,19 +228,19 @@ public class AlsaMidiDevice
         getAlsaSeq().eventOutputDirect(m_event);
     }
 
-
     /**
      * Pass MidiMessage from Receivers to physical MIDI port.
      */
+    @Override
     protected void receive(MidiMessage message, long lTimeStamp) {
         if (isOpen()) {
             m_alsaMidiOut.enqueueMessage(message, lTimeStamp);
         }
     }
 
-
     // for AlsaMidiInListener
     // passes events read from the device to the Transmitters
+    @Override
     public void dequeueEvent(MidiMessage message, long lTimestamp) {
         if (TDebug.TraceMidiDevice) {
             TDebug.out("AlsaMidiDevice.dequeueEvent(): message: " + message);
@@ -273,12 +252,11 @@ public class AlsaMidiDevice
         sendImpl(message, lTimestamp);
     }
 
-
     private int getTimestampingQueue() {
         return m_nTimestampingQueue;
     }
 
-
+    @Override
     public Receiver getReceiver()
             throws MidiUnavailableException {
         if (!getUseReceiver()) {
@@ -287,7 +265,7 @@ public class AlsaMidiDevice
         return new AlsaMidiDeviceReceiver();
     }
 
-
+    @Override
     public Transmitter getTransmitter()
             throws MidiUnavailableException {
         if (!getUseTransmitter()) {
@@ -303,11 +281,9 @@ public class AlsaMidiDevice
             extends TReceiver
             implements AlsaReceiver {
 
-
         public AlsaMidiDeviceReceiver() {
             super();
         }
-
 
         /**
          * Subscribe to the passed port.
@@ -318,6 +294,7 @@ public class AlsaMidiDevice
          * @return true if subscription was established,
          * false otherwise
          */
+        @Override
         public boolean subscribeTo(int nClient, int nPort) {
             try {
                 AlsaSeqPortSubscribe portSubscribe = new AlsaSeqPortSubscribe();
@@ -334,22 +311,19 @@ public class AlsaMidiDevice
             }
         }
 
-
     }
-
 
     private class AlsaMidiDeviceTransmitter
             extends TTransmitter {
 
         private boolean m_bReceiverSubscribed;
 
-
         public AlsaMidiDeviceTransmitter() {
             super();
             m_bReceiverSubscribed = false;
         }
 
-
+        @Override
         public void setReceiver(Receiver receiver) {
             super.setReceiver(receiver);
             /*
@@ -362,12 +336,12 @@ public class AlsaMidiDevice
             }
         }
 
-
+        @Override
         public void send(MidiMessage message, long lTimeStamp) {
             /*
              * Send message via Java methods only if no
              * subscription was established. If there is a
-             * subscription, the message is routed inside of
+             * subscription, the message is routed inside
              * the ALSA sequencer.
              */
             if (!m_bReceiverSubscribed) {
@@ -375,7 +349,7 @@ public class AlsaMidiDevice
             }
         }
 
-
+        @Override
         public void close() {
             super.close();
             // TODO: remove subscription
@@ -384,5 +358,4 @@ public class AlsaMidiDevice
 }
 
 
-/* AlsaMidiDevice.java */
 

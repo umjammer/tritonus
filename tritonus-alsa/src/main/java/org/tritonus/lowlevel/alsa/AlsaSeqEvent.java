@@ -1,8 +1,3 @@
-/*
- * AlsaSeqEvent.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999 - 2001 by Matthias Pfisterer
@@ -20,10 +15,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.lowlevel.alsa;
 
@@ -44,14 +35,12 @@ public class AlsaSeqEvent {
         }
     }
 
-
     /**
      * Holds the pointer to snd_seq_event_t
      * for the native code.
      * This must be long to be 64bit-clean.
      */
     /*private*/ long m_lNativeHandle;
-
 
     public AlsaSeqEvent() {
         if (TDebug.TraceAlsaSeqNative) {
@@ -65,14 +54,6 @@ public class AlsaSeqEvent {
             TDebug.out("AlsaSeq.Event.<init>(): end");
         }
     }
-
-
-    protected void finalize() {
-        // TODO: call free()
-        // call super.finalize() first or last?
-        // and introduce a flag if free() has already been called?
-    }
-
 
     /**
      * Allocates memory for a snd_seq_event_t.
@@ -112,7 +93,6 @@ public class AlsaSeqEvent {
 
     public native int getDestPort();
 
-
     /* Retrieves the parameters of a note event.
      * This method is suitable for the following event types:
      * SND_SEQ_EVENT_NOTE
@@ -128,7 +108,6 @@ public class AlsaSeqEvent {
      * anValues[4] duration
      */
     public native void getNote(int[] anValues);
-
 
     /* Retrieves the parameters of a control event.
      * This method is suitable for the following event types:
@@ -152,7 +131,6 @@ public class AlsaSeqEvent {
      */
     public native void getControl(int[] anValues);
 
-
     /* Retrieves the parameters of a queue control event.
      * This method is suitable for the following event types:
      * SND_SEQ_EVENT_START
@@ -173,7 +151,6 @@ public class AlsaSeqEvent {
      */
     public native void getQueueControl(int[] anValues, long[] alValues);
 
-
     /* Retrieves the parameters of a variable-length event.
      * This method is suitable for the following event types:
      * SND_SEQ_EVENT_SYSEX
@@ -186,7 +163,6 @@ public class AlsaSeqEvent {
      *
      */
     public native byte[] getVar();
-
 
     public native void setCommon(int nType, int nFlags, int nTag, int nQueue, long lTimestamp, int nSourceClient, int nSourcePort, int nDestClient, int nDestPort);
 
@@ -204,4 +180,3 @@ public class AlsaSeqEvent {
 }
 
 
-/* AlsaSeqEvent.java */

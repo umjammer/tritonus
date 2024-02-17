@@ -1,8 +1,3 @@
-/*
- * EsdClip.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999 by Matthias Pfisterer
@@ -21,10 +16,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.sampled.mixer.esd;
 
@@ -48,13 +39,11 @@ public class EsdClip
         extends TDataLine
         implements Clip {
 
-    private static final Class[] CONTROL_CLASSES = {/*GainControl.class*/};
+    private static final Class<?>[] CONTROL_CLASSES = {/*GainControl.class*/};
     private static final int BUFFER_FRAMES = 16384;
-
 
     private Mixer m_mixer;
     private EsdSample m_esdSample;
-
 
     public EsdClip(TMixer mixer) {
         super(mixer, null);
@@ -62,8 +51,8 @@ public class EsdClip
         m_esdSample = new EsdSample();
     }
 
-
     // interface Clip
+    @Override
     public void open(AudioFormat audioFormat, byte[] abData, int nOffset, int nNumFrames)
             throws LineUnavailableException {
         int nBufferLength = nNumFrames * audioFormat.getFrameSize();
@@ -81,7 +70,7 @@ public class EsdClip
         }
     }
 
-
+    @Override
     public void open(AudioInputStream audioInputStream)
             throws LineUnavailableException, IOException {
         AudioFormat audioFormat = audioInputStream.getFormat();
@@ -128,46 +117,46 @@ public class EsdClip
         open();
     }
 
-
+    @Override
     public int getFrameLength() {
         // TODO:
         return -1;
     }
 
-
+    @Override
     public long getMicrosecondLength() {
         // TODO:
         return -1;
     }
 
-
+    @Override
     public void setFramePosition(int nPosition) {
         // TOOD:
     }
 
-
+    @Override
     public void setMicrosecondPosition(long lPosition) {
         // TOOD:
     }
 
-
+    @Override
     public int getFramePosition() {
         // TOOD:
         return -1;
     }
 
-
+    @Override
     public long getMicrosecondPosition() {
         // TOOD:
         return -1;
     }
 
-
+    @Override
     public void setLoopPoints(int nStart, int nEnd) {
         // TOOD:
     }
 
-
+    @Override
     public void loop(int nCount) {
         if (TDebug.TraceClip) {
             TDebug.out("EsdClip.loop(int): called; count = " + nCount);
@@ -205,29 +194,29 @@ public class EsdClip
         // TOOD:
     }
 
-
+    @Override
     public void flush() {
         // TOOD:
     }
 
-
+    @Override
     public void drain() {
         // TOOD:
     }
 
-
+    @Override
     public void close() {
         m_esdSample.free();
         m_esdSample.close();
         // TOOD:
     }
 
-
+    @Override
     public void open() {
         // TODO:
     }
 
-
+    @Override
     public void start() {
         if (TDebug.TraceClip) {
             TDebug.out("EsdClip.start(): called");
@@ -242,17 +231,17 @@ public class EsdClip
         loop(0);
     }
 
-
+    @Override
     public void stop() {
         // TODO:
         m_esdSample.kill();
     }
 
-
     /*
      *	This method is enforced by DataLine, but doesn't make any
      *	sense for Clips.
      */
+    @Override
     public int available() {
         return -1;
     }
@@ -261,5 +250,4 @@ public class EsdClip
 }
 
 
-/* EsdClip.java */
 

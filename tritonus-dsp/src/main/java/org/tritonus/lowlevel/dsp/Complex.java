@@ -79,7 +79,6 @@ public class Complex implements java.io.Serializable, Cloneable {
      */
     public static String suffix = "i";
 
-
     private final static long negZeroBits = Double.doubleToLongBits(1.0 / Double.NEGATIVE_INFINITY);
 
     /**
@@ -655,7 +654,6 @@ public class Complex implements java.io.Serializable, Cloneable {
         return Math.atan2(z.m_im, z.m_re);
     }
 
-
     /**
      * Returns the square root of a Complex,
      * with a branch cut along the negative real axis.
@@ -711,7 +709,6 @@ public class Complex implements java.io.Serializable, Cloneable {
         }
         return result;
     }
-
 
     /**
      * Returns the exponential of a Complex z, exp(z).
@@ -910,7 +907,6 @@ public class Complex implements java.io.Serializable, Cloneable {
         }
         return result;
     }
-
 
     /**
      * Returns the inverse cosine (arc cosine) of a Complex,

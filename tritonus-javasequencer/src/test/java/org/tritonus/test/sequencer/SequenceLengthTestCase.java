@@ -36,7 +36,7 @@ public class SequenceLengthTestCase
 
     private static final String MIDI_FILENAME = "trippygaia1.mid";
 
-
+    @Override
     protected void checkSequencer(Sequencer seq)
             throws Exception {
         seq.open();
@@ -52,11 +52,9 @@ public class SequenceLengthTestCase
         seq.close();
     }
 
-
     private static InputStream getMediaFile(String strFilename) {
         return SequenceLengthTestCase.class.getResourceAsStream("/sounds/" + strFilename);
     }
 }
 
 
-/* SequenceLengthTestCase.java */

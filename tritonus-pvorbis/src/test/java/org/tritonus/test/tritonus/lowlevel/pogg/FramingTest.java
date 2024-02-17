@@ -392,7 +392,6 @@ public class FramingTest {
 
             granule_pos += 1024;
 
-
             // submit the test packet
             os_en.packetIn(op);
 

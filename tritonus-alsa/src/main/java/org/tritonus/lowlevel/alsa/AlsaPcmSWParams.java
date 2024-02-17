@@ -1,10 +1,4 @@
 /*
- * AlsaPcmSWParams.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2000 - 2001 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,10 +13,6 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.lowlevel.alsa;
 
@@ -42,7 +32,6 @@ public class AlsaPcmSWParams {
     @SuppressWarnings("unused")
     private long m_lNativeHandle;
 
-
     public AlsaPcmSWParams() {
         if (TDebug.TraceAlsaPcmNative) {
             TDebug.out("AlsaPcmSWParams.<init>(): begin");
@@ -55,14 +44,6 @@ public class AlsaPcmSWParams {
             TDebug.out("AlsaPcmSWParams.<init>(): end");
         }
     }
-
-
-    protected void finalize() {
-        // TODO: call free()
-        // call super.finalize() first or last?
-        // and introduce a flag if free() has already been called?
-    }
-
 
     private native int malloc();
 
@@ -90,4 +71,3 @@ public class AlsaPcmSWParams {
 }
 
 
-/* AlsaPcmSWParams.java */

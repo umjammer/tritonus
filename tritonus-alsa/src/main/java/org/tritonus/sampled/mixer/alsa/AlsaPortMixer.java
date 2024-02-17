@@ -1,8 +1,3 @@
-/*
- * AlsaPortMixer.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999 - 2004 by Matthias Pfisterer
@@ -19,10 +14,6 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.sampled.mixer.alsa;
 
@@ -75,7 +66,6 @@ public class AlsaPortMixer
      */
     public static final int DIRECTION_CAPTURE = 2;
 
-
     /**
      * For the first shot, we try to create one port line per mixer
      * element. For now, the following two lists should have the same size
@@ -93,11 +83,9 @@ public class AlsaPortMixer
      */
     private Map<Port.Info, AlsaMixerElement> m_mixerElementMap;
 
-
     public AlsaPortMixer(int nCard) {
         this("hw:" + nCard);
     }
-
 
     public AlsaPortMixer(String strDeviceName) {
         super(new TMixerInfo(
@@ -172,7 +160,6 @@ public class AlsaPortMixer
         }
     }
 
-
     private static boolean hasPlaybackChannels(AlsaMixerElement element) {
         boolean bHasChannels = false;
         for (int nChannel = AlsaMixerElement.SND_MIXER_SCHN_FRONT_LEFT;
@@ -182,7 +169,6 @@ public class AlsaPortMixer
         }
         return bHasChannels;
     }
-
 
     private static boolean hasCaptureChannels(AlsaMixerElement element) {
         boolean bHasChannels = false;
@@ -194,11 +180,10 @@ public class AlsaPortMixer
         return bHasChannels;
     }
 
-
     //////////////// Line //////////////////////////////////////
 
-
     // TODO: allow real close and reopen of mixer
+    @Override
     public void open() {
         if (TDebug.TraceMixer) {
             TDebug.out("AlsaPortMixer.open(): begin");
@@ -211,7 +196,7 @@ public class AlsaPortMixer
         }
     }
 
-
+    @Override
     public void close() {
         if (TDebug.TraceMixer) {
             TDebug.out("AlsaPortMixer.close(): begin");
@@ -223,7 +208,6 @@ public class AlsaPortMixer
             TDebug.out("AlsaPortMixer.close(): end");
         }
     }
-
 
     //////////////// Mixer //////////////////////////////////////
 
@@ -241,12 +225,13 @@ public class AlsaPortMixer
 */
 
     // TODO:
+    @Override
     public int getMaxLines(Line.Info info) {
         // TODO:
         return 0;
     }
 
-
+    @Override
     protected Port getPort(Port.Info info)
             throws LineUnavailableException {
         if (TDebug.TraceMixer) {
@@ -262,7 +247,6 @@ public class AlsaPortMixer
         }
         return port;
     }
-
 
     private Port createPort(Port.Info info) {
         if (TDebug.TraceMixer) {
@@ -288,7 +272,6 @@ public class AlsaPortMixer
         }
         return port;
     }
-
 
     /**
      * TODO:
@@ -350,7 +333,6 @@ public class AlsaPortMixer
         return controls;
     }
 
-
     /**
      * TODO:
      */
@@ -382,7 +364,6 @@ public class AlsaPortMixer
         return control;
     }
 
-
     /**
      * TODO:
      */
@@ -399,9 +380,7 @@ public class AlsaPortMixer
         return control;
     }
 
-
     //////////////// inner classes //////////////////////////////////////
-
 
     private static class AlsaVolumeControl
             extends FloatControl {
@@ -413,7 +392,6 @@ public class AlsaPortMixer
          * One of the constants DIRECTION_*.
          */
         private int m_nDirection;
-
 
         /**
          * @param nDirection One of the constants DIRECTION_*.
@@ -453,23 +431,20 @@ public class AlsaPortMixer
             }
         }
 
-
         private AlsaMixerElement getElement() {
             return m_element;
         }
-
 
         private int getChannel() {
             return m_nChannel;
         }
 
-
         private int getDirection() {
             return m_nDirection;
         }
 
-
         // TODO: respect channels
+        @Override
         public void setValue(float fValue) {
             super.setValue(fValue);
             int nValue = (int) fValue;
@@ -484,7 +459,6 @@ public class AlsaPortMixer
                 break;
             }
         }
-
 
         private float getValueImpl() {
             int nChannel = getChannel();
@@ -503,7 +477,6 @@ public class AlsaPortMixer
         }
     }
 
-
     private static class AlsaSwitchControl
             extends BooleanControl {
 
@@ -514,7 +487,6 @@ public class AlsaPortMixer
          * One of the constants DIRECTION_*.
          */
         private int m_nDirection;
-
 
         /**
          * @param nDirection One of the constants DIRECTION_*.
@@ -541,23 +513,20 @@ public class AlsaPortMixer
             }
         }
 
-
         private AlsaMixerElement getElement() {
             return m_element;
         }
-
 
         private int getChannel() {
             return m_nChannel;
         }
 
-
         private int getDirection() {
             return m_nDirection;
         }
 
-
         // TODO: respect channels
+        @Override
         public void setValue(boolean bValue) {
             super.setValue(bValue);
             switch (getDirection()) {
@@ -572,7 +541,6 @@ public class AlsaPortMixer
             }
         }
     }
-
 
     /**
      * CompoundControl class.
@@ -590,4 +558,3 @@ public class AlsaPortMixer
 }
 
 
-/* AlsaPortMixer.java */

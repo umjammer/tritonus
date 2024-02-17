@@ -1,10 +1,4 @@
 /*
- * AlsaMidiIn.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 1999 - 2001 by Matthias Pfisterer
  *
  *
@@ -21,10 +15,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.midi.device.alsa;
 
@@ -59,13 +49,13 @@ public class AlsaMidiIn
     private int m_nDestPort;
 
     /**
-     * ALSA client number to subscribe to to receive events.
+     * ALSA client number to subscribe to receive events.
      */
     private int m_nSourceClient;
 
     /**
      * ALSA port number (belonging to m_nSourceClient) to
-     * subscribe to to receive events.
+     * subscribe to receive events.
      */
     private int m_nSourcePort;
 
@@ -76,7 +66,6 @@ public class AlsaMidiIn
     // used to query event for detailed information
     private int[] m_anValues = new int[5];
     private long[] m_alValues = new long[1];
-
 
     /**
      * Receives events without timestamping them.
@@ -109,7 +98,6 @@ public class AlsaMidiIn
                 -1, false,  // signals: do not do timestamping
                 listener);
     }
-
 
     /**
      * Does establish a subscription where events are routed through
@@ -147,11 +135,9 @@ public class AlsaMidiIn
         setDaemon(true);
     }
 
-
     private AlsaSeq getAlsaSeq() {
         return m_alsaSeq;
     }
-
 
     /**
      * The working part of the class.
@@ -159,6 +145,7 @@ public class AlsaMidiIn
      * getEvent() and calling the listener's
      * dequeueEvent() method.
      */
+    @Override
     public void run() {
         // TODO: recheck interupt mechanism
         while (!interrupted()) {
@@ -183,7 +170,6 @@ public class AlsaMidiIn
             }
         }
     }
-
 
     private MidiEvent getEvent() {
         if (TDebug.TraceAlsaMidiIn) {
@@ -453,7 +439,6 @@ public class AlsaMidiIn
         }
     }
 
-
     /**
      *
      */
@@ -464,4 +449,3 @@ public class AlsaMidiIn
 }
 
 
-/* AlsaMidiIn.java */

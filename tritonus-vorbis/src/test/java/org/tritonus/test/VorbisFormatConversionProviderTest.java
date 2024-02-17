@@ -30,4 +30,3 @@ public class VorbisFormatConversionProviderTest
 }
 
 
-/* VorbisFormatConversionProviderTest.java */

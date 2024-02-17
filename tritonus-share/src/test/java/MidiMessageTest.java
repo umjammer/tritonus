@@ -32,7 +32,6 @@ public class MidiMessageTest {
         }
     }
 
-
     private static void baseMessage() {
         byte[] data = new byte[1];
         MidiMessage m;
@@ -72,7 +71,6 @@ public class MidiMessageTest {
             out("MidiMessage.<init>(byte[]) does copy");
         }
 
-
         data[0] = 5;
         m = new TestMessage(data);
         t1 = m.getMessage();
@@ -93,7 +91,6 @@ public class MidiMessageTest {
         out("----------------------------------------");
     }
 
-
     private static void shortMessage() {
         byte[] data = new byte[1];
         MidiMessage m;
@@ -112,7 +109,6 @@ public class MidiMessageTest {
         out("ShortMessage().getData2(): " + sm.getData2());
         out("----------------------------------------");
     }
-
 
     private static void sysexMessage() {
         byte[] data = new byte[1];
@@ -143,7 +139,6 @@ public class MidiMessageTest {
         out("SysexMessage.getLength(): " + sxm.getLength());
         out("SysexMessage.getStatus(): " + sxm.getStatus());
     }
-
 
     private static void metaMessage() {
         byte[] data = new byte[1];
@@ -181,7 +176,6 @@ public class MidiMessageTest {
         out("----------------------------------------");
     }
 
-
     public static class TestMessage
             extends MidiMessage {
 
@@ -194,7 +188,6 @@ public class MidiMessageTest {
             super(null);
         }
 
-
         /*
           This constructor passes the passed byte array reference
           straight ahead to the superclass constructor. This can be
@@ -205,15 +198,14 @@ public class MidiMessageTest {
             super(abData);
         }
 
-
         /*
           not implemented for now.
         */
+        @Override
         public Object clone() {
             return null;
         }
     }
-
 
     /*
       only for lazy people.
@@ -221,7 +213,6 @@ public class MidiMessageTest {
     private static void out(String strMessage) {
         System.out.println(strMessage);
     }
-
 
     private static void out(byte[] abArray) {
         out("data length: " + abArray.length);
@@ -232,4 +223,3 @@ public class MidiMessageTest {
 }
 
 
-/* MidiMessageTest.java */

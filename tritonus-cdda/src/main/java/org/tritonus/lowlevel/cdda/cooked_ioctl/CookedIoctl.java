@@ -1,8 +1,3 @@
-/*
- * CookedIoctl.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2001 by Matthias Pfisterer
@@ -21,10 +16,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.lowlevel.cdda.cooked_ioctl;
 
@@ -48,14 +39,12 @@ public class CookedIoctl {
         setTrace(TDebug.TraceCddaNative);
     }
 
-
     /*
      * This holds a file descriptor for the native code -
      * do not touch!
      */
     @SuppressWarnings("unused")
     private long m_lNativeHandle;
-
 
     // TODO: parameter strDevicename (or something else sensible)
     public CookedIoctl(String strDevice) {
@@ -71,7 +60,6 @@ public class CookedIoctl {
         }
     }
 
-
     /**
      * Opens the device.
      */
@@ -81,7 +69,6 @@ public class CookedIoctl {
      * Closes the device.
      */
     public native void close();
-
 
     /*
      * anValues[0] first track
@@ -98,7 +85,6 @@ public class CookedIoctl {
                               boolean[] abPre,
                               int[] anChannels);
 
-
     /**
      * Reads one or more raw frames from the CD.
      * This call reads <CODE>nCount</CODE> frames starting at
@@ -112,4 +98,3 @@ public class CookedIoctl {
 }
 
 
-/* CookedIoctl.java */

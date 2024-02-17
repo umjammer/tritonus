@@ -1,10 +1,4 @@
 /*
- * AlsaDataLineMixerProvider.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 1999 - 2002 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,10 +14,6 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.sampled.mixer.alsa;
 
 import org.tritonus.lowlevel.alsa.Alsa;
@@ -37,7 +27,6 @@ public class AlsaDataLineMixerProvider
         extends TMixerProvider {
 
     private static boolean sm_bInitialized = false;
-
 
     public AlsaDataLineMixerProvider() {
         super();
@@ -62,7 +51,7 @@ public class AlsaDataLineMixerProvider
         }
     }
 
-
+    @Override
     protected void staticInit() {
         if (TDebug.TraceMixerProvider) {
             TDebug.out("AlsaDataLineMixerProvider.staticInit(): begin");
@@ -125,4 +114,3 @@ public class AlsaDataLineMixerProvider
 }
 
 
-/* AlsaDataLineMixerProvider.java */

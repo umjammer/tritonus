@@ -16,12 +16,11 @@ public class SourceDataLineOutputStream
 
     private SourceDataLine m_line;
 
-
     public SourceDataLineOutputStream(SourceDataLine line) {
         m_line = line;
     }
 
-
+    @Override
     public void write(int nByte) {
         if (DEBUG) {
             System.err.println("SourceDataLineOutputStream.write(int): called");
@@ -31,7 +30,7 @@ public class SourceDataLineOutputStream
         m_line.write(abOneByte, 0, 1);
     }
 
-
+    @Override
     public void write(byte[] abBuffer, int nOffset, int nLength)
             throws IOException {
         if (DEBUG) {
@@ -43,7 +42,7 @@ public class SourceDataLineOutputStream
         }
     }
 
-
+    @Override
     public void flush() {
         if (DEBUG) {
             System.err.println("SourceDataLineOutputStream.flush(): called");
@@ -53,4 +52,3 @@ public class SourceDataLineOutputStream
 }
 
 
-/* SourceDataLineOutputStream.java */

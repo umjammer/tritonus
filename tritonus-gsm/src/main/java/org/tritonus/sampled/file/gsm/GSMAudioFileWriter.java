@@ -1,8 +1,3 @@
-/*
- * GSMAudioFileWriter.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2000 by Florian Bomers
@@ -22,10 +17,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.sampled.file.gsm;
 
@@ -57,7 +48,6 @@ public class GSMAudioFileWriter
                     new AudioFormat(new AudioFormat.Encoding("GSM0610"), 8000.0F, ALL, 1, 33, 50.0F, true),
             };
 
-
     public GSMAudioFileWriter() {
         super(Arrays.asList(FILE_TYPES),
                 Arrays.asList(AUDIO_FORMATS));
@@ -71,4 +61,3 @@ public class GSMAudioFileWriter
 }
 
 
-/* GSMAudioFileWriter.java */

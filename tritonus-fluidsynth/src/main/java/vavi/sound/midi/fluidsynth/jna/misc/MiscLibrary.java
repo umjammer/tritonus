@@ -18,9 +18,9 @@ public interface MiscLibrary extends Library {
     NativeLibrary JNA_NATIVE_LIB = NativeLibrary.getInstance(MiscLibrary.JNA_LIBRARY_NAME);
     MiscLibrary INSTANCE = Native.load(MiscLibrary.JNA_LIBRARY_NAME, MiscLibrary.class);
     /** <i>native declaration : fluidsynth/misc.h</i> */
-    int FLUID_OK = (int) (0);
+    int FLUID_OK = 0;
     /** <i>native declaration : fluidsynth/misc.h</i> */
-    int FLUID_FAILED = (int) (-1);
+    int FLUID_FAILED = -1;
 
     /**
      * Value that indicates failure, used by most libfluidsynth functions.<br>

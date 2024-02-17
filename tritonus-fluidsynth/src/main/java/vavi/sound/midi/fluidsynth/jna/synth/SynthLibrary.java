@@ -30,7 +30,7 @@ public interface SynthLibrary extends Library {
      * <i>native declaration : fluidsynth/synth.h:201</i><br>
      * enum values
      */
-    public static interface fluid_chorus_mod {
+    interface fluid_chorus_mod {
 
         /**
          * < Sine wave chorus modulation<br>
@@ -44,14 +44,12 @@ public interface SynthLibrary extends Library {
         int FLUID_CHORUS_MOD_TRIANGLE = 1;
     }
 
-    ;
-
     /**
      * Synthesis interpolation method.<br>
      * <i>native declaration : fluidsynth/synth.h:267</i><br>
      * enum values
      */
-    public static interface fluid_interp {
+    interface fluid_interp {
 
         /**
          * < No interpolation: Fastest, but questionable audio quality<br>
@@ -77,22 +75,20 @@ public interface SynthLibrary extends Library {
          * < Default interpolation method<br>
          * <i>native declaration : fluidsynth/synth.h:274</i>
          */
-        int FLUID_INTERP_DEFAULT = (int) SynthLibrary.fluid_interp.FLUID_INTERP_4THORDER;
+        int FLUID_INTERP_DEFAULT = fluid_interp.FLUID_INTERP_4THORDER;
         /**
          * < Highest interpolation method<br>
          * <i>native declaration : fluidsynth/synth.h:275</i>
          */
-        int FLUID_INTERP_HIGHEST = (int) SynthLibrary.fluid_interp.FLUID_INTERP_7THORDER;
+        int FLUID_INTERP_HIGHEST = fluid_interp.FLUID_INTERP_7THORDER;
     }
-
-    ;
 
     /**
      * Enum used with fluid_synth_add_default_mod() to specify how to handle duplicate modulators.<br>
      * <i>native declaration : fluidsynth/synth.h:281</i><br>
      * enum values
      */
-    public static interface fluid_synth_add_mod {
+    interface fluid_synth_add_mod {
 
         /**
          * < Overwrite any existing matching modulator<br>
@@ -106,14 +102,12 @@ public interface SynthLibrary extends Library {
         int FLUID_SYNTH_ADD = 1;
     }
 
-    ;
-
     /**
      * Specifies the type of filter to use for the custom IIR filter<br>
      * <i>native declaration : fluidsynth/synth.h:375</i><br>
      * enum values
      */
-    public static interface fluid_iir_filter_type {
+    interface fluid_iir_filter_type {
 
         /**
          * < Custom IIR filter is not operating<br>
@@ -137,14 +131,12 @@ public interface SynthLibrary extends Library {
         int FLUID_IIR_LAST = 3;
     }
 
-    ;
-
     /**
      * Specifies optional settings to use for the custom IIR filter. Can be bitwise ORed.<br>
      * <i>native declaration : fluidsynth/synth.h:386</i><br>
      * enum values
      */
-    public static interface fluid_iir_filter_flags {
+    interface fluid_iir_filter_flags {
 
         /**
          * < The Soundfont spec requires the filter Q to be interpreted in dB. If this flag is set the filter Q is instead assumed to be in a linear range<br>
@@ -163,14 +155,12 @@ public interface SynthLibrary extends Library {
         int FLUID_IIR_NO_GAIN_AMP = 1 << 2;
     }
 
-    ;
-
     /**
      * The midi channel type used by fluid_synth_set_channel_type()<br>
      * <i>native declaration : fluidsynth/synth.h:416</i><br>
      * enum values
      */
-    public static interface fluid_midi_channel_type {
+    interface fluid_midi_channel_type {
 
         /**
          * < Melodic midi channel<br>
@@ -184,14 +174,12 @@ public interface SynthLibrary extends Library {
         int CHANNEL_TYPE_DRUM = 1;
     }
 
-    ;
-
     /**
      * Channel mode bits OR-ed together so that it matches with the midi spec: poly omnion (0), mono omnion (1), poly omnioff (2), mono omnioff (3)<br>
      * <i>native declaration : fluidsynth/synth.h:433</i><br>
      * enum values
      */
-    public static interface fluid_channel_mode_flags {
+    interface fluid_channel_mode_flags {
 
         /**
          * < if flag is set, the basic channel is in mono on state, if not set poly is on<br>
@@ -205,48 +193,44 @@ public interface SynthLibrary extends Library {
         int FLUID_CHANNEL_OMNI_OFF = 0x02;
     }
 
-    ;
-
     /**
      * Indicates the mode a basic channel is set to<br>
      * <i>native declaration : fluidsynth/synth.h:442</i><br>
      * enum values
      */
-    public static interface fluid_basic_channel_modes {
+    interface fluid_basic_channel_modes {
 
         /**
          * < Mask Poly and Omni bits of #fluid_channel_mode_flags, usually only used internally<br>
          * <i>native declaration : fluidsynth/synth.h:444</i>
          */
-        int FLUID_CHANNEL_MODE_MASK = ((int) SynthLibrary.fluid_channel_mode_flags.FLUID_CHANNEL_OMNI_OFF | (int) SynthLibrary.fluid_channel_mode_flags.FLUID_CHANNEL_POLY_OFF);
+        int FLUID_CHANNEL_MODE_MASK = (fluid_channel_mode_flags.FLUID_CHANNEL_OMNI_OFF | fluid_channel_mode_flags.FLUID_CHANNEL_POLY_OFF);
         /**
          * < corresponds to MIDI mode 0<br>
          * <i>native declaration : fluidsynth/synth.h:445</i>
          */
-        int FLUID_CHANNEL_MODE_OMNION_POLY = (int) SynthLibrary.fluid_basic_channel_modes.FLUID_CHANNEL_MODE_MASK & (~(int) SynthLibrary.fluid_channel_mode_flags.FLUID_CHANNEL_OMNI_OFF & ~(int) SynthLibrary.fluid_channel_mode_flags.FLUID_CHANNEL_POLY_OFF);
+        int FLUID_CHANNEL_MODE_OMNION_POLY = fluid_basic_channel_modes.FLUID_CHANNEL_MODE_MASK & (~(int) SynthLibrary.fluid_channel_mode_flags.FLUID_CHANNEL_OMNI_OFF & ~(int) SynthLibrary.fluid_channel_mode_flags.FLUID_CHANNEL_POLY_OFF);
         /**
          * < corresponds to MIDI mode 1<br>
          * <i>native declaration : fluidsynth/synth.h:446</i>
          */
-        int FLUID_CHANNEL_MODE_OMNION_MONO = (int) SynthLibrary.fluid_basic_channel_modes.FLUID_CHANNEL_MODE_MASK & (~(int) SynthLibrary.fluid_channel_mode_flags.FLUID_CHANNEL_OMNI_OFF & (int) SynthLibrary.fluid_channel_mode_flags.FLUID_CHANNEL_POLY_OFF);
+        int FLUID_CHANNEL_MODE_OMNION_MONO = fluid_basic_channel_modes.FLUID_CHANNEL_MODE_MASK & (~(int) SynthLibrary.fluid_channel_mode_flags.FLUID_CHANNEL_OMNI_OFF & fluid_channel_mode_flags.FLUID_CHANNEL_POLY_OFF);
         /**
          * < corresponds to MIDI mode 2<br>
          * <i>native declaration : fluidsynth/synth.h:447</i>
          */
-        int FLUID_CHANNEL_MODE_OMNIOFF_POLY = (int) SynthLibrary.fluid_basic_channel_modes.FLUID_CHANNEL_MODE_MASK & ((int) SynthLibrary.fluid_channel_mode_flags.FLUID_CHANNEL_OMNI_OFF & ~(int) SynthLibrary.fluid_channel_mode_flags.FLUID_CHANNEL_POLY_OFF);
+        int FLUID_CHANNEL_MODE_OMNIOFF_POLY = fluid_basic_channel_modes.FLUID_CHANNEL_MODE_MASK & (fluid_channel_mode_flags.FLUID_CHANNEL_OMNI_OFF & ~(int) SynthLibrary.fluid_channel_mode_flags.FLUID_CHANNEL_POLY_OFF);
         /**
          * < corresponds to MIDI mode 3<br>
          * <i>native declaration : fluidsynth/synth.h:448</i>
          */
-        int FLUID_CHANNEL_MODE_OMNIOFF_MONO = (int) SynthLibrary.fluid_basic_channel_modes.FLUID_CHANNEL_MODE_MASK & ((int) SynthLibrary.fluid_channel_mode_flags.FLUID_CHANNEL_OMNI_OFF | (int) SynthLibrary.fluid_channel_mode_flags.FLUID_CHANNEL_POLY_OFF);
+        int FLUID_CHANNEL_MODE_OMNIOFF_MONO = fluid_basic_channel_modes.FLUID_CHANNEL_MODE_MASK & (fluid_channel_mode_flags.FLUID_CHANNEL_OMNI_OFF | fluid_channel_mode_flags.FLUID_CHANNEL_POLY_OFF);
         /**
          * < @internal Value defines the count of basic channel modes (#fluid_basic_channel_modes) @warning This symbol is not part of the public API and ABI stability guarantee and may change at any time!<br>
          * <i>native declaration : fluidsynth/synth.h:449</i>
          */
-        int FLUID_CHANNEL_MODE_LAST = ((int) SynthLibrary.fluid_basic_channel_modes.FLUID_CHANNEL_MODE_MASK & ((int) SynthLibrary.fluid_channel_mode_flags.FLUID_CHANNEL_OMNI_OFF | (int) SynthLibrary.fluid_channel_mode_flags.FLUID_CHANNEL_POLY_OFF) + 1);
+        int FLUID_CHANNEL_MODE_LAST = (fluid_basic_channel_modes.FLUID_CHANNEL_MODE_MASK & (fluid_channel_mode_flags.FLUID_CHANNEL_OMNI_OFF | fluid_channel_mode_flags.FLUID_CHANNEL_POLY_OFF) + 1);
     }
-
-    ;
 
     /**
      * Indicates the legato mode a channel is set to<br>
@@ -254,7 +238,7 @@ public interface SynthLibrary extends Library {
      * <i>native declaration : fluidsynth/synth.h:469</i><br>
      * enum values
      */
-    public static interface fluid_channel_legato_mode {
+    interface fluid_channel_legato_mode {
 
         /**
          * < Mode 0 - Release previous note, start a new note<br>
@@ -273,14 +257,12 @@ public interface SynthLibrary extends Library {
         int FLUID_CHANNEL_LEGATO_MODE_LAST = 2;
     }
 
-    ;
-
     /**
      * Indicates the portamento mode a channel is set to<br>
      * <i>native declaration : fluidsynth/synth.h:487</i><br>
      * enum values
      */
-    public static interface fluid_channel_portamento_mode {
+    interface fluid_channel_portamento_mode {
 
         /**
          * < Mode 0 - Portamento on each note (staccato or legato)<br>
@@ -307,14 +289,12 @@ public interface SynthLibrary extends Library {
         int FLUID_CHANNEL_PORTAMENTO_MODE_LAST = 3;
     }
 
-    ;
-
     /**
      * Indicates the breath mode a channel is set to<br>
      * <i>native declaration : fluidsynth/synth.h:510</i><br>
      * enum values
      */
-    public static interface fluid_channel_breath_flags {
+    interface fluid_channel_breath_flags {
 
         /**
          * < when channel is poly, this flag indicates that the default velocity to initial attenuation modulator is replaced by a breath to initial attenuation modulator<br>
@@ -332,8 +312,6 @@ public interface SynthLibrary extends Library {
          */
         int FLUID_CHANNEL_BREATH_SYNC = 0x40;
     }
-
-    ;
 
     /**
      * @startlifecycle{Synthesizer}<br> Original signature : <code>fluid_synth_t* new_fluid_synth(fluid_settings_t*)</code><br>
@@ -2004,7 +1982,7 @@ public interface SynthLibrary extends Library {
      * @{<br> Original signature : <code>int fluid_synth_activate_key_tuning(fluid_synth_t*, int, int, const char*, const double*, int)</code><br>
      * <i>native declaration : fluidsynth/synth.h:301</i>
      */
-    int fluid_synth_activate_key_tuning(PointerByReference synth, int bank, int prog, String name, double pitch[], int apply);
+    int fluid_synth_activate_key_tuning(PointerByReference synth, int bank, int prog, String name, double[] pitch, int apply);
 
     /**
      * @defgroup tuning MIDI Tuning<br>
@@ -2028,7 +2006,7 @@ public interface SynthLibrary extends Library {
      * Original signature : <code>int fluid_synth_activate_octave_tuning(fluid_synth_t*, int, int, const char*, const double*, int)</code><br>
      * <i>native declaration : fluidsynth/synth.h:304</i>
      */
-    int fluid_synth_activate_octave_tuning(PointerByReference synth, int bank, int prog, String name, double pitch[], int apply);
+    int fluid_synth_activate_octave_tuning(PointerByReference synth, int bank, int prog, String name, double[] pitch, int apply);
 
     /**
      * Original signature : <code>int fluid_synth_activate_octave_tuning(fluid_synth_t*, int, int, const char*, const double*, int)</code><br>
@@ -2049,7 +2027,7 @@ public interface SynthLibrary extends Library {
      * Original signature : <code>int fluid_synth_tune_notes(fluid_synth_t*, int, int, int, const int*, const double*, int)</code><br>
      * <i>native declaration : fluidsynth/synth.h:307</i>
      */
-    int fluid_synth_tune_notes(PointerByReference synth, int bank, int prog, int len, int keys[], double pitch[], int apply);
+    int fluid_synth_tune_notes(PointerByReference synth, int bank, int prog, int len, int[] keys, double[] pitch, int apply);
 
     /**
      * Original signature : <code>int fluid_synth_tune_notes(fluid_synth_t*, int, int, int, const int*, const double*, int)</code><br>

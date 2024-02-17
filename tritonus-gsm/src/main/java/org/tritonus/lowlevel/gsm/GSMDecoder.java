@@ -42,7 +42,7 @@ public final class GSMDecoder {
 
     private GsmFrameFormat gsmFrameFormat;
 
-    private BitDecoder bitDecoder = new BitDecoder(null, 0,
+    private final BitDecoder bitDecoder = new BitDecoder(null, 0,
             AllocationMode.LSBitFirst);
 
     private int[] m_dp0 = new int[280];
@@ -771,5 +771,5 @@ public final class GSMDecoder {
 
 }
 
-/* GSMDecoder.java */
+
 

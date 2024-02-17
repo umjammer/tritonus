@@ -66,9 +66,7 @@ public class MidiSystemTestCase {
     @Test
     public void testGetWrongMidiDevice() throws Exception {
         MidiDevice.Info info = new TestInfo("name", "vendor", "description", "version");
-        assertThrows(IllegalArgumentException.class, () -> {
-            MidiSystem.getMidiDevice(info);
-        }, "wrong MidiDevice.Info should throw exception");
+        assertThrows(IllegalArgumentException.class, () -> MidiSystem.getMidiDevice(info), "wrong MidiDevice.Info should throw exception");
     }
 
     private static class TestInfo extends MidiDevice.Info {
@@ -79,4 +77,4 @@ public class MidiSystemTestCase {
     }
 }
 
-/* MidiSystemTestCase.java */
+

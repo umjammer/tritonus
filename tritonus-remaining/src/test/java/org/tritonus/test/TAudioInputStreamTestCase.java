@@ -51,7 +51,6 @@ public class TAudioInputStreamTestCase {
         assertNull(result);
     }
 
-
     @Test
     public void testCopying() {
         AudioFormat format = new AudioFormat(22.5F, 16, 2, true, false);
@@ -75,7 +74,6 @@ public class TAudioInputStreamTestCase {
         }
     }
 
-
     @Test
     public void testUnmodifiable() {
         AudioFormat format = new AudioFormat(44100.0F, 16, 2, true, false);
@@ -91,7 +89,6 @@ public class TAudioInputStreamTestCase {
         } catch (UnsupportedOperationException e) {
         }
     }
-
 
     @Test
     public void testGet() {
@@ -110,4 +107,3 @@ public class TAudioInputStreamTestCase {
 }
 
 
-/* TAudioInputStreamTestCase.java */

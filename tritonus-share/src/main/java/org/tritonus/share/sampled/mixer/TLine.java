@@ -1,8 +1,3 @@
-/*
- * TLine.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999 - 2004 by Matthias Pfisterer
@@ -21,10 +16,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.share.sampled.mixer;
 
@@ -58,7 +49,6 @@ public abstract class TLine
     private final Set<LineListener> m_lineListeners;
     private TMixer m_mixer;
 
-
     protected TLine(TMixer mixer,
                     Line.Info info) {
         setLineInfo(info);
@@ -68,7 +58,6 @@ public abstract class TLine
         m_mixer = mixer;
     }
 
-
     protected TLine(TMixer mixer,
                     Line.Info info,
                     Collection<Control> controls) {
@@ -76,16 +65,14 @@ public abstract class TLine
         m_controls.addAll(controls);
     }
 
-
     protected TMixer getMixer() {
         return m_mixer;
     }
 
-
+    @Override
     public Line.Info getLineInfo() {
         return m_info;
     }
-
 
     protected void setLineInfo(Line.Info info) {
         if (TDebug.TraceLine) {
@@ -96,7 +83,7 @@ public abstract class TLine
         }
     }
 
-
+    @Override
     public void open()
             throws LineUnavailableException {
         if (TDebug.TraceLine) {
@@ -118,7 +105,6 @@ public abstract class TLine
         }
     }
 
-
     /**
      * Subclasses should override this method.
      */
@@ -129,7 +115,7 @@ public abstract class TLine
         }
     }
 
-
+    @Override
     public void close() {
         if (TDebug.TraceLine) {
             TDebug.out("TLine.close(): called");
@@ -150,7 +136,6 @@ public abstract class TLine
         }
     }
 
-
     /**
      * Subclasses should override this method.
      */
@@ -160,11 +145,10 @@ public abstract class TLine
         }
     }
 
-
+    @Override
     public boolean isOpen() {
         return m_bOpen;
     }
-
 
     protected void setOpen(boolean bOpen) {
         if (TDebug.TraceLine) {
@@ -187,13 +171,11 @@ public abstract class TLine
         }
     }
 
-
     protected void addControl(Control control) {
         synchronized (m_controls) {
             m_controls.add(control);
         }
     }
-
 
     protected void removeControl(Control control) {
         synchronized (m_controls) {
@@ -201,14 +183,14 @@ public abstract class TLine
         }
     }
 
-
+    @Override
     public Control[] getControls() {
         synchronized (m_controls) {
             return m_controls.toArray(EMPTY_CONTROL_ARRAY);
         }
     }
 
-
+    @Override
     public Control getControl(Control.Type controlType) {
         synchronized (m_controls) {
             for (Control control : m_controls) {
@@ -220,7 +202,7 @@ public abstract class TLine
         }
     }
 
-
+    @Override
     public boolean isControlSupported(Control.Type controlType) {
         // TDebug.out("TLine.isSupportedControl(): called");
         try {
@@ -234,7 +216,7 @@ public abstract class TLine
         }
     }
 
-
+    @Override
     public void addLineListener(LineListener listener) {
         // TDebug.out("%% TChannel.addListener(): called");
         synchronized (m_lineListeners) {
@@ -242,13 +224,12 @@ public abstract class TLine
         }
     }
 
-
+    @Override
     public void removeLineListener(LineListener listener) {
         synchronized (m_lineListeners) {
             m_lineListeners.remove(listener);
         }
     }
-
 
     private Set<LineListener> getLineListeners() {
         synchronized (m_lineListeners) {
@@ -256,12 +237,10 @@ public abstract class TLine
         }
     }
 
-
     // is overridden in TDataLine to provide a position
     protected void notifyLineEvent(LineEvent.Type type) {
         notifyLineEvent(new LineEvent(this, type, AudioSystem.NOT_SPECIFIED));
     }
-
 
     protected void notifyLineEvent(LineEvent event) {
         // TDebug.out("%% TChannel.notifyChannelEvent(): called");
@@ -271,4 +250,3 @@ public abstract class TLine
 }
 
 
-/* TLine.java */

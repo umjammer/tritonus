@@ -31,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class GetMaxPolyphonyTestCase
         extends BaseSynthesizerTestCase {
 
+    @Override
     protected void checkSynthesizer(Synthesizer synth)
             throws Exception {
         int poly;
@@ -44,7 +45,6 @@ public class GetMaxPolyphonyTestCase
         }
     }
 
-
     private static String constructErrorMessage(Synthesizer synth,
                                                 boolean bOpen) {
         return BaseSynthesizerTestCase.constructErrorMessage(synth,
@@ -53,4 +53,3 @@ public class GetMaxPolyphonyTestCase
 }
 
 
-/* GetMaxPolyphonyTestCase.java */

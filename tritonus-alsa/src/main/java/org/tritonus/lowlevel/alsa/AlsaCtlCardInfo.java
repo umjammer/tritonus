@@ -1,8 +1,3 @@
-/*
- * AlsaCtlCardInfo.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2000 - 2002 by Matthias Pfisterer
@@ -19,10 +14,6 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.lowlevel.alsa;
 
@@ -43,7 +34,6 @@ public class AlsaCtlCardInfo {
      */
     long m_lNativeHandle;
 
-
     public AlsaCtlCardInfo() {
         if (TDebug.TraceAlsaCtlNative) {
             TDebug.out("AlsaPcm.CardInfo.<init>(): begin");
@@ -57,14 +47,6 @@ public class AlsaCtlCardInfo {
         }
     }
 
-
-    protected void finalize() {
-        // TODO: call free()
-        // call super.finalize() first or last?
-        // and introduce a flag if free() has already been called?
-    }
-
-
     /**
      * Calls snd_ctl_card_info_malloc().
      */
@@ -74,7 +56,6 @@ public class AlsaCtlCardInfo {
      * Calls snd_ctl_card_info_free().
      */
     public native void free();
-
 
     /**
      * Calls snd_ctl_card_info_get_card().
@@ -115,4 +96,3 @@ public class AlsaCtlCardInfo {
 }
 
 
-/* AlsaCtlCardInfo.java */

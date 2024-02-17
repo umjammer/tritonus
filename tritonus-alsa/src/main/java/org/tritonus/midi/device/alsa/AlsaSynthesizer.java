@@ -1,8 +1,3 @@
-/*
- * AlsaSynthesizer.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999 by Matthias Pfisterer
@@ -21,10 +16,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.midi.device.alsa;
 
@@ -54,7 +45,6 @@ public class AlsaSynthesizer
     private List<MidiChannel> m_channels;
     private int m_nVoices;
 
-
     public AlsaSynthesizer(int nClient, int nPort, int nVoices) {
         super(
                 new TMidiDevice.Info(
@@ -67,7 +57,7 @@ public class AlsaSynthesizer
         m_channels = new ArrayList<>();
     }
 
-
+    @Override
     protected void openImpl() {
         super.openImpl();
         // TDebug.out("AlsaSynthesizer.openImpl(): called");
@@ -88,80 +78,80 @@ public class AlsaSynthesizer
         }
     }
 
-
+    @Override
     protected void closeImpl() {
         super.closeImpl();
     }
 
-
+    @Override
     public int getMaxPolyphony() {
         return m_nVoices;
     }
 
-
+    @Override
     public long getLatency() {
         return -1L;
     }
 
-
+    @Override
     public MidiChannel[] getChannels() {
         return m_channels.toArray(EMPTY_MIDICHANNEL_ARRAY);
     }
 
-
+    @Override
     public VoiceStatus[] getVoiceStatus() {
         return EMPTY_VOICESTATUS_ARRAY;
     }
 
-
+    @Override
     public boolean isSoundbankSupported(Soundbank soundbank) {
         return false;
     }
 
-
+    @Override
     public boolean loadInstrument(Instrument instrument) {
         return false;
     }
 
-
+    @Override
     public void unloadInstrument(Instrument instrument) {
     }
 
-
+    @Override
     public boolean remapInstrument(Instrument from, Instrument to) {
         return false;
     }
 
-
+    @Override
     public Soundbank getDefaultSoundbank() {
         return null;
     }
 
-
+    @Override
     public Instrument[] getAvailableInstruments() {
         return null;
     }
 
-
+    @Override
     public Instrument[] getLoadedInstruments() {
         return null;
     }
 
-
+    @Override
     public boolean loadAllInstruments(Soundbank soundbank) {
         return false;
     }
 
-
+    @Override
     public void unloadAllInstruments(Soundbank soundbank) {
     }
 
-
+    @Override
     public boolean loadInstruments(Soundbank soundbank, Patch[] aPatches) {
         return false;
     }
 
-
+    @Override
     public void unloadInstruments(Soundbank soundbank, Patch[] aPatches) {
     }
 
@@ -169,5 +159,4 @@ public class AlsaSynthesizer
 }
 
 
-/* AlsaSynthesizer.java */
 

@@ -1,8 +1,3 @@
-/*
- * AiffAudioFileWriter.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2000 by Florian Bomers
@@ -21,10 +16,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.sampled.file;
 
@@ -75,13 +66,13 @@ public class AiffAudioFileWriter extends TAudioFileWriter {
                 Arrays.asList(AUDIO_FORMATS));
     }
 
-
+    @Override
     protected boolean isAudioFormatSupportedImpl(AudioFormat format,
                                                  AudioFileFormat.Type fileType) {
         return AiffTool.getFormatCode(format) != AiffTool.AIFF_COMM_UNSPECIFIED;
     }
 
-
+    @Override
     protected AudioOutputStream getAudioOutputStream(AudioFormat audioFormat,
                                                      long lLengthInBytes,
                                                      AudioFileFormat.Type fileType,
@@ -93,4 +84,4 @@ public class AiffAudioFileWriter extends TAudioFileWriter {
 
 }
 
-/* AiffAudioFileWriter.java */
+

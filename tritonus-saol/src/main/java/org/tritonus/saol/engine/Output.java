@@ -1,8 +1,3 @@
-/*
- * Output.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2002 by Matthias Pfisterer
@@ -19,10 +14,6 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.saol.engine;
 
@@ -45,7 +36,6 @@ public interface Output {
      */
     int getWidth();
 
-
     /**
      * Initiate the cumulation of a sample value.
      * Sets the values of all samples to 0.0.
@@ -53,7 +43,6 @@ public interface Output {
      * any instrument's a-cycle code is executed.
      */
     void clear();
-
 
     /**
      * Add the sample value of one instrument.
@@ -63,7 +52,6 @@ public interface Output {
      * The current hacky version allows only for mono samples.
      */
     void output(float fSample);
-
 
     /**
      * Add sample values of one instrument.
@@ -76,4 +64,3 @@ public interface Output {
 }
 
 
-/* Output.java */

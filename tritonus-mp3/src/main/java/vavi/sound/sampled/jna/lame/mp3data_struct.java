@@ -44,6 +44,7 @@ public class mp3data_struct extends Structure {
         super();
     }
 
+    @Override
     protected List<String> getFieldOrder() {
         return Arrays.asList("header_parsed", "stereo", "samplerate", "bitrate", "mode", "mode_ext", "framesize", "nsamp", "totalframes", "framenum");
     }
@@ -56,11 +57,8 @@ public class mp3data_struct extends Structure {
 
     }
 
-    ;
-
     public static class ByValue extends mp3data_struct implements Structure.ByValue {
 
     }
 
-    ;
 }

@@ -1,8 +1,3 @@
-/*
- * CddaUtils.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2001 by Matthias Pfisterer
@@ -21,10 +16,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.lowlevel.cdda;
 
@@ -45,4 +36,3 @@ public class CddaUtils {
 }
 
 
-/* CddaUtils.java */

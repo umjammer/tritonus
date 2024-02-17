@@ -1,8 +1,3 @@
-/*
- * Util.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2002 by Matthias Pfisterer
@@ -19,10 +14,6 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.lowlevel.dsp;
 
@@ -48,7 +39,6 @@ public class Util {
         }
         return S;
     }
-
 
     /**
      * Compute an inverse discrete fourier transform (IDFT).
@@ -77,7 +67,6 @@ public class Util {
         return aTimeDomain;
     }
 
-
     /**
      * Multiplication of two arrays.
      */
@@ -89,7 +78,6 @@ public class Util {
         }
         return adResult;
     }
-
 
     /**
      * Converts frequency representation from omega to relative.
@@ -106,7 +94,6 @@ public class Util {
         return dRelative;
     }
 
-
     /**
      * Converts frequency representation from relative to omega.
      * This method converts a frequency represented relative to
@@ -121,7 +108,6 @@ public class Util {
         double dOmega = dRelative * 2.0 * Math.PI;
         return dOmega;
     }
-
 
     /**
      * Converts frequency representation from omega to absolute.
@@ -138,7 +124,6 @@ public class Util {
         return dAbsolute;
     }
 
-
     /**
      * Converts frequency representation from absolute to omega.
      * This method converts a frequency represented relative to
@@ -154,7 +139,6 @@ public class Util {
         return dOmega;
     }
 
-
     /**
      * Quantize constants from double to float.
      */
@@ -168,4 +152,3 @@ public class Util {
 }
 
 
-/* Util.java */

@@ -22,7 +22,7 @@ public interface GenLibrary extends Library {
      * <i>native declaration : fluidsynth/gen.h:40</i><br>
      * enum values
      */
-    public static interface fluid_gen_type {
+    interface fluid_gen_type {
 
         /**
          * < Sample start address offset (0-32767)<br>
@@ -346,5 +346,4 @@ public interface GenLibrary extends Library {
         int GEN_LAST = 63;
     }
 
-    ;
 }

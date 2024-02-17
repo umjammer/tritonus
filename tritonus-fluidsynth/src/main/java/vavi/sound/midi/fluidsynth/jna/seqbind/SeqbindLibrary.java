@@ -16,9 +16,9 @@ import com.sun.jna.ptr.PointerByReference;
  */
 public interface SeqbindLibrary extends Library {
 
-    public static final String JNA_LIBRARY_NAME = "fluidsynth";
-    public static final NativeLibrary JNA_NATIVE_LIB = NativeLibrary.getInstance(SeqbindLibrary.JNA_LIBRARY_NAME);
-    public static final SeqbindLibrary INSTANCE = (SeqbindLibrary) Native.load(SeqbindLibrary.JNA_LIBRARY_NAME, SeqbindLibrary.class);
+    String JNA_LIBRARY_NAME = "fluidsynth";
+    NativeLibrary JNA_NATIVE_LIB = NativeLibrary.getInstance(SeqbindLibrary.JNA_LIBRARY_NAME);
+    SeqbindLibrary INSTANCE = Native.load(SeqbindLibrary.JNA_LIBRARY_NAME, SeqbindLibrary.class);
 
     /**
      * @addtogroup sequencer<br>
@@ -51,7 +51,7 @@ public interface SeqbindLibrary extends Library {
      */
     int fluid_sequencer_add_midi_event_to_buffer(Pointer data, PointerByReference event);
 
-    public static class fluid_midi_event_t extends PointerType {
+    class fluid_midi_event_t extends PointerType {
 
         public fluid_midi_event_t(Pointer address) {
             super(address);
@@ -62,5 +62,4 @@ public interface SeqbindLibrary extends Library {
         }
     }
 
-    ;
 }

@@ -10,7 +10,6 @@ public class AlsaMixerTest {
 
     private static boolean sm_bShowInactiveElements;
 
-
     public static void main(String[] args)
             throws Exception {
         String strMixerName = "hw:0";
@@ -26,7 +25,7 @@ public class AlsaMixerTest {
         if (nReturn > 0) {
             out("Mixer controls:");
             for (int i = 0; i < nReturn; i++) {
-                out("" + i + " " + anIndices[i] + " " + astrNames[i]);
+                out(i + " " + anIndices[i] + " " + astrNames[i]);
                 AlsaMixerElement element = new AlsaMixerElement(mixer, anIndices[i], astrNames[i]);
                 if (element.isActive() || sm_bShowInactiveElements) {
                     out("--------------------------------------------------------------------------------");
@@ -37,7 +36,6 @@ public class AlsaMixerTest {
         }
         mixer.close();
     }
-
 
     private static void output(AlsaMixerElement element) {
         out("  name: " + element.getName());
@@ -56,7 +54,6 @@ public class AlsaMixerTest {
         }
     }
 
-
     private static void outputPlayback(AlsaMixerElement element) {
         out("  playback mono: " + element.isPlaybackMono());
         for (int nChannel = AlsaMixerElement.SND_MIXER_SCHN_FRONT_LEFT;
@@ -71,7 +68,6 @@ public class AlsaMixerTest {
         out("  playback switch: " + element.hasPlaybackSwitch());
         out("  playback switch joined: " + element.hasPlaybackSwitchJoined());
     }
-
 
     private static void outputCapture(AlsaMixerElement element) {
         out("  capture mono: " + element.isCaptureMono());
@@ -92,7 +88,6 @@ public class AlsaMixerTest {
         }
     }
 
-
     private static boolean hasPlaybackChannels(AlsaMixerElement element) {
         boolean bHasChannels = false;
         for (int nChannel = AlsaMixerElement.SND_MIXER_SCHN_FRONT_LEFT;
@@ -102,7 +97,6 @@ public class AlsaMixerTest {
         }
         return bHasChannels;
     }
-
 
     private static boolean hasCaptureChannels(AlsaMixerElement element) {
         boolean bHasChannels = false;
@@ -114,11 +108,9 @@ public class AlsaMixerTest {
         return bHasChannels;
     }
 
-
     private static void out(String strMessage) {
         System.out.println(strMessage);
     }
 }
 
 
-/* AlsaMixerTest.java */

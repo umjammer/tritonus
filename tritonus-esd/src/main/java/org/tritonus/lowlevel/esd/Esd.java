@@ -1,8 +1,3 @@
-/*
- * Esd.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999 - 2002 by Matthias Pfisterer
@@ -22,10 +17,6 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.lowlevel.esd;
 
 import org.tritonus.share.TDebug;
@@ -42,11 +33,9 @@ public class Esd {
 
     private static boolean sm_bIsLibraryAvailable = false;
 
-
     static {
         Esd.loadNativeLibrary();
     }
-
 
     public static void loadNativeLibrary() {
         if (TDebug.TraceEsdNative) {
@@ -65,7 +54,6 @@ public class Esd {
         }
     }
 
-
     /**
      * Returns whether the libraries are installed correctly.
      */
@@ -75,4 +63,3 @@ public class Esd {
 }
 
 
-/* Esd.java */

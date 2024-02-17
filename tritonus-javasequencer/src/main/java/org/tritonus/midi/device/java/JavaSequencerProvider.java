@@ -1,8 +1,3 @@
-/*
- * JavaSequencerProvider.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999 by Matthias Pfisterer
@@ -22,10 +17,6 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.midi.device.java;
 
 import javax.sound.midi.MidiDevice;
@@ -40,7 +31,6 @@ public class JavaSequencerProvider
         extends MidiDeviceProvider {
 
     private static MidiDevice.Info sm_info;
-
 
     public JavaSequencerProvider() {
         if (TDebug.TraceMidiDeviceProvider) {
@@ -60,7 +50,7 @@ public class JavaSequencerProvider
         }
     }
 
-
+    @Override
     public MidiDevice.Info[] getDeviceInfo() {
         if (TDebug.TraceMidiDeviceProvider) {
             TDebug.out("JavaSequencerProvider.getDeviceInfo(): begin");
@@ -73,7 +63,7 @@ public class JavaSequencerProvider
         return infos;
     }
 
-
+    @Override
     public MidiDevice getDevice(MidiDevice.Info info) {
         if (TDebug.TraceMidiDeviceProvider) {
             TDebug.out("JavaSequencerProvider.getDevice(): begin");
@@ -93,4 +83,3 @@ public class JavaSequencerProvider
 }
 
 
-/* JavaSequencerProvider.java */

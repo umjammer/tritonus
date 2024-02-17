@@ -82,6 +82,7 @@ public class OggVorbis_File extends Structure {
         super();
     }
 
+    @Override
     protected List<String> getFieldOrder() {
         return Arrays.asList("datasource", "seekable", "offset", "end", "oy", "links", "offsets", "dataoffsets", "serialnos", "pcmlengths", "vi", "vc", "pcm_offset", "ready_state", "current_serialno", "current_link", "bittrack", "samptrack", "os", "vd", "vb", "callbacks");
     }
@@ -94,11 +95,8 @@ public class OggVorbis_File extends Structure {
 
     }
 
-    ;
-
     public static class ByValue extends OggVorbis_File implements Structure.ByValue {
 
     }
 
-    ;
 }

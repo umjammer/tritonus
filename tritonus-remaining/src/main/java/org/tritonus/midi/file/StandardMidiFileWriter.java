@@ -1,8 +1,3 @@
-/*
- * StandardMidiFileReader.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999, 2000 by Matthias Pfisterer
@@ -19,10 +14,6 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.midi.file;
 
@@ -61,7 +52,6 @@ public class StandardMidiFileWriter
      */
     public static boolean CANCEL_RUNNING_STATUS_ON_META_AND_SYSEX = true;
 
-
     /**
      * Return supported MIDI file types.
      * This writer supports Standard MIDI File (SMF) types 0 and 1.
@@ -69,10 +59,10 @@ public class StandardMidiFileWriter
      *
      * @return an array of supported SMF types.
      */
+    @Override
     public int[] getMidiFileTypes() {
         return new int[] {0, 1};
     }
-
 
     /**
      * Return the supported MIDI file types for a given Sequence.
@@ -82,6 +72,7 @@ public class StandardMidiFileWriter
      * @return and array of supported SMF types. It contains 0 if
      * the Sequence has one track, 1 otherwise.
      */
+    @Override
     public int[] getMidiFileTypes(Sequence sequence) {
         Track[] tracks = sequence.getTracks();
         if (tracks.length == 1) {
@@ -91,7 +82,6 @@ public class StandardMidiFileWriter
         }
     }
 
-
     /**
      * Write a Sequence as Standard MIDI File (SMF) to an OutputStream.
      * A byte stream representing the passed Sequence is written
@@ -99,6 +89,7 @@ public class StandardMidiFileWriter
      *
      * @return The number of bytes written to the output stream.
      */
+    @Override
     public int write(Sequence sequence,
                      int nFileType,
                      OutputStream outputStream)
@@ -130,7 +121,6 @@ public class StandardMidiFileWriter
         return nBytesWritten;
     }
 
-
     /**
      * Write a Sequence as Standard MIDI File (SMF) to a File.
      * A byte stream representing the passed Sequence is written
@@ -138,6 +128,7 @@ public class StandardMidiFileWriter
      *
      * @return The number of bytes written to the file.
      */
+    @Override
     public int write(Sequence sequence,
                      int nFileType,
                      File file)
@@ -149,7 +140,6 @@ public class StandardMidiFileWriter
         outputStream.close();
         return nBytes;
     }
-
 
     /**
      * Write a Track to a DataOutputStream.
@@ -194,7 +184,6 @@ public class StandardMidiFileWriter
         return nLength;
     }
 
-
     /**
      * TODO:
      */
@@ -236,7 +225,6 @@ public class StandardMidiFileWriter
         return nLength;
     }
 
-
     /**
      * TODO:
      */
@@ -274,7 +262,6 @@ public class StandardMidiFileWriter
         return nLength;
     }
 
-
     /**
      * TODO:
      */
@@ -306,7 +293,6 @@ public class StandardMidiFileWriter
         return nLength;
     }
 
-
     /**
      * TODO:
      */
@@ -337,7 +323,6 @@ public class StandardMidiFileWriter
         nLength += nDataLength;
         return nLength;
     }
-
 
     /**
      * TODO:
@@ -385,5 +370,4 @@ public class StandardMidiFileWriter
 }
 
 
-/* StandardMidiFileWriter.java */
 

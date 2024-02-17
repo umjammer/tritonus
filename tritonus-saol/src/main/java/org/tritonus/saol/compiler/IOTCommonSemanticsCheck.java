@@ -37,36 +37,47 @@ public abstract class IOTCommonSemanticsCheck extends IOGTCommonSemanticsCheck {
 
     //
 
+    @Override
     public void inAIdentlistIdentlist(AIdentlistIdentlist node) {
     }
 
+    @Override
     public void outAIdentlistIdentlist(AIdentlistIdentlist node) {
     }
 
+    @Override
     public void inAIdentlistTailIdentlistTail(AIdentlistTailIdentlistTail node) {
     }
 
+    @Override
     public void outAIdentlistTailIdentlistTail(AIdentlistTailIdentlistTail node) {
     }
 
+    @Override
     public void inAParamlistParamlist(AParamlistParamlist node) {
     }
 
+    @Override
     public void outAParamlistParamlist(AParamlistParamlist node) {
     }
 
+    @Override
     public void inAParamlistTailParamlistTail(AParamlistTailParamlistTail node) {
     }
 
+    @Override
     public void outAParamlistTailParamlistTail(AParamlistTailParamlistTail node) {
     }
 
+    @Override
     public void inATablemapVardecl(ATablemapVardecl node) {
     }
 
+    @Override
     public void outATablemapVardecl(ATablemapVardecl node) {
     }
 
+    @Override
     public void outASigvarOpvardecl(ASigvarOpvardecl node) {
         boolean bImports = false;
         boolean bExports = false;
@@ -98,6 +109,7 @@ public abstract class IOTCommonSemanticsCheck extends IOGTCommonSemanticsCheck {
         }
     }
 
+    @Override
     public void outATablevarOpvardecl(ATablevarOpvardecl node) {
         boolean bImports = false;
         boolean bExports = false;
@@ -126,24 +138,30 @@ public abstract class IOTCommonSemanticsCheck extends IOGTCommonSemanticsCheck {
         }
     }
 
+    @Override
     public void inATableOpvardecl(ATableOpvardecl node) {
     }
 
+    @Override
     public void outATableOpvardecl(ATableOpvardecl node) {
     }
 
+    @Override
     public void inAParamdeclParamdecl(AParamdeclParamdecl node) {
     }
 
+    @Override
     public void outAParamdeclParamdecl(AParamdeclParamdecl node) {
     }
 
+    @Override
     public void inANamelistNamelist(ANamelistNamelist node) {
         List<?> list = new ArrayList<>();
         NodeSemantics nodeSemantics = new NodeSemantics(list);
         setNodeSemantics(node, nodeSemantics);
     }
 
+    @Override
     public void outANamelistNamelist(ANamelistNamelist node) {
         VariableEntry variableEntry = (VariableEntry) getNodeSemantics(node.getName()).getAux();
         NodeSemantics nodeSemantics = getNodeSemantics(node);
@@ -152,6 +170,7 @@ public abstract class IOTCommonSemanticsCheck extends IOGTCommonSemanticsCheck {
         list.add(variableEntry);
     }
 
+    @Override
     public void outANamelistTailNamelistTail(ANamelistTailNamelistTail node) {
         VariableEntry variableEntry = (VariableEntry) getNodeSemantics(node.getName()).getAux();
         NodeSemantics nodeSemantics = getNodeSemantics(node.parent());
@@ -160,11 +179,13 @@ public abstract class IOTCommonSemanticsCheck extends IOGTCommonSemanticsCheck {
         list.add(variableEntry);
     }
 
+    @Override
     public void outASimpleName(ASimpleName node) {
         String strVariableName = node.getIdentifier().getText();
         handleName(node, strVariableName, 1);
     }
 
+    @Override
     public void outAIndexedName(AIndexedName node) {
         String strVariableName = node.getIdentifier().getText();
         String strInteger = node.getInteger().getText();
@@ -172,11 +193,13 @@ public abstract class IOTCommonSemanticsCheck extends IOGTCommonSemanticsCheck {
         handleName(node, strVariableName, nInteger);
     }
 
+    @Override
     public void outAInchannelsName(AInchannelsName node) {
         String strVariableName = node.getIdentifier().getText();
         handleName(node, strVariableName, WidthAndRate.WIDTH_INCHANNELS);
     }
 
+    @Override
     public void outAOutchannelsName(AOutchannelsName node) {
         String strVariableName = node.getIdentifier().getText();
         handleName(node, strVariableName, WidthAndRate.WIDTH_OUTCHANNELS);
@@ -189,143 +212,181 @@ public abstract class IOTCommonSemanticsCheck extends IOGTCommonSemanticsCheck {
         setNodeSemantics(node, nodeSemantics);
     }
 
+    @Override
     public void outAIvarStype(AIvarStype node) {
         NodeSemantics nodeSemantics = new NodeSemantics(WidthAndRate.WIDTH_UNKNOWN, WidthAndRate.RATE_I);
         setNodeSemantics(node, nodeSemantics);
     }
 
+    @Override
     public void outAKsigStype(AKsigStype node) {
         NodeSemantics nodeSemantics = new NodeSemantics(WidthAndRate.WIDTH_UNKNOWN, WidthAndRate.RATE_K);
         setNodeSemantics(node, nodeSemantics);
     }
 
+    @Override
     public void outAAsigStype(AAsigStype node) {
         NodeSemantics nodeSemantics = new NodeSemantics(WidthAndRate.WIDTH_UNKNOWN, WidthAndRate.RATE_A);
         setNodeSemantics(node, nodeSemantics);
     }
 
+    @Override
     public void outAOparrayStype(AOparrayStype node) {
         NodeSemantics nodeSemantics = new NodeSemantics(WidthAndRate.WIDTH_UNKNOWN, WidthAndRate.RATE_OPARRAY);
         setNodeSemantics(node, nodeSemantics);
     }
 
+    @Override
     public void outAXsigStype(AXsigStype node) {
         NodeSemantics nodeSemantics = new NodeSemantics(WidthAndRate.WIDTH_UNKNOWN, WidthAndRate.RATE_X);
         setNodeSemantics(node, nodeSemantics);
     }
 
+    @Override
     public void inATabledeclTabledecl(ATabledeclTabledecl node) {
     }
 
+    @Override
     public void outATabledeclTabledecl(ATabledeclTabledecl node) {
     }
 
+    @Override
     public void outAImportsTaglist(AImportsTaglist node) {
         NodeSemantics nodeSemantics = new NodeSemantics("I");
         setNodeSemantics(node, nodeSemantics);
     }
 
+    @Override
     public void outAExportsTaglist(AExportsTaglist node) {
         NodeSemantics nodeSemantics = new NodeSemantics("E");
         setNodeSemantics(node, nodeSemantics);
     }
 
-
+    @Override
     public void outAImportsexportsTaglist(AImportsexportsTaglist node) {
         NodeSemantics nodeSemantics = new NodeSemantics("IE");
         setNodeSemantics(node, nodeSemantics);
     }
 
+    @Override
     public void outAExportsimportsTaglist(AExportsimportsTaglist node) {
         NodeSemantics nodeSemantics = new NodeSemantics("IE");
         setNodeSemantics(node, nodeSemantics);
     }
 
+    @Override
     public void inAAopcodeOptype(AAopcodeOptype node) {
     }
 
+    @Override
     public void outAAopcodeOptype(AAopcodeOptype node) {
     }
 
+    @Override
     public void inAKopcodeOptype(AKopcodeOptype node) {
     }
 
+    @Override
     public void outAKopcodeOptype(AKopcodeOptype node) {
     }
 
+    @Override
     public void inAIopcodeOptype(AIopcodeOptype node) {
     }
 
+    @Override
     public void outAIopcodeOptype(AIopcodeOptype node) {
     }
 
+    @Override
     public void inAOpcodeOptype(AOpcodeOptype node) {
     }
 
+    @Override
     public void outAOpcodeOptype(AOpcodeOptype node) {
     }
 
+    @Override
     public void inAAltExpr(AAltExpr node) {
         // TODO:
     }
 
+    @Override
     public void outAAltExpr(AAltExpr node) {
         // TODO:
     }
 
+    @Override
     public void outAOrOrexpr(AOrOrexpr node) {
         // TODO:
     }
 
+    @Override
     public void outAAndAndexpr(AAndAndexpr node) {
         // TODO:
     }
 
+    @Override
     public void outANeqEqualityexpr(ANeqEqualityexpr node) {
     }
 
+    @Override
     public void outAEqEqualityexpr(AEqEqualityexpr node) {
     }
 
+    @Override
     public void inAGtRelationalexpr(AGtRelationalexpr node) {
     }
 
+    @Override
     public void outAGtRelationalexpr(AGtRelationalexpr node) {
     }
 
+    @Override
     public void outALtRelationalexpr(ALtRelationalexpr node) {
     }
 
+    @Override
     public void outALteqRelationalexpr(ALteqRelationalexpr node) {
     }
 
+    @Override
     public void outAGteqRelationalexpr(AGteqRelationalexpr node) {
     }
 
+    @Override
     public void outAPlusAddexpr(APlusAddexpr node) {
     }
 
+    @Override
     public void outAMinusAddexpr(AMinusAddexpr node) {
     }
 
+    @Override
     public void outAMultFactor(AMultFactor node) {
     }
 
+    @Override
     public void outADivFactor(ADivFactor node) {
     }
 
+    @Override
     public void outANotUnaryminusterm(ANotUnaryminusterm node) {
     }
 
+    @Override
     public void outANotNotterm(ANotNotterm node) {
     }
 
+    @Override
     public void outAIdentifierTerm(AIdentifierTerm node) {
     }
 
+    @Override
     public void outAConstantTerm(AConstantTerm node) {
     }
 
+    @Override
     public void inAIndexedTerm(AIndexedTerm node) {
     }
 
@@ -334,6 +395,7 @@ public abstract class IOTCommonSemanticsCheck extends IOGTCommonSemanticsCheck {
      * also the array index (as a float) is on the stack.
      * It has to be transformed to integer.
      */
+    @Override
     public void outAIndexedTerm(AIndexedTerm node) {
 //   // TODO: correct rounding (1.5 -> 2.0)
 //   m_aMethods[METHOD_A].appendInstruction(InstructionConstants.F2I);
@@ -341,68 +403,89 @@ public abstract class IOTCommonSemanticsCheck extends IOGTCommonSemanticsCheck {
 //   setNodeAttribute(node, InstructionConstants.FALOAD);
     }
 
+    @Override
     public void inASasbfTerm(ASasbfTerm node) {
     }
 
+    @Override
     public void outASasbfTerm(ASasbfTerm node) {
     }
 
+    @Override
     public void inAFunctionTerm(AFunctionTerm node) {
     }
 
+    @Override
     public void outAFunctionTerm(AFunctionTerm node) {
     }
 
+    @Override
     public void inAIndexedfunctionTerm(AIndexedfunctionTerm node) {
     }
 
+    @Override
     public void outAIndexedfunctionTerm(AIndexedfunctionTerm node) {
     }
 
+    @Override
     public void inAExprlistExprlist(AExprlistExprlist node) {
     }
 
+    @Override
     public void outAExprlistExprlist(AExprlistExprlist node) {
     }
 
+    @Override
     public void inAExprlistTailExprlistTail(AExprlistTailExprlistTail node) {
     }
 
+    @Override
     public void outAExprlistTailExprlistTail(AExprlistTailExprlistTail node) {
     }
 
+    @Override
     public void inAExprstrlistExprstrlist(AExprstrlistExprstrlist node) {
     }
 
+    @Override
     public void outAExprstrlistExprstrlist(AExprstrlistExprstrlist node) {
     }
 
+    @Override
     public void inAExprstrlistTailExprstrlistTail(AExprstrlistTailExprstrlistTail node) {
     }
 
+    @Override
     public void outAExprstrlistTailExprstrlistTail(AExprstrlistTailExprstrlistTail node) {
     }
 
+    @Override
     public void inAExprExprOrString(AExprExprOrString node) {
     }
 
+    @Override
     public void outAExprExprOrString(AExprExprOrString node) {
     }
 
+    @Override
     public void inAStringExprOrString(AStringExprOrString node) {
     }
 
+    @Override
     public void outAStringExprOrString(AStringExprOrString node) {
     }
 
+    @Override
     public void inAIntegerConst(AIntegerConst node) {
     }
 
+    @Override
     public void outAIntegerConst(AIntegerConst node) {
     }
 
+    @Override
     public void outANumberConst(ANumberConst node) {
     }
 }
 
-/* IOTCommonSemanticsCheck.java */
+

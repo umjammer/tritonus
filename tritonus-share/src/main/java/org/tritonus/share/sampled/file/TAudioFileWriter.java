@@ -1,8 +1,3 @@
-/*
- * TAudioFileWriter.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999, 2000 by Matthias Pfisterer
@@ -21,10 +16,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.share.sampled.file;
 
@@ -76,13 +67,11 @@ public abstract class TAudioFileWriter
     // only needed for Collection.toArray()
     protected static final AudioFileFormat.Type[] NULL_TYPE_ARRAY = new AudioFileFormat.Type[0];
 
-
     /**
      * The audio file types (AudioFileFormat.Type) that can be
      * handled by the AudioFileWriter.
      */
     private Collection<AudioFileFormat.Type> m_audioFileTypes;
-
 
     /**
      * The AudioFormats that can be handled by the
@@ -90,7 +79,6 @@ public abstract class TAudioFileWriter
      */
     // IDEA: implement a special collection that uses matches() to test whether an element is already in
     private Collection<AudioFormat> m_audioFormats;
-
 
     /**
      * Inheriting classes should call this constructor
@@ -114,13 +102,11 @@ public abstract class TAudioFileWriter
         return m_audioFileTypes.toArray(NULL_TYPE_ARRAY);
     }
 
-
     // implementing the interface
     @Override
     public boolean isFileTypeSupported(AudioFileFormat.Type fileType) {
         return m_audioFileTypes.contains(fileType);
     }
-
 
     // implementing the interface
     @Override
@@ -138,7 +124,6 @@ public abstract class TAudioFileWriter
         return res.toArray(NULL_TYPE_ARRAY);
     }
 
-
     // implementing the interface
     @Override
     public boolean isFileTypeSupported(AudioFileFormat.Type fileType, AudioInputStream audioInputStream) {
@@ -151,7 +136,6 @@ public abstract class TAudioFileWriter
         // I prefer to return false if the format is not exactly supported
         // but still execute the write, if only sign/endian changing is necessary.
     }
-
 
     // implementing the interface
     @Override
@@ -220,7 +204,6 @@ public abstract class TAudioFileWriter
         return written;
     }
 
-
     // implementing the interface
     @Override
     public int write(AudioInputStream audioInputStream,
@@ -284,7 +267,6 @@ public abstract class TAudioFileWriter
         return written;
     }
 
-
     protected int writeImpl(
             AudioInputStream audioInputStream,
             AudioOutputStream audioOutputStream,
@@ -329,7 +311,6 @@ public abstract class TAudioFileWriter
         return nTotalWritten;
     }
 
-
     /**
      * Returns the AudioFormat that can be handled for the given file type.
      * In this simple implementation, all handled AudioFormats are
@@ -340,7 +321,6 @@ public abstract class TAudioFileWriter
     protected Iterator<AudioFormat> getSupportedAudioFormats(AudioFileFormat.Type fileType) {
         return m_audioFormats.iterator();
     }
-
 
     /**
      * Checks whether the passed <b>AudioFormat</b> can be handled.
@@ -385,7 +365,6 @@ public abstract class TAudioFileWriter
         }
         return false;
     }
-
 
     protected abstract AudioOutputStream getAudioOutputStream(
             AudioFormat audioFormat,
@@ -492,4 +471,3 @@ public abstract class TAudioFileWriter
 }
 
 
-/* TAudioFileWriter.java */

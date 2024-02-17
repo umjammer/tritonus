@@ -44,15 +44,12 @@ public class VorbisAudioFileReader
     private static final int INITAL_READ_LENGTH = 4096;
     private static final int MARK_LIMIT = INITAL_READ_LENGTH + 1;
 
-
     // TODO: refresh from time to time to allow adding the lib at runtime...
     private static boolean LIB_AVAILABLE = Ogg.isLibraryAvailable();
-
 
     public VorbisAudioFileReader() {
         super(MARK_LIMIT, true);
     }
-
 
     @Override
     protected AudioFileFormat getAudioFileFormat(InputStream inputStream,
@@ -340,5 +337,4 @@ public class VorbisAudioFileReader
 }
 
 
-/* VorbisAudioFileReader.java */
 

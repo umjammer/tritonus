@@ -59,4 +59,4 @@ public class VorbisAudioFileWriter extends THeaderlessAudioFileWriter {
     }
 }
 
-/* VorbisAudioFileWriter.java */
+

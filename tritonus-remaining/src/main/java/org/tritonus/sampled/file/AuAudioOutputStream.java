@@ -1,8 +1,3 @@
-/*
- * AuAudioOutputStream.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2000,2001 by Florian Bomers
@@ -22,10 +17,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.sampled.file;
 
@@ -47,7 +38,7 @@ import org.tritonus.share.sampled.file.TDataOutputStream;
 
 public class AuAudioOutputStream extends TAudioOutputStream {
 
-    private static String description = "Created by Tritonus";
+    private static final String description = "Created by Tritonus";
 
     /**
      * Writes a null-terminated ascii string s to f.
@@ -56,7 +47,7 @@ public class AuAudioOutputStream extends TAudioOutputStream {
      * @throws IOException Write error.
      */
     protected static void writeText(TDataOutputStream dos, String s) throws IOException {
-        if (s.length() > 0) {
+        if (!s.isEmpty()) {
             dos.writeBytes(s);
             dos.writeByte(0);  // pour terminer le texte
             if ((s.length() % 2) == 0) {
@@ -70,7 +61,7 @@ public class AuAudioOutputStream extends TAudioOutputStream {
      * Returns number of bytes that have to written for string s (with alignment)
      */
     protected static int getTextLength(String s) {
-        if (s.length() == 0) {
+        if (s.isEmpty()) {
             return 0;
         } else {
             return (s.length() + 2) & 0xFFFFFFFE;
@@ -101,6 +92,7 @@ public class AuAudioOutputStream extends TAudioOutputStream {
         }
     }
 
+    @Override
     protected void writeHeader() throws IOException {
         if (TDebug.TraceAudioOutputStream) {
             TDebug.out("AuAudioOutputStream.writeHeader(): called.");
@@ -122,6 +114,7 @@ public class AuAudioOutputStream extends TAudioOutputStream {
         writeText(dos, description);
     }
 
+    @Override
     protected void patchHeader() throws IOException {
         TDataOutputStream tdos = getDataOutputStream();
         tdos.seek(0);
@@ -130,4 +123,4 @@ public class AuAudioOutputStream extends TAudioOutputStream {
     }
 }
 
-/* AuAudioOutputStream.java */
+

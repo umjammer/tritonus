@@ -1,10 +1,4 @@
 /*
- * EsdSourceDataLine.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 1999, 2000 by Matthias Pfisterer
  *
  *
@@ -21,10 +15,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.sampled.mixer.esd;
 
@@ -56,24 +46,20 @@ public class EsdSourceDataLine
      */
     private int m_nBytesPerSample;
 
-
     /*
      * Used to store the muted state.
      */
     private boolean m_bMuted;
-
 
     /*
      * Used to store the gain while the channel is muted.
      */
     private float m_fGain;
 
-
     /*
      * Used to store the pan while the channel is muted.
      */
     private float m_fPan;
-
 
     // TODO: has info object to change if format or buffer size are changed later?
     // no, but it has to represent the mixer's capabilities. So a fixed info per mixer.
@@ -94,7 +80,7 @@ public class EsdSourceDataLine
 */
     }
 
-
+    @Override
     protected void openImpl() {
         if (TDebug.TraceSourceDataLine) {
             TDebug.out("EsdSourceDataLine.openImpl(): called.");
@@ -147,14 +133,14 @@ public class EsdSourceDataLine
                 (int) format.getSampleRate());
     }
 
-
+    @Override
     public int available() {
         // TODO:
         return -1;
     }
 
-
     // TODO: check if should block
+    @Override
     public int write(byte[] abData, int nOffset, int nLength) {
         if (TDebug.TraceSourceDataLine) {
             TDebug.out("EsdSourceDataLine.write(): called.");
@@ -203,7 +189,7 @@ public class EsdSourceDataLine
         return nLength;
     }
 
-
+    @Override
     protected void closeImpl() {
         if (TDebug.TraceSourceDataLine) {
             TDebug.out("EsdSourceDataLine.closeImpl(): called.");
@@ -211,7 +197,7 @@ public class EsdSourceDataLine
         m_esdStream.close();
     }
 
-
+    @Override
     public void drain() {
         if (TDebug.TraceSourceDataLine) {
             TDebug.out("EsdSourceDataLine.drain(): called.");
@@ -219,14 +205,13 @@ public class EsdSourceDataLine
         // TODO:
     }
 
-
+    @Override
     public void flush() {
         if (TDebug.TraceSourceDataLine) {
             TDebug.out("EsdSourceDataLine.flush(): called.");
         }
         // TODO:
     }
-
 
     /**
      * fGain is logarithmic!!
@@ -241,7 +226,6 @@ public class EsdSourceDataLine
         }
     }
 
-
     /**
      *
      */
@@ -254,7 +238,6 @@ public class EsdSourceDataLine
             setGainImpl();
         }
     }
-
 
     /**
      *
@@ -270,7 +253,6 @@ public class EsdSourceDataLine
             setGainImpl();
         }
     }
-
 
     /**
      *
@@ -289,7 +271,6 @@ public class EsdSourceDataLine
 // 				      (int) (fRightLinear * 256));
     }
 
-
     // IDEA: move inner classes to TBaseDataLine
     public class EsdSourceDataLineGainControl
             extends FloatControl {
@@ -300,7 +281,6 @@ public class EsdSourceDataLine
          */
         private /*static*/ static final float MAX_GAIN = 24.0F;
         private /*static*/ static final float MIN_GAIN = -96.0F;
-
 
         /*package*/ EsdSourceDataLineGainControl() {
             super(FloatControl.Type.MASTER_GAIN,    // or VOLUME  ?
@@ -316,7 +296,7 @@ public class EsdSourceDataLine
             // m_bMuted = false;	// should be included in a compund control?
         }
 
-
+        @Override
         public void setValue(float fGain) {
             if (TDebug.TraceSourceDataLine) {
                 TDebug.out("EsdSourceDataLineGainControl.setValue(): gain: " + fGain);
@@ -331,7 +311,6 @@ public class EsdSourceDataLine
             }
         }
     }
-
 
     // IDEA: move inner classes to TBaseDataLine
     public class EsdSourceDataLinePanControl
@@ -350,7 +329,7 @@ public class EsdSourceDataLine
                     "right");
         }
 
-
+        @Override
         public void setValue(float fPan) {
             if (TDebug.TraceSourceDataLine) {
                 TDebug.out("EsdSourceDataLinePanControl.setValue(): pan: " + fPan);
@@ -366,7 +345,6 @@ public class EsdSourceDataLine
         }
     }
 
-
     public class EsdSourceDataLineMuteControl
             extends BooleanControl {
 
@@ -377,7 +355,7 @@ public class EsdSourceDataLine
                     "unmuted");
         }
 
-
+        @Override
         public void setValue(boolean bMuted) {
             if (TDebug.TraceSourceDataLine) {
                 TDebug.out("EsdSourceDataLineMuteControl.setValue(): muted: " + bMuted);
@@ -398,8 +376,6 @@ public class EsdSourceDataLine
   return m_bMuted;
   }
 
-
-
   public void setMute(boolean bMuted)
   {
   if (bMuted != getMute())
@@ -417,9 +393,7 @@ public class EsdSourceDataLine
   }
 */
 
-
     }
 }
 
 
-/* EsdSourceDataLine.java */

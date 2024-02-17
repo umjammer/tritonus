@@ -16,35 +16,33 @@ import com.sun.jna.ptr.PointerByReference;
  */
 public interface VoiceLibrary extends Library {
 
-    public static final String JNA_LIBRARY_NAME = "voice";
-    public static final NativeLibrary JNA_NATIVE_LIB = NativeLibrary.getInstance(VoiceLibrary.JNA_LIBRARY_NAME);
-    public static final VoiceLibrary INSTANCE = (VoiceLibrary) Native.load(VoiceLibrary.JNA_LIBRARY_NAME, VoiceLibrary.class);
+    String JNA_LIBRARY_NAME = "voice";
+    NativeLibrary JNA_NATIVE_LIB = NativeLibrary.getInstance(VoiceLibrary.JNA_LIBRARY_NAME);
+    VoiceLibrary INSTANCE = Native.load(VoiceLibrary.JNA_LIBRARY_NAME, VoiceLibrary.class);
 
     /**
      * Enum used with fluid_voice_add_mod() to specify how to handle duplicate modulators.<br>
      * <i>native declaration : fluidsynth/voice.h:47</i><br>
      * enum values
      */
-    public static interface fluid_voice_add_mod {
+    interface fluid_voice_add_mod {
 
         /**
          * < Overwrite any existing matching modulator<br>
          * <i>native declaration : fluidsynth/voice.h:49</i>
          */
-        public static final int FLUID_VOICE_OVERWRITE = 0;
+        int FLUID_VOICE_OVERWRITE = 0;
         /**
          * < Add (sum) modulator amounts<br>
          * <i>native declaration : fluidsynth/voice.h:50</i>
          */
-        public static final int FLUID_VOICE_ADD = 1;
+        int FLUID_VOICE_ADD = 1;
         /**
          * < For default modulators only, no need to check for duplicates<br>
          * <i>native declaration : fluidsynth/voice.h:51</i>
          */
-        public static final int FLUID_VOICE_DEFAULT = 2;
+        int FLUID_VOICE_DEFAULT = 2;
     }
-
-    ;
 
     /**
      * Original signature : <code>void fluid_voice_add_mod(fluid_voice_t*, fluid_mod_t*, int)</code><br>
@@ -286,7 +284,7 @@ public interface VoiceLibrary extends Library {
      */
     void fluid_voice_update_param(PointerByReference voice, int gen);
 
-    public static class fluid_voice_t extends PointerType {
+    class fluid_voice_t extends PointerType {
 
         public fluid_voice_t(Pointer address) {
             super(address);
@@ -297,9 +295,7 @@ public interface VoiceLibrary extends Library {
         }
     }
 
-    ;
-
-    public static class fluid_sample_t extends PointerType {
+    class fluid_sample_t extends PointerType {
 
         public fluid_sample_t(Pointer address) {
             super(address);
@@ -310,9 +306,7 @@ public interface VoiceLibrary extends Library {
         }
     }
 
-    ;
-
-    public static class fluid_mod_t extends PointerType {
+    class fluid_mod_t extends PointerType {
 
         public fluid_mod_t(Pointer address) {
             super(address);
@@ -323,5 +317,4 @@ public interface VoiceLibrary extends Library {
         }
     }
 
-    ;
 }

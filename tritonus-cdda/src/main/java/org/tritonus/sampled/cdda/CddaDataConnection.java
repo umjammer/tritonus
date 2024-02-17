@@ -1,8 +1,3 @@
-/*
- * CddaDataConnection.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2001 - 2002 by Matthias Pfisterer
@@ -20,10 +15,6 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.sampled.cdda;
 
 import java.io.IOException;
@@ -40,8 +31,8 @@ import org.tritonus.share.TDebug;
 public class CddaDataConnection
         extends URLConnection {
 
-    private static int PCM_FRAMES_PER_CDDA_FRAME = 588;
-    private static AudioFormat CDDA_FORMAT = new AudioFormat(
+    private static final int PCM_FRAMES_PER_CDDA_FRAME = 588;
+    private static final AudioFormat CDDA_FORMAT = new AudioFormat(
             AudioFormat.Encoding.PCM_SIGNED,
             44100.0F, 16, 2, 4, 44100.0F, false);
 
@@ -57,7 +48,6 @@ public class CddaDataConnection
 
     private CddaMidLevel m_cddaMidLevel;
 
-
     public CddaDataConnection(URL url) {
         super(url);
         if (TDebug.TraceCdda) {
@@ -71,14 +61,14 @@ public class CddaDataConnection
         }
     }
 
-
+    @Override
     public void connect() {
         if (TDebug.TraceCdda) {
             TDebug.out("CddaDataConnection.connect(): begin");
         }
         if (!connected) {
             m_cddaMidLevel = CddaUtils.getCddaMidLevel();
-            if (m_strDevice.equals("")) {
+            if (m_strDevice.isEmpty()) {
                 m_strDevice = m_cddaMidLevel.getDefaultDevice();
             }
             connected = true;
@@ -88,7 +78,7 @@ public class CddaDataConnection
         }
     }
 
-
+    @Override
     public InputStream getInputStream()
             throws IOException {
         if (TDebug.TraceCdda) {
@@ -104,11 +94,9 @@ public class CddaDataConnection
         return inputStream;
     }
 
-
     private String getDevice() {
         return m_strDevice;
     }
-
 
     private int getTrack() {
         return m_nTrack;

@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test;
 import org.tritonus.lowlevel.alsa.AlsaCtl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -34,7 +34,6 @@ public class AlsaCtlTestCase {
     private static final boolean DEBUG = false;
     private static final String CARD_NAME_FOR_INDEX_TEST = "LIFE";
 
-
     @Test
     public void testGetCards() {
         int[] anCards = AlsaCtl.getCards();
@@ -42,7 +41,6 @@ public class AlsaCtlTestCase {
         assertEquals(1, anCards.length);
         assertTrue(anCards[0] >= 0);
     }
-
 
     @Test
     public void testLoadCards() {
@@ -52,7 +50,6 @@ public class AlsaCtlTestCase {
             assertTrue(nError >= 0);
         }
     }
-
 
     @Test
     public void testGetIndex() {
@@ -68,15 +65,14 @@ public class AlsaCtlTestCase {
         assertEquals(nIndex, anCards[0]);
     }
 
-
     @Test
     public void testGetNames() {
         int[] anCards = AlsaCtl.getCards();
         String strName = AlsaCtl.getCardName(anCards[0]);
-        assertTrue(strName != null && !strName.equals(""));
+        assertTrue(strName != null && !strName.isEmpty());
         String strLongName = AlsaCtl.getCardLongName(anCards[0]);
-        assertTrue(strLongName != null && !strLongName.equals(""));
-        assertFalse(strName.equals(strLongName));
+        assertTrue(strLongName != null && !strLongName.isEmpty());
+        assertNotEquals(strName, strLongName);
         if (DEBUG) {
             System.out.println("card name: " + strName);
             System.out.println("card long name: " + strLongName);
@@ -85,4 +81,3 @@ public class AlsaCtlTestCase {
 }
 
 
-/* AlsaCtlTestCase.java */

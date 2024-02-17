@@ -1,8 +1,3 @@
-/*
- * JorbisAudioFileReader.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2001 by Matthias Pfisterer
@@ -19,10 +14,6 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.sampled.file.jorbis;
 
@@ -52,12 +43,11 @@ public class JorbisAudioFileReader
     private static final int INITAL_READ_LENGTH = 4096;
     private static final int MARK_LIMIT = INITAL_READ_LENGTH + 1;
 
-
     public JorbisAudioFileReader() {
         super(MARK_LIMIT, true);
     }
 
-
+    @Override
     protected AudioFileFormat getAudioFileFormat(InputStream inputStream, long lFileSizeInBytes)
             throws UnsupportedAudioFileException, IOException {
         // sync and verify incoming physical bitstream
@@ -163,7 +153,6 @@ public class JorbisAudioFileReader
             throw new UnsupportedAudioFileException("not a Vorbis stream: illegal values in initial header");
         }
 
-
         if (TDebug.TraceAudioFileReader) {
             TDebug.out("JorbisAudioFileReader.getAudioFileFormat(): channels: " + nChannels);
         }
@@ -218,5 +207,4 @@ public class JorbisAudioFileReader
 }
 
 
-/* JorbisAudioFileReader.java */
 

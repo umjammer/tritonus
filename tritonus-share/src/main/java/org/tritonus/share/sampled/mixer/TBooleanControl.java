@@ -1,8 +1,3 @@
-/*
- * TBooleanControl.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2001 by Matthias Pfisterer
@@ -22,10 +17,6 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.share.sampled.mixer;
 
 import javax.sound.sampled.BooleanControl;
@@ -42,12 +33,10 @@ public class TBooleanControl
 
     private TControlController m_controller;
 
-
     public TBooleanControl(BooleanControl.Type type,
                            boolean bInitialValue) {
         this(type, bInitialValue, null);
     }
-
 
     public TBooleanControl(BooleanControl.Type type,
                            boolean bInitialValue,
@@ -62,14 +51,12 @@ public class TBooleanControl
         }
     }
 
-
     public TBooleanControl(BooleanControl.Type type,
                            boolean bInitialValue,
                            String strTrueStateLabel,
                            String strFalseStateLabel) {
         this(type, bInitialValue, strTrueStateLabel, strFalseStateLabel, null);
     }
-
 
     public TBooleanControl(BooleanControl.Type type,
                            boolean bInitialValue,
@@ -86,21 +73,20 @@ public class TBooleanControl
         }
     }
 
-
+    @Override
     public void setParentControl(TCompoundControl compoundControl) {
         m_controller.setParentControl(compoundControl);
     }
 
-
+    @Override
     public TCompoundControl getParentControl() {
         return m_controller.getParentControl();
     }
 
-
+    @Override
     public void commit() {
         m_controller.commit();
     }
 }
 
 
-/* TBooleanControl.java */

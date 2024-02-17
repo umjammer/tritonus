@@ -1,10 +1,4 @@
 /*
- * TInit.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 1999 - 2001 by Matthias Pfisterer
  *
  *
@@ -21,10 +15,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.core;
 
@@ -44,7 +34,6 @@ public class TInit {
     private TInit() {
     }
 
-
     /**
      * Register all service providers of a certain type.
      * This method retrieves instances of all service providers of
@@ -60,12 +49,12 @@ public class TInit {
      *                      something like adding the provider to a collection, but in
      *                      theorie, could be anything.
      */
-    public static void registerClasses(Class providerClass,
+    public static void registerClasses(Class<?> providerClass,
                                        ProviderRegistrationAction action) {
         if (TDebug.TraceInit) {
             TDebug.out("TInit.registerClasses(): registering for: " + providerClass);
         }
-        Iterator providers = Service.providers(providerClass);
+        Iterator<?> providers = Service.providers(providerClass);
         if (providers != null) {
             while (providers.hasNext()) {
                 Object provider = providers.next();
@@ -79,7 +68,6 @@ public class TInit {
             }
         }
     }
-
 
     /**
      * Action to be taken on registration of a provider.
@@ -95,4 +83,3 @@ public class TInit {
 }
 
 
-/* TInit.java */

@@ -1,8 +1,3 @@
-/*
- * StandardMidiFileReader.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999, 2000 by Matthias Pfisterer
@@ -19,10 +14,6 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.midi.file;
 
@@ -65,10 +56,10 @@ public class StandardMidiFileReader
     private static final int STATUS_SYSEX = 3;
     private static final int STATUS_META = 4;
 
-
     /**
      * TODO:
      */
+    @Override
     public MidiFileFormat getMidiFileFormat(InputStream inputStream)
             throws InvalidMidiDataException, IOException {
         DataInputStream dataInputStream = new DataInputStream(inputStream);
@@ -139,10 +130,10 @@ public class StandardMidiFileReader
         return midiFileFormat;
     }
 
-
     /**
      * TODO:
      */
+    @Override
     public MidiFileFormat getMidiFileFormat(URL url)
             throws InvalidMidiDataException, IOException {
         try (InputStream inputStream = url.openStream()) {
@@ -150,10 +141,10 @@ public class StandardMidiFileReader
         }
     }
 
-
     /**
      * TODO:
      */
+    @Override
     public MidiFileFormat getMidiFileFormat(File file)
             throws InvalidMidiDataException, IOException {
         //inputStream = new BufferedInputStream(inputStream, 1024);
@@ -162,10 +153,10 @@ public class StandardMidiFileReader
         }
     }
 
-
     /**
      * TODO:
      */
+    @Override
     public Sequence getSequence(URL url)
             throws InvalidMidiDataException, IOException {
         InputStream inputStream = url.openStream();
@@ -180,10 +171,10 @@ public class StandardMidiFileReader
         }
     }
 
-
     /**
      * TODO:
      */
+    @Override
     public Sequence getSequence(File file)
             throws InvalidMidiDataException, IOException {
         InputStream inputStream = Files.newInputStream(file.toPath());
@@ -199,10 +190,10 @@ public class StandardMidiFileReader
         }
     }
 
-
     /**
      * TODO:
      */
+    @Override
     public Sequence getSequence(InputStream inputStream)
             throws InvalidMidiDataException, IOException {
         MidiFileFormat midiFileFormat = getMidiFileFormat(inputStream);
@@ -217,7 +208,6 @@ public class StandardMidiFileReader
         }
         return sequence;
     }
-
 
     /**
      * TODO:
@@ -251,7 +241,6 @@ public class StandardMidiFileReader
             track.add(event);
         }
     }
-
 
     /**
      * TODO:
@@ -336,7 +325,6 @@ public class StandardMidiFileReader
         return event;
     }
 
-
     // TODO: use table
 
     /**
@@ -370,7 +358,6 @@ public class StandardMidiFileReader
         }
     }
 
-
     /**
      * TODO:
      */
@@ -392,7 +379,6 @@ public class StandardMidiFileReader
 
     }
 
-
     /**
      * TODO:
      */
@@ -410,4 +396,3 @@ public class StandardMidiFileReader
 }
 
 
-/* StandardMidiFileReader.java */

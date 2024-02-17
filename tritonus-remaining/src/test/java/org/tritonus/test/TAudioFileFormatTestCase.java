@@ -50,7 +50,6 @@ public class TAudioFileFormatTestCase {
         assertNull(result);
     }
 
-
     @Test
     public void testCopying() {
         Map<String, Object> prop = new HashMap<>();
@@ -67,7 +66,6 @@ public class TAudioFileFormatTestCase {
         assertEquals(22.5F, result);
     }
 
-
     @Test
     public void testUnmodifiable() {
         Map<String, Object> prop = new HashMap<>();
@@ -83,7 +81,6 @@ public class TAudioFileFormatTestCase {
         } catch (UnsupportedOperationException e) {
         }
     }
-
 
     @Test
     public void testGet() {
@@ -102,4 +99,3 @@ public class TAudioFileFormatTestCase {
 }
 
 
-/* TAudioFileFormatTestCase.java */

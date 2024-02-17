@@ -32,19 +32,18 @@ public class TSeekableDataOutputStreamTestCase
 
     private File m_file;
 
-
     public TSeekableDataOutputStreamTestCase() {
         super(true); // seekable
     }
 
-
+    @Override
     protected TDataOutputStream createDataOutputStream()
             throws Exception {
         m_file = new File("/tmp/dataoutputstream.tmp");
         return new TSeekableDataOutputStream(m_file);
     }
 
-
+    @Override
     protected byte[] getWrittenData()
             throws Exception {
         return Util.getByteArrayFromFile(m_file);
@@ -52,4 +51,3 @@ public class TSeekableDataOutputStreamTestCase
 }
 
 
-/* TSeekableDataOutputStreamTestCase.java */

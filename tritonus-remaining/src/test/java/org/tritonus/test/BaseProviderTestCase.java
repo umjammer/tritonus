@@ -63,7 +63,7 @@ public class BaseProviderTestCase {
         if (getTestProvider()) {
             String strClassName = getClassName();
             Class<?> cls = Class.forName(strClassName);
-            m_provider = cls.newInstance();
+            m_provider = cls.getDeclaredConstructor().newInstance();
         }
     }
 
@@ -174,4 +174,4 @@ public class BaseProviderTestCase {
     }
 }
 
-/* BaseProviderTestCase.java */
+

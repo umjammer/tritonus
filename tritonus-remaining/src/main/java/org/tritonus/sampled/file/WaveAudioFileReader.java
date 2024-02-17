@@ -1,8 +1,3 @@
-/*
- * WaveAudioFileReader.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999,2000 by Florian Bomers
@@ -224,6 +219,7 @@ public class WaveAudioFileReader extends TAudioFileReader {
                 false);
     }
 
+    @Override
     protected AudioFileFormat getAudioFileFormat(InputStream inputStream, long lFileLengthInBytes)
             throws UnsupportedAudioFileException, IOException {
         DataInputStream dataInputStream = new DataInputStream(inputStream);
@@ -257,4 +253,4 @@ public class WaveAudioFileReader extends TAudioFileReader {
     }
 }
 
-/* WaveAudioFileReader.java */
+

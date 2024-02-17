@@ -1,8 +1,3 @@
-/*
- * Cdparanoia.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2001 by Matthias Pfisterer
@@ -21,10 +16,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.lowlevel.cdda.cdparanoia;
 
@@ -51,14 +42,12 @@ public class Cdparanoia {
         }
     }
 
-
     /*
      * This holds a pointer for the native code -
      * do not touch!
      */
     @SuppressWarnings("unused")
     private long m_lNativeHandle;
-
 
     public Cdparanoia(String strDevice) {
         if (TDebug.TraceCdda) {
@@ -72,7 +61,6 @@ public class Cdparanoia {
             TDebug.out("Cdparanoia.<init>: end");
         }
     }
-
 
     /**
      * Searches the device.
@@ -97,7 +85,6 @@ public class Cdparanoia {
      */
     public native void close();
 
-
     /* Read the table of contents.
      anValues[0] first track
      anValues[1] last track
@@ -114,9 +101,7 @@ public class Cdparanoia {
                               boolean[] abPre,
                               int[] anChannels);
 
-
     public native int prepareTrack(int nTrack);
-
 
     /**
      * Reads one or more raw frames from the CD.
@@ -128,9 +113,7 @@ public class Cdparanoia {
      */
     public native int readNextFrame(int nCount, byte[] abData);
 
-
     private static native void setTrace(boolean bTrace);
-
 
     /**
      * Set the paranoia level.
@@ -147,4 +130,3 @@ public class Cdparanoia {
 }
 
 
-/* Cdparanoia.java */

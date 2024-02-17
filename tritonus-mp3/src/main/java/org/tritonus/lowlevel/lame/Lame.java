@@ -193,7 +193,7 @@ public class Lame {
     }
 
     private void readParams(AudioFormat sourceFormat, Map<String, Object> props) {
-        if (props == null || props.size() == 0) {
+        if (props == null || props.isEmpty()) {
             // legacy support for system properties
             readSystemProps();
         }
@@ -655,7 +655,7 @@ public class Lame {
      * @throws IllegalArgumentException if val is neither true nor false
      */
     private static boolean string2bool(String val) {
-        if (val.length() > 0) {
+        if (!val.isEmpty()) {
             if ((val.charAt(0) == 'f') // false
                     || (val.charAt(0) == 'n') // no
                     || (val.equals("off"))) {
@@ -676,7 +676,7 @@ public class Lame {
         String strValue = def ? "true" : "false";
         try {
             String s = System.getProperty(strPropertyName);
-            if (s != null && s.length() > 0) {
+            if (s != null && !s.isEmpty()) {
                 hadSystemProps = true;
                 strValue = s;
             }
@@ -687,7 +687,7 @@ public class Lame {
         }
         strValue = strValue.toLowerCase();
         boolean bValue = false;
-        if (strValue.length() > 0) {
+        if (!strValue.isEmpty()) {
             if (def) {
                 bValue = (strValue.charAt(0) != 'f') // false
                         && (strValue.charAt(0) != 'n') // no
@@ -706,7 +706,7 @@ public class Lame {
         String strValue = def;
         try {
             String s = System.getProperty(strPropertyName);
-            if (s != null && s.length() > 0) {
+            if (s != null && !s.isEmpty()) {
                 hadSystemProps = true;
                 strValue = s;
             }
@@ -723,7 +723,7 @@ public class Lame {
         int value = def;
         try {
             String s = System.getProperty(strPropertyName);
-            if (s != null && s.length() > 0) {
+            if (s != null && !s.isEmpty()) {
                 hadSystemProps = true;
                 value = Integer.parseInt(s);
             }

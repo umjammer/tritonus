@@ -49,30 +49,24 @@ public class BaseAudioFileReaderTestCase
     private static final String PROVIDER_PREFIX = "(Provider:) ";
     private static final String AUDIOSYSTEM_PREFIX = "(AudioSystem:) ";
 
-
     private boolean m_bCheckRealLengths;
-
 
     public BaseAudioFileReaderTestCase() {
         super(RESOURCE_BASENAME);
         setCheckRealLengths(true);
     }
 
-
     protected void setCheckRealLengths(boolean bCheckRealLengths) {
         m_bCheckRealLengths = bCheckRealLengths;
     }
-
 
     private boolean getCheckRealLengths() {
         return m_bCheckRealLengths;
     }
 
-
     protected AudioFileReader getAudioFileReader() {
         return (AudioFileReader) getProvider();
     }
-
 
     @Test
     public void testAudioFileFormatFile()
@@ -89,7 +83,6 @@ public class BaseAudioFileReaderTestCase
         }
     }
 
-
     @Test
     public void testAudioFileFormatURL()
             throws Exception {
@@ -104,7 +97,6 @@ public class BaseAudioFileReaderTestCase
             checkAudioFileFormat(audioFileFormat, false, false);
         }
     }
-
 
     @Test
     public void testAudioFileFormatInputStream()
@@ -124,7 +116,6 @@ public class BaseAudioFileReaderTestCase
         }
     }
 
-
     @Test
     public void testAudioInputStreamFile()
             throws Exception {
@@ -140,7 +131,6 @@ public class BaseAudioFileReaderTestCase
         }
     }
 
-
     @Test
     public void testAudioInputStreamURL()
             throws Exception {
@@ -155,7 +145,6 @@ public class BaseAudioFileReaderTestCase
             checkAudioInputStream(audioInputStream, false, false);
         }
     }
-
 
     @Test
     public void testAudioInputStreamInputStream()
@@ -175,7 +164,6 @@ public class BaseAudioFileReaderTestCase
         }
     }
 
-
     private void checkAudioFileFormat(AudioFileFormat audioFileFormat,
                                       boolean bRealLengthExpected,
                                       boolean bProviderDirect)
@@ -188,7 +176,6 @@ public class BaseAudioFileReaderTestCase
                     AUDIOSYSTEM_PREFIX);
         }
     }
-
 
     private void checkAudioFileFormat(AudioFileFormat audioFileFormat, boolean bRealLengthExpected, String strMessagePrefix)
             throws Exception {
@@ -210,7 +197,6 @@ public class BaseAudioFileReaderTestCase
         }
     }
 
-
     private void checkAudioInputStream(AudioInputStream audioInputStream,
                                        boolean bRealLengthExpected,
                                        boolean bProviderDirect)
@@ -225,7 +211,6 @@ public class BaseAudioFileReaderTestCase
                     AUDIOSYSTEM_PREFIX);
         }
     }
-
 
     private void checkAudioInputStream(AudioInputStream audioInputStream,
                                        boolean bRealLengthExpected,
@@ -258,7 +243,6 @@ public class BaseAudioFileReaderTestCase
         }
     }
 
-
     private void checkAudioFormat(AudioFormat audioFormat, String strMessagePrefix)
             throws Exception {
         assertEquals(getEncoding(),
@@ -286,12 +270,10 @@ public class BaseAudioFileReaderTestCase
                 strMessagePrefix + "big endian");
     }
 
-
     private String getFilename() {
         String strFileName = getResourceString(getResourcePrefix() + ".filename");
         return strFileName;
     }
-
 
     private AudioFileFormat.Type getType() {
         String strTypeName = getResourceString(getResourcePrefix() + ".type");
@@ -302,13 +284,11 @@ public class BaseAudioFileReaderTestCase
         return type;
     }
 
-
     private long getByteLength() {
         String strByteLength = getResourceString(getResourcePrefix() + ".byteLength");
         long lByteLength = Long.parseLong(strByteLength);
         return lByteLength;
     }
-
 
     private AudioFormat.Encoding getEncoding() {
         String strEncodingName = getResourceString(getResourcePrefix() + ".format.encoding");
@@ -316,13 +296,11 @@ public class BaseAudioFileReaderTestCase
         return encoding;
     }
 
-
     private float getSampleRate() {
         String strSampleRate = getResourceString(getResourcePrefix() + ".format.sampleRate");
         float fSampleRate = Float.parseFloat(strSampleRate);
         return fSampleRate;
     }
-
 
     private int getSampleSizeInBits() {
         String strSampleSizeInBits = getResourceString(getResourcePrefix() + ".format.sampleSizeInBits");
@@ -330,13 +308,11 @@ public class BaseAudioFileReaderTestCase
         return nSampleSizeInBits;
     }
 
-
     private int getChannels() {
         String strChannels = getResourceString(getResourcePrefix() + ".format.channels");
         int nChannels = Integer.parseInt(strChannels);
         return nChannels;
     }
-
 
     private int getFrameSize() {
         String strFrameSize = getResourceString(getResourcePrefix() + ".format.frameSize");
@@ -344,20 +320,17 @@ public class BaseAudioFileReaderTestCase
         return nFrameSize;
     }
 
-
     private float getFrameRate() {
         String strFrameRate = getResourceString(getResourcePrefix() + ".format.frameRate");
         float fFrameRate = Float.parseFloat(strFrameRate);
         return fFrameRate;
     }
 
-
     private boolean getBigEndian() {
         String strBigEndian = getResourceString(getResourcePrefix() + ".format.bigEndian");
         boolean bBigEndian = strBigEndian.equals("true");
         return bBigEndian;
     }
-
 
     private long getFrameLength() {
         String strFrameLength = getResourceString(getResourcePrefix() + ".frameLength");
@@ -367,4 +340,3 @@ public class BaseAudioFileReaderTestCase
 }
 
 
-/* BaseAudioFileReaderTestCase.java */

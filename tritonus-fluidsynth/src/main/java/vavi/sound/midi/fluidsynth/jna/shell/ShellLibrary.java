@@ -282,7 +282,7 @@ public interface ShellLibrary extends Library {
      */
     int fluid_server_join(PointerByReference server);
 
-    public static class fluid_cmd_handler_t extends PointerType {
+    class fluid_cmd_handler_t extends PointerType {
 
         public fluid_cmd_handler_t(Pointer address) {
             super(address);
@@ -293,9 +293,7 @@ public interface ShellLibrary extends Library {
         }
     }
 
-    ;
-
-    public static class fluid_server_t extends PointerType {
+    class fluid_server_t extends PointerType {
 
         public fluid_server_t(Pointer address) {
             super(address);
@@ -306,9 +304,7 @@ public interface ShellLibrary extends Library {
         }
     }
 
-    ;
-
-    public static class fluid_shell_t extends PointerType {
+    class fluid_shell_t extends PointerType {
 
         public fluid_shell_t(Pointer address) {
             super(address);
@@ -319,5 +315,4 @@ public interface ShellLibrary extends Library {
         }
     }
 
-    ;
 }

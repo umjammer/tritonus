@@ -60,7 +60,6 @@ public class MidiMessageTestCase {
         assertFalse(message.getSetMessageUsed(), "setMessage() usage");
     }
 
-
     /**
      * Checks setMessage(byte[], int).
      * The test checks for three things:
@@ -88,7 +87,6 @@ public class MidiMessageTestCase {
         assertEquals(nDesiredLength, message.getLengthField(), "length field");
     }
 
-
     /**
      * Checks getMessage().
      * The test checks for three things:
@@ -110,7 +108,6 @@ public class MidiMessageTestCase {
         assertNotSame(abReturned, message.getDataField(), "array copying");
     }
 
-
     /**
      * Checks getStatus().
      * The test checks if the returned status byte is correct.
@@ -125,7 +122,6 @@ public class MidiMessageTestCase {
         assertEquals(nStatus, nReturnedStatus, "status byte");
     }
 
-
     /**
      * Checks setMessage(byte[], int).
      * The test checks if the returned length is correct.
@@ -139,7 +135,6 @@ public class MidiMessageTestCase {
         assertEquals(abData.length, nReturnedLength, "length");
     }
 
-
     /**
      * Inner class used to access protected fields of MidiMessage.
      */
@@ -148,37 +143,33 @@ public class MidiMessageTestCase {
 
         private boolean m_bSetMessageUsed;
 
-
         public TestMidiMessage(byte[] abData) {
             super(abData);
         }
-
 
         public byte[] getDataField() {
             return data;
         }
 
-
         public int getLengthField() {
             return length;
         }
-
 
         public boolean getSetMessageUsed() {
             return m_bSetMessageUsed;
         }
 
-
+        @Override
         protected void setMessage(byte[] abData, int nLength)
                 throws InvalidMidiDataException {
             super.setMessage(abData, nLength);
             m_bSetMessageUsed = true;
         }
 
-
         /**
          * Not used here.
          */
+        @Override
         public Object clone() {
             return null;
         }
@@ -186,4 +177,3 @@ public class MidiMessageTestCase {
 }
 
 
-/* MidiMessageTestCase.java */

@@ -1,8 +1,3 @@
-/*
- * FloatSampleTools.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2000-2006 by Florian Bomers
@@ -195,7 +190,7 @@ public class FloatSampleTools {
      * Return a string representation of this format
      */
     static String formatType2Str(int formatType) {
-        String res = "" + formatType + ": ";
+        String res = formatType + ": ";
         switch (formatType & F_SAMPLE_WIDTH_MASK) {
         case F_8:
             res += "8bit";

@@ -24,7 +24,7 @@ public interface LogLibrary extends Library {
      * <i>native declaration : fluidsynth/log.h:61</i><br>
      * enum values
      */
-    public static interface fluid_log_level {
+    interface fluid_log_level {
 
         /**
          * < The synth can't function correctly any more<br>
@@ -59,15 +59,11 @@ public interface LogLibrary extends Library {
         int LAST_LOG_LEVEL = 5;
     }
 
-    ;
-
     /** <i>native declaration : fluidsynth/log.h</i> */
-    public interface fluid_log_function_t extends Callback {
+    interface fluid_log_function_t extends Callback {
 
         void apply(int level, Pointer message, Pointer data);
     }
-
-    ;
 
     /**
      * Original signature : <code>fluid_log_function_t fluid_set_log_function(int, fluid_log_function_t, void*)</code><br>
@@ -94,7 +90,7 @@ public interface LogLibrary extends Library {
      * Original signature : <code>int fluid_log(int, const char*, null)</code><br>
      * <i>native declaration : fluidsynth/log.h:86</i><br>
      *
-     * @deprecated use the safer methods {@link #fluid_log(int, java.lang.String, java.lang.Object)} and {@link #fluid_log(int, com.sun.jna.Pointer, java.lang.Object)} instead
+     * @deprecated use the safer methods {@link #fluid_log(int, java.lang.String, java.lang.Object...)} and {@link #fluid_log(int, com.sun.jna.Pointer, java.lang.Object...)} instead
      */
     @Deprecated
     int fluid_log(int level, Pointer fmt, Object... varArgs1);

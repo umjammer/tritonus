@@ -38,6 +38,7 @@ public class GlobalsSearcher extends DepthFirstAdapter {
         return m_saolGlobals;
     }
 
+    @Override
     public void outASrateRtparam(ASrateRtparam node) {
         TInteger integer = node.getInteger();
         String strInt = integer.getText();
@@ -76,4 +77,4 @@ public class GlobalsSearcher extends DepthFirstAdapter {
 //  }
 }
 
-/* GlobalsSearcher.java */
+

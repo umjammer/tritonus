@@ -45,7 +45,6 @@ class AudioSystemShadowTestCase {
         checkTDataOutputStream2(abResultingData);
     }
 
-
     @Test
     public void testGetDataOutputStreamOutputStream() throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

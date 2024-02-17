@@ -1,8 +1,3 @@
-/*
- * TCompoundControl.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2001 by Matthias Pfisterer
@@ -22,10 +17,6 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.share.sampled.mixer;
 
 import javax.sound.sampled.CompoundControl;
@@ -43,7 +34,6 @@ public class TCompoundControl
 
     private TControlController m_controller;
 
-
     public TCompoundControl(CompoundControl.Type type,
                             Control[] aMemberControls) {
         super(type, aMemberControls);
@@ -56,21 +46,20 @@ public class TCompoundControl
         }
     }
 
-
+    @Override
     public void setParentControl(TCompoundControl compoundControl) {
         m_controller.setParentControl(compoundControl);
     }
 
-
+    @Override
     public TCompoundControl getParentControl() {
         return m_controller.getParentControl();
     }
 
-
+    @Override
     public void commit() {
         m_controller.commit();
     }
 }
 
 
-/* TCompoundControl.java */

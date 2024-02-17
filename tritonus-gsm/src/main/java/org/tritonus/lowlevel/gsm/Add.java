@@ -37,7 +37,7 @@ public class Add {
     }
 
     /**
-     * This converts a and b to int implicitely, because '+' is not defined
+     * This converts a and b to int implicitly, because '+' is not defined
      * for short.
      */
     public static short GSM_ADD(short a, short b) {
@@ -46,7 +46,7 @@ public class Add {
     }
 
     /**
-     * This converts a and b to int implicitely, because '-' is not defined
+     * This converts a and b to int implicitly, because '-' is not defined
      * for short.
      */
     public static short GSM_SUB(short a, short b) {
@@ -107,7 +107,7 @@ public class Add {
      * the number of left shifts needed to normalize the 32 bit variable L_var1
      * for positive values on the interval
      *
-     * with minimum of minimum of 1073741824 (01000000000000000000000000000000)
+     * with minimum of 1073741824 (01000000000000000000000000000000)
      * and maximum of 2147483647 (01111111111111111111111111111111)
      *
      *

@@ -1,10 +1,4 @@
 /*
- * AlsaPcmHWParams.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2000 - 2001 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,10 +13,6 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.lowlevel.alsa;
 
@@ -42,7 +32,6 @@ public class AlsaPcmHWParams {
     @SuppressWarnings("unused")
     private long m_lNativeHandle;
 
-
     public AlsaPcmHWParams() {
         if (TDebug.TraceAlsaPcmNative) {
             TDebug.out("AlsaPcmHWParams.<init>(): begin");
@@ -55,14 +44,6 @@ public class AlsaPcmHWParams {
             TDebug.out("AlsaPcmHWParams.<init>(): end");
         }
     }
-
-
-    protected void finalize() {
-        // TODO: call free()
-        // call super.finalize() first or last?
-        // and introduce a flag if free() has already been called?
-    }
-
 
     private native int malloc();
 
@@ -106,7 +87,6 @@ public class AlsaPcmHWParams {
 
     public native int getChannelsMax();
 
-
     /**
      * Gets approximate rate.
      * Calls snd_pcm_hw_params_get_rate().
@@ -149,7 +129,6 @@ public class AlsaPcmHWParams {
      */
     public native int getPeriodTimeMax(int[] anValues);
 
-
     /**
      * Gets approximate period size.
      * Calls snd_pcm_hw_params_get_period_size().
@@ -170,7 +149,6 @@ public class AlsaPcmHWParams {
      * anValues[0]: -1, 0 or +1, depending on the direction the exact rate differs from the returned value.
      */
     public native int getPeriodSizeMax(int[] anValues);
-
 
     /**
      * Gets approximate periods.
@@ -214,7 +192,6 @@ public class AlsaPcmHWParams {
      */
     public native int getBufferTimeMax(int[] anValues);
 
-
     /**
      * Gets approximate buffer size.
      * Calls snd_pcm_hw_params_get_buffer_size().
@@ -232,7 +209,6 @@ public class AlsaPcmHWParams {
      * Calls snd_pcm_hw_params_get_buffer_size_max().
      */
     public native int getBufferSizeMax();
-
 
     /**
      * Gets approximate tick time.
@@ -257,4 +233,3 @@ public class AlsaPcmHWParams {
 }
 
 
-/* AlsaPcmHWParams.java */

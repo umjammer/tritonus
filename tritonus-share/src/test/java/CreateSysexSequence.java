@@ -136,11 +136,9 @@ public class CreateSysexSequence {
         System.exit(0);
     }
 
-
     private static void out(String strMessage) {
         System.out.println(strMessage);
     }
 }
 
 
-/* CreateSysexSequence.java */

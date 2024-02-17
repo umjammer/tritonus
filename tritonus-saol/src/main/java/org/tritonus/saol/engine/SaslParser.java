@@ -1,8 +1,3 @@
-/*
- * SaslParser.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2002 by Matthias Pfisterer
@@ -19,10 +14,6 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.saol.engine;
 
@@ -42,13 +33,12 @@ public class SaslParser
     private boolean m_bRunning;
     private BufferedReader m_bufferedReader;
 
-
     protected SaslParser(RTSystem rtSystem, InputStream inputStream) {
         m_rtSystem = rtSystem;
         m_bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
     }
 
-
+    @Override
     public void run() {
         try {
             runImpl();
@@ -56,7 +46,6 @@ public class SaslParser
             e.printStackTrace();
         }
     }
-
 
     private void runImpl()
             throws IOException {
@@ -69,7 +58,7 @@ public class SaslParser
                 break;
             }
             strLine = strLine.trim();
-            if (strLine.equals("")) {
+            if (strLine.isEmpty()) {
                 continue;
             }
             TDebug.out("line: " + strLine);
@@ -93,7 +82,6 @@ public class SaslParser
         }
     }
 
-
     private static String[] splitString(String str) {
         // jdk1.4 method:
         // String[] astrParts = str.split("\\s");
@@ -110,4 +98,3 @@ public class SaslParser
 }
 
 
-/* SaslParser.java */

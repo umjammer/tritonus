@@ -1,8 +1,3 @@
-/*
- * AbstractInstrument.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2002 by Matthias Pfisterer
@@ -20,10 +15,6 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.saol.engine;
 
 
@@ -34,16 +25,13 @@ public abstract class AbstractInstrument
     private int m_nStartTime;
     private int m_nEndTime;
 
-
     protected AbstractInstrument() {
     }
-
 
     // should be a constructor argument, but is not to simplify instantiation and inheritance
     public void setOutput(Output output) {
         m_outputPort = output;
     }
-
 
     // should be a constructor argument, but is not to simplify instantiation and inheritance
     public void setStartAndEndTime(int nStartTime, int nEndTime) {
@@ -51,28 +39,22 @@ public abstract class AbstractInstrument
         m_nEndTime = nEndTime;
     }
 
-
     public int getStartTime() {
         return m_nStartTime;
     }
-
 
     public int getEndTime() {
         return m_nEndTime;
     }
 
-
     public void doIPass(RTSystem rtSystem) {
     }
-
 
     public void doKPass(RTSystem rtSystem) {
     }
 
-
     public void doAPass(RTSystem rtSystem) {
     }
-
 
     /**
      * Gives the width of the output port.
@@ -80,10 +62,10 @@ public abstract class AbstractInstrument
      * @returns width of the output port
      * (number of channels)
      */
+    @Override
     public int getWidth() {
         return m_outputPort.getWidth();
     }
-
 
     /**
      * Initiate the output port of the instrument.
@@ -91,10 +73,10 @@ public abstract class AbstractInstrument
      * This method must be called in an a-cycle before
      * this instrument's a-cycle code is executed.
      */
+    @Override
     public void clear() {
         m_outputPort.clear();
     }
-
 
     /**
      * Add the sample value of one instrument.
@@ -102,10 +84,10 @@ public abstract class AbstractInstrument
      * code to output the sample value the instrument has
      * calculated for this a-cycle.
      */
+    @Override
     public void output(float fSample) {
         m_outputPort.output(fSample);
     }
-
 
     /**
      * Add sample values of one instrument.
@@ -114,10 +96,10 @@ public abstract class AbstractInstrument
      * calculated for this a-cycle.
      * The current hacky version allows only for mono samples.
      */
+    @Override
     public void output(float[] afSamples) {
         m_outputPort.output(afSamples);
     }
 }
 
 
-/* AbstractInstrument.java */

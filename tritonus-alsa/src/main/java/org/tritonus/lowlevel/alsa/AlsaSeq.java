@@ -1,8 +1,3 @@
-/*
- * AlsaSeq.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999 - 2001 by Matthias Pfisterer
@@ -20,10 +15,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.lowlevel.alsa;
 
@@ -184,10 +175,8 @@ public class AlsaSeq {
     public static final int SND_SEQ_EVENT_USR_VAR3 = 138;
     public static final int SND_SEQ_EVENT_USR_VAR4 = 139;
 
-
     /* 255: special event */
     public static final int SND_SEQ_EVENT_NONE = 255;
-
 
     public static final int SND_SEQ_ADDRESS_UNKNOWN = 253; /* unknown source */
     public static final int SND_SEQ_ADDRESS_SUBSCRIBERS = 254; /* send event to all subscribed ports */
@@ -213,7 +202,6 @@ public class AlsaSeq {
     public static final int SND_SEQ_PRIORITY_HIGH = (1 << 4); /* event should be processed before others */
     public static final int SND_SEQ_PRIORITY_MASK = (1 << 4);
 
-
     /* known client numbers */
     public static final int SND_SEQ_CLIENT_SYSTEM = 0;
     public static final int SND_SEQ_CLIENT_DUMMY = 62; /* dummy ports */
@@ -224,7 +212,6 @@ public class AlsaSeq {
     public static final int SND_SEQ_FILTER_MULTICAST = (1 << 1); /* accept multicast messages */
     public static final int SND_SEQ_FILTER_BOUNCE = (1 << 2); /* accept bounce event in error */
     public static final long SND_SEQ_FILTER_USE_EVENT = (1L << 31); /* use event filter */
-
 
     /* Flush mode flags */
     public static final int SND_SEQ_REMOVE_INPUT = (1 << 0); /* Restrict by destination q:client:port */
@@ -357,7 +344,6 @@ public class AlsaSeq {
     public static final int SND_SEQ_INSTR_FREE_CMD_CLUSTER = 2;
     public static final int SND_SEQ_INSTR_FREE_CMD_SINGLE = 3;
 
-
     static {
         Alsa.loadNativeLibrary();
         if (TDebug.TraceAlsaSeqNative) {
@@ -365,13 +351,11 @@ public class AlsaSeq {
         }
     }
 
-
     /*
      * This holds a pointer for the native code - do not touch!
      */
     @SuppressWarnings("unused")
     private long m_lNativeHandle;
-
 
     public AlsaSeq() {
         super();
@@ -387,7 +371,6 @@ public class AlsaSeq {
         }
     }
 
-
     public AlsaSeq(String strClientName) {
         this();
         if (TDebug.TraceAlsaSeq) {
@@ -399,14 +382,12 @@ public class AlsaSeq {
         }
     }
 
-
     /**
      * Opens the sequencer.
      * This method is intended to be called by the constructor.
      * Calls snd_seq_open().
      */
     private native int open();
-
 
     /**
      * Closes the sequencer.
@@ -430,9 +411,7 @@ public class AlsaSeq {
 
     public native int setInputBufferSize(int nSize);
 
-
     public native int getSystemInfo(AlsaSeqSystemInfo systemInfo);
-
 
     public int getClientInfo(AlsaSeqClientInfo clientInfo) {
         return getClientInfo(-1, clientInfo);
@@ -441,7 +420,6 @@ public class AlsaSeq {
     public native int getClientInfo(int nClient, AlsaSeqClientInfo clientInfo);
 
     public native int setClientInfo(AlsaSeqClientInfo clientInfo);
-
 
     /**
      * Gets information about the next client.
@@ -458,7 +436,6 @@ public class AlsaSeq {
      */
     public native int getNextClient(int nClient, int[] anValues);
 
-
     public void setClientName(String strName) {
         if (TDebug.TraceAlsaSeq) {
             TDebug.out("AlsaSeq.setClientName(): begin");
@@ -473,13 +450,11 @@ public class AlsaSeq {
         }
     }
 
-
     public int getPortInfo(int nPort, AlsaSeqPortInfo portInfo) {
         return getPortInfo(-1, nPort, portInfo);
     }
 
     public native int getPortInfo(int nClient, int nPort, AlsaSeqPortInfo portInfo);
-
 
     /**
      * Gets the next port.
@@ -498,7 +473,6 @@ public class AlsaSeq {
      */
     public native int getNextPort(int nClient, int nPort, int[] anValues);
 
-
     // TODO: use structure
     public native int createPort(String strName, int nCapabilities, int nGroupPermissions, int nType, int nMidiChannels, int nMidiVoices, int nSynthVoices);
 
@@ -511,7 +485,6 @@ public class AlsaSeq {
      */
     public native int allocQueue();
 
-
     /**
      * Frees a sequencing queue.
      * Calls snd_seq_free_queue().
@@ -523,7 +496,6 @@ public class AlsaSeq {
      */
     public native int freeQueue(int nQueue);
 
-
     /**
      * Get the queue usage flag.
      * Calls snd_seq_get_queue_usage().
@@ -534,7 +506,6 @@ public class AlsaSeq {
      * false otherwise.
      */
     public native boolean getQueueUsage(int nQueue);
-
 
     /**
      * Set the queue usage flag.
@@ -549,7 +520,6 @@ public class AlsaSeq {
      */
     public native int setQueueUsage(int nQueue, boolean bUsageAllowed);
 
-
     /**
      * Get the queue information.
      * This method fills a QueueInfo instance with information
@@ -559,7 +529,6 @@ public class AlsaSeq {
      * @return returns 0 on success, otherwise a negative value.
      */
     public native int getQueueInfo(int nQueue, AlsaSeqQueueInfo queueInfo);
-
 
     /**
      * Set the queue information.
@@ -571,7 +540,6 @@ public class AlsaSeq {
      */
     public native int setQueueInfo(int nQueue, AlsaSeqQueueInfo queueInfo);
 
-
     /**
      * Get the queue status.
      * This method fills a QueueStatus instance with information
@@ -581,7 +549,6 @@ public class AlsaSeq {
      * @return returns 0 on success, otherwise a negative value.
      */
     public native int getQueueStatus(int nQueue, AlsaSeqQueueStatus queueStatus);
-
 
     /**
      * Get the queue tempo.
@@ -593,7 +560,6 @@ public class AlsaSeq {
      */
     public native int getQueueTempo(int nQueue, AlsaSeqQueueTempo queueTempo);
 
-
     /**
      * Set the queue tempo.
      * This method sets the information for the given queue from
@@ -603,7 +569,6 @@ public class AlsaSeq {
      * @return returns 0 on success, otherwise a negative value.
      */
     public native int setQueueTempo(int nQueue, AlsaSeqQueueTempo queueTempo);
-
 
     /**
      * Get the queue timer.
@@ -615,7 +580,6 @@ public class AlsaSeq {
      */
     public native int getQueueTimer(int nQueue, AlsaSeqQueueTimer queueTimer);
 
-
     /**
      * Set the queue timer.
      * This method sets the timer for the given queue from
@@ -626,33 +590,27 @@ public class AlsaSeq {
      */
     public native int setQueueTimer(int nQueue, AlsaSeqQueueTimer queueTimer);
 
-
     public native int getPortSubscription(AlsaSeqPortSubscribe portSubscribe);
 
     public native int subscribePort(AlsaSeqPortSubscribe portSubscribe);
 
     public native int unsubscribePort(AlsaSeqPortSubscribe portSubscribe);
 
-
     private static native void setTrace(boolean bTrace);
 
-
-    public Iterator getClientInfos() {
+    public Iterator<AlsaSeqClientInfo> getClientInfos() {
         return new ClientInfoIterator();
     }
 
-
-    public Iterator getPortInfos(int nClient) {
+    public Iterator<AlsaSeqPortInfo> getPortInfos(int nClient) {
         return new PortInfoIterator(nClient);
     }
-
 
     ////////////////////////////////////////////////////////////////
     //
     // Events
     //
     ////////////////////////////////////////////////////////////////
-
 
     public native int eventOutput(AlsaSeqEvent event);
 
@@ -677,7 +635,6 @@ public class AlsaSeq {
     public native int dropInput();
 
     public native int dropInputBuffer();
-
 
     ///////////////////////////////////////////////////////////
 
@@ -1307,37 +1264,34 @@ public class AlsaSeq {
 //   public native void setTag(int nTag);
 //  }
 
-
     private class ClientInfoIterator
-            implements Iterator {
+            implements Iterator<AlsaSeqClientInfo> {
 
         private int m_nClient;
         private AlsaSeqClientInfo m_clientInfo;
-
 
         public ClientInfoIterator() {
             m_nClient = -1;
             m_clientInfo = createNextClientInfo();
         }
 
-
+        @Override
         public boolean hasNext() {
             // TDebug.out("hasNext(): clientInfo: " + m_clientInfo);
             return m_clientInfo != null;
         }
 
-
-        public Object next() {
-            Object next = m_clientInfo;
+        @Override
+        public AlsaSeqClientInfo next() {
+            AlsaSeqClientInfo next = m_clientInfo;
             m_clientInfo = createNextClientInfo();
             return next;
         }
 
-
+        @Override
         public void remove() {
             throw new UnsupportedOperationException();
         }
-
 
         private AlsaSeqClientInfo createNextClientInfo() {
             if (TDebug.TraceAlsaSeq) {
@@ -1363,14 +1317,12 @@ public class AlsaSeq {
         }
     }
 
-
     private class PortInfoIterator
-            implements Iterator {
+            implements Iterator<AlsaSeqPortInfo> {
 
         private int m_nClient;
         private int m_nPort;
         private AlsaSeqPortInfo m_portInfo;
-
 
         public PortInfoIterator(int nClient) {
             if (TDebug.TraceAlsaSeq) {
@@ -1384,23 +1336,22 @@ public class AlsaSeq {
             }
         }
 
-
+        @Override
         public boolean hasNext() {
             return m_portInfo != null;
         }
 
-
-        public Object next() {
-            Object next = m_portInfo;
+        @Override
+        public AlsaSeqPortInfo next() {
+            AlsaSeqPortInfo next = m_portInfo;
             m_portInfo = createNextPortInfo();
             return next;
         }
 
-
+        @Override
         public void remove() {
             throw new UnsupportedOperationException();
         }
-
 
         private AlsaSeqPortInfo createNextPortInfo() {
             if (TDebug.TraceAlsaSeq) {
@@ -1428,4 +1379,3 @@ public class AlsaSeq {
 }
 
 
-/* AlsaSeq.java */

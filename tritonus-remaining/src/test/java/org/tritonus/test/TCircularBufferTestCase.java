@@ -42,7 +42,6 @@ public class TCircularBufferTestCase {
         assertEquals(nSize, buffer.availableWrite(), "buffer size");
     }
 
-
     @Test
     public void testAvailable() {
         int nBufferSize = 45678;
@@ -61,7 +60,6 @@ public class TCircularBufferTestCase {
         assertEquals(nBufferSize, buffer.availableWrite(), "availableWrite()");
         assertEquals(0, buffer.availableRead(), "availableRead()");
 
-
         buffer.write(new byte[nWriteSize1]);
         assertEquals(nBufferSize - nWriteSize1, buffer.availableWrite(), "availableWrite()");
         assertEquals(nWriteSize1, buffer.availableRead(), "availableRead()");
@@ -75,7 +73,6 @@ public class TCircularBufferTestCase {
         assertEquals(nBufferSize - nWriteSize1 - nWriteSize2 + nReadSize1 + nReadSize2, buffer.availableWrite(), "availableWrite()");
         assertEquals(nWriteSize1 + nWriteSize2 - nReadSize1 - nReadSize2, buffer.availableRead(), "availableRead()");
     }
-
 
     @Test
     public void testReadWrite() {
@@ -103,7 +100,6 @@ public class TCircularBufferTestCase {
         assertTrue(Util.compareByteArrays(abReadArray, 0, abWriteArray, nBufferSize / 4, nBufferSize / 2), "data content");
     }
 
-
     @Test
     public void testTrigger() {
         TestTrigger trigger = new TestTrigger();
@@ -119,7 +115,6 @@ public class TCircularBufferTestCase {
         buffer.read(new byte[nBufferSize / 2]);
         assertTrue(trigger.isCalled(), "trigger called");
     }
-
 
     @Test
     public void testClose() {
@@ -143,22 +138,19 @@ public class TCircularBufferTestCase {
         assertFalse(trigger.isCalled(), "trigger invocation");
     }
 
-
     private static class TestTrigger
             implements TCircularBuffer.Trigger {
 
         private boolean m_bCalled = false;
 
-
+        @Override
         public void execute() {
             m_bCalled = true;
         }
 
-
         public boolean isCalled() {
             return m_bCalled;
         }
-
 
         public void reset() {
             m_bCalled = false;
@@ -167,4 +159,3 @@ public class TCircularBufferTestCase {
 }
 
 
-/* TCircularBufferTestCase.java */

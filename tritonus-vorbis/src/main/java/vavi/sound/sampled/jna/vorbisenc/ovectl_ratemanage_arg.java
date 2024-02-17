@@ -69,6 +69,7 @@ public class ovectl_ratemanage_arg extends Structure {
         super();
     }
 
+    @Override
     protected List<String> getFieldOrder() {
         return Arrays.asList("management_active", "bitrate_hard_min", "bitrate_hard_max", "bitrate_hard_window", "bitrate_av_lo", "bitrate_av_hi", "bitrate_av_window", "bitrate_av_window_center");
     }
@@ -113,11 +114,8 @@ public class ovectl_ratemanage_arg extends Structure {
 
     }
 
-    ;
-
     public static class ByValue extends ovectl_ratemanage_arg implements Structure.ByValue {
 
     }
 
-    ;
 }

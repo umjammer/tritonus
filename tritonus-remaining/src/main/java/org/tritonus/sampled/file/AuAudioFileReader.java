@@ -1,8 +1,3 @@
-/*
- * AuAudioFileReader.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999,2000,2001 by Florian Bomers
@@ -22,10 +17,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.sampled.file;
 
@@ -54,11 +45,9 @@ public class AuAudioFileReader extends TAudioFileReader {
 
     private static final int READ_LIMIT = 1000;
 
-
     public AuAudioFileReader() {
         super(READ_LIMIT);
     }
-
 
     private static String readDescription(DataInputStream dis, int len) throws IOException {
         byte c = -1;
@@ -73,7 +62,7 @@ public class AuAudioFileReader extends TAudioFileReader {
         return ret.toString();
     }
 
-
+    @Override
     protected AudioFileFormat getAudioFileFormat(InputStream inputStream, long lFileSizeInBytes)
             throws UnsupportedAudioFileException, IOException {
         if (TDebug.TraceAudioFileReader) {
@@ -182,5 +171,4 @@ public class AuAudioFileReader extends TAudioFileReader {
 }
 
 
-/* AuAudioFileReader.java */
 

@@ -28,6 +28,7 @@ public class ogg_sync_state extends Structure {
         super();
     }
 
+    @Override
     protected List<String> getFieldOrder() {
         return Arrays.asList("data", "storage", "fill", "returned", "unsynced", "headerbytes", "bodybytes");
     }
@@ -52,11 +53,8 @@ public class ogg_sync_state extends Structure {
 
     }
 
-    ;
-
     public static class ByValue extends ogg_sync_state implements Structure.ByValue {
 
     }
 
-    ;
 }

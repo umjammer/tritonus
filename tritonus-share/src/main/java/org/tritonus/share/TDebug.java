@@ -1,10 +1,4 @@
 /*
- * TDebug.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 1999 - 2002 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,13 +14,9 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.share;
 
-import java.security.AccessControlException;
+import java.io.Serial;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -102,10 +92,9 @@ public class TDebug {
     public static boolean TraceCdda = getBooleanProperty("TraceCdda");
     public static boolean TraceCddaNative = getBooleanProperty("TraceCddaNative");
 
-
     // make this method configurable to write to file, write to stderr,...
     public static void out(String strMessage) {
-        if (strMessage.length() > 0 && strMessage.charAt(0) == '<') {
+        if (!strMessage.isEmpty() && strMessage.charAt(0) == '<') {
             if (indent.length() > 2) {
                 indent = indent.substring(2);
             } else {
@@ -123,16 +112,14 @@ public class TDebug {
             newMsg = new StringBuilder(indent + strMessage);
         }
         m_printStream.fine(newMsg.toString());
-        if (strMessage.length() > 0 && strMessage.charAt(0) == '>') {
+        if (!strMessage.isEmpty() && strMessage.charAt(0) == '>') {
             indent += "  ";
         }
     }
 
-
     public static void out(Throwable throwable) {
         m_printStream.log(Level.SEVERE, throwable.getMessage(), throwable);
     }
-
 
     public static void assertion(boolean bAssertion) {
         if (!bAssertion) {
@@ -140,32 +127,23 @@ public class TDebug {
         }
     }
 
-
     public static class AssertException
             extends RuntimeException {
 
+        @Serial
         private static final long serialVersionUID = 1;
 
         public AssertException() {
         }
-
 
         public AssertException(String sMessage) {
             super(sMessage);
         }
     }
 
-
     private static boolean getBooleanProperty(String strName) {
         String strPropertyName = PROPERTY_PREFIX + strName;
-        String strValue = "false";
-        try {
-            strValue = System.getProperty(strPropertyName, "false");
-        } catch (AccessControlException e) {
-            if (SHOW_ACCESS_CONTROL_EXCEPTIONS) {
-                out(e);
-            }
-        }
+        String strValue = System.getProperty(strPropertyName, "false");
         // TDebug.out("property: " + strPropertyName + "=" + strValue);
         boolean bValue = strValue.equalsIgnoreCase("true");
         // TDebug.out("bValue: " + bValue);
@@ -174,5 +152,4 @@ public class TDebug {
 }
 
 
-/* TDebug.java */
 

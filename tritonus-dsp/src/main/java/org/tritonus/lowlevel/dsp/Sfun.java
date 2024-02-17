@@ -34,13 +34,11 @@ public class Sfun {
     /** The largest relative spacing for doubles. */
     public final static double EPSILON_LARGE = 2.2204460492503e-16;
 
-
     /**
      * Private contructor, so nobody can make an instance of this class.
      */
     private Sfun() {
     }
-
 
     /*
      * Evaluate a Chebyschev series
@@ -59,7 +57,6 @@ public class Sfun {
         }
         return 0.5 * (b0 - b2);
     }
-
 
     // Series on [0,0.0625]
     private static final double[] COT_COEF = {
@@ -335,7 +332,6 @@ public class Sfun {
         return ans;
     }
 
-
     // Series on the interval [0,0.25]
     private static final double[] ATANH_COEF = {
             .9439510239319549230842892218633e-1,
@@ -384,7 +380,6 @@ public class Sfun {
         return ans;
     }
 
-
     /**
      * Returns the factorial of an integer.
      *
@@ -406,7 +401,6 @@ public class Sfun {
         }
         return ans;
     }
-
 
     // Series on the interval [0,1]
     private static final double[] GAMMA_COEF = {
@@ -533,7 +527,6 @@ public class Sfun {
         return ans;
     }
 
-
     // Series for the interval [0,0.01]
     private static final double[] R9LGMC_COEF =
             {
@@ -646,7 +639,6 @@ public class Sfun {
         return ans;
     }
 
-
     // Series on [0,1]
     private static final double[] ERFC_COEF = {
             -.490461212346918080399845440334e-1,
@@ -729,7 +721,6 @@ public class Sfun {
             .194744338223207851429197867821e-18
     };
 
-
     /**
      * Returns the error function of a double.
      *
@@ -753,7 +744,6 @@ public class Sfun {
         }
         return ans;
     }
-
 
     /**
      * Returns the complementary error function of a double.

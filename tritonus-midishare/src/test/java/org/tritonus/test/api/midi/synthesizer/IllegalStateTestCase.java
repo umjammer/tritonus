@@ -31,6 +31,7 @@ import org.junit.jupiter.api.Assertions;
 public class IllegalStateTestCase
         extends BaseSynthesizerTestCase {
 
+    @Override
     protected void checkSynthesizer(Synthesizer synth)
             throws Exception {
         // Synthesizer is closed
@@ -45,7 +46,6 @@ public class IllegalStateTestCase
         synth.close();
     }
 
-
     private void checkMethods(Synthesizer synth, boolean bOpen)
             throws Exception {
         boolean bExpectingException = false;
@@ -57,7 +57,6 @@ public class IllegalStateTestCase
         checkMethod(synth, "getAvailableInstruments()", bExpectingException, bOpen);
         checkMethod(synth, "getLoadedInstruments()", bExpectingException, bOpen);
     }
-
 
     private void checkMethod(Synthesizer synth, String strMethodName,
                              boolean bExceptionExpected, boolean bOpen)
@@ -89,7 +88,6 @@ public class IllegalStateTestCase
         }
     }
 
-
     private static String constructErrorMessage(Synthesizer synth,
                                                 String strMethodName,
                                                 boolean bExceptionExpected,
@@ -103,4 +101,3 @@ public class IllegalStateTestCase
 }
 
 
-/* IllegalStateTestCase.java */

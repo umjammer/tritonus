@@ -1,10 +1,4 @@
 /*
- * TAsynchronousFilteredAudioInputStream.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 1999, 2000 by Matthias Pfisterer
  *
  *
@@ -21,10 +15,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.share.sampled.convert;
 
@@ -56,12 +46,10 @@ public abstract class TAsynchronousFilteredAudioInputStream
     private static final int DEFAULT_MIN_AVAILABLE = 4096;
     private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
-
     // must be protected because it's accessed by the native CDDA lib
     protected TCircularBuffer m_circularBuffer;
     private int m_nMinAvailable;
     private byte[] m_abSingleByte;
-
 
     /**
      * Constructor.
@@ -76,7 +64,6 @@ public abstract class TAsynchronousFilteredAudioInputStream
                 DEFAULT_BUFFER_SIZE,
                 DEFAULT_MIN_AVAILABLE);
     }
-
 
     /**
      * Constructor.
@@ -118,14 +105,12 @@ public abstract class TAsynchronousFilteredAudioInputStream
         }
     }
 
-
     /**
      * Returns the circular buffer.
      */
     protected TCircularBuffer getCircularBuffer() {
         return m_circularBuffer;
     }
-
 
     /**
      * Check if writing more data to the circular buffer is recommanded.
@@ -142,7 +127,6 @@ public abstract class TAsynchronousFilteredAudioInputStream
     protected boolean writeMore() {
         return getCircularBuffer().availableWrite() > m_nMinAvailable;
     }
-
 
     @Override
     public int read()
@@ -163,7 +147,6 @@ public abstract class TAsynchronousFilteredAudioInputStream
         return nByte;
     }
 
-
     @Override
     public int read(byte[] abData)
             throws IOException {
@@ -176,7 +159,6 @@ public abstract class TAsynchronousFilteredAudioInputStream
         }
         return nRead;
     }
-
 
     @Override
     public int read(byte[] abData, int nOffset, int nLength)
@@ -194,7 +176,6 @@ public abstract class TAsynchronousFilteredAudioInputStream
         return nRead;
     }
 
-
     @Override
     public long skip(long lSkip)
             throws IOException {
@@ -208,13 +189,11 @@ public abstract class TAsynchronousFilteredAudioInputStream
         return lSkip;
     }
 
-
     @Override
     public int available()
             throws IOException {
         return m_circularBuffer.availableRead();
     }
-
 
     @Override
     public void close()
@@ -222,17 +201,14 @@ public abstract class TAsynchronousFilteredAudioInputStream
         m_circularBuffer.close();
     }
 
-
     @Override
     public boolean markSupported() {
         return false;
     }
 
-
     @Override
     public void mark(int nReadLimit) {
     }
-
 
     @Override
     public void reset()
@@ -242,4 +218,3 @@ public abstract class TAsynchronousFilteredAudioInputStream
 }
 
 
-/* TAsynchronousFilteredAudioInputStream.java */

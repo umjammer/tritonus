@@ -1,8 +1,3 @@
-/*
- * AlsaSeqRemoveEvents.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999 - 2002 by Matthias Pfisterer
@@ -21,10 +16,6 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.lowlevel.alsa;
 
 import org.tritonus.share.TDebug;
@@ -42,7 +33,6 @@ public class AlsaSeqRemoveEvents {
         }
     }
 
-
     /**
      * Holds the pointer to snd_seq_queue_timer_t
      * for the native code.
@@ -50,14 +40,12 @@ public class AlsaSeqRemoveEvents {
      */
     /*private*/ long m_lNativeHandle;
 
-
     static {
         Alsa.loadNativeLibrary();
         if (TDebug.TraceAlsaSeqNative) {
             setTrace(true);
         }
     }
-
 
     public AlsaSeqRemoveEvents() {
         if (TDebug.TraceAlsaSeqNative) {
@@ -71,14 +59,6 @@ public class AlsaSeqRemoveEvents {
             TDebug.out("AlsaSeqRemoveEvents.<init>(): end");
         }
     }
-
-
-    protected void finalize() {
-        // TODO: call free()
-        // call super.finalize() first or last?
-        // and introduce a flag if free() has already been called?
-    }
-
 
     private native int malloc();
 
@@ -118,4 +98,3 @@ public class AlsaSeqRemoveEvents {
 }
 
 
-/* AlsaSeqRemoveEvents.java */

@@ -24,6 +24,7 @@ import javax.sound.sampled.Mixer;
 
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -48,16 +49,15 @@ public class MixerTestCase
         checkMixer(check);
     }
 
-
     @Test
     public void testOpenClose()
             throws Exception {
         Check check = mixer -> {
-            assertTrue(!mixer.isOpen(), "closed");
+            assertFalse(mixer.isOpen(), "closed");
             mixer.open();
             assertTrue(mixer.isOpen(), "open");
             mixer.close();
-            assertTrue(!mixer.isOpen(), "closed");
+            assertFalse(mixer.isOpen(), "closed");
         };
         checkMixer(check);
     }
@@ -66,4 +66,3 @@ public class MixerTestCase
 }
 
 
-/* MixerTestCase.java */

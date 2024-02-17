@@ -154,7 +154,7 @@ public class Compiler {
 
         if (DEBUG) {
             for (String s : instrumentMap.keySet()) {
-                TDebug.out("" + s);
+                TDebug.out(s);
             }
         }
         return instrumentMap;

@@ -117,7 +117,6 @@ public class VorbisTruncateTest {
                 readCntPCMTotal, "Missing some PCM data from decoded Vorbis stream.");
     }
 
-
     @Test
     public void testConvertTruncateOggWithAudioSystem() throws Exception {
         AudioInputStream inAIStreamOgg = AudioSystem.getAudioInputStream(_sourceFileOgg);
@@ -138,7 +137,6 @@ public class VorbisTruncateTest {
         assertEquals(369710, // known file size Wave file built using native Windoze oggdec.exe
                 _destFileWav.length(), "Missing some PCM data from decoded Vorbis stream.");
     }
-
 
     /**
      * Play the given audio stream. Closes the stream when finised.
@@ -176,5 +174,5 @@ public class VorbisTruncateTest {
     }
 }
 
-/* VorbisTruncateTest.java */
+
 

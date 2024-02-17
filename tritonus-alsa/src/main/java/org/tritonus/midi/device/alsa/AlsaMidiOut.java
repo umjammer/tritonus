@@ -1,10 +1,4 @@
 /*
- * AlsaMidiOut.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 1999 - 2001 by Matthias Pfisterer
  *
  *
@@ -66,7 +60,6 @@ public class AlsaMidiOut {
 
     private AlsaSeqEvent m_event = new AlsaSeqEvent();
 
-
     /*
      * Sends to all subscribers via queue.
      */
@@ -76,7 +69,6 @@ public class AlsaMidiOut {
                 nQueue, false);
     }
 
-
     /*
      * Sends to all subscribers immediately.
      */
@@ -84,7 +76,6 @@ public class AlsaMidiOut {
         this(aSequencer, nSourcePort,
                 -1, true);
     }
-
 
     private AlsaMidiOut(AlsaSeq aSequencer, int nSourcePort,
                         int nQueue, boolean bImmediately) {
@@ -101,36 +92,29 @@ public class AlsaMidiOut {
         }
     }
 
-
     private AlsaSeq getAlsaSeq() {
         return m_alsaSeq;
     }
-
 
     private int getSourcePort() {
         return m_nSourcePort;
     }
 
-
     private int getQueue() {
         return m_nQueue;
     }
-
 
     private boolean getImmediately() {
         return m_bImmediately;
     }
 
-
     public boolean getHandleMetaMessages() {
         return m_bHandleMetaMessages;
     }
 
-
     public void setHandleMetaMessages(boolean bHandleMetaMessages) {
         m_bHandleMetaMessages = bHandleMetaMessages;
     }
-
 
     public synchronized void enqueueMessage(MidiMessage event, long lTick) {
         if (TDebug.TraceAlsaMidiOut) {
@@ -149,7 +133,6 @@ public class AlsaMidiOut {
             TDebug.out("AlsaMidiOut.enqueueMessage(): end");
         }
     }
-
 
     private void enqueueShortMessage(ShortMessage shortMessage, long lTime) {
         int nChannel = shortMessage.getChannel();
@@ -234,21 +217,17 @@ public class AlsaMidiOut {
         }
     }
 
-
     private static int get14bitValue(int nLSB, int nMSB) {
         return (nLSB & 0x7F) | ((nMSB & 0x7F) << 7);
     }
-
 
     private void sendNoteOffEvent(long lTime, int nChannel, int nNote, int nVelocity) {
         sendNoteEvent(AlsaSeq.SND_SEQ_EVENT_NOTEOFF, lTime, nChannel, nNote, nVelocity);
     }
 
-
     private void sendNoteOnEvent(long lTime, int nChannel, int nNote, int nVelocity) {
         sendNoteEvent(AlsaSeq.SND_SEQ_EVENT_NOTEON, lTime, nChannel, nNote, nVelocity);
     }
-
 
     private void sendNoteEvent(int nType, long lTime, int nChannel, int nNote, int nVelocity) {
         setCommon(nType, 0, lTime);
@@ -256,32 +235,26 @@ public class AlsaMidiOut {
         sendEvent();
     }
 
-
     private void sendKeyPressureEvent(long lTime, int nChannel, int nNote, int nPressure) {
         sendControlEvent(AlsaSeq.SND_SEQ_EVENT_KEYPRESS, lTime, nChannel, nNote, nPressure);
     }
-
 
     private void sendControlChangeEvent(long lTime, int nChannel, int nControl, int nValue) {
         sendControlEvent(AlsaSeq.SND_SEQ_EVENT_CONTROLLER, lTime, nChannel, nControl, nValue);
     }
 
-
     private void sendProgramChangeEvent(long lTime, int nChannel, int nProgram) {
         sendControlEvent(AlsaSeq.SND_SEQ_EVENT_PGMCHANGE, lTime, nChannel, 0, nProgram);
     }
-
 
     private void sendChannelPressureEvent(long lTime, int nChannel, int nPressure) {
         sendControlEvent(AlsaSeq.SND_SEQ_EVENT_CHANPRESS, lTime, nChannel, 0, nPressure);
     }
 
-
     // TODO: recheck!!!!
     private void sendPitchBendEvent(long lTime, int nChannel, int nPitch) {
         sendControlEvent(AlsaSeq.SND_SEQ_EVENT_PITCHBEND, lTime, nChannel, 0, nPitch);
     }
-
 
     private void sendControlEvent(int nType, long lTime, int nChannel, int nParam, int nValue) {
         setCommon(nType, 0, lTime);
@@ -289,56 +262,45 @@ public class AlsaMidiOut {
         sendEvent();
     }
 
-
     private void sendMTCEvent(long lTime, int nData) {
         sendControlEvent(AlsaSeq.SND_SEQ_EVENT_QFRAME, lTime, 0, 0, nData);
     }
-
 
     private void sendSongPositionPointerEvent(long lTime, int nPosition) {
         sendControlEvent(AlsaSeq.SND_SEQ_EVENT_SONGPOS, lTime, 0, 0, nPosition);
     }
 
-
     private void sendSongSelectEvent(long lTime, int nSong) {
         sendControlEvent(AlsaSeq.SND_SEQ_EVENT_SONGSEL, lTime, 0, 0, nSong);
     }
-
 
     private void sendTuneRequestEvent(long lTime) {
         sendEvent(AlsaSeq.SND_SEQ_EVENT_TUNE_REQUEST, lTime);
     }
 
-
     private void sendMidiClockEvent(long lTime) {
         sendQueueControlEvent(AlsaSeq.SND_SEQ_EVENT_CLOCK, lTime, 0, 0, 0);
     }
-
 
     private void sendStartEvent(long lTime) {
         sendQueueControlEvent(AlsaSeq.SND_SEQ_EVENT_START, lTime, 0, 0, 0);
     }
 
-
     private void sendContinueEvent(long lTime) {
         sendQueueControlEvent(AlsaSeq.SND_SEQ_EVENT_CONTINUE, lTime, 0, 0, 0);
     }
-
 
     private void sendStopEvent(long lTime) {
         sendQueueControlEvent(AlsaSeq.SND_SEQ_EVENT_STOP, lTime, 0, 0, 0);
     }
 
-
     private void sendActiveSensingEvent(long lTime) {
         sendEvent(AlsaSeq.SND_SEQ_EVENT_SENSING, lTime);
     }
 
-
     private void sendSystemResetEvent(long lTime) {
         sendEvent(AlsaSeq.SND_SEQ_EVENT_RESET, lTime);
     }
-
 
     private void sendQueueControlEvent(int nType, long lTime, int nQueue, int nValue, long lControlTime) {
         setCommon(nType, 0, lTime);
@@ -346,12 +308,10 @@ public class AlsaMidiOut {
         sendEvent();
     }
 
-
     private void sendEvent(int nType, long lTime) {
         setCommon(nType, 0, lTime);
         sendEvent();
     }
-
 
     private void enqueueSysexMessage(SysexMessage message, long lTick) {
         // TDebug.out("enqueueSysexMessage()");
@@ -371,7 +331,6 @@ public class AlsaMidiOut {
         }
     }
 
-
     private void enqueueMetaMessage(MetaMessage message, long lTick) {
         /*
          * We pack the type byte in front of the data bytes.
@@ -385,13 +344,11 @@ public class AlsaMidiOut {
         sendVarEvent(AlsaSeq.SND_SEQ_EVENT_USR_VAR4, lTick, abTransferData, 0, abTransferData.length);
     }
 
-
     private void sendVarEvent(int nType, long lTime, byte[] abData, int nOffset, int nLength) {
         setCommon(nType, AlsaSeq.SND_SEQ_EVENT_LENGTH_VARIABLE, lTime);
         m_event.setVar(abData, 0, nLength);
         sendEvent();
     }
-
 
     private void setCommon(int nType, int nAdditionalFlags, long lTime) {
         if (getImmediately()) {
@@ -410,7 +367,6 @@ public class AlsaMidiOut {
         }
     }
 
-
     /**
      * Puts the event into the queue.
      */
@@ -421,4 +377,3 @@ public class AlsaMidiOut {
 }
 
 
-/* AlsaMidiOut.java */

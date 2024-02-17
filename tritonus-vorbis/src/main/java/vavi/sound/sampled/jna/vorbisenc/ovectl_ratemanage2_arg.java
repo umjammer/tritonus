@@ -49,6 +49,7 @@ public class ovectl_ratemanage2_arg extends Structure {
         super();
     }
 
+    @Override
     protected List<String> getFieldOrder() {
         return Arrays.asList("management_active", "bitrate_limit_min_kbps", "bitrate_limit_max_kbps", "bitrate_limit_reservoir_bits", "bitrate_limit_reservoir_bias", "bitrate_average_kbps", "bitrate_average_damping");
     }
@@ -86,11 +87,8 @@ public class ovectl_ratemanage2_arg extends Structure {
 
     }
 
-    ;
-
     public static class ByValue extends ovectl_ratemanage2_arg implements Structure.ByValue {
 
     }
 
-    ;
 }

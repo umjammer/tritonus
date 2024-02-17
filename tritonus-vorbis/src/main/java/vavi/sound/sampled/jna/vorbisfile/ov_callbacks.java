@@ -32,15 +32,11 @@ public class ov_callbacks extends Structure {
         NativeLong apply(Pointer ptr, NativeLong size, NativeLong nmemb, Pointer datasource);
     }
 
-    ;
-
     /** <i>native declaration : List<String>vorbis/vorbisfile.h</i> */
     public interface seek_func_callback extends Callback {
 
         int apply(Pointer datasource, long offset, int whence);
     }
-
-    ;
 
     /** <i>native declaration : List<String>vorbis/vorbisfile.h</i> */
     public interface close_func_callback extends Callback {
@@ -48,20 +44,17 @@ public class ov_callbacks extends Structure {
         int apply(Pointer datasource);
     }
 
-    ;
-
     /** <i>native declaration : List<String>vorbis/vorbisfile.h</i> */
     public interface tell_func_callback extends Callback {
 
         NativeLong apply(Pointer datasource);
     }
 
-    ;
-
     public ov_callbacks() {
         super();
     }
 
+    @Override
     protected List<String> getFieldOrder() {
         return Arrays.asList("read_func", "seek_func", "close_func", "tell_func");
     }
@@ -88,11 +81,8 @@ public class ov_callbacks extends Structure {
 
     }
 
-    ;
-
     public static class ByValue extends ov_callbacks implements Structure.ByValue {
 
     }
 
-    ;
 }

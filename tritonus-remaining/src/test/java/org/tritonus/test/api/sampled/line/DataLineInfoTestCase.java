@@ -36,37 +36,28 @@ public class DataLineInfoTestCase {
 
     @Test
     public void testConstructors() {
-        DataLine.Info info;
-        info = new DataLine.Info(String.class,
-                new AudioFormat[0],
-                123, 456);
+        DataLine.Info info = new DataLine.Info(String.class, new AudioFormat[0], 123, 456);
         checkInfo(info, String.class, 0, 123, 456);
     }
 
-
     private void checkInfo(DataLine.Info info,
-                           Class expectedLineClass,
+                           Class<?> expectedLineClass,
                            int nExpectedFormatsArrayLength,
                            int nExpectedMinBufferSize,
                            int nExpectedMaxBufferSize) {
         assertEquals(expectedLineClass, info.getLineClass(), "lineClass");
-        assertEquals(nExpectedFormatsArrayLength, info.getFormats().length,
-                "AudioFormat array length");
-        assertEquals(nExpectedMinBufferSize, info.getMinBufferSize(),
-                "min buffer size");
-        assertEquals(nExpectedMaxBufferSize, info.getMaxBufferSize(),
-                "max buffer size");
+        assertEquals(nExpectedFormatsArrayLength, info.getFormats().length, "AudioFormat array length");
+        assertEquals(nExpectedMinBufferSize, info.getMinBufferSize(), "min buffer size");
+        assertEquals(nExpectedMaxBufferSize, info.getMaxBufferSize(), "max buffer size");
     }
 
     @Test
     public void testMatches() {
-        DataLine.Info info1 = new DataLine.Info(SourceDataLine.class,
-                null);
+        DataLine.Info info1 = new DataLine.Info(SourceDataLine.class, null);
         Line.Info info2 = new Line.Info(SourceDataLine.class);
         assertFalse(info1.matches(info2), "DataLine.Info against Line.Info");
         assertTrue(info2.matches(info1), "Line.Info against DataLine.Info");
     }
-
 
     @Test
     public void testToString() {
@@ -74,4 +65,3 @@ public class DataLineInfoTestCase {
 }
 
 
-/* DataLineInfoTestCase.java */

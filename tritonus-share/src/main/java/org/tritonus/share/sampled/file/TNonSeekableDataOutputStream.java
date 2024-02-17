@@ -1,8 +1,3 @@
-/*
- * TNonSeekableDataOutputStream.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999 by Florian Bomers
@@ -22,10 +17,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.share.sampled.file;
 
@@ -48,30 +39,30 @@ public class TNonSeekableDataOutputStream
         super(outputStream);
     }
 
-
+    @Override
     public boolean supportsSeek() {
         return false;
     }
 
-
+    @Override
     public void seek(long position)
             throws IOException {
         throw new IllegalArgumentException("TNonSeekableDataOutputStream: Call to seek not allowed.");
     }
 
-
+    @Override
     public long getFilePointer()
             throws IOException {
         throw new IllegalArgumentException("TNonSeekableDataOutputStream: Call to getFilePointer not allowed.");
     }
 
-
+    @Override
     public long length()
             throws IOException {
         throw new IllegalArgumentException("TNonSeekableDataOutputStream: Call to length not allowed.");
     }
 
-
+    @Override
     public void writeLittleEndian32(int value)
             throws IOException {
         writeByte(value & 0xFF);
@@ -80,7 +71,7 @@ public class TNonSeekableDataOutputStream
         writeByte((value >> 24) & 0xFF);
     }
 
-
+    @Override
     public void writeLittleEndian16(short value)
             throws IOException {
         writeByte(value & 0xFF);
@@ -89,4 +80,3 @@ public class TNonSeekableDataOutputStream
 }
 
 
-/* TNonSeekableDataOutputStream.java */

@@ -25,7 +25,6 @@ public class AlsaCtlTest {
         output(cardInfo);
     }
 
-
     private static void output(AlsaCtlCardInfo cardInfo) {
         System.out.println("card: " + cardInfo.getCard());
         System.out.println("id: " + cardInfo.getId());

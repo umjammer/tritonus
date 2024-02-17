@@ -1,8 +1,3 @@
-/*
- * AlsaMidiDeviceProvider.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999 - 2001 by Matthias Pfisterer
@@ -20,10 +15,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.midi.device.alsa;
 
@@ -50,7 +41,6 @@ public class AlsaMidiDeviceProvider
     private static List<MidiDevice> m_devices;
     private static AlsaSeq m_alsaSeq;
 
-
     public AlsaMidiDeviceProvider() {
         if (TDebug.TraceMidiDeviceProvider) {
             TDebug.out("AlsaMidiDeviceProvider.<init>(): begin");
@@ -75,7 +65,7 @@ public class AlsaMidiDeviceProvider
         }
     }
 
-
+    @Override
     public MidiDevice.Info[] getDeviceInfo() {
         if (TDebug.TraceMidiDeviceProvider) {
             TDebug.out("AlsaMidiDeviceProvider.getDeviceInfo(): begin");
@@ -92,7 +82,7 @@ public class AlsaMidiDeviceProvider
         return infos;
     }
 
-
+    @Override
     public MidiDevice getDevice(MidiDevice.Info info) {
         if (TDebug.TraceMidiDeviceProvider) {
             TDebug.out("AlsaMidiDeviceProvider.getDevice(): begin");
@@ -114,19 +104,18 @@ public class AlsaMidiDeviceProvider
         return returnedDevice;
     }
 
-
     private void scanPorts() {
         if (TDebug.TraceMidiDeviceProvider || TDebug.TracePortScan) {
             TDebug.out("AlsaMidiDeviceProvider.scanPorts(): begin");
         }
-        Iterator clients = m_alsaSeq.getClientInfos();
+        Iterator<?> clients = m_alsaSeq.getClientInfos();
         while (clients.hasNext()) {
             AlsaSeqClientInfo clientInfo = (AlsaSeqClientInfo) clients.next();
             int nClient = clientInfo.getClient();
             if (TDebug.TracePortScan) {
                 TDebug.out("AlsaMidiDeviceProvider.scanPorts(): client: " + nClient);
             }
-            Iterator ports = m_alsaSeq.getPortInfos(nClient);
+            Iterator<?> ports = m_alsaSeq.getPortInfos(nClient);
             while (ports.hasNext()) {
                 AlsaSeqPortInfo portInfo = (AlsaSeqPortInfo) ports.next();
                 handlePort(clientInfo, portInfo);
@@ -136,7 +125,6 @@ public class AlsaMidiDeviceProvider
             TDebug.out("AlsaMidiDeviceProvider.scanPorts(): end");
         }
     }
-
 
     private void handlePort(AlsaSeqClientInfo clientInfo,
                             AlsaSeqPortInfo portInfo) {
@@ -185,4 +173,3 @@ public class AlsaMidiDeviceProvider
 }
 
 
-/* AlsaMidiDeviceProvider.java */

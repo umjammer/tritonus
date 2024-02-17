@@ -1,10 +1,4 @@
 /*
- * AlsaPcm.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2000 - 2001 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,10 +13,6 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.lowlevel.alsa;
 
@@ -50,7 +40,6 @@ public class AlsaPcm {
     public static final int SND_PCM_ACCESS_RW_INTERLEAVED = 3;
     /** snd_pcm_readn/snd_pcm_writen access */
     public static final int SND_PCM_ACCESS_RW_NONINTERLEAVED = 4;
-
 
     public static final int SND_PCM_FORMAT_UNKNOWN = -1;
     public static final int SND_PCM_FORMAT_S8 = 0;
@@ -131,7 +120,6 @@ public class AlsaPcm {
   #endif
 */
 
-
     /** PCM state (snd_pcm_state_t) */
     /** Open */
     public static final int SND_PCM_STATE_OPEN = 0;
@@ -169,7 +157,6 @@ public class AlsaPcm {
     /** Update mmap'ed timestamp */
     public static final int SND_PCM_TSTAMP_MMAP = 1;
 
-
     static {
         Alsa.loadNativeLibrary();
         if (TDebug.TraceAlsaPcmNative) {
@@ -177,14 +164,12 @@ public class AlsaPcm {
         }
     }
 
-
     /**
      * Holds the pointer to snd_pcm_t for the native code.
      * This must be long to be 64bit-clean.
      */
     @SuppressWarnings("unused")
     private long m_lNativeHandle;
-
 
     /**
      * For parameter documentation, see open().
@@ -202,7 +187,6 @@ public class AlsaPcm {
         }
     }
 
-
     /**
      * Calls snd_pcm_open().
      *
@@ -214,24 +198,20 @@ public class AlsaPcm {
                             int nDirection,
                             int nMode);
 
-
     /**
      * Calls snd_pcm_close().
      */
     public native int close();
-
 
     /**
      * Calls snd_pcm_hw_params_any().
      */
     public native int getAnyHWParams(AlsaPcmHWParams hwParams);
 
-
     /**
      * Calls snd_pcm_hw_params_set_access().
      */
     public native int setHWParamsAccess(AlsaPcmHWParams hwParams, int nAccess);
-
 
     /**
      * Calls snd_pcm_hw_params_set_format().
@@ -267,7 +247,6 @@ public class AlsaPcm {
      * Calls snd_pcm_hw_params().
      */
     public native int setHWParams(AlsaPcmHWParams hwParams);
-
 
     public native int getSWParams(AlsaPcmSWParams swParams);
 
@@ -308,4 +287,3 @@ public class AlsaPcm {
 }
 
 
-/* AlsaPcm.java */

@@ -1,8 +1,3 @@
-/*
- * TAudioFileFormat.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999 by Matthias Pfisterer
@@ -21,10 +16,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.share.sampled.file;
 
@@ -49,7 +40,6 @@ public class TAudioFileFormat
     private Map<String, Object> m_properties;
     private Map<String, Object> m_unmodifiableProperties;
 
-
     /*
      * Note that the order of the arguments is different from
      * the one in AudioFileFormat.
@@ -64,7 +54,6 @@ public class TAudioFileFormat
                 nLengthInFrames);
     }
 
-
     public TAudioFileFormat(Type type,
                             AudioFormat audioFormat,
                             int nLengthInFrames,
@@ -77,7 +66,6 @@ public class TAudioFileFormat
         initMaps(properties);
     }
 
-
     private void initMaps(Map<String, Object> properties) {
   /* Here, we make a shallow copy of the map. It's unclear if this
      is sufficient (of if a deep copy should be made).
@@ -87,12 +75,10 @@ public class TAudioFileFormat
         m_unmodifiableProperties = Collections.unmodifiableMap(m_properties);
     }
 
-
     @Override
     public Map<String, Object> properties() {
         return m_unmodifiableProperties;
     }
-
 
     protected void setProperty(String key, Object value) {
         m_properties.put(key, value);
@@ -100,4 +86,3 @@ public class TAudioFileFormat
 }
 
 
-/* TAudioFileFormat.java */

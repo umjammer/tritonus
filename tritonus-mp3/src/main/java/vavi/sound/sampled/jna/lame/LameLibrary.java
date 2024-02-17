@@ -35,7 +35,7 @@ public interface LameLibrary extends Library {
      * <i>native declaration : TDebug.outlame/lame.h</i><br>
      * enum values
      */
-    public static interface vbr_mode_e {
+    interface vbr_mode_e {
 
         /** <i>native declaration : TDebug.outlame/lame.h:18</i> */
         int vbr_off = 0;
@@ -59,16 +59,14 @@ public interface LameLibrary extends Library {
          * change this to change the default VBR mode of LAME<br>
          * <i>native declaration : TDebug.outlame/lame.h:24</i>
          */
-        int vbr_default = (int) LameLibrary.vbr_mode_e.vbr_mtrh;
+        int vbr_default = vbr_mode_e.vbr_mtrh;
     }
-
-    ;
 
     /**
      * <i>native declaration : TDebug.outlame/lame.h</i><br>
      * enum values
      */
-    public static interface MPEG_mode_e {
+    interface MPEG_mode_e {
 
         /** <i>native declaration : TDebug.outlame/lame.h:30</i> */
         int STEREO = 0;
@@ -90,13 +88,11 @@ public interface LameLibrary extends Library {
         int MAX_INDICATOR = 5;
     }
 
-    ;
-
     /**
      * <i>native declaration : TDebug.outlame/lame.h</i><br>
      * enum values
      */
-    public static interface Padding_type_e {
+    interface Padding_type_e {
 
         /** <i>native declaration : TDebug.outlame/lame.h:40</i> */
         int PAD_NO = 0;
@@ -111,13 +107,11 @@ public interface LameLibrary extends Library {
         int PAD_MAX_INDICATOR = 3;
     }
 
-    ;
-
     /**
      * <i>native declaration : TDebug.outlame/lame.h</i><br>
      * enum values
      */
-    public static interface preset_mode_e {
+    interface preset_mode_e {
 
         /** <i>native declaration : TDebug.outlame/lame.h:52</i> */
         int ABR_8 = 8;
@@ -184,13 +178,11 @@ public interface LameLibrary extends Library {
         int MEDIUM_FAST = 1007;
     }
 
-    ;
-
     /**
      * <i>native declaration : TDebug.outlame/lame.h</i><br>
      * enum values
      */
-    public static interface asm_optimizations_e {
+    interface asm_optimizations_e {
 
         /** <i>native declaration : TDebug.outlame/lame.h:92</i> */
         int MMX = 1;
@@ -200,13 +192,11 @@ public interface LameLibrary extends Library {
         int SSE = 3;
     }
 
-    ;
-
     /**
      * <i>native declaration : TDebug.outlame/lame.h</i><br>
      * enum values
      */
-    public static interface Psy_model_e {
+    interface Psy_model_e {
 
         /** <i>native declaration : TDebug.outlame/lame.h:100</i> */
         int PSY_GPSYCHO = 1;
@@ -214,13 +204,11 @@ public interface LameLibrary extends Library {
         int PSY_NSPSYTUNE = 2;
     }
 
-    ;
-
     /**
      * <i>native declaration : TDebug.outlame/lame.h</i><br>
      * enum values
      */
-    public static interface buffer_constraint_e {
+    interface buffer_constraint_e {
 
         /** <i>native declaration : TDebug.outlame/lame.h:107</i> */
         int MDB_DEFAULT = 0;
@@ -230,13 +218,11 @@ public interface LameLibrary extends Library {
         int MDB_MAXIMUM = 2;
     }
 
-    ;
-
     /**
      * <i>native declaration : TDebug.outlame/lame.h</i><br>
      * enum values
      */
-    public static interface lame_errorcodes_t {
+    interface lame_errorcodes_t {
 
         /** <i>native declaration : TDebug.outlame/lame.h:1292</i> */
         int LAME_OKAY = 0;
@@ -260,29 +246,24 @@ public interface LameLibrary extends Library {
         int FRONTEND_FILETOOLARGE = -82;
     }
 
-    ;
     /** <i>native declaration : TDebug.outlame/lame.h</i> */
-    int DEPRECATED_OR_OBSOLETE_CODE_REMOVED = (int) 1;
+    int DEPRECATED_OR_OBSOLETE_CODE_REMOVED = 1;
     /** <i>native declaration : TDebug.outlame/lame.h</i> */
-    int LAME_MAXALBUMART = (int) (128 * 1024);
+    int LAME_MAXALBUMART = 128 * 1024;
     /** <i>native declaration : TDebug.outlame/lame.h</i> */
-    int LAME_MAXMP3BUFFER = (int) (16384 + (128 * 1024));
+    int LAME_MAXMP3BUFFER = 16384 + (128 * 1024);
 
     /** <i>native declaration : TDebug.outlame/lame.h</i> */
-    public interface lame_report_function extends Callback {
+    interface lame_report_function extends Callback {
 
         void apply(Pointer format, Object... ap);
     }
 
-    ;
-
     /** <i>native declaration : TDebug.outlame/lame.h:1164</i> */
-    public interface id3tag_genre_list_handler_callback extends Callback {
+    interface id3tag_genre_list_handler_callback extends Callback {
 
         void apply(int int1, Pointer charPtr1, Pointer voidPtr1);
     }
-
-    ;
 
     /**
      * REQUIRED:<br>
@@ -2691,7 +2672,7 @@ public interface LameLibrary extends Library {
      * @param mp3buf   pointer to encoded MP3 stream<br>
      *                 <i>native declaration : TDebug.outlame/lame.h:684</i>
      */
-    int lame_encode_buffer(PointerByReference gfp, short buffer_l[], short buffer_r[], int nsamples, ByteBuffer mp3buf, int mp3buf_size);
+    int lame_encode_buffer(PointerByReference gfp, short[] buffer_l, short[] buffer_r, int nsamples, ByteBuffer mp3buf, int mp3buf_size);
 
     /**
      * input pcm data, output (maybe) mp3 frames.<br>
@@ -2804,7 +2785,7 @@ public interface LameLibrary extends Library {
      * @param mp3buf   pointer to encoded MP3 stream<br>
      *                 <i>native declaration : TDebug.outlame/lame.h:715</i>
      */
-    int lame_encode_buffer_float(PointerByReference gfp, float pcm_l[], float pcm_r[], int nsamples, ByteBuffer mp3buf, int mp3buf_size);
+    int lame_encode_buffer_float(PointerByReference gfp, float[] pcm_l, float[] pcm_r, int nsamples, ByteBuffer mp3buf, int mp3buf_size);
 
     /**
      * as lame_encode_buffer, but for 'float's.<br>
@@ -2843,7 +2824,7 @@ public interface LameLibrary extends Library {
      * @param pcm_r PCM data for right channel<br>
      *              <i>native declaration : TDebug.outlame/lame.h:727</i>
      */
-    int lame_encode_buffer_ieee_float(LameLibrary.lame_t gfp, float pcm_l[], float pcm_r[], int nsamples, ByteBuffer mp3buf, int mp3buf_size);
+    int lame_encode_buffer_ieee_float(LameLibrary.lame_t gfp, float[] pcm_l, float[] pcm_r, int nsamples, ByteBuffer mp3buf, int mp3buf_size);
 
     /**
      * Original signature : <code>int lame_encode_buffer_interleaved_ieee_float(lame_t, const float[], const int, unsigned char*, const int)</code><br>
@@ -2861,7 +2842,7 @@ public interface LameLibrary extends Library {
      * @param pcm PCM data for left and right<br>channel, interleaved<br>
      *            <i>native declaration : TDebug.outlame/lame.h:734</i>
      */
-    int lame_encode_buffer_interleaved_ieee_float(LameLibrary.lame_t gfp, float pcm[], int nsamples, ByteBuffer mp3buf, int mp3buf_size);
+    int lame_encode_buffer_interleaved_ieee_float(LameLibrary.lame_t gfp, float[] pcm, int nsamples, ByteBuffer mp3buf, int mp3buf_size);
 
     /**
      * as lame_encode_buffer, but for 'double's.<br>
@@ -2885,7 +2866,7 @@ public interface LameLibrary extends Library {
      * @param pcm_r PCM data for right channel<br>
      *              <i>native declaration : TDebug.outlame/lame.h:745</i>
      */
-    int lame_encode_buffer_ieee_double(LameLibrary.lame_t gfp, double pcm_l[], double pcm_r[], int nsamples, ByteBuffer mp3buf, int mp3buf_size);
+    int lame_encode_buffer_ieee_double(LameLibrary.lame_t gfp, double[] pcm_l, double[] pcm_r, int nsamples, ByteBuffer mp3buf, int mp3buf_size);
 
     /**
      * Original signature : <code>int lame_encode_buffer_interleaved_ieee_double(lame_t, const double[], const int, unsigned char*, const int)</code><br>
@@ -2903,7 +2884,7 @@ public interface LameLibrary extends Library {
      * @param pcm PCM data for left and right<br>channel, interleaved<br>
      *            <i>native declaration : TDebug.outlame/lame.h:752</i>
      */
-    int lame_encode_buffer_interleaved_ieee_double(LameLibrary.lame_t gfp, double pcm[], int nsamples, ByteBuffer mp3buf, int mp3buf_size);
+    int lame_encode_buffer_interleaved_ieee_double(LameLibrary.lame_t gfp, double[] pcm, int nsamples, ByteBuffer mp3buf, int mp3buf_size);
 
     /**
      * as lame_encode_buffer, but for long's<br>
@@ -2939,7 +2920,7 @@ public interface LameLibrary extends Library {
      * @param mp3buf   pointer to encoded MP3 stream<br>
      *                 <i>native declaration : TDebug.outlame/lame.h:768</i>
      */
-    int lame_encode_buffer_long(PointerByReference gfp, NativeLong buffer_l[], NativeLong buffer_r[], int nsamples, ByteBuffer mp3buf, int mp3buf_size);
+    int lame_encode_buffer_long(PointerByReference gfp, NativeLong[] buffer_l, NativeLong[] buffer_r, int nsamples, ByteBuffer mp3buf, int mp3buf_size);
 
     /**
      * as lame_encode_buffer, but for long's<br>
@@ -2988,7 +2969,7 @@ public interface LameLibrary extends Library {
      * @param mp3buf   pointer to encoded MP3 stream<br>
      *                 <i>native declaration : TDebug.outlame/lame.h:782</i>
      */
-    int lame_encode_buffer_long2(PointerByReference gfp, NativeLong buffer_l[], NativeLong buffer_r[], int nsamples, ByteBuffer mp3buf, int mp3buf_size);
+    int lame_encode_buffer_long2(PointerByReference gfp, NativeLong[] buffer_l, NativeLong[] buffer_r, int nsamples, ByteBuffer mp3buf, int mp3buf_size);
 
     /**
      * Same as lame_encode_buffer_long(), but with correct scaling.<br>
@@ -3041,7 +3022,7 @@ public interface LameLibrary extends Library {
      * @param mp3buf   pointer to encoded MP3 stream<br>
      *                 <i>native declaration : TDebug.outlame/lame.h:800</i>
      */
-    int lame_encode_buffer_int(PointerByReference gfp, int buffer_l[], int buffer_r[], int nsamples, ByteBuffer mp3buf, int mp3buf_size);
+    int lame_encode_buffer_int(PointerByReference gfp, int[] buffer_l, int[] buffer_r, int nsamples, ByteBuffer mp3buf, int mp3buf_size);
 
     /**
      * as lame_encode_buffer, but for int's<br>
@@ -3093,7 +3074,7 @@ public interface LameLibrary extends Library {
      * @param mp3buf   pointer to encoded MP3 stream<br>
      *                 <i>native declaration : TDebug.outlame/lame.h:817</i>
      */
-    int lame_encode_buffer_interleaved_int(LameLibrary.lame_t gfp, int pcm[], int nsamples, ByteBuffer mp3buf, int mp3buf_size);
+    int lame_encode_buffer_interleaved_int(LameLibrary.lame_t gfp, int[] pcm, int nsamples, ByteBuffer mp3buf, int mp3buf_size);
 
     /**
      * REQUIRED:<br>
@@ -4119,7 +4100,7 @@ public interface LameLibrary extends Library {
      * Original signature : <code>int id3tag_set_fieldvalue_utf16(lame_t, const unsigned short*)</code><br>
      * <i>native declaration : TDebug.outlame/lame.h:1256</i>
      */
-    int id3tag_set_fieldvalue_utf16(LameLibrary.lame_t gfp, short fieldvalue[]);
+    int id3tag_set_fieldvalue_utf16(LameLibrary.lame_t gfp, short[] fieldvalue);
 
     /**
      * experimental<br>
@@ -4136,7 +4117,7 @@ public interface LameLibrary extends Library {
      * Original signature : <code>int id3tag_set_textinfo_utf16(lame_t, const char*, unsigned const short*)</code><br>
      * <i>native declaration : TDebug.outlame/lame.h:1259</i>
      */
-    int id3tag_set_textinfo_utf16(LameLibrary.lame_t gfp, String id, short text[]);
+    int id3tag_set_textinfo_utf16(LameLibrary.lame_t gfp, String id, short[] text);
 
     /**
      * experimental<br>
@@ -4153,7 +4134,7 @@ public interface LameLibrary extends Library {
      * Original signature : <code>int id3tag_set_comment_utf16(lame_t, const char*, unsigned const short*, unsigned const short*)</code><br>
      * <i>native declaration : TDebug.outlame/lame.h:1262</i>
      */
-    int id3tag_set_comment_utf16(LameLibrary.lame_t gfp, String lang, short desc[], short text[]);
+    int id3tag_set_comment_utf16(LameLibrary.lame_t gfp, String lang, short[] desc, short[] text);
 
     /**
      * access functions for use in DLL, global vars are not exported<br>
@@ -4168,7 +4149,7 @@ public interface LameLibrary extends Library {
      */
     int lame_get_samplerate(int mpeg_version, int table_index);
 
-    public static class lame_global_flags extends PointerType {
+    class lame_global_flags extends PointerType {
 
         public lame_global_flags(Pointer address) {
             super(address);
@@ -4179,9 +4160,7 @@ public interface LameLibrary extends Library {
         }
     }
 
-    ;
-
-    public static class lame_t extends PointerType {
+    class lame_t extends PointerType {
 
         public lame_t(Pointer address) {
             super(address);
@@ -4192,9 +4171,7 @@ public interface LameLibrary extends Library {
         }
     }
 
-    ;
-
-    public static class FILE extends PointerType {
+    class FILE extends PointerType {
 
         public FILE(Pointer address) {
             super(address);
@@ -4205,9 +4182,7 @@ public interface LameLibrary extends Library {
         }
     }
 
-    ;
-
-    public static class hip_t extends PointerType {
+    class hip_t extends PointerType {
 
         public hip_t(Pointer address) {
             super(address);
@@ -4218,5 +4193,4 @@ public interface LameLibrary extends Library {
         }
     }
 
-    ;
 }

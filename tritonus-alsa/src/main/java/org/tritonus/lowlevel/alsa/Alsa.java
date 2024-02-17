@@ -1,10 +1,4 @@
 /*
- * Alsa.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2000 - 2001 by Matthias Pfisterer
  *
  *
@@ -22,10 +16,6 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.lowlevel.alsa;
 
 import org.tritonus.share.TDebug;
@@ -42,11 +32,9 @@ public class Alsa {
 
     private static boolean sm_bIsLibraryAvailable = false;
 
-
     static {
         Alsa.loadNativeLibrary();
     }
-
 
     public static void loadNativeLibrary() {
         if (TDebug.TraceAlsaNative) {
@@ -60,7 +48,6 @@ public class Alsa {
             TDebug.out("Alsa.loadNativeLibrary(): end");
         }
     }
-
 
     /**
      * Load the native library for alsa.
@@ -89,7 +76,6 @@ public class Alsa {
         }
     }
 
-
     /**
      * Returns whether the libraries are installed correctly.
      */
@@ -97,9 +83,7 @@ public class Alsa {
         return sm_bIsLibraryAvailable;
     }
 
-
     public static native String getStringError(int nErrnum);
 }
 
 
-/* Alsa.java */

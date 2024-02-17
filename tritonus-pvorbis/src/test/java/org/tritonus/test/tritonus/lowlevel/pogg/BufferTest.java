@@ -85,7 +85,7 @@ public class BufferTest {
     };
 
     private static final int onesize = 33;
-    private static byte[] one = {
+    private static final byte[] one = {
             (byte) 146, 25, 44, (byte) 151, (byte) 195, 15, (byte) 153, (byte) 176,
             (byte) 233, (byte) 131, (byte) 196, 65, 85, (byte) 172, 47, 40,
             34, (byte) 242, (byte) 223, (byte) 136, 35, (byte) 222, (byte) 211, 86,
@@ -94,7 +94,7 @@ public class BufferTest {
     };
 
     private static final int twosize = 6;
-    private static byte[] two = {
+    private static final byte[] two = {
             61, (byte) 255, (byte) 255, (byte) 251, (byte) 231, 29
     };
 
@@ -110,7 +110,7 @@ public class BufferTest {
     };
 
     private static final int foursize = 38;
-    private static byte[] four = {
+    private static final byte[] four = {
             18, 6, (byte) 163, (byte) 252, 97, (byte) 194, 104, (byte) 131,
             32, 1, 7, 82, (byte) 137, 42, (byte) 129, 11,
             72, (byte) 132, 60, (byte) 220, 112, 8, (byte) 196, 109,

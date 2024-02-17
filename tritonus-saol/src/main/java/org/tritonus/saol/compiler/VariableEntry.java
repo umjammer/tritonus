@@ -1,8 +1,3 @@
-/*
- * VariableEntry.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2002 by Matthias Pfisterer
@@ -20,10 +15,6 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.saol.compiler;
 
 
@@ -33,7 +24,6 @@ public class VariableEntry
     private String m_strVariableName;
     private boolean m_bImports;
     private boolean m_bExports;
-
 
     public VariableEntry(String strVariableName,
                          int nWidth,
@@ -46,16 +36,13 @@ public class VariableEntry
         m_bExports = bExports;
     }
 
-
     public String getVariableName() {
         return m_strVariableName;
     }
 
-
     public boolean getImports() {
         return m_bImports;
     }
-
 
     public boolean getExports() {
         return m_bExports;
@@ -63,4 +50,3 @@ public class VariableEntry
 }
 
 
-/* VariableEntry.java */

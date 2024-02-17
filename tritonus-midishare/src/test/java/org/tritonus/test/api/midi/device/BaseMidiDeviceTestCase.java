@@ -42,14 +42,12 @@ public abstract class BaseMidiDeviceTestCase {
         }
     }
 
-
     /**
      * Get the prefix for error messages (containing the sequencer's name).
      */
     protected static String getMessagePrefix(MidiDevice device) {
         return device.getDeviceInfo().getName();
     }
-
 
     protected interface Check {
 
@@ -59,4 +57,3 @@ public abstract class BaseMidiDeviceTestCase {
 }
 
 
-/* BaseMidiDeviceTestCase.java */

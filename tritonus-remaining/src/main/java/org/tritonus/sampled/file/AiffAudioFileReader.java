@@ -1,8 +1,3 @@
-/*
- * AiffAudioFileReader.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2000 by Florian Bomers
@@ -22,10 +17,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.sampled.file;
 
@@ -52,11 +43,9 @@ public class AiffAudioFileReader extends TAudioFileReader {
 
     private static final int READ_LIMIT = 1000;
 
-
     public AiffAudioFileReader() {
         super(READ_LIMIT);
     }
-
 
     private void skipChunk(DataInputStream dataInputStream, int chunkLength, int chunkRead)
             throws IOException {
@@ -149,7 +138,7 @@ public class AiffAudioFileReader extends TAudioFileReader {
         skipChunk(dataInputStream, chunkLength, 4);
     }
 
-
+    @Override
     protected AudioFileFormat getAudioFileFormat(InputStream inputStream, long lFileSizeInBytes)
             throws UnsupportedAudioFileException, IOException {
         if (TDebug.TraceAudioFileReader) {
@@ -239,4 +228,3 @@ public class AiffAudioFileReader extends TAudioFileReader {
 }
 
 
-/* AiffAudioFileReader.java */

@@ -1,10 +1,4 @@
 /*
- * EsdUtils.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 1999, 2000 by Matthias Pfisterer
  *
  *
@@ -21,10 +15,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.sampled.mixer.esd;
 
@@ -68,4 +58,3 @@ public class EsdUtils {
 }
 
 
-/* EsdUtils.java */

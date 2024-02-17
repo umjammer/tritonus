@@ -1,8 +1,3 @@
-/*
- * AmplitudeAudioInputStream.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2003 by Matthias Pfisterer
@@ -19,10 +14,6 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.dsp.ais;
 
@@ -83,9 +74,10 @@ public class AmplitudeAudioInputStream extends FloatAudioInputStream {
      * Here, simply each sample in each channel is multiplied with
      * the amplitude value.
      */
+    @Override
     protected void convert(FloatSampleBuffer buffer) {
         m_processor.process(buffer);
     }
 }
 
-/* AmplitudeAudioInputStream.java */
+

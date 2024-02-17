@@ -1,10 +1,4 @@
 /*
- * AlsaCtl.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 2000 - 2001 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,10 +13,6 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.lowlevel.alsa;
 
@@ -40,14 +30,12 @@ public class AlsaCtl {
     @SuppressWarnings("unused")
     private long m_lNativeHandle;
 
-
     static {
         Alsa.loadNativeLibrary();
         if (TDebug.TraceAlsaCtlNative) {
             setTrace(true);
         }
     }
-
 
     public static native int loadCard(int nCard);
 
@@ -59,7 +47,6 @@ public class AlsaCtl {
     public static native String getCardName(int nCard);
 
     public static native String getCardLongName(int nCard);
-
 
     /**
      * Open a ctl.
@@ -82,12 +69,10 @@ public class AlsaCtl {
         }
     }
 
-
     public AlsaCtl(int nCard)
             throws Exception {
         this("hw:" + nCard, 0);
     }
-
 
     /**
      * Calls snd_ctl_open().
@@ -103,7 +88,6 @@ public class AlsaCtl {
      * Calls snd_ctl_card_info().
      */
     public native int getCardInfo(AlsaCtlCardInfo cardInfo);
-
 
     // TODO: ??
     public native int[] getPcmDevices();
@@ -126,9 +110,7 @@ public class AlsaCtl {
      */
     public native int getPcmInfo(int[] anValues, String[] astrValues);
 
-
     private static native void setTrace(boolean bTrace);
 }
 
 
-/* AlsaCtl.java */

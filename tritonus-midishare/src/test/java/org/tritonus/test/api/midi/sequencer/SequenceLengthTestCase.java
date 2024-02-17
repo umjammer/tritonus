@@ -32,6 +32,7 @@ public class SequenceLengthTestCase extends BaseSequencerTestCase {
 
     private static final String MIDI_FILENAME = "trippygaia1.mid";
 
+    @Override
     protected void checkSequencer(Sequencer seq)
             throws Exception {
         seq.open();
@@ -54,4 +55,4 @@ public class SequenceLengthTestCase extends BaseSequencerTestCase {
     }
 }
 
-/* SequenceLengthTestCase.java */
+

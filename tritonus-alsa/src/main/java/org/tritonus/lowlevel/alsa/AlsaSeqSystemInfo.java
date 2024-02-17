@@ -1,8 +1,3 @@
-/*
- * AlsaSeqSystemInfo.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999 - 2001 by Matthias Pfisterer
@@ -20,10 +15,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.lowlevel.alsa;
 
@@ -44,14 +35,12 @@ public class AlsaSeqSystemInfo {
         }
     }
 
-
     /**
      * Holds the pointer to snd_seq_system_info_t
      * for the native code.
      * This must be long to be 64bit-clean.
      */
     /*private*/ long m_lNativeHandle;
-
 
     public AlsaSeqSystemInfo() {
         if (TDebug.TraceAlsaSeqNative) {
@@ -66,33 +55,19 @@ public class AlsaSeqSystemInfo {
         }
     }
 
-
-    protected void finalize() {
-        // TODO: call free()
-        // call super.finalize() first or last?
-        // and introduce a flag if free() has already been called?
-    }
-
-
     private native int malloc();
 
     public native void free();
 
-
     public native int getQueues();
-
 
     public native int getClients();
 
-
     public native int getPorts();
-
 
     public native int getChannels();
 
-
     public native int getCurrentClients();
-
 
     public native int getCurrentQueues();
 
@@ -100,4 +75,3 @@ public class AlsaSeqSystemInfo {
 }
 
 
-/* AlsaSeqSystemInfo.java */

@@ -77,7 +77,6 @@ public class VorbisSilenceTest {
         }
     }
 
-
     @Test
     public void testConvertSilentOggWithAudioOutStream() throws Exception {
         AudioInputStream inAIStreamOgg = AudioSystem.getAudioInputStream(_sourceFileOgg);
@@ -99,7 +98,7 @@ public class VorbisSilenceTest {
                 super("SilenceTest-StreamPump");
             }
 
-
+            @Override
             public void run() {
                 // pump the streams
                 int readCnt;
@@ -142,7 +141,6 @@ public class VorbisSilenceTest {
         playStream(aisDest);
     }
 
-
     @Test
     public void testConvertSilentOggWithAudioSystem() throws Exception {
         AudioInputStream inAIStreamOgg = AudioSystem.getAudioInputStream(_sourceFileOgg);
@@ -162,7 +160,6 @@ public class VorbisSilenceTest {
         // attempt to play the resulting wav file - 5 minutes of silence
         playStream(aisDest);
     }
-
 
     /**
      * Play the given audio stream. Closes the stream when finised.
@@ -212,4 +209,3 @@ public class VorbisSilenceTest {
 }
 
 
-/* VorbisSilenceTest.java */

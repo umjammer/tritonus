@@ -1,8 +1,3 @@
-/*
- * TSimpleFormatConversionProvider.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999 - 2004 by Matthias Pfisterer
@@ -20,10 +15,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.share.sampled.convert;
 
@@ -62,7 +53,6 @@ public abstract class TSimpleFormatConversionProvider
     private Collection<AudioFormat> m_sourceFormats;
     private Collection<AudioFormat> m_targetFormats;
 
-
     protected TSimpleFormatConversionProvider(
             Collection<AudioFormat> sourceFormats,
             Collection<AudioFormat> targetFormats) {
@@ -80,7 +70,6 @@ public abstract class TSimpleFormatConversionProvider
         collectEncodings(m_targetFormats, m_targetEncodings);
     }
 
-
     /**
      * Disables this FormatConversionProvider.
      * This may be useful when e.g. native libraries are not present.
@@ -96,7 +85,6 @@ public abstract class TSimpleFormatConversionProvider
         m_targetFormats = new ArraySet<>();
     }
 
-
     private static void collectEncodings(Collection<AudioFormat> formats,
                                          Collection<AudioFormat.Encoding> encodings) {
         for (AudioFormat format : formats) {
@@ -104,18 +92,15 @@ public abstract class TSimpleFormatConversionProvider
         }
     }
 
-
     @Override
     public AudioFormat.Encoding[] getSourceEncodings() {
         return m_sourceEncodings.toArray(EMPTY_ENCODING_ARRAY);
     }
 
-
     @Override
     public AudioFormat.Encoding[] getTargetEncodings() {
         return m_targetEncodings.toArray(EMPTY_ENCODING_ARRAY);
     }
-
 
     // overwritten of FormatConversionProvider
     @Override
@@ -123,13 +108,11 @@ public abstract class TSimpleFormatConversionProvider
         return m_sourceEncodings.contains(sourceEncoding);
     }
 
-
     // overwritten of FormatConversionProvider
     @Override
     public boolean isTargetEncodingSupported(AudioFormat.Encoding targetEncoding) {
         return m_targetEncodings.contains(targetEncoding);
     }
-
 
     /**
      * This implementation assumes that the converter can convert
@@ -146,7 +129,6 @@ public abstract class TSimpleFormatConversionProvider
         }
     }
 
-
     /**
      * This implementation assumes that the converter can convert
      * from each of its source formats to each of its target
@@ -162,17 +144,14 @@ public abstract class TSimpleFormatConversionProvider
         }
     }
 
-
     // TODO: check if necessary
     protected boolean isAllowedSourceEncoding(AudioFormat.Encoding sourceEncoding) {
         return m_sourceEncodings.contains(sourceEncoding);
     }
 
-
     protected boolean isAllowedTargetEncoding(AudioFormat.Encoding targetEncoding) {
         return m_targetEncodings.contains(targetEncoding);
     }
-
 
     protected boolean isAllowedSourceFormat(AudioFormat sourceFormat) {
         for (AudioFormat format : m_sourceFormats) {
@@ -182,7 +161,6 @@ public abstract class TSimpleFormatConversionProvider
         }
         return false;
     }
-
 
     protected boolean isAllowedTargetFormat(AudioFormat targetFormat) {
         for (AudioFormat format : m_targetFormats) {
@@ -331,4 +309,4 @@ public abstract class TSimpleFormatConversionProvider
 
 }
 
-/* TSimpleFormatConversionProvider.java */
+

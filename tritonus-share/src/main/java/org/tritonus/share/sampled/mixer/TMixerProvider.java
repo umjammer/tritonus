@@ -1,8 +1,3 @@
-/*
- * TMixerProvider.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999 - 2004 by Matthias Pfisterer
@@ -19,10 +14,6 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.share.sampled.mixer;
 
@@ -47,7 +38,6 @@ public abstract class TMixerProvider
 
     private boolean m_bDisabled = false;
 
-
     public TMixerProvider() {
         if (TDebug.TraceMixerProvider) {
             TDebug.out("TMixerProvider.<init>(): begin");
@@ -58,13 +48,11 @@ public abstract class TMixerProvider
         }
     }
 
-
     /*
       Override this method if you want a thread-safe static initializaiton.
      */
     protected void staticInit() {
     }
-
 
     private MixerProviderStruct getMixerProviderStruct() {
         if (TDebug.TraceMixerProvider) {
@@ -91,7 +79,6 @@ public abstract class TMixerProvider
         }
     }
 
-
     protected void disable() {
         if (TDebug.TraceMixerProvider) {
             TDebug.out("disabling " + getClass().getName());
@@ -99,11 +86,9 @@ public abstract class TMixerProvider
         m_bDisabled = true;
     }
 
-
     protected boolean isDisabled() {
         return m_bDisabled;
     }
-
 
     protected void addMixer(Mixer mixer) {
         if (TDebug.TraceMixerProvider) {
@@ -120,7 +105,6 @@ public abstract class TMixerProvider
             TDebug.out("TMixerProvider.addMixer(): end");
         }
     }
-
 
     protected void removeMixer(Mixer mixer) {
         if (TDebug.TraceMixerProvider) {
@@ -139,8 +123,8 @@ public abstract class TMixerProvider
         }
     }
 
-
     // $$mp 2003/01/11: TODO: this implementation may become obsolete once the overridden method in spi.MixerProvider is implemented in a way documented officially.
+    @Override
     public boolean isMixerSupported(Mixer.Info info) {
         if (TDebug.TraceMixerProvider) {
             TDebug.out("TMixerProvider.isMixerSupported(): begin");
@@ -159,10 +143,10 @@ public abstract class TMixerProvider
         return bIsSupported;
     }
 
-
     /**
      *
      */
+    @Override
     public Mixer getMixer(Mixer.Info info) {
         if (TDebug.TraceMixerProvider) {
             TDebug.out("TMixerProvider.getMixer(): begin");
@@ -190,7 +174,7 @@ public abstract class TMixerProvider
         return mixerResult;
     }
 
-
+    @Override
     public Mixer.Info[] getMixerInfo() {
         if (TDebug.TraceMixerProvider) {
             TDebug.out("TMixerProvider.getMixerInfo(): begin");
@@ -208,12 +192,10 @@ public abstract class TMixerProvider
         return mixerInfos.toArray(EMPTY_MIXER_INFO_ARRAY);
     }
 
-
     private static class MixerProviderStruct {
 
         public List<Mixer> m_mixers;
         public Mixer m_defaultMixer;
-
 
         public MixerProviderStruct() {
             m_mixers = new ArrayList<>();
@@ -223,4 +205,3 @@ public abstract class TMixerProvider
 }
 
 
-/* TMixerProvider.java */

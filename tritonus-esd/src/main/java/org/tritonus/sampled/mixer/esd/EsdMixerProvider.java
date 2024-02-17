@@ -1,8 +1,3 @@
-/*
- * EsdMixerProvider.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999 - 2002 by Matthias Pfisterer
@@ -22,10 +17,6 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.sampled.mixer.esd;
 
 import org.tritonus.lowlevel.esd.Esd;
@@ -37,7 +28,6 @@ public class EsdMixerProvider
         extends TMixerProvider {
 
     private static boolean sm_bInitialized = false;
-
 
     public EsdMixerProvider() {
         super();
@@ -63,7 +53,7 @@ public class EsdMixerProvider
         }
     }
 
-
+    @Override
     protected void staticInit() {
         if (TDebug.TraceMixerProvider) {
             TDebug.out("EsdMixerProvider.staticInit(): begin");
@@ -76,4 +66,3 @@ public class EsdMixerProvider
 }
 
 
-/* EsdMixerProvider.java */

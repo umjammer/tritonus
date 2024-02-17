@@ -30,4 +30,3 @@ public class PCM2PCMConversionProviderTestCase
 }
 
 
-/* PCM2PCMConversionProviderTestCase.java */

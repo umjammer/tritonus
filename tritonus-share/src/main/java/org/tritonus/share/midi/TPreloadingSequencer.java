@@ -1,8 +1,3 @@
-/*
- * TPreloadingSequencer.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2003 - 2004 by Matthias Pfisterer
@@ -20,15 +15,12 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.share.midi;
 
 import java.util.Collection;
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiMessage;
+import javax.sound.midi.Sequencer.SyncMode;
 
 import org.tritonus.share.TDebug;
 
@@ -40,11 +32,10 @@ import org.tritonus.share.TDebug;
  * but take single events from the Sequence and put them to the sequencing
  * queue while running.
  */
-public abstract class TPreloadingSequencer
-        extends TSequencer {
+public abstract class TPreloadingSequencer extends TSequencer {
 
     /**
-     * The default value for {@link m_nLatency}.
+     * The default value for {@link #m_nLatency}.
      * This default value is set in the constructor.
      */
     private static final int DEFAULT_LATENCY = 100;
@@ -63,8 +54,7 @@ public abstract class TPreloadingSequencer
     protected TPreloadingSequencer(MidiDevice.Info info,
                                    Collection<SyncMode> masterSyncModes,
                                    Collection<SyncMode> slaveSyncModes) {
-        super(info, masterSyncModes,
-                slaveSyncModes);
+        super(info, masterSyncModes, slaveSyncModes);
         if (TDebug.TraceSequencer) {
             TDebug.out("TPreloadingSequencer.<init>(): begin");
         }
@@ -74,18 +64,17 @@ public abstract class TPreloadingSequencer
         }
     }
 
-
     /**
      * Sets the preloading intervall.
      * This is the time span between preloading events to an internal
      * queue and playing them. This intervall should be kept constant
      * by the implementation. However, this cannot be guaranteed.
      */
+    @Override
     public void setLatency(int nLatency) {
         // TODO: preload if latency becomes shorter
         m_nLatency = nLatency;
     }
-
 
     /**
      * Get the preloading intervall.
@@ -93,12 +82,13 @@ public abstract class TPreloadingSequencer
      * @return the preloading intervall in milliseconds, or -1 if the sequencer
      * doesn't repond to changes in the <code>Sequence</code> at all.
      */
+    @Override
     public int getLatency() {
         return m_nLatency;
     }
 
-
     // currently not called by subclasses. order has to be assured (subclass first)
+    @Override
     protected void openImpl() {
         if (TDebug.TraceSequencer) {
             TDebug.out("AlsaSequencer.openImpl(): begin");
@@ -106,7 +96,6 @@ public abstract class TPreloadingSequencer
         // m_loaderThread = new LoaderThread();
         // m_loaderThread.start();
     }
-
 
     /**
      * Put a message into the queue.
@@ -125,8 +114,6 @@ public abstract class TPreloadingSequencer
      * @param lTick   the desired schedule time in ticks.
      */
     public abstract void sendMessageTick(MidiMessage message, long lTick);
-
 }
 
 
-/* TPreloadingSequencer.java */

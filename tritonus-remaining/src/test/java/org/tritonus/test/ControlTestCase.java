@@ -48,7 +48,6 @@ public class ControlTestCase {
         assertEquals(type, returnedType, "type object");
     }
 
-
     /**
      * Checks getType().
      * The test checks if the object returned by
@@ -63,7 +62,6 @@ public class ControlTestCase {
         assertEquals(type, returnedType, "type object (null)");
     }
 
-
     /**
      * Checks toString().
      * The test checks if the string returned by toString()
@@ -75,9 +73,8 @@ public class ControlTestCase {
         Control.Type type = BooleanControl.Type.MUTE;
         Control control = new TestControl(type);
         String strReturnedString = control.toString();
-        assertTrue(strReturnedString.length() > 0, "toString() result");
+        assertTrue(!strReturnedString.isEmpty(), "toString() result");
     }
-
 
     /**
      * Inner class used to get around protected constructor.
@@ -92,4 +89,3 @@ public class ControlTestCase {
 }
 
 
-/* ControlTestCase.java */

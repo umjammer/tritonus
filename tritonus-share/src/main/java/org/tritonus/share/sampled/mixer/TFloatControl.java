@@ -1,8 +1,3 @@
-/*
- * TFloatControl.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2001 by Matthias Pfisterer
@@ -22,10 +17,6 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.share.sampled.mixer;
 
 import javax.sound.sampled.FloatControl;
@@ -41,7 +32,6 @@ public class TFloatControl
         implements TControllable {
 
     private TControlController m_controller;
-
 
     public TFloatControl(FloatControl.Type type,
                          float fMinimum,
@@ -65,7 +55,6 @@ public class TFloatControl
             TDebug.out("TFloatControl.<init>: end");
         }
     }
-
 
     public TFloatControl(FloatControl.Type type,
                          float fMinimum,
@@ -96,21 +85,20 @@ public class TFloatControl
         }
     }
 
-
+    @Override
     public void setParentControl(TCompoundControl compoundControl) {
         m_controller.setParentControl(compoundControl);
     }
 
-
+    @Override
     public TCompoundControl getParentControl() {
         return m_controller.getParentControl();
     }
 
-
+    @Override
     public void commit() {
         m_controller.commit();
     }
 }
 
 
-/* TFloatControl.java */

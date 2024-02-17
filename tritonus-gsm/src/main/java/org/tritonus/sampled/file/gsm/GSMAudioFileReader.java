@@ -1,8 +1,3 @@
-/*
- * GSMAudioFileReader.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999 - 2004 by Matthias Pfisterer
@@ -20,10 +15,6 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.sampled.file.gsm;
 
@@ -55,12 +46,11 @@ public class GSMAudioFileReader
 
     private static final int MARK_LIMIT = 1;
 
-
     public GSMAudioFileReader() {
         super(MARK_LIMIT, true);
     }
 
-
+    @Override
     protected AudioFileFormat getAudioFileFormat(InputStream inputStream, long lFileSizeInBytes)
             throws UnsupportedAudioFileException, IOException {
         if (TDebug.TraceAudioFileReader) {
@@ -77,7 +67,6 @@ public class GSMAudioFileReader
         if ((b0 & GSM_MAGIC_MASK) != GSM_MAGIC) {
             throw new UnsupportedAudioFileException("not a GSM stream: wrong magic number");
         }
-
 
   /*
     If the file size is known, we derive the number of frames
@@ -128,5 +117,4 @@ public class GSMAudioFileReader
 }
 
 
-/* GSMAudioFileReader.java */
 

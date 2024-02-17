@@ -30,6 +30,7 @@ public class vorbis_info extends Structure {
         super();
     }
 
+    @Override
     protected List<String> getFieldOrder() {
         return Arrays.asList("version", "channels", "rate", "bitrate_upper", "bitrate_nominal", "bitrate_lower", "bitrate_window", "codec_setup");
     }
@@ -56,11 +57,8 @@ public class vorbis_info extends Structure {
 
     }
 
-    ;
-
     public static class ByValue extends vorbis_info implements Structure.ByValue {
 
     }
 
-    ;
 }

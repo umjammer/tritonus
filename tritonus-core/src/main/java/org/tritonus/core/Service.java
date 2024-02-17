@@ -1,8 +1,3 @@
-/*
- * Service.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2000 by Matthias Pfisterer
@@ -20,10 +15,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.core;
 
@@ -46,7 +37,6 @@ public class Service {
 
     private static final String BASE_NAME = "META-INF/services/";
 
-
     /**
      * Determines if the order of service providers is reversed.
      * If this is true, the Iterator returned by providers(Class)
@@ -60,8 +50,7 @@ public class Service {
      */
     private static final boolean REVERSE_ORDER = true;
 
-
-    public static Iterator providers(Class cls) {
+    public static Iterator<?> providers(Class<?> cls) {
         if (TDebug.TraceService) {
             TDebug.out("Service.providers(): begin");
         }
@@ -70,13 +59,12 @@ public class Service {
             TDebug.out("Service.providers(): full name: " + strFullName);
         }
         List<Object> instancesList = createInstancesList(strFullName);
-        Iterator iterator = instancesList.iterator();
+        Iterator<Object> iterator = instancesList.iterator();
         if (TDebug.TraceService) {
             TDebug.out("Service.providers(): end");
         }
         return iterator;
     }
-
 
     private static List<Object> createInstancesList(String strFullName) {
         if (TDebug.TraceService) {
@@ -86,7 +74,7 @@ public class Service {
         Iterator<String> classNames = createClassNames(strFullName);
         if (classNames != null) {
             while (classNames.hasNext()) {
-                String strClassName = (String) classNames.next();
+                String strClassName = classNames.next();
                 if (TDebug.TraceService) {
                     TDebug.out("Service.createInstancesList(): Class name: " + strClassName);
                 }
@@ -96,7 +84,7 @@ public class Service {
                     if (TDebug.TraceService) {
                         TDebug.out("Service.createInstancesList(): now creating instance of " + cls);
                     }
-                    Object instance = cls.newInstance();
+                    Object instance = cls.getDeclaredConstructor().newInstance();
                     if (REVERSE_ORDER) {
                         providers.add(0, instance);
                     } else {
@@ -115,11 +103,10 @@ public class Service {
         return providers;
     }
 
-
     private static Iterator<String> createClassNames(String strFullName) {
         if (TDebug.TraceService) TDebug.out("Service.createClassNames(): begin");
         Set<String> providers = new ArraySet<>();
-        Enumeration configs = null;
+        Enumeration<?> configs = null;
         try {
             configs = ClassLoader.getSystemResources(strFullName);
         } catch (IOException e) {
@@ -151,7 +138,7 @@ public class Service {
                             if (nPos >= 0) {
                                 strLine = strLine.substring(0, nPos);
                             }
-                            if (strLine.length() > 0) {
+                            if (!strLine.isEmpty()) {
                                 providers.add(strLine);
                                 if (TDebug.TraceService) {
                                     TDebug.out("Service.createClassNames(): adding class name: " + strLine);
@@ -174,4 +161,3 @@ public class Service {
 }
 
 
-/* Service.java */

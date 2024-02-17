@@ -194,4 +194,4 @@ public class WaveAudioOutputStream extends TAudioOutputStream {
     }
 }
 
-/* WaveAudioOutputStream.java */
+

@@ -46,7 +46,6 @@ public class Capture extends Applet implements Runnable {
             return super.action(event, arg);
     }
 
-
     public void debut() {
         System.out.println("start1");
         thread = new Thread(this);

@@ -1,8 +1,3 @@
-/*
- * Filter.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2002 by Matthias Pfisterer
@@ -68,4 +63,4 @@ public interface FilterDescription {
     double getPhaseResponse(double dOmega);
 }
 
-/* Filter.java */
+

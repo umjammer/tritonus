@@ -54,10 +54,8 @@ public class ClipPlayerApplet
     private JButton m_loopButton;
     private JButton m_stopButton;
 
-
     public ClipPlayerApplet() {
     }
-
 
     public void init() {
         System.out.println("ClipPlayerApplet.init(): context class loader: " + Thread.currentThread().getContextClassLoader());
@@ -92,13 +90,11 @@ public class ClipPlayerApplet
         panel.add(m_stopButton);
     }
 
-
     public void destroy() {
         if (m_clip != null) {
             m_clip.close();
         }
     }
-
 
     private void loadClip(URL clipURL) {
         System.out.println("ClipPlayerApplet.loadClip(): setting another class loader");
@@ -130,7 +126,6 @@ public class ClipPlayerApplet
         System.out.println("ClipPlayerApplet.loadClip(): restored the original class loader");
     }
 
-
     public void update(LineEvent event) {
         System.out.println("ClipPlayerApplet.update(): received event: " + event);
         if (event.getType().equals(LineEvent.Type.START)) {
@@ -147,4 +142,3 @@ public class ClipPlayerApplet
 }
 
 
-/* ClipPlayerApplet.java */

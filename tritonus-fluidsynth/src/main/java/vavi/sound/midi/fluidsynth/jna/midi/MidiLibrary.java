@@ -29,7 +29,7 @@ public interface MidiLibrary extends Library {
      * <i>native declaration : fluidsynth/midi.h</i><br>
      * enum values
      */
-    public static interface fluid_midi_router_rule_type {
+    interface fluid_midi_router_rule_type {
 
         /** <i>native declaration : fluidsynth/midi.h:160</i> */
         int FLUID_MIDI_ROUTER_RULE_NOTE = 0;
@@ -52,8 +52,6 @@ public interface MidiLibrary extends Library {
         int FLUID_MIDI_ROUTER_RULE_COUNT = 6;
     }
 
-    ;
-
     /**
      * MIDI File Player status enum.<br>
      *
@@ -61,7 +59,7 @@ public interface MidiLibrary extends Library {
      * <i>native declaration : fluidsynth/midi.h:245</i><br>
      * enum values
      */
-    public static interface fluid_player_status {
+    interface fluid_player_status {
 
         /**
          * < Player is ready<br>
@@ -85,8 +83,6 @@ public interface MidiLibrary extends Library {
         int FLUID_PLAYER_DONE = 3;
     }
 
-    ;
-
     /**
      * MIDI File Player tempo enum.<br>
      *
@@ -94,7 +90,7 @@ public interface MidiLibrary extends Library {
      * <i>native declaration : fluidsynth/midi.h:257</i><br>
      * enum values
      */
-    public static interface fluid_player_set_tempo_type {
+    interface fluid_player_set_tempo_type {
 
         /**
          * < Use midi file tempo set in midi file (120 bpm by default). Multiplied by a factor<br>
@@ -118,23 +114,17 @@ public interface MidiLibrary extends Library {
         int FLUID_PLAYER_TEMPO_NBR = 3;
     }
 
-    ;
-
     /** <i>native declaration : fluidsynth/midi.h</i> */
-    public interface handle_midi_event_func_t extends Callback {
+    interface handle_midi_event_func_t extends Callback {
 
         int apply(Pointer data, Pointer event);
     }
 
-    ;
-
     /** <i>native declaration : fluidsynth/midi.h</i> */
-    public interface handle_midi_tick_func_t extends Callback {
+    interface handle_midi_tick_func_t extends Callback {
 
         int apply(Pointer data, int tick);
     }
-
-    ;
 
     /**
      * @startlifecycle{MIDI Event}<br>
@@ -756,7 +746,7 @@ public interface MidiLibrary extends Library {
      * Original signature : <code>int fluid_player_add_mem(fluid_player_t*, const void*, size_t)</code><br>
      * <i>native declaration : fluidsynth/midi.h:271</i><br>
      *
-     * @deprecated use the safer method {@link #fluid_player_add_mem(com.sun.jna.ptr.PointerByReference, com.sun.jna.Pointer, com.ochafik.lang.jnaerator.runtime.NativeLong)} instead
+     * @deprecated use the safer method {@link #fluid_player_add_mem(com.sun.jna.ptr.PointerByReference, com.sun.jna.Pointer, NativeLong)} instead
      */
     @Deprecated
     int fluid_player_add_mem(Pointer player, Pointer buffer, NativeLong len);
@@ -1007,7 +997,7 @@ public interface MidiLibrary extends Library {
      */
     int fluid_player_seek(PointerByReference player, int ticks);
 
-    public static class fluid_player_t extends PointerType {
+    class fluid_player_t extends PointerType {
 
         public fluid_player_t(Pointer address) {
             super(address);
@@ -1018,9 +1008,7 @@ public interface MidiLibrary extends Library {
         }
     }
 
-    ;
-
-    public static class fluid_midi_driver_t extends PointerType {
+    class fluid_midi_driver_t extends PointerType {
 
         public fluid_midi_driver_t(Pointer address) {
             super(address);
@@ -1031,9 +1019,7 @@ public interface MidiLibrary extends Library {
         }
     }
 
-    ;
-
-    public static class fluid_midi_router_rule_t extends PointerType {
+    class fluid_midi_router_rule_t extends PointerType {
 
         public fluid_midi_router_rule_t(Pointer address) {
             super(address);
@@ -1044,9 +1030,7 @@ public interface MidiLibrary extends Library {
         }
     }
 
-    ;
-
-    public static class fluid_midi_router_t extends PointerType {
+    class fluid_midi_router_t extends PointerType {
 
         public fluid_midi_router_t(Pointer address) {
             super(address);
@@ -1057,5 +1041,4 @@ public interface MidiLibrary extends Library {
         }
     }
 
-    ;
 }

@@ -1,8 +1,3 @@
-/*
- * AlsaMidiChannel.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999 by Matthias Pfisterer
@@ -21,10 +16,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.midi.device.alsa;
 
@@ -45,23 +36,20 @@ public class AlsaMidiChannel
     private Receiver m_receiver;
     private int m_nChannel;
 
-
     public AlsaMidiChannel(Receiver receiver, int nChannel) {
         m_receiver = receiver;
         m_nChannel = nChannel;
     }
 
-
     protected int getChannel() {
         return m_nChannel;
     }
-
 
     protected void sendMessage(MidiMessage message) {
         m_receiver.send(message, -1);
     }
 
-
+    @Override
     public void noteOn(int nNoteNumber, int nVelocity) {
         ShortMessage message = new ShortMessage();
         try {
@@ -74,7 +62,7 @@ public class AlsaMidiChannel
         sendMessage(message);
     }
 
-
+    @Override
     public void noteOff(int nNoteNumber, int nVelocity) {
         ShortMessage message = new ShortMessage();
         try {
@@ -87,7 +75,7 @@ public class AlsaMidiChannel
         sendMessage(message);
     }
 
-
+    @Override
     public void noteOff(int nNoteNumber) {
         ShortMessage message = new ShortMessage();
         try {
@@ -100,7 +88,7 @@ public class AlsaMidiChannel
         sendMessage(message);
     }
 
-
+    @Override
     public void setPolyPressure(int nNoteNumber, int nPressure) {
         ShortMessage message = new ShortMessage();
         try {
@@ -113,12 +101,12 @@ public class AlsaMidiChannel
         sendMessage(message);
     }
 
-
+    @Override
     public int getPolyPressure(int nNoteNumber) {
         return -1;
     }
 
-
+    @Override
     public void setChannelPressure(int nPressure) {
         ShortMessage message = new ShortMessage();
         try {
@@ -131,12 +119,12 @@ public class AlsaMidiChannel
         sendMessage(message);
     }
 
-
+    @Override
     public int getChannelPressure() {
         return -1;
     }
 
-
+    @Override
     public void controlChange(int nController, int nValue) {
         ShortMessage message = new ShortMessage();
         try {
@@ -149,12 +137,12 @@ public class AlsaMidiChannel
         sendMessage(message);
     }
 
-
+    @Override
     public int getController(int nController) {
         return -1;
     }
 
-
+    @Override
     public void programChange(int nProgram) {
         ShortMessage message = new ShortMessage();
         try {
@@ -167,7 +155,7 @@ public class AlsaMidiChannel
         sendMessage(message);
     }
 
-
+    @Override
     public void programChange(int nBank, int nProgram) {
         ShortMessage message = new ShortMessage();
         try {
@@ -181,12 +169,12 @@ public class AlsaMidiChannel
         sendMessage(message);
     }
 
-
+    @Override
     public int getProgram() {
         return -1;
     }
 
-
+    @Override
     public void setPitchBend(int nBend) {
         ShortMessage message = new ShortMessage();
         try {
@@ -199,65 +187,64 @@ public class AlsaMidiChannel
         sendMessage(message);
     }
 
-
+    @Override
     public int getPitchBend() {
         return -1;
     }
 
-
+    @Override
     public void resetAllControllers() {
     }
 
-
+    @Override
     public void allNotesOff() {
     }
 
-
+    @Override
     public void allSoundOff() {
     }
 
-
+    @Override
     public boolean localControl(boolean bOn) {
         return false;
     }
 
-
+    @Override
     public void setMono(boolean bMono) {
     }
 
-
+    @Override
     public boolean getMono() {
         return false;
     }
 
-
+    @Override
     public void setOmni(boolean bOmni) {
     }
 
-
+    @Override
     public boolean getOmni() {
         return false;
     }
 
-
+    @Override
     public void setMute(boolean bMute) {
     }
 
-
+    @Override
     public boolean getMute() {
         return false;
     }
 
-
+    @Override
     public void setSolo(boolean bSolo) {
     }
 
-
+    @Override
     public boolean getSolo() {
         return false;
     }
 }
 
 
-/* AlsaMidiChannel.java */
 

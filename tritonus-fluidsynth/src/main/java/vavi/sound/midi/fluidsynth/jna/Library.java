@@ -21,12 +21,10 @@ public interface Library extends com.sun.jna.Library {
     Library INSTANCE = Native.load(Library.JNA_LIBRARY_NAME, Library.class);
 
     /** <i>native declaration : fluidsynth/seq.h</i> */
-    public interface fluid_event_callback_t extends Callback {
+    interface fluid_event_callback_t extends Callback {
 
         void apply(int time, Pointer event, Pointer seq, Pointer data);
     }
-
-    ;
 
     /**
      * @startlifecycle{MIDI Sequencer}<br>
@@ -271,7 +269,7 @@ public interface Library extends com.sun.jna.Library {
      */
     double fluid_sequencer_get_time_scale(PointerByReference seq);
 
-    public static class fluid_event_t extends PointerType {
+    class fluid_event_t extends PointerType {
 
         public fluid_event_t(Pointer address) {
             super(address);
@@ -282,9 +280,7 @@ public interface Library extends com.sun.jna.Library {
         }
     }
 
-    ;
-
-    public static class fluid_sequencer_t extends PointerType {
+    class fluid_sequencer_t extends PointerType {
 
         public fluid_sequencer_t(Pointer address) {
             super(address);
@@ -295,5 +291,4 @@ public interface Library extends com.sun.jna.Library {
         }
     }
 
-    ;
 }

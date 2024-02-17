@@ -1,10 +1,4 @@
 /*
- * EsdMixer.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
-
-/*
  *  Copyright (c) 1999, 2000 by Matthias Pfisterer
  *
  *
@@ -21,10 +15,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.sampled.mixer.esd;
 
@@ -52,45 +42,38 @@ public class EsdMixer
     // default buffer size in bytes.
     private static final int DEFAULT_BUFFER_SIZE = 32768;
 
-    private static AudioFormat[] FORMATS =
-            {
-                    // hack for testing.
-                    // new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 11025/*AudioSystem.NOT_SPECIFIED*/, 16, 1, 2, 11025/*AudioSystem.NOT_SPECIFIED*/, false),
-                    // Formats supported directely by esd.
-                    new AudioFormat(AudioFormat.Encoding.PCM_UNSIGNED, AudioSystem.NOT_SPECIFIED, 8, 1, 1, AudioSystem.NOT_SPECIFIED, true),
-                    new AudioFormat(AudioFormat.Encoding.PCM_UNSIGNED, AudioSystem.NOT_SPECIFIED, 8, 1, 1, AudioSystem.NOT_SPECIFIED, false),
-                    new AudioFormat(AudioFormat.Encoding.PCM_UNSIGNED, AudioSystem.NOT_SPECIFIED, 8, 2, 2, AudioSystem.NOT_SPECIFIED, true),
-                    new AudioFormat(AudioFormat.Encoding.PCM_UNSIGNED, AudioSystem.NOT_SPECIFIED, 8, 2, 2, AudioSystem.NOT_SPECIFIED, false),
+    private static final AudioFormat[] FORMATS = {
+            // hack for testing.
+            // new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 11025/*AudioSystem.NOT_SPECIFIED*/, 16, 1, 2, 11025/*AudioSystem.NOT_SPECIFIED*/, false),
+            // Formats supported directely by esd.
+            new AudioFormat(AudioFormat.Encoding.PCM_UNSIGNED, AudioSystem.NOT_SPECIFIED, 8, 1, 1, AudioSystem.NOT_SPECIFIED, true),
+            new AudioFormat(AudioFormat.Encoding.PCM_UNSIGNED, AudioSystem.NOT_SPECIFIED, 8, 1, 1, AudioSystem.NOT_SPECIFIED, false),
+            new AudioFormat(AudioFormat.Encoding.PCM_UNSIGNED, AudioSystem.NOT_SPECIFIED, 8, 2, 2, AudioSystem.NOT_SPECIFIED, true),
+            new AudioFormat(AudioFormat.Encoding.PCM_UNSIGNED, AudioSystem.NOT_SPECIFIED, 8, 2, 2, AudioSystem.NOT_SPECIFIED, false),
 
+            new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, AudioSystem.NOT_SPECIFIED, 16, 1, 2, AudioSystem.NOT_SPECIFIED, false),
+            new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, AudioSystem.NOT_SPECIFIED, 16, 2, 4, AudioSystem.NOT_SPECIFIED, false),
 
-                    new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, AudioSystem.NOT_SPECIFIED, 16, 1, 2, AudioSystem.NOT_SPECIFIED, false),
-                    new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, AudioSystem.NOT_SPECIFIED, 16, 2, 4, AudioSystem.NOT_SPECIFIED, false),
+            // Format supported through "simple" conversions.
+            // "Simple" conversions are changes in the byte order
+            // and changing signed/unsigned for 8 bit.
 
-                    /*
-                     * Format supported through "simple" conversions.
-                     * "Simple" conversions are changes in the byte order
-                     * and changing signed/unsigned for 8 bit.
-                     */
+            new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, AudioSystem.NOT_SPECIFIED, 8, 1, 1, AudioSystem.NOT_SPECIFIED, true),
+            new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, AudioSystem.NOT_SPECIFIED, 8, 1, 1, AudioSystem.NOT_SPECIFIED, false),
+            new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, AudioSystem.NOT_SPECIFIED, 8, 2, 2, AudioSystem.NOT_SPECIFIED, true),
+            new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, AudioSystem.NOT_SPECIFIED, 8, 2, 2, AudioSystem.NOT_SPECIFIED, false),
 
-                    new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, AudioSystem.NOT_SPECIFIED, 8, 1, 1, AudioSystem.NOT_SPECIFIED, true),
-                    new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, AudioSystem.NOT_SPECIFIED, 8, 1, 1, AudioSystem.NOT_SPECIFIED, false),
-                    new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, AudioSystem.NOT_SPECIFIED, 8, 2, 2, AudioSystem.NOT_SPECIFIED, true),
-                    new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, AudioSystem.NOT_SPECIFIED, 8, 2, 2, AudioSystem.NOT_SPECIFIED, false),
+            new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, AudioSystem.NOT_SPECIFIED, 16, 1, 2, AudioSystem.NOT_SPECIFIED, true),
+            new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, AudioSystem.NOT_SPECIFIED, 16, 2, 4, AudioSystem.NOT_SPECIFIED, true),
+    };
 
-                    new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, AudioSystem.NOT_SPECIFIED, 16, 1, 2, AudioSystem.NOT_SPECIFIED, true),
-                    new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, AudioSystem.NOT_SPECIFIED, 16, 2, 4, AudioSystem.NOT_SPECIFIED, true),
-            };
+    private static final Line.Info[] SOURCE_LINE_INFOS = {
+            new DataLine.Info(SourceDataLine.class, FORMATS, AudioSystem.NOT_SPECIFIED, AudioSystem.NOT_SPECIFIED),
+    };
 
-    private static Line.Info[] SOURCE_LINE_INFOS =
-            {
-                    new DataLine.Info(SourceDataLine.class, FORMATS, AudioSystem.NOT_SPECIFIED, AudioSystem.NOT_SPECIFIED),
-            };
-
-    private static Line.Info[] TARGET_LINE_INFOS =
-            {
-                    new DataLine.Info(TargetDataLine.class, FORMATS, AudioSystem.NOT_SPECIFIED, AudioSystem.NOT_SPECIFIED),
-            };
-
+    private static final Line.Info[] TARGET_LINE_INFOS = {
+            new DataLine.Info(TargetDataLine.class, FORMATS, AudioSystem.NOT_SPECIFIED, AudioSystem.NOT_SPECIFIED),
+    };
 
     public EsdMixer() {
         super(new TMixerInfo(
@@ -111,11 +94,10 @@ public class EsdMixer
         }
     }
 
-
-    //////////////// Line //////////////////////////////////////
-
+    // Line ----
 
     // TODO: allow real close and reopen of mixer
+    @Override
     public void open() {
         if (TDebug.TraceMixer) {
             TDebug.out("EsdMixer.open(): begin");
@@ -128,7 +110,7 @@ public class EsdMixer
         }
     }
 
-
+    @Override
     public void close() {
         if (TDebug.TraceMixer) {
             TDebug.out("EsdMixer.close(): begin");
@@ -141,10 +123,9 @@ public class EsdMixer
         }
     }
 
+    // Mixer ----
 
-    //////////////// Mixer //////////////////////////////////////
-
-
+    @Override
     public int getMaxLines(Line.Info info) {
         if (TDebug.TraceMixer) {
             TDebug.out("EsdMixer.getMaxLines(): begin");
@@ -170,11 +151,10 @@ public class EsdMixer
         return nMaxLines;
     }
 
-
-    //////////////// private //////////////////////////////////////
-
+    // private ----
 
     // nBufferSize is in bytes!
+    @Override
     protected SourceDataLine getSourceDataLine(AudioFormat format, int nBufferSize)
             throws LineUnavailableException {
         if (TDebug.TraceMixer) {
@@ -199,8 +179,8 @@ public class EsdMixer
         return sourceDataLine;
     }
 
-
     // nBufferSize is in bytes!
+    @Override
     protected TargetDataLine getTargetDataLine(AudioFormat format, int nBufferSize)
             throws LineUnavailableException {
         if (TDebug.TraceMixer) {
@@ -219,7 +199,7 @@ public class EsdMixer
         return targetDataLine;
     }
 
-
+    @Override
     protected Clip getClip(AudioFormat format)
             throws LineUnavailableException {
         if (TDebug.TraceMixer) {
@@ -231,12 +211,6 @@ public class EsdMixer
         }
         return clip;
     }
-
-
-    // -------------------------------------------------------------
-
-
 }
 
 
-/* EsdMixer.java */

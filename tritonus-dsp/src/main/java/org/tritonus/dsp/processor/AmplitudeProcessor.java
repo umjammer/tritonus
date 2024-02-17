@@ -1,8 +1,3 @@
-/*
- * AmplitudeProcessor.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2003 by Matthias Pfisterer
@@ -19,10 +14,6 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.dsp.processor;
 
@@ -89,6 +80,7 @@ public class AmplitudeProcessor implements FloatSampleProcessor {
      * Here, simply each sample in each channel is multiplied with
      * the amplitude value.
      */
+    @Override
     public void process(FloatSampleBuffer buffer) {
         for (int nChannel = 0; nChannel < buffer.getChannelCount(); nChannel++) {
             float[] afBuffer = buffer.getChannel(nChannel);

@@ -1,8 +1,3 @@
-/*
- * RectangularWindow.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2002 by Matthias Pfisterer
@@ -26,6 +21,9 @@
 
 package org.tritonus.lowlevel.dsp;
 
+import java.util.Arrays;
+
+
 /**
  * An implementation of the Rectangular window.
  */
@@ -35,11 +33,9 @@ public class RectangularWindow implements FIRWindow {
     @Override
     public double[] getWindow(int nOrder) {
         double[] adWindow = new double[nOrder];
-        for (int n = 0; n < nOrder; n++) {
-            adWindow[n] = 1.0;
-        }
+        Arrays.fill(adWindow, 1.0);
         return adWindow;
     }
 }
 
-/* RectangularWindow.java */
+

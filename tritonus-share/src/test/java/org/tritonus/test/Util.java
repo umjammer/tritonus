@@ -34,7 +34,6 @@ public class Util {
         System.out.println();
     }
 
-
     // returns true if equal
     public static boolean compareByteArrays(byte[] ab1, int nOffset1, byte[] ab2, int nOffset2, int nLength) {
         for (int i = 0; i < nLength; i++) {
@@ -44,7 +43,6 @@ public class Util {
         }
         return true;
     }
-
 
     public static byte[] getByteArrayFromFile(File file)
             throws IOException {
@@ -62,7 +60,6 @@ public class Util {
         return abData;
     }
 
-
     public static void sleep(long milliseconds) {
         try {
             Thread.sleep(milliseconds);
@@ -72,4 +69,3 @@ public class Util {
 }
 
 
-/* Util.java */

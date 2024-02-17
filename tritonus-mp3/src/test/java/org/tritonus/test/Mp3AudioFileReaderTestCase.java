@@ -31,4 +31,3 @@ public class Mp3AudioFileReaderTestCase
 }
 
 
-/* Mp3AudioFileReaderTestCase.java */

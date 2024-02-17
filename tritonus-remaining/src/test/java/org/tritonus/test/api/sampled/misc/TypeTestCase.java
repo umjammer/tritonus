@@ -81,4 +81,3 @@ public class TypeTestCase {
 }
 
 
-/* TypeTestCase.java */

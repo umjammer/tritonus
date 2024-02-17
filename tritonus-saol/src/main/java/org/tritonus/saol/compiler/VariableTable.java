@@ -1,8 +1,3 @@
-/*
- * VariableTable.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2002 by Matthias Pfisterer
@@ -19,10 +14,6 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.saol.compiler;
 
@@ -44,4 +35,4 @@ public class VariableTable extends HashMap<String, VariableEntry> {
     }
 }
 
-/* VariableTable.java */
+

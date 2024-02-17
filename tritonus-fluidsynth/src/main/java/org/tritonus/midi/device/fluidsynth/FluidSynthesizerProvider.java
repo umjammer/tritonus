@@ -1,8 +1,3 @@
-/*
- * FluidSynthesizerProvider.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999 - 2006 by Matthias Pfisterer
@@ -21,10 +16,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.midi.device.fluidsynth;
 
@@ -56,7 +47,6 @@ public class FluidSynthesizerProvider extends MidiDeviceProvider {
             TDebug.out("FluidSynthesizerProvider.<init>(): end");
     }
 
-
     @Override
     public MidiDevice.Info[] getDeviceInfo() {
         if (TDebug.TraceMidiDeviceProvider) TDebug.out("FluidSynthesizerProvider.getDeviceInfo(): begin");
@@ -65,7 +55,6 @@ public class FluidSynthesizerProvider extends MidiDeviceProvider {
         if (TDebug.TraceMidiDeviceProvider) TDebug.out("FluidSynthesizerProvider.getDeviceInfo(): end");
         return infos;
     }
-
 
     @Override
     public MidiDevice getDevice(MidiDevice.Info info) {
@@ -85,4 +74,4 @@ public class FluidSynthesizerProvider extends MidiDeviceProvider {
     }
 }
 
-/* FluidSynthesizerProvider.java */
+

@@ -1,8 +1,3 @@
-/*
- * AlsaSeqQueueInfo.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999 - 2001 by Matthias Pfisterer
@@ -21,10 +16,6 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.lowlevel.alsa;
 
 import org.tritonus.share.TDebug;
@@ -39,14 +30,12 @@ public class AlsaSeqQueueInfo {
         }
     }
 
-
     /**
      * Holds the pointer to snd_seq_queue_info_t
      * for the native code.
      * This must be long to be 64bit-clean.
      */
     /*private*/ long m_lNativeHandle;
-
 
     public AlsaSeqQueueInfo() {
         if (TDebug.TraceAlsaSeqNative) {
@@ -60,14 +49,6 @@ public class AlsaSeqQueueInfo {
             TDebug.out("AlsaSeq.QueueInfo.<init>(): end");
         }
     }
-
-
-    protected void finalize() {
-        // TODO: call free()
-        // call super.finalize() first or last?
-        // and introduce a flag if free() has already been called?
-    }
-
 
     private native int malloc();
 
@@ -95,4 +76,3 @@ public class AlsaSeqQueueInfo {
 }
 
 
-/* AlsaSeqQueueInfo.java */

@@ -1,8 +1,3 @@
-/*
- * InstrumentEntry.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2002 by Matthias Pfisterer
@@ -20,10 +15,6 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.saol.compiler;
 
 import org.tritonus.saol.sablecc.node.AInstrdeclInstrdecl;
@@ -35,7 +26,6 @@ public class InstrumentEntry {
     private AInstrdeclInstrdecl m_startNode;
     VariableTable m_localVariableTable;
 
-
     public InstrumentEntry(String strInstrumentName,
                            AInstrdeclInstrdecl startNode) {
         m_strInstrumentName = strInstrumentName;
@@ -43,16 +33,13 @@ public class InstrumentEntry {
         m_localVariableTable = new VariableTable();
     }
 
-
     public String getInstrumentName() {
         return m_strInstrumentName;
     }
 
-
     public AInstrdeclInstrdecl getStartNode() {
         return m_startNode;
     }
-
 
     public VariableTable getLocalVariableTable() {
         return m_localVariableTable;
@@ -60,4 +47,3 @@ public class InstrumentEntry {
 }
 
 
-/* InstrumentEntry.java */

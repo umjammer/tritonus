@@ -64,31 +64,26 @@ public interface SettingsLibrary extends Library {
         int FLUID_SET_TYPE = 3;
     }
 
-    ;
     /** <i>native declaration : fluidsynth/settings.h</i> */
-    int FLUID_HINT_BOUNDED_BELOW = (int) 0x1;
+    int FLUID_HINT_BOUNDED_BELOW = 0x1;
     /** <i>native declaration : fluidsynth/settings.h</i> */
-    int FLUID_HINT_BOUNDED_ABOVE = (int) 0x2;
+    int FLUID_HINT_BOUNDED_ABOVE = 0x2;
     /** <i>native declaration : fluidsynth/settings.h</i> */
-    int FLUID_HINT_TOGGLED = (int) 0x4;
+    int FLUID_HINT_TOGGLED = 0x4;
     /** <i>native declaration : fluidsynth/settings.h</i> */
-    int FLUID_HINT_OPTIONLIST = (int) 0x02;
+    int FLUID_HINT_OPTIONLIST = 0x02;
 
     /** <i>native declaration : fluidsynth/settings.h</i> */
-    public interface fluid_settings_foreach_option_t extends Callback {
+    interface fluid_settings_foreach_option_t extends Callback {
 
         void apply(Pointer data, Pointer name, Pointer option);
     }
 
-    ;
-
     /** <i>native declaration : fluidsynth/settings.h</i> */
-    public interface fluid_settings_foreach_t extends Callback {
+    interface fluid_settings_foreach_t extends Callback {
 
         void apply(Pointer data, Pointer name, int type);
     }
-
-    ;
 
     /**
      * @startlifecycle{Settings}<br> Original signature : <code>fluid_settings_t* new_fluid_settings()</code><br>
@@ -535,5 +530,4 @@ public interface SettingsLibrary extends Library {
         }
     }
 
-    ;
 }

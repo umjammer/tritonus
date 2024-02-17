@@ -1,8 +1,3 @@
-/*
- * TNotifier.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999 by Matthias Pfisterer
@@ -22,10 +17,6 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.share;
 
 import java.util.ArrayList;
@@ -44,12 +35,10 @@ public class TNotifier
         private EventObject m_event;
         private List<LineListener> m_listeners;
 
-
         public NotifyEntry(EventObject event, Collection<LineListener> listeners) {
             m_event = event;
             m_listeners = new ArrayList<>(listeners);
         }
-
 
         public void deliver() {
             // TDebug.out("%% TNotifier.NotifyEntry.deliver(): called.");
@@ -59,7 +48,6 @@ public class TNotifier
         }
     }
 
-
     public static TNotifier notifier;
 
     static {
@@ -68,19 +56,16 @@ public class TNotifier
         notifier.start();
     }
 
-
     /**
      * The queue of events to deliver.
      * The entries are of class NotifyEntry.
      */
     private final List<NotifyEntry> m_entries;
 
-
     public TNotifier() {
         super("Tritonus Notifier");
         m_entries = new ArrayList<>();
     }
-
 
     public void addEntry(EventObject event, Collection<LineListener> listeners) {
         // TDebug.out("%% TNotifier.addEntry(): called.");
@@ -91,12 +76,12 @@ public class TNotifier
         // TDebug.out("%% TNotifier.addEntry(): completed.");
     }
 
-
+    @Override
     public void run() {
         while (true) {
             NotifyEntry entry;
             synchronized (m_entries) {
-                while (m_entries.size() == 0) {
+                while (m_entries.isEmpty()) {
                     try {
                         m_entries.wait();
                     } catch (InterruptedException e) {
@@ -113,4 +98,3 @@ public class TNotifier
 }
 
 
-/* TNotifier.java */

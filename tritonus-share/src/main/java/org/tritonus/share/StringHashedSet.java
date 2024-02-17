@@ -1,8 +1,3 @@
-/*
- * StringHashedSet.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2000 by Florian Bomers
@@ -22,12 +17,9 @@
  *
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
-
 package org.tritonus.share;
 
+import java.io.Serial;
 import java.util.Collection;
 
 
@@ -54,6 +46,7 @@ import java.util.Collection;
 
 public class StringHashedSet<E> extends ArraySet<E> {
 
+    @Serial
     private static final long serialVersionUID = 1;
 
     public StringHashedSet() {
@@ -64,6 +57,7 @@ public class StringHashedSet<E> extends ArraySet<E> {
         super(c);
     }
 
+    @Override
     public boolean add(E elem) {
         if (elem == null) {
             return false;
@@ -71,6 +65,7 @@ public class StringHashedSet<E> extends ArraySet<E> {
         return super.add(elem);
     }
 
+    @Override
     public boolean contains(Object elem) {
         if (elem == null) {
             return false;
@@ -99,4 +94,4 @@ public class StringHashedSet<E> extends ArraySet<E> {
 
 }
 
-/* StringHashedSet.java */
+

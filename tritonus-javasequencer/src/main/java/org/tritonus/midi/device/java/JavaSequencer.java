@@ -1,8 +1,3 @@
-/*
- * JavaSequencer.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2000 - 2003 by Matthias Pfisterer
@@ -20,10 +15,6 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.midi.device.java;
 
@@ -92,7 +83,6 @@ public class JavaSequencer
      */
     private long m_lSleepInterval;
 
-
     public JavaSequencer(MidiDevice.Info info) {
         super(info,
                 Arrays.asList(MASTER_SYNC_MODES),
@@ -117,7 +107,7 @@ public class JavaSequencer
         }
     }
 
-
+    @Override
     protected void openImpl() {
         if (TDebug.TraceSequencer) {
             TDebug.out("JavaSequencer.openImpl(): begin");
@@ -134,7 +124,7 @@ public class JavaSequencer
         }
     }
 
-
+    @Override
     protected void closeImpl() {
         if (TDebug.TraceSequencer) {
             TDebug.out("JavaSequencer.closeImpl(): begin");
@@ -152,7 +142,7 @@ public class JavaSequencer
         }
     }
 
-
+    @Override
     protected void startImpl() {
         if (TDebug.TraceSequencer) {
             TDebug.out("JavaSequencer.startImpl(): begin");
@@ -179,7 +169,7 @@ public class JavaSequencer
         }
     }
 
-
+    @Override
     protected void stopImpl() {
         if (TDebug.TraceSequencer) {
             TDebug.out("JavaSequencer.stopImpl(): begin");
@@ -211,7 +201,7 @@ public class JavaSequencer
         }
     }
 
-
+    @Override
     public void run() {
         if (TDebug.TraceSequencer) {
             TDebug.out("JavaSequencer.run(): begin");
@@ -318,7 +308,6 @@ public class JavaSequencer
         } // while (true)
     }
 
-
     /**
      * Deliver a message at a certain time.
      *
@@ -382,17 +371,17 @@ public class JavaSequencer
         return true; // success
     }
 
-
+    @Override
     protected void setMasterSyncModeImpl(SyncMode syncMode) {
         // DO NOTHING
     }
 
-
+    @Override
     protected void setSlaveSyncModeImpl(SyncMode syncMode) {
         // DO NOTHING
     }
 
-
+    @Override
     public void setSequence(Sequence sequence)
             throws InvalidMidiDataException {
         boolean bWasRunning = isRunning();
@@ -408,12 +397,12 @@ public class JavaSequencer
         }
     }
 
-
+    @Override
     public void setMicrosecondPosition(long lPosition) {
         setTickPosition(lPosition / m_lMicroSecondsPerTick);
     }
 
-
+    @Override
     public void setTickPosition(long lPosition) {
         if (getSequence() == null || m_anTrackPositions == null) {
             return;
@@ -429,7 +418,7 @@ public class JavaSequencer
             start();
     }
 
-
+    @Override
     public synchronized long getTickPosition() {
         if (m_nPhase == STATE_STARTED) {
             return Math.max(m_lTickPosition, (getTimeInMicroseconds() - m_lStartTime) / m_lMicroSecondsPerTick);
@@ -438,34 +427,33 @@ public class JavaSequencer
         }
     }
 
-
+    @Override
     public void recordDisable(Track track) {
     }
-
 
     public void recordEnable(Track track) {
     }
 
-
+    @Override
     public void recordEnable(Track track, int nChannel) {
     }
 
-
+    @Override
     public boolean isRecording() {
         return false;
     }
 
-
+    @Override
     public void stopRecording() {
         checkOpen();
     }
 
-
+    @Override
     public void startRecording() {
         checkOpen();
     }
 
-
+    @Override
     protected synchronized void setTempoImpl(float fMPQ) {
         if (TDebug.TraceSequencer) {
             TDebug.out("JavaSequencer.setTempoImpl(): begin");
@@ -483,7 +471,6 @@ public class JavaSequencer
             TDebug.out("JavaSequencer.setTempoImpl(): end");
         }
     }
-
 
     /**
      * Obtain the index of the event with the closest tick value.
@@ -509,7 +496,6 @@ public class JavaSequencer
         }
     }
 
-
     /**
      * Retrieve system time in microseconds.
      * This method uses the clock as set with {@link #setClock}.
@@ -525,7 +511,6 @@ public class JavaSequencer
         return getClock().getMicroseconds();
     }
 
-
     /**
      * Set the clock this sequencer should use.
      *
@@ -539,7 +524,6 @@ public class JavaSequencer
         m_clock = clock;
     }
 
-
     /**
      * Obtain the clock used by this sequencer.
      *
@@ -548,7 +532,6 @@ public class JavaSequencer
     public Clock getClock() {
         return m_clock;
     }
-
 
     /**
      * Interface for sequencer clocks.
@@ -560,4 +543,3 @@ public class JavaSequencer
 }
 
 
-/* JavaSequencer.java */

@@ -1,8 +1,3 @@
-/*
- * AlsaMixerElement.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 2001 - 2002 by Matthias Pfisterer
@@ -19,10 +14,6 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.lowlevel.alsa;
 
@@ -55,13 +46,10 @@ public class AlsaMixerElement {
     /** Mono (Front left alias) */
     public static final int SND_MIXER_SCHN_MONO = SND_MIXER_SCHN_FRONT_LEFT;
 
-
     private AlsaMixer m_mixer;
-
 
     @SuppressWarnings("unused")
     private long m_lNativeHandle;
-
 
     static {
         Alsa.loadNativeLibrary();
@@ -69,7 +57,6 @@ public class AlsaMixerElement {
             setTrace(true);
         }
     }
-
 
     public AlsaMixerElement(AlsaMixer mixer,
                             int nIndex,
@@ -91,14 +78,11 @@ public class AlsaMixerElement {
                             int nIndex,
                             String strName);
 
-
     private AlsaMixer getMixer() {
         return m_mixer;
     }
 
-
     // TODO: getId()
-
 
     /**
      * Calls snd_mixer_selem_get_name().
@@ -165,7 +149,6 @@ public class AlsaMixerElement {
      */
     public native boolean hasCaptureVolumeJoined();
 
-
     /**
      * Calls snd_mixer_selem_has_common_switch().
      */
@@ -196,7 +179,6 @@ public class AlsaMixerElement {
      */
     public native boolean hasCaptureSwitchExclusive();
 
-
     /**
      * Calls snd_mixer_selem_get_playback_volume().
      */
@@ -216,7 +198,6 @@ public class AlsaMixerElement {
      * Calls snd_mixer_selem_get_capture_switch().
      */
     public native boolean getCaptureSwitch(int nChannelType);
-
 
     /**
      * Calls snd_mixer_selem_set_playback_volume().
@@ -238,7 +219,6 @@ public class AlsaMixerElement {
      */
     public native void setCaptureVolumeAll(int nValue);
 
-
     /**
      * Calls snd_mixer_selem_set_playback_switch().
      */
@@ -258,7 +238,6 @@ public class AlsaMixerElement {
      * Calls snd_mixer_selem_set_capture_switch_all().
      */
     public native void setCaptureSwitchAll(boolean bValue);
-
 
     /**
      * Calls snd_mixer_selem_get_playback_volume_range().
@@ -284,7 +263,6 @@ public class AlsaMixerElement {
      */
     public native void setCaptureVolumeRange(int nMin, int nMax);
 
-
     /**
      * Calls snd_mixer_selem_channel_name().
      */
@@ -297,4 +275,3 @@ public class AlsaMixerElement {
 }
 
 
-/* AlsaMixerElement.java */

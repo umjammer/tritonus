@@ -1,8 +1,3 @@
-/*
- * AlsaReceiver.java
- *
- * This file is part of Tritonus: http://www.tritonus.org/
- */
 
 /*
  *  Copyright (c) 1999 by Matthias Pfisterer
@@ -21,10 +16,6 @@
  *   limitations under the License.
  *
  */
-
-/*
-|<---            this code is formatted to fit into 80 columns             --->|
-*/
 
 package org.tritonus.midi.device.alsa;
 
@@ -50,9 +41,9 @@ public interface AlsaReceiver
      * got an AlsaReceiver as its Receiver.
      *
      * @param nClient The ALSA client number of the Transmitter that
-     *                a read subscription should established to.
+     *                a read subscription should establish to.
      * @param nPort   The ALSA port number of the Transmitter that a
-     *                read subscription should established to.
+     *                read subscription should establish to.
      * @return true, if the subscription was established, false
      * otherwise.
      */
@@ -60,5 +51,4 @@ public interface AlsaReceiver
 }
 
 
-/* AlsaReceiver.java */
 
