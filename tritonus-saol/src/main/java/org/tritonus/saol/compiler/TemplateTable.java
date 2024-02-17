@@ -22,7 +22,7 @@ import java.util.Map;
 
 /**
  * The template table.
- * TODO: use generics
+ * TODO use generics
  */
 public class TemplateTable {
 

@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 2001 - 2002 by Matthias Pfisterer
  *
@@ -17,11 +16,8 @@
 
 package org.tritonus.lowlevel.alsa;
 
-import org.tritonus.share.TDebug;
-
-
 /**
- * TODO:
+ * TODO
  */
 public class AlsaMixerElement {
  /* Channel type constants.
@@ -53,9 +49,6 @@ public class AlsaMixerElement {
 
     static {
         Alsa.loadNativeLibrary();
-        if (TDebug.TraceAlsaMixerNative) {
-            setTrace(true);
-        }
     }
 
     public AlsaMixerElement(AlsaMixer mixer,
@@ -82,7 +75,7 @@ public class AlsaMixerElement {
         return m_mixer;
     }
 
-    // TODO: getId()
+    // TODO getId()
 
     /**
      * Calls snd_mixer_selem_get_name().
@@ -269,9 +262,7 @@ public class AlsaMixerElement {
     public static native String getChannelName(int nChannelType);
 
     /**
-     * TODO:
+     * TODO
      */
     private static native void setTrace(boolean bTrace);
 }
-
-

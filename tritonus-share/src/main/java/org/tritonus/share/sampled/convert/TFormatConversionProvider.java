@@ -18,13 +18,16 @@
 
 package org.tritonus.share.sampled.convert;
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.spi.FormatConversionProvider;
 
-import org.tritonus.share.TDebug;
 import org.tritonus.share.sampled.AudioFormats;
+
+import static java.lang.System.getLogger;
 
 
 /**
@@ -32,9 +35,10 @@ import org.tritonus.share.sampled.AudioFormats;
  *
  * @author Matthias Pfisterer
  */
-public abstract class TFormatConversionProvider
-        extends FormatConversionProvider {
+public abstract class TFormatConversionProvider extends FormatConversionProvider {
 
+    private static final Logger logger= getLogger("org.tritonus.TraceAudioConverter");
+    
     protected static final AudioFormat.Encoding[] EMPTY_ENCODING_ARRAY = new AudioFormat.Encoding[0];
     protected static final AudioFormat[] EMPTY_FORMAT_ARRAY = new AudioFormat[0];
 
@@ -44,16 +48,14 @@ public abstract class TFormatConversionProvider
         AudioFormat sourceFormat = audioInputStream.getFormat();
         AudioFormat targetFormat = new AudioFormat(
                 targetEncoding,
-                AudioSystem.NOT_SPECIFIED,   // sample rate
-                AudioSystem.NOT_SPECIFIED,   // sample size in bits
-                AudioSystem.NOT_SPECIFIED,   // channels
-                AudioSystem.NOT_SPECIFIED,   // frame size
-                AudioSystem.NOT_SPECIFIED,   // frame rate
-                sourceFormat.isBigEndian());  // big endian
-        if (TDebug.TraceAudioConverter) {
-            TDebug.out("TFormatConversionProvider.getAudioInputStream(AudioFormat.Encoding, AudioInputStream):");
-            TDebug.out("trying to convert to " + targetFormat);
-        }
+                AudioSystem.NOT_SPECIFIED, // sample rate
+                AudioSystem.NOT_SPECIFIED, // sample size in bits
+                AudioSystem.NOT_SPECIFIED, // channels
+                AudioSystem.NOT_SPECIFIED, // frame size
+                AudioSystem.NOT_SPECIFIED, // frame rate
+                sourceFormat.isBigEndian()); // big endian
+        logger.log(Level.TRACE, "TFormatConversionProvider.getAudioInputStream(AudioFormat.Encoding, AudioInputStream):");
+        logger.log(Level.TRACE, "trying to convert to " + targetFormat);
         return getAudioInputStream(targetFormat, audioInputStream);
     }
 
@@ -63,38 +65,30 @@ public abstract class TFormatConversionProvider
      * <p>
      * This method is overwritten here to make use of org.tritonus.share.sampled.AudioFormats.matches
      * and is considered temporary until AudioFormat.matches is corrected in the JavaSound API.
+     * <p>
+     * $$mp: if we decide to use getMatchingFormat(), this method should be
+     * implemented by simply calling getMatchingFormat() and comparing the
+     * result against null.
      */
- /* $$mp: if we decide to use getMatchingFormat(), this method should be
-    implemented by simply calling getMatchingFormat() and comparing the
-    result against null.
- */
     @Override
-    public boolean isConversionSupported(
-            AudioFormat targetFormat,
-            AudioFormat sourceFormat) {
-        if (TDebug.TraceAudioConverter) {
-            TDebug.out(">TFormatConversionProvider.isConversionSupported(AudioFormat, AudioFormat):");
-            TDebug.out("class: " + getClass().getName());
-            TDebug.out("checking if conversion possible");
-            TDebug.out("from: " + sourceFormat);
-            TDebug.out("to: " + targetFormat);
-        }
+    public boolean isConversionSupported(AudioFormat targetFormat, AudioFormat sourceFormat) {
+        logger.log(Level.TRACE, ">TFormatConversionProvider.isConversionSupported(AudioFormat, AudioFormat):");
+        logger.log(Level.TRACE, "class: " + getClass().getName());
+        logger.log(Level.TRACE, "checking if conversion possible");
+        logger.log(Level.TRACE, "from: " + sourceFormat);
+        logger.log(Level.TRACE, "to: " + targetFormat);
         AudioFormat[] aTargetFormats = getTargetFormats(targetFormat.getEncoding(), sourceFormat);
         for (AudioFormat aTargetFormat : aTargetFormats) {
-            if (TDebug.TraceAudioConverter) {
-                TDebug.out("checking against possible target format: " + aTargetFormat);
-            }
-            if (aTargetFormat != null
-                    && AudioFormats.matches(aTargetFormat, targetFormat)) {
-                if (TDebug.TraceAudioConverter) {
-                    TDebug.out("<result=true");
-                }
+            logger.log(Level.TRACE, "checking against possible target format: " + aTargetFormat);
+
+            if (aTargetFormat != null && AudioFormats.matches(aTargetFormat, targetFormat)) {
+                logger.log(Level.TRACE, "<result=true");
+
                 return true;
             }
         }
-        if (TDebug.TraceAudioConverter) {
-            TDebug.out("<result=false");
-        }
+        logger.log(Level.TRACE, "<result=false");
+
         return false;
     }
 
@@ -105,35 +99,24 @@ public abstract class TFormatConversionProvider
      * This method is overwritten here to make use of org.tritonus.share.sampled.AudioFormats.matches
      * and is considered temporary until AudioFormat.matches is corrected in the JavaSound API.
      */
-    public AudioFormat getMatchingFormat(
-            AudioFormat targetFormat,
-            AudioFormat sourceFormat) {
-        if (TDebug.TraceAudioConverter) {
-            TDebug.out(">TFormatConversionProvider.isConversionSupported(AudioFormat, AudioFormat):");
-            TDebug.out("class: " + getClass().getName());
-            TDebug.out("checking if conversion possible");
-            TDebug.out("from: " + sourceFormat);
-            TDebug.out("to: " + targetFormat);
-        }
+    public AudioFormat getMatchingFormat(AudioFormat targetFormat, AudioFormat sourceFormat) {
+        logger.log(Level.TRACE, ">TFormatConversionProvider.isConversionSupported(AudioFormat, AudioFormat):");
+        logger.log(Level.TRACE, "class: " + getClass().getName());
+        logger.log(Level.TRACE, "checking if conversion possible");
+        logger.log(Level.TRACE, "from: " + sourceFormat);
+        logger.log(Level.TRACE, "to: " + targetFormat);
         AudioFormat[] aTargetFormats = getTargetFormats(targetFormat.getEncoding(), sourceFormat);
         for (AudioFormat aTargetFormat : aTargetFormats) {
-            if (TDebug.TraceAudioConverter) {
-                TDebug.out("checking against possible target format: " + aTargetFormat);
-            }
-            if (aTargetFormat != null
-                    && AudioFormats.matches(aTargetFormat, targetFormat)) {
-                if (TDebug.TraceAudioConverter) {
-                    TDebug.out("<result=true");
-                }
+            logger.log(Level.TRACE, "checking against possible target format: " + aTargetFormat);
+
+            if (aTargetFormat != null && AudioFormats.matches(aTargetFormat, targetFormat)) {
+                logger.log(Level.TRACE, "<result=true");
+
                 return aTargetFormat;
             }
         }
-        if (TDebug.TraceAudioConverter) {
-            TDebug.out("<result=false");
-        }
+        logger.log(Level.TRACE, "<result=false");
+
         return null;
     }
-
 }
-
-

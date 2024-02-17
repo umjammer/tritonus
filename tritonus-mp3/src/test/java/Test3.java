@@ -23,7 +23,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.tritonus.sampled.convert.javalayer.MpegFormatConversionProvider;
-import org.tritonus.share.TDebug;
 import vavi.sound.SoundUtil;
 import vavi.util.Debug;
 import vavi.util.properties.annotation.Property;
@@ -45,14 +44,6 @@ class Test3 {
 
     static boolean localPropertiesExists() {
         return Files.exists(Paths.get("local.properties"));
-    }
-
-    static {
-        System.setProperty("vavi.util.logging.VaviFormatter.extraClassMethod", "org\\.tritonus\\.share\\.TDebug#out");
-
-        TDebug.TraceAudioConverter = false;
-        TDebug.TraceCircularBuffer = false;
-        TDebug.TraceAudioFileReader = false;
     }
 
     static final double volume = Double.parseDouble(System.getProperty("vavi.test.volume", "0.2"));

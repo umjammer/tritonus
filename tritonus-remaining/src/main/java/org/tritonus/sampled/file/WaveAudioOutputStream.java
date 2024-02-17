@@ -19,12 +19,15 @@
 package org.tritonus.sampled.file;
 
 import java.io.IOException;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 
-import org.tritonus.share.TDebug;
 import org.tritonus.share.sampled.file.TAudioOutputStream;
 import org.tritonus.share.sampled.file.TDataOutputStream;
+
+import static java.lang.System.getLogger;
 
 
 /**
@@ -33,6 +36,8 @@ import org.tritonus.share.sampled.file.TDataOutputStream;
  * @author Florian Bomers
  */
 public class WaveAudioOutputStream extends TAudioOutputStream {
+
+    private static final Logger logger= getLogger("org.tritonus.TraceAudioOutputStream");
 
     // this constant is used for chunk lengths when the length is not known yet
     private static final int LENGTH_NOT_KNOWN = -1;
@@ -48,12 +53,10 @@ public class WaveAudioOutputStream extends TAudioOutputStream {
                 dataOutputStream.supportsSeek());
         // wave cannot store more than 4GB
         if (lLength != AudioSystem.NOT_SPECIFIED && (lLength + WaveTool.DATA_OFFSET) > 0xFFFF_FFFFL) {
-            if (TDebug.TraceAudioOutputStream) {
-                TDebug.out("WaveAudioOutputStream: Length exceeds 4GB: "
-                        + lLength + "=0x" + Long.toHexString(lLength)
-                        + " with header=" + (lLength + WaveTool.DATA_OFFSET)
-                        + "=0x" + Long.toHexString(lLength + WaveTool.DATA_OFFSET));
-            }
+            logger.log(Level.TRACE, "WaveAudioOutputStream: Length exceeds 4GB: " +
+                    lLength + "=0x" + Long.toHexString(lLength) +
+                    " with header=" + (lLength + WaveTool.DATA_OFFSET) +
+                    "=0x" + Long.toHexString(lLength + WaveTool.DATA_OFFSET));
             throw new IllegalArgumentException("Wave files cannot be larger than 4GB.");
         }
         // double-check that we can write this audio format
@@ -64,16 +67,14 @@ public class WaveAudioOutputStream extends TAudioOutputStream {
         requireSign8bit(false);
         // WAVE requires little endian
         requireEndianness(false);
-        if (TDebug.TraceAudioOutputStream) {
-            TDebug.out("Writing WAVE: " + audioFormat.getSampleSizeInBits() + " bits, " + audioFormat.getEncoding());
-        }
+
+        logger.log(Level.TRACE, "Writing WAVE: " + audioFormat.getSampleSizeInBits() + " bits, " + audioFormat.getEncoding());
     }
 
     @Override
     protected void writeHeader() throws IOException {
-        if (TDebug.TraceAudioOutputStream) {
-            TDebug.out("WaveAudioOutputStream.writeHeader()");
-        }
+        logger.log(Level.TRACE, "WaveAudioOutputStream.writeHeader()");
+
         int formatCode = WaveTool.getFormatCode(getFormat());
         AudioFormat format = getFormat();
         long lLength = getLength();
@@ -148,8 +149,8 @@ public class WaveAudioOutputStream extends TAudioOutputStream {
 
         if (formatCode != WaveTool.WAVE_FORMAT_PCM) {
             // write "fact" chunk: number of samples
-            // todo: add this as an attribute or property
-            // in AudioOutputStream or AudioInputStream
+            // TODO add this as an attribute or property
+            //  in AudioOutputStream or AudioInputStream
             long samples = 0;
             if (lLength != AudioSystem.NOT_SPECIFIED) {
                 samples = lLength / format.getFrameSize() * decodedSamplesPerBlock;
@@ -181,9 +182,8 @@ public class WaveAudioOutputStream extends TAudioOutputStream {
         long nBytesWritten = getCalculatedLength();
 
         if ((nBytesWritten % 2) == 1) {
-            if (TDebug.TraceAudioOutputStream) {
-                TDebug.out("WaveOutputStream.close(): adding padding byte");
-            }
+            logger.log(Level.TRACE, "WaveOutputStream.close(): adding padding byte");
+
             // extra byte for to align on word boundaries
             TDataOutputStream tdos = getDataOutputStream();
             tdos.writeByte(0);
@@ -193,5 +193,3 @@ public class WaveAudioOutputStream extends TAudioOutputStream {
         super.close();
     }
 }
-
-

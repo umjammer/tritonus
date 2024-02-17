@@ -17,7 +17,6 @@ import javax.sound.midi.Synthesizer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.tritonus.midi.device.fluidsynth.FluidSynthesizer;
-import org.tritonus.share.TDebug;
 import vavi.sound.midi.MidiUtil;
 import vavi.util.Debug;
 import vavi.util.properties.annotation.Property;
@@ -32,11 +31,6 @@ import vavi.util.properties.annotation.PropsEntity;
  */
 @PropsEntity(url = "file:local.properties")
 public class Test1 {
-
-    static {
-        System.setProperty("vavi.util.logging.VaviFormatter.extraClassMethod",
-                "org\\.tritonus\\.share\\.TDebug#out");
-    }
 
     static boolean localPropertiesExists() {
         return Files.exists(Paths.get("local.properties"));
@@ -58,8 +52,6 @@ public class Test1 {
 
         System.setProperty("tritonus.fluidsynth.defaultsoundbank", sf);
         Debug.println("soundfont: " + sf);
-
-        TDebug.TraceMidiDeviceProvider = true;
     }
 
     @Test

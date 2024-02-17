@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 1999 - 2001 by Matthias Pfisterer
  *
@@ -18,7 +17,10 @@
 
 package org.tritonus.lowlevel.alsa;
 
-import org.tritonus.share.TDebug;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
+
+import static java.lang.System.getLogger;
 
 
 /**
@@ -28,11 +30,10 @@ import org.tritonus.share.TDebug;
  */
 public class AlsaSeqEvent {
 
+    private static final Logger logger = getLogger("org.tritonus.TraceAlsaSeqNative");
+
     static {
         Alsa.loadNativeLibrary();
-        if (TDebug.TraceAlsaSeqNative) {
-            setTrace(true);
-        }
     }
 
     /**
@@ -40,19 +41,17 @@ public class AlsaSeqEvent {
      * for the native code.
      * This must be long to be 64bit-clean.
      */
-    /*private*/ long m_lNativeHandle;
+    /* private */ long m_lNativeHandle;
 
     public AlsaSeqEvent() {
-        if (TDebug.TraceAlsaSeqNative) {
-            TDebug.out("AlsaSeq.Event.<init>(): begin");
-        }
+        logger.log(Level.TRACE, "AlsaSeq.Event.<init>(): begin");
+
         int nReturn = malloc();
         if (nReturn < 0) {
             throw new RuntimeException("malloc of event failed");
         }
-        if (TDebug.TraceAlsaSeqNative) {
-            TDebug.out("AlsaSeq.Event.<init>(): end");
-        }
+
+        logger.log(Level.TRACE, "AlsaSeq.Event.<init>(): end");
     }
 
     /**
@@ -72,7 +71,7 @@ public class AlsaSeqEvent {
      */
     public native void free();
 
-    // TODO: implement natively
+    // TODO implement natively
     public native int getLength();
 
     public native int getType();
@@ -93,7 +92,8 @@ public class AlsaSeqEvent {
 
     public native int getDestPort();
 
-    /* Retrieves the parameters of a note event.
+    /**
+     * Retrieves the parameters of a note event.
      * This method is suitable for the following event types:
      * SND_SEQ_EVENT_NOTE
      * SND_SEQ_EVENT_NOTEON
@@ -109,7 +109,8 @@ public class AlsaSeqEvent {
      */
     public native void getNote(int[] anValues);
 
-    /* Retrieves the parameters of a control event.
+    /**
+     * Retrieves the parameters of a control event.
      * This method is suitable for the following event types:
      * SND_SEQ_EVENT_CONTROLLER
      * SND_SEQ_EVENT_PGMCHANGE
@@ -131,7 +132,8 @@ public class AlsaSeqEvent {
      */
     public native void getControl(int[] anValues);
 
-    /* Retrieves the parameters of a queue control event.
+    /**
+     * Retrieves the parameters of a queue control event.
      * This method is suitable for the following event types:
      * SND_SEQ_EVENT_START
      * SND_SEQ_EVENT_CONTINUE
@@ -151,7 +153,8 @@ public class AlsaSeqEvent {
      */
     public native void getQueueControl(int[] anValues, long[] alValues);
 
-    /* Retrieves the parameters of a variable-length event.
+    /**
+     * Retrieves the parameters of a variable-length event.
      * This method is suitable for the following event types:
      * SND_SEQ_EVENT_SYSEX
      * SND_SEQ_EVENT_BOUNCE
@@ -160,7 +163,6 @@ public class AlsaSeqEvent {
      * SND_SEQ_EVENT_USR_VAR2
      * SND_SEQ_EVENT_USR_VAR3
      * SND_SEQ_EVENT_USR_VAR4
-     *
      */
     public native byte[] getVar();
 
@@ -178,5 +180,3 @@ public class AlsaSeqEvent {
 
     private static native void setTrace(boolean bTrace);
 }
-
-

@@ -94,7 +94,7 @@ public abstract class IOGTCommonSemanticsCheck
             if (strImEx.indexOf('E') >= 0) {
                 bExports = true;
             }
-            // TODO: check if matching global variable exists
+            // TODO check if matching global variable exists
         }
         int nRate = getNodeSemantics(node.getStype()).getRate();
         if (!isLegalVariableType(nRate)) {
@@ -126,7 +126,7 @@ public abstract class IOGTCommonSemanticsCheck
         if (strImEx.indexOf('E') >= 0) {
             bExports = true;
         }
-        // TODO: check if matching global variable exists
+        // TODO check if matching global variable exists
 
         int nRate = WidthAndRate.RATE_TABLE;
         @SuppressWarnings("unchecked")
@@ -209,7 +209,7 @@ public abstract class IOGTCommonSemanticsCheck
         handleName(node, strVariableName, WidthAndRate.WIDTH_OUTCHANNELS);
     }
 
-    // TODO: check if gathering of variable name can be generalized
+    // TODO check if gathering of variable name can be generalized
     private void handleName(Node node, String strVariableName, int nWidth) {
         VariableEntry variableEntry = new VariableEntry(strVariableName, nWidth, WidthAndRate.RATE_UNKNOWN, false, false);
         NodeSemantics nodeSemantics = new NodeSemantics(variableEntry);
@@ -312,22 +312,22 @@ public abstract class IOGTCommonSemanticsCheck
 
     @Override
     public void inAAltExpr(AAltExpr node) {
-        // TODO:
+        // TODO
     }
 
     @Override
     public void outAAltExpr(AAltExpr node) {
-        // TODO:
+        // TODO
     }
 
     @Override
     public void outAOrOrexpr(AOrOrexpr node) {
-        // TODO:
+        // TODO
     }
 
     @Override
     public void outAAndAndexpr(AAndAndexpr node) {
-        // TODO:
+        // TODO
     }
 
     @Override
@@ -401,7 +401,7 @@ public abstract class IOGTCommonSemanticsCheck
      */
     @Override
     public void outAIndexedTerm(AIndexedTerm node) {
-//   // TODO: correct rounding (1.5 -> 2.0)
+//   // TODO correct rounding (1.5 -> 2.0)
 //   m_aMethods[METHOD_A].appendInstruction(InstructionConstants.F2I);
 //   // and now fetch the value from the array
 //   setNodeAttribute(node, InstructionConstants.FALOAD);

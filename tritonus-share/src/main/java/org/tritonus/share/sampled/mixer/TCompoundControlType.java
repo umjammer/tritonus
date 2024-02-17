@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 2001 by Matthias Pfisterer
  *

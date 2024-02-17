@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 2000 by Matthias Pfisterer
  *
@@ -20,11 +19,12 @@
 package org.tritonus.share.sampled.file;
 
 import java.io.IOException;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 
-import org.tritonus.share.TDebug;
-
+import static java.lang.System.getLogger;
 import static org.tritonus.share.sampled.AudioUtils.isPCM;
 import static org.tritonus.share.sampled.TConversionTool.convertSign8;
 import static org.tritonus.share.sampled.TConversionTool.swapOrder16;
@@ -37,9 +37,9 @@ import static org.tritonus.share.sampled.TConversionTool.swapOrder32;
  *
  * @author Matthias Pfisterer
  */
+public abstract class TAudioOutputStream implements AudioOutputStream {
 
-public abstract class TAudioOutputStream
-        implements AudioOutputStream {
+    private static final Logger logger = getLogger(TAudioOutputStream.class.getName());
 
     private AudioFormat m_audioFormat;
     private long m_lLength; // in bytes
@@ -71,8 +71,7 @@ public abstract class TAudioOutputStream
      */
     protected void requireSign8bit(boolean signed) {
         if (m_audioFormat.getSampleSizeInBits() == 8 && isPCM(m_audioFormat)) {
-            boolean si = m_audioFormat.getEncoding().equals(
-                    AudioFormat.Encoding.PCM_SIGNED);
+            boolean si = m_audioFormat.getEncoding().equals(AudioFormat.Encoding.PCM_SIGNED);
             m_doSignConversion = signed != si;
         }
     }
@@ -105,8 +104,9 @@ public abstract class TAudioOutputStream
 
     /**
      * Gives number of bytes already written.
+     * <p>
+     * IDEA: rename this to BytesWritten or something like that ?
      */
-    // IDEA: rename this to BytesWritten or something like that ?
     public long getCalculatedLength() {
         return m_lCalculatedLength;
     }
@@ -137,14 +137,13 @@ public abstract class TAudioOutputStream
 
     /**
      * Writes audio data to the destination (file or output stream).
+     * <p>
+     * IDEA: use long?
      */
-    // IDEA: use long?
     @Override
-    public int write(byte[] abData, int nOffset, int nLength)
-            throws IOException {
-        if (TDebug.TraceAudioOutputStream) {
-            TDebug.out("TAudioOutputStream.write(): wanted length: " + nLength);
-        }
+    public int write(byte[] abData, int nOffset, int nLength) throws IOException {
+        logger.log(Level.TRACE, "TAudioOutputStream.write(): wanted length: " + nLength);
+
         if (!m_bHeaderWritten) {
             writeHeader();
             m_bHeaderWritten = true;
@@ -153,16 +152,15 @@ public abstract class TAudioOutputStream
         // check that total writes do not exceed specified length
         long lTotalLength = getLength();
         if (lTotalLength != AudioSystem.NOT_SPECIFIED && (m_lCalculatedLength + nLength) > lTotalLength) {
-            if (TDebug.TraceAudioOutputStream) {
-                TDebug.out("TAudioOutputStream.write(): requested more bytes to write than possible.");
-            }
+            logger.log(Level.TRACE, "TAudioOutputStream.write(): requested more bytes to write than possible.");
+
             nLength = (int) (lTotalLength - m_lCalculatedLength);
             // sanity
             if (nLength < 0) {
                 nLength = 0;
             }
         }
-        // TODO: throw an exception if nLength==0 ? (to indicate end of file ?)
+        // TODO throw an exception if nLength==0 ? (to indicate end of file ?)
         if (nLength > 0) {
             handleImplicitConversions(abData, nOffset, nLength);
             m_dataOutputStream.write(abData, nOffset, nLength);
@@ -171,17 +169,15 @@ public abstract class TAudioOutputStream
             // guarantee integrity of data
             handleImplicitConversions(abData, nOffset, nLength);
         }
-        if (TDebug.TraceAudioOutputStream) {
-            TDebug.out("TAudioOutputStream.write(): calculated (total) length: " + m_lCalculatedLength + " bytes = " + (m_lCalculatedLength / getFormat().getFrameSize()) + " frames");
-        }
+        logger.log(Level.TRACE, "TAudioOutputStream.write(): calculated (total) length: " + m_lCalculatedLength + " bytes = " + (m_lCalculatedLength / getFormat().getFrameSize()) + " frames");
+
         return nLength;
     }
 
     /**
      * Writes the header of the audio file.
      */
-    protected abstract void writeHeader()
-            throws IOException;
+    protected abstract void writeHeader() throws IOException;
 
     /**
      * Closes the stream.
@@ -189,24 +185,20 @@ public abstract class TAudioOutputStream
      * backpatch the header, if necessary, and closes the destination.
      */
     @Override
-    public void close()
-            throws IOException {
-        if (TDebug.TraceAudioOutputStream) {
-            TDebug.out("TAudioOutputStream.close(): called");
-        }
+    public void close() throws IOException {
+        logger.log(Level.TRACE, "TAudioOutputStream.close(): called");
+
         // flush?
         if (m_bDoBackPatching) {
-            if (TDebug.TraceAudioOutputStream) {
-                TDebug.out("TAudioOutputStream.close(): patching header");
-            }
+            logger.log(Level.TRACE, "TAudioOutputStream.close(): patching header");
+
             patchHeader();
         }
         m_dataOutputStream.close();
     }
 
-    protected void patchHeader()
-            throws IOException {
-        TDebug.out("TAudioOutputStream.patchHeader(): called");
+    protected void patchHeader() throws IOException {
+        logger.log(Level.TRACE, "TAudioOutputStream.patchHeader(): called");
         // DO NOTHING
     }
 

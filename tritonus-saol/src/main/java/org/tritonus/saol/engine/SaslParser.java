@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 2002 by Matthias Pfisterer
  *
@@ -21,17 +20,19 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.StringTokenizer;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 
-import org.tritonus.share.TDebug;
+import static java.lang.System.getLogger;
 
 
-public class SaslParser
-        implements Runnable {
+public class SaslParser implements Runnable {
 
-    private RTSystem m_rtSystem;
+    private static final Logger logger = getLogger(SaslParser.class.getName());
+
+    private final RTSystem m_rtSystem;
     private boolean m_bRunning;
-    private BufferedReader m_bufferedReader;
+    private final BufferedReader m_bufferedReader;
 
     protected SaslParser(RTSystem rtSystem, InputStream inputStream) {
         m_rtSystem = rtSystem;
@@ -43,26 +44,24 @@ public class SaslParser
         try {
             runImpl();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.log(Level.ERROR, e.getMessage(), e);
         }
     }
 
-    private void runImpl()
-            throws IOException {
+    private void runImpl() throws IOException {
         m_bRunning = true;
         while (m_bRunning) {
             String strLine = m_bufferedReader.readLine();
             if (strLine == null) {
-                /* EOF signaled.
-                 */
+                // EOF signaled.
                 break;
             }
             strLine = strLine.trim();
             if (strLine.isEmpty()) {
                 continue;
             }
-            TDebug.out("line: " + strLine);
-            String[] astrParts = splitString(strLine);
+            logger.log(Level.TRACE, "line: " + strLine);
+            String[] astrParts = strLine.split("\\s");
             boolean bHighPriority = false;
             int nIndex = 0;
             if (astrParts[nIndex].equals("*")) {
@@ -80,20 +79,6 @@ public class SaslParser
                 m_rtSystem.scheduleInstrument(strCommandName, fTime, fDuration);
             }
         }
-    }
-
-    private static String[] splitString(String str) {
-        // jdk1.4 method:
-        // String[] astrParts = str.split("\\s");
-
-        StringTokenizer tokenizer = new StringTokenizer(str);
-        String[] astrParts = new String[tokenizer.countTokens()];
-        int nIndex = 0;
-        while (tokenizer.hasMoreTokens()) {
-            astrParts[nIndex] = tokenizer.nextToken();
-            nIndex++;
-        }
-        return astrParts;
     }
 }
 

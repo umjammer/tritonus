@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 1999 by Matthias Pfisterer
  *
@@ -19,19 +18,23 @@
 
 package org.tritonus.midi.device.alsa;
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiChannel;
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.Receiver;
 import javax.sound.midi.ShortMessage;
 
-import org.tritonus.share.TDebug;
 import org.tritonus.share.midi.MidiUtils;
+
+import static java.lang.System.getLogger;
 
 
 // idea: put things that can implemented with "pure MIDI" into a base class TMidiChannel
-public class AlsaMidiChannel
-        implements MidiChannel {
+public class AlsaMidiChannel implements MidiChannel {
+
+    private static final Logger logger = getLogger("org.tritonus.TraceAlsaMidiChannel");
 
     private Receiver m_receiver;
     private int m_nChannel;
@@ -55,9 +58,7 @@ public class AlsaMidiChannel
         try {
             message.setMessage(ShortMessage.NOTE_ON, getChannel(), nNoteNumber, nVelocity);
         } catch (InvalidMidiDataException e) {
-            if (TDebug.TraceAlsaMidiChannel || TDebug.TraceAllExceptions) {
-                TDebug.out(e);
-            }
+            logger.log(Level.ERROR, e.getMessage(), e);
         }
         sendMessage(message);
     }
@@ -68,9 +69,7 @@ public class AlsaMidiChannel
         try {
             message.setMessage(ShortMessage.NOTE_OFF, getChannel(), nNoteNumber, nVelocity);
         } catch (InvalidMidiDataException e) {
-            if (TDebug.TraceAlsaMidiChannel || TDebug.TraceAllExceptions) {
-                TDebug.out(e);
-            }
+            logger.log(Level.ERROR, e.getMessage(), e);
         }
         sendMessage(message);
     }
@@ -81,9 +80,7 @@ public class AlsaMidiChannel
         try {
             message.setMessage(ShortMessage.NOTE_OFF, getChannel(), nNoteNumber, 0);
         } catch (InvalidMidiDataException e) {
-            if (TDebug.TraceAlsaMidiChannel || TDebug.TraceAllExceptions) {
-                TDebug.out(e);
-            }
+            logger.log(Level.ERROR, e.getMessage(), e);
         }
         sendMessage(message);
     }
@@ -94,9 +91,7 @@ public class AlsaMidiChannel
         try {
             message.setMessage(ShortMessage.POLY_PRESSURE, nPressure, 0);
         } catch (InvalidMidiDataException e) {
-            if (TDebug.TraceAlsaMidiChannel || TDebug.TraceAllExceptions) {
-                TDebug.out(e);
-            }
+            logger.log(Level.ERROR, e.getMessage(), e);
         }
         sendMessage(message);
     }
@@ -112,9 +107,7 @@ public class AlsaMidiChannel
         try {
             message.setMessage(ShortMessage.CHANNEL_PRESSURE, getChannel(), nPressure, 0);
         } catch (InvalidMidiDataException e) {
-            if (TDebug.TraceAlsaMidiChannel || TDebug.TraceAllExceptions) {
-                TDebug.out(e);
-            }
+            logger.log(Level.ERROR, e.getMessage(), e);
         }
         sendMessage(message);
     }
@@ -130,9 +123,7 @@ public class AlsaMidiChannel
         try {
             message.setMessage(ShortMessage.CONTROL_CHANGE, getChannel(), nController, nValue);
         } catch (InvalidMidiDataException e) {
-            if (TDebug.TraceAlsaMidiChannel || TDebug.TraceAllExceptions) {
-                TDebug.out(e);
-            }
+            logger.log(Level.ERROR, e.getMessage(), e);
         }
         sendMessage(message);
     }
@@ -148,9 +139,7 @@ public class AlsaMidiChannel
         try {
             message.setMessage(ShortMessage.PROGRAM_CHANGE, getChannel(), nProgram, 0);
         } catch (InvalidMidiDataException e) {
-            if (TDebug.TraceAlsaMidiChannel || TDebug.TraceAllExceptions) {
-                TDebug.out(e);
-            }
+            logger.log(Level.ERROR, e.getMessage(), e);
         }
         sendMessage(message);
     }
@@ -159,12 +148,10 @@ public class AlsaMidiChannel
     public void programChange(int nBank, int nProgram) {
         ShortMessage message = new ShortMessage();
         try {
-            // TODO: what about the bank?
+            // TODO what about the bank?
             message.setMessage(ShortMessage.PROGRAM_CHANGE, getChannel(), nProgram, 0);
         } catch (InvalidMidiDataException e) {
-            if (TDebug.TraceAlsaMidiChannel || TDebug.TraceAllExceptions) {
-                TDebug.out(e);
-            }
+            logger.log(Level.ERROR, e.getMessage(), e);
         }
         sendMessage(message);
     }
@@ -180,9 +167,7 @@ public class AlsaMidiChannel
         try {
             message.setMessage(ShortMessage.PITCH_BEND, MidiUtils.get14bitLSB(nBend), MidiUtils.get14bitMSB(nBend));
         } catch (InvalidMidiDataException e) {
-            if (TDebug.TraceAlsaMidiChannel || TDebug.TraceAllExceptions) {
-                TDebug.out(e);
-            }
+            logger.log(Level.ERROR, e.getMessage(), e);
         }
         sendMessage(message);
     }
@@ -245,6 +230,3 @@ public class AlsaMidiChannel
         return false;
     }
 }
-
-
-

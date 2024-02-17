@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 1999 - 2003 by Matthias Pfisterer
  *
@@ -20,6 +19,8 @@ package org.tritonus.sampled.convert.jorbis;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -35,10 +36,11 @@ import com.jcraft.jorbis.Block;
 import com.jcraft.jorbis.Comment;
 import com.jcraft.jorbis.DspState;
 import com.jcraft.jorbis.Info;
-import org.tritonus.share.TDebug;
 import org.tritonus.share.sampled.AudioFormats;
 import org.tritonus.share.sampled.convert.TAsynchronousFilteredAudioInputStream;
 import org.tritonus.share.sampled.convert.TEncodingFormatConversionProvider;
+
+import static java.lang.System.getLogger;
 
 
 /**
@@ -51,93 +53,82 @@ import org.tritonus.share.sampled.convert.TEncodingFormatConversionProvider;
  *
  * @author Matthias Pfisterer
  */
-public class JorbisFormatConversionProvider
-        extends TEncodingFormatConversionProvider {
+public class JorbisFormatConversionProvider extends TEncodingFormatConversionProvider {
+
+    private static final Logger logger = getLogger("org.tritonus.TraceAudioConverter");
 
     // only used as abbreviation
     private static final AudioFormat.Encoding VORBIS = new AudioFormat.Encoding("VORBIS");
     private static final AudioFormat.Encoding PCM_SIGNED = new AudioFormat.Encoding("PCM_SIGNED");
 
-    private static final AudioFormat[] INPUT_FORMATS =
-            {
-                    // mono
-                    // TODO: mechanism to make the double specification with
-                    // different endianess obsolete.
-                    new AudioFormat(VORBIS, -1.0F, -1, 1, -1, -1.0F, false),
-                    new AudioFormat(VORBIS, -1.0F, -1, 1, -1, -1.0F, true),
-                    // stereo
-                    new AudioFormat(VORBIS, -1.0F, -1, 2, -1, -1.0F, false),
-                    new AudioFormat(VORBIS, -1.0F, -1, 2, -1, -1.0F, true),
-                    // TODO: other channel configurations
-            };
+    private static final AudioFormat[] INPUT_FORMATS = {
+            // mono
+            // TODO mechanism to make the double specification with
+            // different endianess obsolete.
+            new AudioFormat(VORBIS, -1.0F, -1, 1, -1, -1.0F, false),
+            new AudioFormat(VORBIS, -1.0F, -1, 1, -1, -1.0F, true),
+            // stereo
+            new AudioFormat(VORBIS, -1.0F, -1, 2, -1, -1.0F, false),
+            new AudioFormat(VORBIS, -1.0F, -1, 2, -1, -1.0F, true),
+            // TODO other channel configurations
+    };
 
-    private static final AudioFormat[] OUTPUT_FORMATS =
-            {
-                    // mono, 16 bit signed
-                    new AudioFormat(PCM_SIGNED, -1.0F, 16, 1, 2, -1.0F, false),
-                    new AudioFormat(PCM_SIGNED, -1.0F, 16, 1, 2, -1.0F, true),
-                    // stereo, 16 bit signed
-                    new AudioFormat(PCM_SIGNED, -1.0F, 16, 2, 4, -1.0F, false),
-                    new AudioFormat(PCM_SIGNED, -1.0F, 16, 2, 4, -1.0F, true),
-                    // TODO: other channel configurations
-            };
+    private static final AudioFormat[] OUTPUT_FORMATS = {
+            // mono, 16 bit signed
+            new AudioFormat(PCM_SIGNED, -1.0F, 16, 1, 2, -1.0F, false),
+            new AudioFormat(PCM_SIGNED, -1.0F, 16, 1, 2, -1.0F, true),
+            // stereo, 16 bit signed
+            new AudioFormat(PCM_SIGNED, -1.0F, 16, 2, 4, -1.0F, false),
+            new AudioFormat(PCM_SIGNED, -1.0F, 16, 2, 4, -1.0F, true),
+            // TODO other channel configurations
+    };
 
     /**
      * Constructor.
+     *
+     * TODO check interaction with base class
      */
-    // TODO: check interaction with base class
     public JorbisFormatConversionProvider() {
         super(Arrays.asList(INPUT_FORMATS),
-                Arrays.asList(OUTPUT_FORMATS)/*,
-           true, // new behaviour
-           false*/); // bidirectional .. constants UNIDIR../BIDIR..?
+                Arrays.asList(OUTPUT_FORMATS)
+                // true, // new behaviour
+                // false // bidirectional .. constants UNIDIR../BIDIR..?
+        );
     }
 
     @Override
     public AudioInputStream getAudioInputStream(AudioFormat targetFormat, AudioInputStream audioInputStream) {
-        /** The AudioInputStream to return.
-         */
+        // The AudioInputStream to return.
         AudioInputStream convertedAudioInputStream;
 
-        if (TDebug.TraceAudioConverter) {
-            TDebug.out(">JorbisFormatConversionProvider.getAudioInputStream(): begin");
-            TDebug.out("checking if conversion supported");
-            TDebug.out("from: " + audioInputStream.getFormat());
-            TDebug.out("to: " + targetFormat);
-        }
+        logger.log(Level.TRACE, ">JorbisFormatConversionProvider.getAudioInputStream(): begin");
+        logger.log(Level.TRACE, "checking if conversion supported");
+        logger.log(Level.TRACE, "from: " + audioInputStream.getFormat());
+        logger.log(Level.TRACE, "to: " + targetFormat);
 
         // what is this ???
         targetFormat = getDefaultTargetFormat(targetFormat, audioInputStream.getFormat());
-        if (isConversionSupported(targetFormat,
-                audioInputStream.getFormat())) {
-            if (TDebug.TraceAudioConverter) {
-                TDebug.out("conversion supported; trying to create DecodedJorbisAudioInputStream");
-            }
-            convertedAudioInputStream = new
-                    DecodedJorbisAudioInputStream(
-                    targetFormat,
-                    audioInputStream);
+        if (isConversionSupported(targetFormat, audioInputStream.getFormat())) {
+            logger.log(Level.TRACE, "conversion supported; trying to create DecodedJorbisAudioInputStream");
+
+            convertedAudioInputStream = new DecodedJorbisAudioInputStream(targetFormat, audioInputStream);
         } else {
-            if (TDebug.TraceAudioConverter) {
-                TDebug.out("conversion not supported; throwing IllegalArgumentException");
-                TDebug.out("<");
-            }
+            logger.log(Level.TRACE, "conversion not supported; throwing IllegalArgumentException");
+            logger.log(Level.TRACE, "<");
             throw new IllegalArgumentException("conversion not supported");
         }
-        if (TDebug.TraceAudioConverter) {
-            TDebug.out("<JorbisFormatConversionProvider.getAudioInputStream(): end");
-        }
+
+        logger.log(Level.TRACE, "<JorbisFormatConversionProvider.getAudioInputStream(): end");
+
         return convertedAudioInputStream;
     }
 
-    // TODO: recheck !!
+    // TODO recheck !!
     protected AudioFormat getDefaultTargetFormat(AudioFormat targetFormat, AudioFormat sourceFormat) {
-        if (TDebug.TraceAudioConverter) {
-            TDebug.out("JorbisFormatConversionProvider.getDefaultTargetFormat(): target format: " + targetFormat);
-        }
-        if (TDebug.TraceAudioConverter) {
-            TDebug.out("JorbisFormatConversionProvider.getDefaultTargetFormat(): source format: " + sourceFormat);
-        }
+        logger.log(Level.TRACE, "JorbisFormatConversionProvider.getDefaultTargetFormat(): target format: " + targetFormat);
+
+        logger.log(Level.TRACE, "JorbisFormatConversionProvider.getDefaultTargetFormat(): source format: " + sourceFormat);
+
         AudioFormat newTargetFormat = null;
         // return first of the matching formats
         // pre-condition: the predefined target formats (FORMATS2) must be well-defined !
@@ -149,9 +140,8 @@ public class JorbisFormatConversionProvider
         if (newTargetFormat == null) {
             throw new IllegalArgumentException("conversion not supported");
         }
-        if (TDebug.TraceAudioConverter) {
-            TDebug.out("JorbisFormatConversionProvider.getDefaultTargetFormat(): new target format: " + newTargetFormat);
-        }
+        logger.log(Level.TRACE, "JorbisFormatConversionProvider.getDefaultTargetFormat(): new target format: " + newTargetFormat);
+
         // hacked together...
         // ... only works for PCM target encoding ...
         newTargetFormat = new AudioFormat(targetFormat.getEncoding(),
@@ -161,9 +151,9 @@ public class JorbisFormatConversionProvider
                 newTargetFormat.getFrameSize(),
                 sourceFormat.getSampleRate(),
                 newTargetFormat.isBigEndian());
-        if (TDebug.TraceAudioConverter) {
-            TDebug.out("JorbisFormatConversionProvider.getDefaultTargetFormat(): really new target format: " + newTargetFormat);
-        }
+
+        logger.log(Level.TRACE, "JorbisFormatConversionProvider.getDefaultTargetFormat(): really new target format: " + newTargetFormat);
+
         return newTargetFormat;
     }
 
@@ -173,11 +163,11 @@ public class JorbisFormatConversionProvider
      * AudioSystem.getAudioInputStream(AudioFormat, AudioInputStream)
      * to decode an ogg/vorbis stream. This class contains the logic
      * of maintaining buffers and calling the decoder.
+     * <p>
+     * Class should be private, but is public due to a bug (?) in the
+     * aspectj compiler.
      */
- /* Class should be private, but is public due to a bug (?) in the
-    aspectj compiler. */
-    /*private*/public static class DecodedJorbisAudioInputStream
-            extends TAsynchronousFilteredAudioInputStream {
+    /* private */ public static class DecodedJorbisAudioInputStream extends TAsynchronousFilteredAudioInputStream {
 
         private static final int BUFFER_MULTIPLE = 4;
         private static final int BUFFER_SIZE = BUFFER_MULTIPLE * 256 * 2;
@@ -201,12 +191,12 @@ public class JorbisFormatConversionProvider
         private List<String> m_songComments = new ArrayList<>();
         // is altered later in a dubious way
         private int convsize = -1; // BUFFER_SIZE * 2;
-        // TODO: further checking
+        // TODO further checking
         private byte[] convbuffer = new byte[CONVSIZE];
         private float[][][] _pcmf = null;
         private int[] _index = null;
 
-        // TODO: introduce state variable
+        // TODO introduce state variable
         private boolean m_bHeadersExpected;
 
         /**
@@ -214,15 +204,13 @@ public class JorbisFormatConversionProvider
          */
         public DecodedJorbisAudioInputStream(AudioFormat outputFormat, AudioInputStream bitStream) {
             super(outputFormat, AudioSystem.NOT_SPECIFIED);
-            if (TDebug.TraceAudioConverter) {
-                TDebug.out("DecodedJorbisAudioInputStream.<init>(): begin");
-            }
+            logger.log(Level.TRACE, "DecodedJorbisAudioInputStream.<init>(): begin");
+
             m_oggBitStream = bitStream;
             m_bHeadersExpected = true;
             init_jorbis();
-            if (TDebug.TraceAudioConverter) {
-                TDebug.out("DecodedJorbisAudioInputStream.<init>(): end");
-            }
+
+            logger.log(Level.TRACE, "DecodedJorbisAudioInputStream.<init>(): end");
         }
 
         /**
@@ -247,49 +235,55 @@ public class JorbisFormatConversionProvider
          */
         @Override
         public void execute() {
-            if (TDebug.TraceAudioConverter) TDebug.out(">DecodedJorbisAudioInputStream.execute(): begin");
+            logger.log(Level.TRACE, ">DecodedJorbisAudioInputStream.execute(): begin");
+
             if (m_bHeadersExpected) {
-                if (TDebug.TraceAudioConverter) TDebug.out("reading headers...");
+                logger.log(Level.TRACE, "reading headers...");
+
                 // Headers (+ Comments).
                 try {
                     readHeaders();
                 } catch (IOException e) {
-                    if (TDebug.TraceAllExceptions) {
-                        TDebug.out(e);
-                    }
+                    logger.log(Level.ERROR, e.getMessage(), e);
+
                     closePhysicalStream();
-                    if (TDebug.TraceAudioConverter) TDebug.out("<DecodedJorbisAudioInputStream.execute(): end");
+                    logger.log(Level.TRACE, "<DecodedJorbisAudioInputStream.execute(): end");
+
                     return;
                 }
                 m_bHeadersExpected = false;
                 setupVorbisStructures();
             }
-            if (TDebug.TraceAudioConverter) TDebug.out("decoding...");
+            logger.log(Level.TRACE, "decoding...");
+
             // Decoding !
             while (writeMore()) {
                 try {
                     readOggPacket();
                 } catch (IOException e) {
-                    if (TDebug.TraceAllExceptions) {
-                        TDebug.out(e);
-                    }
+                    logger.log(Level.ERROR, e.getMessage(), e);
+
                     closePhysicalStream();
-                    if (TDebug.TraceAudioConverter) TDebug.out("<DecodedJorbisAudioInputStream.execute(): end");
+                    logger.log(Level.TRACE, "<DecodedJorbisAudioInputStream.execute(): end");
+
                     return;
                 }
                 decodeDataPacket();
             }
             if (m_oggPacket.e_o_s != 0) {
-                if (TDebug.TraceAudioConverter) TDebug.out("end of vorbis stream reached");
+                logger.log(Level.TRACE, "end of vorbis stream reached");
+
                 shutDownLogicalStream();
             }
-            if (TDebug.TraceAudioConverter) TDebug.out("<DecodedJorbisAudioInputStream.execute(): end");
+
+            logger.log(Level.TRACE, "<DecodedJorbisAudioInputStream.execute(): end");
         }
 
-        /* The end of the vorbis stream is reached.
-           So we shut down the logical bitstream and
-           vorbis structures.
-        */
+        /**
+         * The end of the vorbis stream is reached.
+         * So we shut down the logical bitstream and
+         * vorbis structures.
+         */
         private void shutDownLogicalStream() {
             m_oggStreamState.clear();
             m_vorbisBlock.clear();
@@ -299,7 +293,8 @@ public class JorbisFormatConversionProvider
         }
 
         private void closePhysicalStream() {
-            if (TDebug.TraceAudioConverter) TDebug.out("DecodedJorbisAudioInputStream.closePhysicalStream(): begin");
+            logger.log(Level.TRACE, "DecodedJorbisAudioInputStream.closePhysicalStream(): begin");
+
             m_oggSyncState.clear();
             try {
                 if (m_oggBitStream != null) {
@@ -307,18 +302,16 @@ public class JorbisFormatConversionProvider
                 }
                 getCircularBuffer().close();
             } catch (Exception e) {
-                if (TDebug.TraceAllExceptions) {
-                    TDebug.out(e);
-                }
+                logger.log(Level.ERROR, e.getMessage(), e);
             }
-            if (TDebug.TraceAudioConverter) TDebug.out("DecodedJorbisAudioInputStream.closePhysicalStream(): end");
+
+            logger.log(Level.TRACE, "DecodedJorbisAudioInputStream.closePhysicalStream(): end");
         }
 
         /**
          * Read and process all three vorbis headers.
          */
-        private void readHeaders()
-                throws IOException {
+        private void readHeaders() throws IOException {
             readIdentificationHeader();
             readCommentAndCodebookHeaders();
             processComments();
@@ -329,8 +322,7 @@ public class JorbisFormatConversionProvider
          *
          * @throw IOException
          */
-        private void readIdentificationHeader()
-                throws IOException {
+        private void readIdentificationHeader() throws IOException {
             readOggPage();
             m_oggStreamState.init(m_oggPage.serialno());
             m_vorbisInfo.init();
@@ -349,8 +341,7 @@ public class JorbisFormatConversionProvider
         /**
          * Read the comment header and the codebook header pages.
          */
-        private void readCommentAndCodebookHeaders()
-                throws IOException {
+        private void readCommentAndCodebookHeaders() throws IOException {
             for (int i = 0; i < 2; i++) {
                 readOggPacket();
                 if (m_vorbisInfo.synthesis_headerin(m_vorbisComment, m_oggPacket) < 0) {
@@ -359,9 +350,7 @@ public class JorbisFormatConversionProvider
             }
         }
 
-        /**
-         *
-         */
+        /** */
         private void processComments() {
             byte[][] ptr = m_vorbisComment.user_comments;
             String currComment;
@@ -372,26 +361,24 @@ public class JorbisFormatConversionProvider
                 }
                 currComment = (new String(bytes, 0, bytes.length - 1)).trim();
                 m_songComments.add(currComment);
-    /*
-    if (currComment.toUpperCase().startsWith("ARTIST"))
-    {
-     String artistLabelValue = currComment.substring(7);
-    }
-    else if (currComment.toUpperCase().startsWith("TITLE"))
-    {
-     String titleLabelValue = currComment.substring(6);
-     String miniDragLabel = currComment.substring(6);
-    }
-    */
-                if (TDebug.TraceAudioConverter) TDebug.out("Comment: " + currComment);
+
+//                if (currComment.toUpperCase().startsWith("ARTIST")) {
+//                    String artistLabelValue = currComment.substring(7);
+//                } else if (currComment.toUpperCase().startsWith("TITLE")) {
+//                    String titleLabelValue = currComment.substring(6);
+//                    String miniDragLabel = currComment.substring(6);
+//                }
+
+                logger.log(Level.TRACE, "Comment: " + currComment);
             }
             currComment = "Bitstream: " + m_vorbisInfo.channels + " channel," + m_vorbisInfo.rate + "Hz";
             m_songComments.add(currComment);
-            if (TDebug.TraceAudioConverter) TDebug.out(currComment);
-            if (TDebug.TraceAudioConverter)
+            logger.log(Level.TRACE, currComment);
+
+            if (logger.isLoggable(Level.TRACE))
                 currComment = "Encoded by: " + new String(m_vorbisComment.vendor, 0, m_vorbisComment.vendor.length - 1);
             m_songComments.add(currComment);
-            if (TDebug.TraceAudioConverter) TDebug.out(currComment);
+            logger.log(Level.TRACE, currComment);
         }
 
         /**
@@ -443,7 +430,7 @@ public class JorbisFormatConversionProvider
          */
         private void clipAndWriteSample(float fSample, int nPointer) {
             int nSample;
-            // TODO: check if clipping is necessary
+            // TODO check if clipping is necessary
             if (fSample > 1.0F) {
                 fSample = 1.0F;
             }
@@ -530,8 +517,7 @@ public class JorbisFormatConversionProvider
          * StreamState object (which assembles pages to packets).
          * This has to be done by the caller.
          */
-        private void readOggPage()
-                throws IOException {
+        private void readOggPage() throws IOException {
             while (true) {
                 int result = m_oggSyncState.pageout(m_oggPage);
                 if (result == 1) {
@@ -539,9 +525,9 @@ public class JorbisFormatConversionProvider
                 }
                 // we need more data from the stream
                 int nIndex = m_oggSyncState.buffer(BUFFER_SIZE);
-                // TODO: call stream.read() directly
+                // TODO call stream.read() directly
                 int nBytes = readFromStream(m_oggSyncState.data, nIndex, BUFFER_SIZE);
-                // TODO: This clause should become obsolete; readFromStream() should
+                // TODO This clause should become obsolete; readFromStream() should
                 // propagate exceptions directly.
                 if (nBytes == -1) {
                     throw new EOFException();
@@ -552,7 +538,7 @@ public class JorbisFormatConversionProvider
 
         /**
          * Read raw data from to ogg bitstream.
-         * Reads from  {@ #m_oggBitStream m_oggBitStream} a
+         * Reads from  {@link #m_oggBitStream m_oggBitStream} a
          * specified number of bytes into a buffer, starting
          * at a specified buffer index.
          *
@@ -562,23 +548,16 @@ public class JorbisFormatConversionProvider
          * @return the number of bytes read (maybe 0) or
          * -1 if there is no more data in the stream.
          */
-        private int readFromStream(byte[] buffer, int nStart, int nLength)
-                throws IOException {
+        private int readFromStream(byte[] buffer, int nStart, int nLength) throws IOException {
             return m_oggBitStream.read(buffer, nStart, nLength);
         }
 
-        /**
-         *
-         */
+        /** */
         private int getSampleSizeInBytes() {
             return getFormat().getFrameSize() / getFormat().getChannels();
         }
 
-        /**
-         * .
-         *
-         * @return .
-         */
+        /** */
         private int getFrameSize() {
             return getFormat().getFrameSize();
         }
@@ -592,16 +571,10 @@ public class JorbisFormatConversionProvider
             return getFormat().isBigEndian();
         }
 
-        /**
-         *
-         */
         @Override
         public void close() throws IOException {
             super.close();
             m_oggBitStream.close();
         }
-
     }
 }
-
-

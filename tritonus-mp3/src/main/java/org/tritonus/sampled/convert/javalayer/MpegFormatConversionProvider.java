@@ -21,6 +21,8 @@ package org.tritonus.sampled.convert.javalayer;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.util.Arrays;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -32,11 +34,12 @@ import javazoom.jl.decoder.Decoder;
 import javazoom.jl.decoder.DecoderException;
 import javazoom.jl.decoder.Header;
 import javazoom.jl.decoder.Obuffer;
-import org.tritonus.share.TDebug;
 import org.tritonus.share.sampled.AudioUtils;
 import org.tritonus.share.sampled.TConversionTool;
 import org.tritonus.share.sampled.convert.TAsynchronousFilteredAudioInputStream;
 import org.tritonus.share.sampled.convert.TEncodingFormatConversionProvider;
+
+import static java.lang.System.getLogger;
 
 
 /**
@@ -46,6 +49,8 @@ import org.tritonus.share.sampled.convert.TEncodingFormatConversionProvider;
  * @author Florian Bomers
  */
 public class MpegFormatConversionProvider extends TEncodingFormatConversionProvider {
+
+    private static final Logger logger= getLogger("org.tritonus.TraceAudioConverter");
 
     public static final AudioFormat.Encoding MPEG1L1 = new AudioFormat.Encoding("MPEG1L1");
     public static final AudioFormat.Encoding MPEG1L2 = new AudioFormat.Encoding("MPEG1L2");
@@ -60,8 +65,8 @@ public class MpegFormatConversionProvider extends TEncodingFormatConversionProvi
 
     private static final AudioFormat.Encoding PCM_SIGNED = AudioFormat.Encoding.PCM_SIGNED;
 
-    /* TODO: mechanism to make the double specification with
-       different endianess obsolete. */
+    // TODO mechanism to make the double specification with
+    //  different endianess obsolete.
     private static final AudioFormat[] INPUT_FORMATS = {
             // mono
             new AudioFormat(MPEG1L1, -1.0F, -1, 1, -1, -1.0F, false),
@@ -143,23 +148,22 @@ public class MpegFormatConversionProvider extends TEncodingFormatConversionProvi
             new AudioFormat(PCM_SIGNED, -1.0F, 16, 2, 4, -1.0F, false),
             new AudioFormat(PCM_SIGNED, -1.0F, 16, 2, 4, -1.0F, true),
 
-            /* 24 and 32 bit not yet possible
-              // mono, 24 bit signed
-              new AudioFormat(PCM_SIGNED, -1.0F, 24, 1, 3, -1.0F, false),
-              new AudioFormat(PCM_SIGNED, -1.0F, 24, 1, 3, -1.0F, true),
-
-              // stereo, 24 bit signed
-              new AudioFormat(PCM_SIGNED, -1.0F, 24, 2, 6, -1.0F, false),
-              new AudioFormat(PCM_SIGNED, -1.0F, 24, 2, 6, -1.0F, true),
-
-              // mono, 32 bit signed
-              new AudioFormat(PCM_SIGNED, -1.0F, 32, 1, 4, -1.0F, false),
-              new AudioFormat(PCM_SIGNED, -1.0F, 32, 1, 4, -1.0F, true),
-
-              // stereo, 32 bit signed
-              new AudioFormat(PCM_SIGNED, -1.0F, 32, 2, 8, -1.0F, false),
-              new AudioFormat(PCM_SIGNED, -1.0F, 32, 2, 8, -1.0F, true),
-            */
+//            // 24 and 32 bit not yet possible
+//            // mono, 24 bit signed
+//            new AudioFormat(PCM_SIGNED, -1.0F, 24, 1, 3, -1.0F, false),
+//            new AudioFormat(PCM_SIGNED, -1.0F, 24, 1, 3, -1.0F, true),
+//
+//            // stereo, 24 bit signed
+//            new AudioFormat(PCM_SIGNED, -1.0F, 24, 2, 6, -1.0F, false),
+//            new AudioFormat(PCM_SIGNED, -1.0F, 24, 2, 6, -1.0F, true),
+//
+//            // mono, 32 bit signed
+//            new AudioFormat(PCM_SIGNED, -1.0F, 32, 1, 4, -1.0F, false),
+//            new AudioFormat(PCM_SIGNED, -1.0F, 32, 1, 4, -1.0F, true),
+//
+//            // stereo, 32 bit signed
+//            new AudioFormat(PCM_SIGNED, -1.0F, 32, 2, 8, -1.0F, false),
+//            new AudioFormat(PCM_SIGNED, -1.0F, 32, 2, 8, -1.0F, true),
     };
 
     /**
@@ -167,48 +171,42 @@ public class MpegFormatConversionProvider extends TEncodingFormatConversionProvi
      */
     public MpegFormatConversionProvider() {
         super(Arrays.asList(INPUT_FORMATS), Arrays.asList(OUTPUT_FORMATS));
-        if (TDebug.TraceAudioConverter) {
-            TDebug.out("MpegFormatConversionProvider()");
-        }
+        logger.log(Level.TRACE, "MpegFormatConversionProvider()");
     }
 
     @Override
     public AudioInputStream getAudioInputStream(AudioFormat targetFormat, AudioInputStream audioInputStream) {
         AudioFormat sourceFormat = audioInputStream.getFormat();
 
-        if (TDebug.TraceAudioConverter) {
-            TDebug.out(">MpegFormatConversionProvider.getAudioInputStream(AudioFormat, AudioInputStream):");
-            TDebug.out("trying to convert");
-            TDebug.out("\tfrom: " + sourceFormat);
-            TDebug.out("\tto: " + targetFormat);
-        }
+        logger.log(Level.TRACE, ">MpegFormatConversionProvider.getAudioInputStream(AudioFormat, AudioInputStream):");
+        logger.log(Level.TRACE, "trying to convert");
+        logger.log(Level.TRACE, "\tfrom: " + sourceFormat);
+        logger.log(Level.TRACE, "\tto: " + targetFormat);
 
         targetFormat = getFullyQualifiedTargetFormat(targetFormat, sourceFormat, false);
         if (targetFormat != null) {
-            if (TDebug.TraceAudioConverter) {
-                TDebug.out("< OK");
-            }
-            return new DecodedMpegAudioInputStream(
-                    targetFormat,
-                    audioInputStream);
+            logger.log(Level.TRACE, "< OK");
+
+            return new DecodedMpegAudioInputStream(targetFormat, audioInputStream);
         }
-        if (TDebug.TraceAudioConverter) {
-            TDebug.out("< not supported");
-        }
+        logger.log(Level.TRACE, "< not supported");
+
         throw new IllegalArgumentException("conversion not supported");
     }
 
     private AudioFormat getFullyQualifiedTargetFormat(AudioFormat targetFormat, AudioFormat sourceFormat, boolean allowUnspecified) {
         // check that sourceFormat and targetFormat are in list of supported formats
         if (!super.isConversionSupported(targetFormat.getEncoding(), sourceFormat)) {
-            if (TDebug.TraceAudioConverter) TDebug.out("cannot convert: super.isConversionSupported()==false");
+            logger.log(Level.TRACE, "cannot convert: super.isConversionSupported()==false");
+
             return null;
         }
 
         // make it simple: we can only convert to PCM_SIGNED,
         // therefore, just fill in the missing fields
         if (!targetFormat.getEncoding().equals(PCM_SIGNED)) {
-            if (TDebug.TraceAudioConverter) TDebug.out("cannot convert: target is not PCM_SIGNED");
+            logger.log(Level.TRACE, "cannot convert: target is not PCM_SIGNED");
+
             return null;
         }
 
@@ -219,7 +217,8 @@ public class MpegFormatConversionProvider extends TEncodingFormatConversionProvi
                 || targetFormat.getChannels() == 0
                 || sourceFormat.getSampleRate() == 0
                 || targetFormat.getSampleRate() == 0) {
-            if (TDebug.TraceAudioConverter) TDebug.out("cannot convert: channels or sample rate out of bounds");
+            logger.log(Level.TRACE, "cannot convert: channels or sample rate out of bounds");
+
             return null;
         }
 
@@ -229,20 +228,23 @@ public class MpegFormatConversionProvider extends TEncodingFormatConversionProvi
                 // both channel fields must be -1
                 if (targetFormat.getChannels() >= 0) {
                     // cannot convert a non-specified channel number to a different specified channel
-                    if (TDebug.TraceAudioConverter) TDebug.out("cannot convert: cannot any to specific channels");
+                    logger.log(Level.TRACE, "cannot convert: cannot any to specific channels");
+
                     return null;
                 }
             } else {
                 // do not allow source channels = -1
-                if (TDebug.TraceAudioConverter)
-                    TDebug.out("cannot convert: channels cannot be AudioSystem.NOT_SPECIFIED");
+
+                logger.log(Level.TRACE, "cannot convert: channels cannot be AudioSystem.NOT_SPECIFIED");
+
                 return null;
             }
         } else {
             // if target channels are given, they must equal source channels
             if (targetFormat.getChannels() > 0 && targetFormat.getChannels() != sourceFormat.getChannels()) {
                 // cannot convert a specified channel number to a different specified channel
-                if (TDebug.TraceAudioConverter) TDebug.out("cannot convert: specified channel number must be the same");
+                logger.log(Level.TRACE, "cannot convert: specified channel number must be the same");
+
                 return null;
             }
         }
@@ -253,26 +255,30 @@ public class MpegFormatConversionProvider extends TEncodingFormatConversionProvi
                 // both SampleRate fields must be -1
                 if (targetFormat.getSampleRate() >= 0) {
                     // cannot convert a non-specified SampleRate to a different specified SampleRate
-                    if (TDebug.TraceAudioConverter) TDebug.out("cannot convert any to specific sample rate");
+                    logger.log(Level.TRACE, "cannot convert any to specific sample rate");
+
                     return null;
                 }
             } else {
                 // do not allow SampleRate = -1
-                if (TDebug.TraceAudioConverter) TDebug.out("cannot convert: source sample rate is NOT_SPECIFIED");
+                logger.log(Level.TRACE, "cannot convert: source sample rate is NOT_SPECIFIED");
+
                 return null;
             }
         } else {
             // if target SampleRate is given, must equal source SampleRate
             if (targetFormat.getSampleRate() > 0 && targetFormat.getSampleRate() != sourceFormat.getSampleRate()) {
                 // cannot convert a specified SampleRate to a different specified SampleRate
-                if (TDebug.TraceAudioConverter) TDebug.out("cannot convert sample rate");
+                logger.log(Level.TRACE, "cannot convert sample rate");
+
                 return null;
             }
         }
 
         // check sample size
         if (targetFormat.getSampleSizeInBits() != 16) {
-            if (TDebug.TraceAudioConverter) TDebug.out("cannot convert: source sample width is not 16");
+            logger.log(Level.TRACE, "cannot convert: source sample width is not 16");
+
             return null;
         }
 
@@ -289,17 +295,15 @@ public class MpegFormatConversionProvider extends TEncodingFormatConversionProvi
 
     @Override
     public boolean isConversionSupported(AudioFormat targetFormat, AudioFormat sourceFormat) {
-        if (TDebug.TraceAudioConverter) {
-            TDebug.out(">MpegFormatConversionProvider.isConversionSupported(AudioFormat targetFormat, AudioFormat sourceFormat):");
-            TDebug.out("checking if conversion possible");
-            TDebug.out("from: " + sourceFormat);
-            TDebug.out("to: " + targetFormat);
-        }
+        logger.log(Level.TRACE, ">MpegFormatConversionProvider.isConversionSupported(AudioFormat targetFormat, AudioFormat sourceFormat):");
+        logger.log(Level.TRACE, "checking if conversion possible");
+        logger.log(Level.TRACE, "from: " + sourceFormat);
+        logger.log(Level.TRACE, "to: " + targetFormat);
         AudioFormat format = getFullyQualifiedTargetFormat(targetFormat, sourceFormat, true);
         boolean supported = (format != null);
-        if (TDebug.TraceAudioConverter) {
-            TDebug.out("<MpegFormatConversionProvider.isConversionSupported(AudioFormat targetFormat, AudioFormat sourceFormat), result=" + supported);
-        }
+
+        logger.log(Level.TRACE, "<MpegFormatConversionProvider.isConversionSupported(AudioFormat targetFormat, AudioFormat sourceFormat), result=" + supported);
+
         return supported;
     }
 
@@ -311,7 +315,7 @@ public class MpegFormatConversionProvider extends TEncodingFormatConversionProvi
         private DMAISObuffer m_oBuffer;
 
         public DecodedMpegAudioInputStream(AudioFormat outputFormat, AudioInputStream inputStream) {
-            // TODO: try to find out length (possible?)
+            // TODO try to find out length (possible?)
             super(outputFormat, AudioSystem.NOT_SPECIFIED);
             m_encodedStream = inputStream;
             m_bitstream = new Bitstream(inputStream);
@@ -325,9 +329,8 @@ public class MpegFormatConversionProvider extends TEncodingFormatConversionProvi
             try {
                 Header header = m_bitstream.readFrame();
                 if (header == null) {
-                    if (TDebug.TraceAudioConverter) {
-                        TDebug.out("header is null (end of mpeg stream)");
-                    }
+                    logger.log(Level.TRACE, "header is null (end of mpeg stream)");
+
                     getCircularBuffer().close();
                     return;
                 }
@@ -336,9 +339,7 @@ public class MpegFormatConversionProvider extends TEncodingFormatConversionProvi
                 getCircularBuffer().write(m_oBuffer.getBuffer(), 0, m_oBuffer.getCurrentBufferSize());
                 m_oBuffer.reset();
             } catch (BitstreamException | DecoderException e) {
-                if (TDebug.TraceAudioConverter || TDebug.TraceAllExceptions) {
-                    TDebug.out(e);
-                }
+                logger.log(Level.ERROR, e.getMessage(), e);
             }
         }
 
@@ -400,8 +401,7 @@ public class MpegFormatConversionProvider extends TEncodingFormatConversionProvi
             public void reset() {
                 for (int i = 0; i < m_nChannels; i++) {
                     // Points to byte location,
-                    // implicitely assuming 16 bit
-                    // samples.
+                    // implicitly assuming 16 bit samples.
                     m_anBufferPointers[i] = i * 2;
                 }
             }
@@ -422,33 +422,33 @@ public class MpegFormatConversionProvider extends TEncodingFormatConversionProvi
         boolean failed = (failSupported == isConversionSupported) || (failAIS != (convertedAIS == null));
         if (failed || verbose) {
             if (failed) {
-                System.out.println((testNum) + ".ERROR:");
+                logger.log(Level.DEBUG, (testNum) + ".ERROR:");
             } else {
-                System.out.println((testNum) + ".PASSED:");
+                logger.log(Level.DEBUG, (testNum) + ".PASSED:");
             }
-            System.out.println("    source: " + source);
-            System.out.println("    target: " + target);
+            logger.log(Level.DEBUG, "    source: " + source);
+            logger.log(Level.DEBUG, "    target: " + target);
             if (failSupported == isConversionSupported) {
-                System.out.println("  isConversionSupported() erronously returned " + isConversionSupported);
+                logger.log(Level.DEBUG, "  isConversionSupported() erronously returned " + isConversionSupported);
             } else {
-                System.out.println("  isConversionSupported() correctly returned " + isConversionSupported);
+                logger.log(Level.DEBUG, "  isConversionSupported() correctly returned " + isConversionSupported);
             }
             if (convertedAIS != null) {
                 if (failAIS) {
-                    System.out.println("  converted stream was erronously returned with format:");
+                    logger.log(Level.DEBUG, "  converted stream was erronously returned with format:");
                 } else {
-                    System.out.println("  converted stream was correctly returned with format:");
+                    logger.log(Level.DEBUG, "  converted stream was correctly returned with format:");
                 }
-                System.out.println("  converted format: " + convertedAIS.getFormat());
+                logger.log(Level.DEBUG, "  converted format: " + convertedAIS.getFormat());
             } else {
                 if (failAIS) {
-                    System.out.println("  converted stream was correctly not returned.");
+                    logger.log(Level.DEBUG, "  converted stream was correctly not returned.");
                 } else {
-                    System.out.println("  converted stream was erronously not returned.");
+                    logger.log(Level.DEBUG, "  converted stream was erronously not returned.");
                 }
             }
         } else if (!failed) {
-            System.out.println((testNum) + ".OK");
+            logger.log(Level.DEBUG, (testNum) + ".OK");
         }
         return failed ? 0 : 1;
     }
@@ -500,9 +500,6 @@ public class MpegFormatConversionProvider extends TEncodingFormatConversionProvi
         target = new AudioFormat(PCM_SIGNED, 8000, 16, -1, -1, 8000, false);
         passed += test(target, source, false, true, testNum++);
 
-        System.out.println("Passed " + passed + " tests of " + testNum);
+        logger.log(Level.DEBUG, "Passed " + passed + " tests of " + testNum);
     }
-
 }
-
-

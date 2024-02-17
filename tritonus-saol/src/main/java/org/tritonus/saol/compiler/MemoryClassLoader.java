@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 2002 by Matthias Pfisterer
  *
@@ -19,37 +18,33 @@ package org.tritonus.saol.compiler;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 
-public class MemoryClassLoader
-        extends ClassLoader {
+public class MemoryClassLoader extends ClassLoader {
 
-    public Class<?> findClass(String strName,
-                           byte[] classData) {
+    public Class<?> findClass(String strName, byte[] classData) {
         Class<?> cls = defineClass(strName, classData, 0, classData.length);
         return cls;
     }
 
-    /* For testing
+    /**
+     * For testing
      */
-    public static void main(String[] args) {
-        try {
-            FileInputStream fis = new FileInputStream("Instrument.class");
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            byte[] buffer = new byte[4096];
-            while (true) {
-                int nRead = fis.read(buffer);
-                if (nRead == -1) {
-                    break;
-                }
-                baos.write(buffer, 0, nRead);
+    public static void main(String[] args) throws Exception {
+        FileInputStream fis = new FileInputStream("Instrument.class");
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        byte[] buffer = new byte[4096];
+        while (true) {
+            int nRead = fis.read(buffer);
+            if (nRead == -1) {
+                break;
             }
-            MemoryClassLoader mcl = new MemoryClassLoader();
-            Class<?> cls = mcl.findClass("Instrument", baos.toByteArray());
-            System.out.println("class loaded: " + cls.getName());
-        } catch (Exception e) {
-            e.printStackTrace();
+            baos.write(buffer, 0, nRead);
         }
+        MemoryClassLoader mcl = new MemoryClassLoader();
+        Class<?> cls = mcl.findClass("Instrument", baos.toByteArray());
+        System.out.println("class loaded: " + cls.getName());
     }
 }
 

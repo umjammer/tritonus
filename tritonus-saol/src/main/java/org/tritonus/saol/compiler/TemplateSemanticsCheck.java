@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 2002 by Matthias Pfisterer
  *
@@ -22,7 +21,7 @@ public class TemplateSemanticsCheck
         extends IOTCommonSemanticsCheck {
 
     private static final boolean DEBUG = true;
-    // TODO: verify
+    // TODO verify
     private static final int[] LEGAL_VARIABLE_TYPES = new int[]
             {
                     WidthAndRate.RATE_I,

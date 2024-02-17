@@ -16,17 +16,23 @@
 
 package org.tritonus.lowlevel.ogg;
 
-import org.tritonus.share.TDebug;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
+
 import vavi.sound.sampled.jna.ogg.OggLibrary;
 import vavi.sound.sampled.jna.ogg.ogg_packet;
 import vavi.sound.sampled.jna.ogg.ogg_page;
 import vavi.sound.sampled.jna.ogg.ogg_stream_state;
+
+import static java.lang.System.getLogger;
 
 
 /**
  * Wrapper for ogg_stream_state.
  */
 public class StreamState {
+
+    private static final Logger logger= getLogger("org.tritonus.TraceOggNative");
 
     /**
      * Holds the pointer to ogg_stream_state
@@ -36,53 +42,45 @@ public class StreamState {
     private ogg_stream_state handle;
 
     public StreamState() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("<init>: begin");
-        }
+        logger.log(Level.TRACE, "<init>: begin");
+
         int nReturn = malloc();
         if (nReturn < 0) {
             throw new RuntimeException("malloc of ogg_stream_state failed");
         }
-        if (TDebug.TraceOggNative) {
-            TDebug.out("<init>: end");
-        }
+
+        logger.log(Level.TRACE, "<init>: end");
     }
 
     private int malloc() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("malloc: begin");
-        }
+        logger.log(Level.TRACE, "malloc: begin");
+
         handle = new ogg_stream_state();
-        if (TDebug.TraceOggNative) {
-            TDebug.out(String.format("malloc: handle: %s", handle));
-        }
-        if (TDebug.TraceOggNative) {
-            TDebug.out("malloc: end");
-        }
+        logger.log(Level.TRACE, String.format("malloc: handle: %s", handle));
+
+        logger.log(Level.TRACE, "malloc: end");
+
         return 0;
     }
 
     public void free() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("free: begin");
-        }
+        logger.log(Level.TRACE, "free: begin");
+
         handle = null;
-        if (TDebug.TraceOggNative) {
-            TDebug.out("free: end");
-        }
+
+        logger.log(Level.TRACE, "free: end");
     }
 
     /**
      * Calls ogg_stream_init().
      */
     public int init(int nSerialNo) {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("init: begin");
-        }
+        logger.log(Level.TRACE, "init: begin");
+
         int nReturn = OggLibrary.INSTANCE.ogg_stream_init(handle, nSerialNo);
-        if (TDebug.TraceOggNative) {
-            TDebug.out("init: end");
-        }
+
+        logger.log(Level.TRACE, "init: end");
+
         return nReturn;
     }
 
@@ -90,13 +88,12 @@ public class StreamState {
      * Calls ogg_stream_clear().
      */
     public int clear() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("clear: begin");
-        }
+        logger.log(Level.TRACE, "clear: begin");
+
         int nReturn = OggLibrary.INSTANCE.ogg_stream_clear(handle);
-        if (TDebug.TraceOggNative) {
-            TDebug.out("clear: end");
-        }
+
+        logger.log(Level.TRACE, "clear: end");
+
         return nReturn;
     }
 
@@ -104,13 +101,12 @@ public class StreamState {
      * Calls ogg_stream_reset().
      */
     public int reset() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("reset: begin");
-        }
+        logger.log(Level.TRACE, "reset: begin");
+
         int nReturn = OggLibrary.INSTANCE.ogg_stream_reset(handle);
-        if (TDebug.TraceOggNative) {
-            TDebug.out("reset: end");
-        }
+
+        logger.log(Level.TRACE, "reset: end");
+
         return nReturn;
     }
 
@@ -118,13 +114,12 @@ public class StreamState {
      * Calls ogg_stream_destroy().
      */
     public int destroy() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("destroy: begin");
-        }
+        logger.log(Level.TRACE, "destroy: begin");
+
         int nReturn = OggLibrary.INSTANCE.ogg_stream_destroy(handle);
-        if (TDebug.TraceOggNative) {
-            TDebug.out("destroy: end");
-        }
+
+        logger.log(Level.TRACE, "destroy: end");
+
         return nReturn;
     }
 
@@ -132,13 +127,12 @@ public class StreamState {
      * Calls ogg_stream_eos().
      */
     public boolean isEOSReached() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("isEOSReached: begin");
-        }
+        logger.log(Level.TRACE, "isEOSReached: begin");
+
         int nReturn = OggLibrary.INSTANCE.ogg_stream_eos(handle);
-        if (TDebug.TraceOggNative) {
-            TDebug.out("isEOSReached: end");
-        }
+
+        logger.log(Level.TRACE, "isEOSReached: end");
+
         return nReturn != 0;
     }
 
@@ -146,14 +140,13 @@ public class StreamState {
      * Calls ogg_stream_packetin().
      */
     public int packetIn(Packet packet) {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("packetIn: begin");
-        }
+        logger.log(Level.TRACE, "packetIn: begin");
+
         ogg_packet packetHandle = packet.getHandle();
         int nReturn = OggLibrary.INSTANCE.ogg_stream_packetin(handle, packetHandle);
-        if (TDebug.TraceOggNative) {
-            TDebug.out("packetIn: end");
-        }
+
+        logger.log(Level.TRACE, "packetIn: end");
+
         return nReturn;
     }
 
@@ -161,14 +154,13 @@ public class StreamState {
      * Calls ogg_stream_pageout().
      */
     public int pageOut(Page page) {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("pageOut: begin");
-        }
+        logger.log(Level.TRACE, "pageOut: begin");
+
         ogg_page pageHandle = page.getHandle();
         int nReturn = OggLibrary.INSTANCE.ogg_stream_pageout(handle, pageHandle);
-        if (TDebug.TraceOggNative) {
-            TDebug.out("pageOut: end");
-        }
+
+        logger.log(Level.TRACE, "pageOut: end");
+
         return nReturn;
     }
 
@@ -176,14 +168,13 @@ public class StreamState {
      * Calls ogg_stream_flush().
      */
     public int flush(Page page) {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("flush: begin");
-        }
+        logger.log(Level.TRACE, "flush: begin");
+
         ogg_page pageHandle = page.getHandle();
         int nReturn = OggLibrary.INSTANCE.ogg_stream_flush(handle, pageHandle);
-        if (TDebug.TraceOggNative) {
-            TDebug.out("flush: end");
-        }
+
+        logger.log(Level.TRACE, "flush: end");
+
         return nReturn;
     }
 
@@ -191,14 +182,13 @@ public class StreamState {
      * Calls ogg_stream_pagein().
      */
     public int pageIn(Page page) {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("pageIn: begin");
-        }
+        logger.log(Level.TRACE, "pageIn: begin");
+
         ogg_page pageHandle = page.getHandle();
         int nReturn = OggLibrary.INSTANCE.ogg_stream_pagein(handle, pageHandle);
-        if (TDebug.TraceOggNative) {
-            TDebug.out("pageIn: end");
-        }
+
+        logger.log(Level.TRACE, "pageIn: end");
+
         return nReturn;
     }
 
@@ -206,14 +196,13 @@ public class StreamState {
      * Calls ogg_stream_packetout().
      */
     public int packetOut(Packet packet) {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("packetOut: begin");
-        }
+        logger.log(Level.TRACE, "packetOut: begin");
+
         ogg_packet packetHandle = packet.getHandle();
         int nReturn = OggLibrary.INSTANCE.ogg_stream_packetout(handle, packetHandle);
-        if (TDebug.TraceOggNative) {
-            TDebug.out("packetOut: end");
-        }
+
+        logger.log(Level.TRACE, "packetOut: end");
+
         return nReturn;
     }
 
@@ -221,16 +210,13 @@ public class StreamState {
      * Calls ogg_stream_packetpeek().
      */
     public int packetPeek(Packet packet) {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("packetPeek: begin");
-        }
+        logger.log(Level.TRACE, "packetPeek: begin");
+
         ogg_packet packetHandle = packet.getHandle();
         int nReturn = OggLibrary.INSTANCE.ogg_stream_packetpeek(handle, packetHandle);
-        if (TDebug.TraceOggNative) {
-            TDebug.out("packetPeek: end");
-        }
+
+        logger.log(Level.TRACE, "packetPeek: end");
+
         return nReturn;
     }
 }
-
-

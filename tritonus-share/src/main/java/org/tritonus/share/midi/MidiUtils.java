@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 1999 by Matthias Pfisterer
  *
@@ -22,14 +21,20 @@ package org.tritonus.share.midi;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 
-import org.tritonus.share.TDebug;
+import static java.lang.System.getLogger;
 
 
 /**
  * Helper methods for reading and writing MIDI files.
  */
-public class MidiUtils {
+public final class MidiUtils {
+
+    private static final Logger logger= getLogger("org.tritonus.TraceAllExceptions");
+
+    private MidiUtils() {}
 
     public static int getUnsignedInteger(byte b) {
         return (b < 0) ? b + 256 : b;
@@ -52,15 +57,12 @@ public class MidiUtils {
         try {
             writeVariableLengthQuantity(lValue, data);
         } catch (IOException e) {
-            if (TDebug.TraceAllExceptions) {
-                TDebug.out(e);
-            }
+            logger.log(Level.ERROR, e.getMessage(), e);
         }
         return data.toByteArray();
     }
 
-    public static int writeVariableLengthQuantity(long lValue, OutputStream outputStream)
-            throws IOException {
+    public static int writeVariableLengthQuantity(long lValue, OutputStream outputStream) throws IOException {
         int nLength = 0;
         // IDEA: use a loop
         boolean bWritingStarted = false;

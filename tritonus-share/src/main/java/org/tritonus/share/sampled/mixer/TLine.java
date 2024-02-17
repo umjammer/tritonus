@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 1999 - 2004 by Matthias Pfisterer
  *
@@ -19,6 +18,8 @@
 
 package org.tritonus.share.sampled.mixer;
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -31,15 +32,17 @@ import javax.sound.sampled.LineEvent;
 import javax.sound.sampled.LineListener;
 import javax.sound.sampled.LineUnavailableException;
 
-import org.tritonus.share.TDebug;
 import org.tritonus.share.TNotifier;
+
+import static java.lang.System.getLogger;
 
 
 /**
  * Base class for classes implementing Line.
  */
-public abstract class TLine
-        implements Line {
+public abstract class TLine implements Line {
+
+    private static final Logger logger= getLogger("org.tritonus.TraceLine");
 
     private static final Control[] EMPTY_CONTROL_ARRAY = new Control[0];
 
@@ -49,8 +52,7 @@ public abstract class TLine
     private final Set<LineListener> m_lineListeners;
     private TMixer m_mixer;
 
-    protected TLine(TMixer mixer,
-                    Line.Info info) {
+    protected TLine(TMixer mixer, Line.Info info) {
         setLineInfo(info);
         setOpen(false);
         m_controls = new ArrayList<>();
@@ -58,9 +60,7 @@ public abstract class TLine
         m_mixer = mixer;
     }
 
-    protected TLine(TMixer mixer,
-                    Line.Info info,
-                    Collection<Control> controls) {
+    protected TLine(TMixer mixer, Line.Info info, Collection<Control> controls) {
         this(mixer, info);
         m_controls.addAll(controls);
     }
@@ -75,64 +75,51 @@ public abstract class TLine
     }
 
     protected void setLineInfo(Line.Info info) {
-        if (TDebug.TraceLine) {
-            TDebug.out("TLine.setLineInfo(): setting: " + info);
-        }
+        logger.log(Level.TRACE, "TLine.setLineInfo(): setting: " + info);
+
         synchronized (this) {
             m_info = info;
         }
     }
 
     @Override
-    public void open()
-            throws LineUnavailableException {
-        if (TDebug.TraceLine) {
-            TDebug.out("TLine.open(): called");
-        }
+    public void open() throws LineUnavailableException {
+        logger.log(Level.TRACE, "TLine.open(): called");
+
         if (!isOpen()) {
-            if (TDebug.TraceLine) {
-                TDebug.out("TLine.open(): opening");
-            }
+            logger.log(Level.TRACE, "TLine.open(): opening");
+
             openImpl();
             if (getMixer() != null) {
                 getMixer().registerOpenLine(this);
             }
             setOpen(true);
         } else {
-            if (TDebug.TraceLine) {
-                TDebug.out("TLine.open(): already open");
-            }
+            logger.log(Level.TRACE, "TLine.open(): already open");
         }
     }
 
     /**
      * Subclasses should override this method.
      */
-    protected void openImpl()
-            throws LineUnavailableException {
-        if (TDebug.TraceLine) {
-            TDebug.out("TLine.openImpl(): called");
-        }
+    protected void openImpl() throws LineUnavailableException {
+        logger.log(Level.TRACE, "TLine.openImpl(): called");
     }
 
     @Override
     public void close() {
-        if (TDebug.TraceLine) {
-            TDebug.out("TLine.close(): called");
-        }
+        logger.log(Level.TRACE, "TLine.close(): called");
+
         if (isOpen()) {
-            if (TDebug.TraceLine) {
-                TDebug.out("TLine.close(): closing");
-            }
+            logger.log(Level.TRACE, "TLine.close(): closing");
+
             if (getMixer() != null) {
                 getMixer().unregisterOpenLine(this);
             }
             closeImpl();
             setOpen(false);
         } else {
-            if (TDebug.TraceLine) {
-                TDebug.out("TLine.close(): not open");
-            }
+            logger.log(Level.TRACE, "TLine.close(): not open");
         }
     }
 
@@ -140,9 +127,7 @@ public abstract class TLine
      * Subclasses should override this method.
      */
     protected void closeImpl() {
-        if (TDebug.TraceLine) {
-            TDebug.out("TLine.closeImpl(): called");
-        }
+        logger.log(Level.TRACE, "TLine.closeImpl(): called");
     }
 
     @Override
@@ -151,21 +136,18 @@ public abstract class TLine
     }
 
     protected void setOpen(boolean bOpen) {
-        if (TDebug.TraceLine) {
-            TDebug.out("TLine.setOpen(): called, value: " + bOpen);
-        }
+        logger.log(Level.TRACE, "TLine.setOpen(): called, value: " + bOpen);
+
         boolean bOldValue = isOpen();
         m_bOpen = bOpen;
         if (bOldValue != isOpen()) {
             if (isOpen()) {
-                if (TDebug.TraceLine) {
-                    TDebug.out("TLine.setOpen(): opened");
-                }
+                logger.log(Level.TRACE, "TLine.setOpen(): opened");
+
                 notifyLineEvent(LineEvent.Type.OPEN);
             } else {
-                if (TDebug.TraceLine) {
-                    TDebug.out("TLine.setOpen(): closed");
-                }
+                logger.log(Level.TRACE, "TLine.setOpen(): closed");
+
                 notifyLineEvent(LineEvent.Type.CLOSE);
             }
         }
@@ -204,21 +186,20 @@ public abstract class TLine
 
     @Override
     public boolean isControlSupported(Control.Type controlType) {
-        // TDebug.out("TLine.isSupportedControl(): called");
+//        logger.log(Level.TRACE, "TLine.isSupportedControl(): called");
         try {
             return getControl(controlType) != null;
         } catch (IllegalArgumentException e) {
-            if (TDebug.TraceAllExceptions) {
-                TDebug.out(e);
-            }
-            // TDebug.out("TLine.isSupportedControl(): returning false");
+                logger.log(Level.ERROR, e.getMessage(), e);
+
+//            logger.log(Level.TRACE, "TLine.isSupportedControl(): returning false");
             return false;
         }
     }
 
     @Override
     public void addLineListener(LineListener listener) {
-        // TDebug.out("%% TChannel.addListener(): called");
+//        logger.log(Level.TRACE, "%% TChannel.addListener(): called");
         synchronized (m_lineListeners) {
             m_lineListeners.add(listener);
         }
@@ -237,14 +218,14 @@ public abstract class TLine
         }
     }
 
-    // is overridden in TDataLine to provide a position
+    /** is overridden in TDataLine to provide a position */
     protected void notifyLineEvent(LineEvent.Type type) {
         notifyLineEvent(new LineEvent(this, type, AudioSystem.NOT_SPECIFIED));
     }
 
     protected void notifyLineEvent(LineEvent event) {
-        // TDebug.out("%% TChannel.notifyChannelEvent(): called");
-        // Channel.Event event = new Channel.Event(this, type, getPosition());
+//        logger.log(Level.TRACE, "%% TChannel.notifyChannelEvent(): called");
+//        Channel.Event event = new Channel.Event(this, type, getPosition());
         TNotifier.notifier.addEntry(event, getLineListeners());
     }
 }

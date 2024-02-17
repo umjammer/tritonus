@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 1999 - 2001 by Matthias Pfisterer
  *
@@ -18,16 +17,18 @@
 
 package org.tritonus.lowlevel.alsa;
 
-import org.tritonus.share.TDebug;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
+
+import static java.lang.System.getLogger;
 
 
 public class AlsaSeqQueueStatus {
 
+    private static final Logger logger = getLogger("org.tritonus.TraceAlsaSeqNative");
+
     static {
         Alsa.loadNativeLibrary();
-        if (TDebug.TraceAlsaSeqNative) {
-            setTrace(true);
-        }
     }
 
     /**
@@ -38,16 +39,16 @@ public class AlsaSeqQueueStatus {
     /*private*/ long m_lNativeHandle;
 
     public AlsaSeqQueueStatus() {
-        if (TDebug.TraceAlsaSeqNative) {
-            TDebug.out("AlsaSeq.QueueStatus.<init>(): begin");
-        }
+        //
+            logger.log(Level.TRACE, "AlsaSeq.QueueStatus.<init>(): begin");
+
         int nReturn = malloc();
         if (nReturn < 0) {
             throw new RuntimeException("malloc of port_info failed");
         }
-        if (TDebug.TraceAlsaSeqNative) {
-            TDebug.out("AlsaSeq.QueueStatus.<init>(): end");
-        }
+        // TraceAlsaSeqNative
+            logger.log(Level.TRACE, "AlsaSeq.QueueStatus.<init>(): end");
+
     }
 
     private native int malloc();

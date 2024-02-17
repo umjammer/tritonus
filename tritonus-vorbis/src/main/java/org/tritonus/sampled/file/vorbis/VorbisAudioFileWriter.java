@@ -17,13 +17,15 @@
 
 package org.tritonus.sampled.file.vorbis;
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.util.Arrays;
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioFormat;
 
-import org.tritonus.share.TDebug;
 import org.tritonus.share.sampled.file.THeaderlessAudioFileWriter;
 
+import static java.lang.System.getLogger;
 import static org.tritonus.sampled.convert.vorbis.VorbisFormatConversionProvider.VORBIS;
 
 
@@ -36,6 +38,8 @@ import static org.tritonus.sampled.convert.vorbis.VorbisFormatConversionProvider
  * @author Matthias Pfisterer
  */
 public class VorbisAudioFileWriter extends THeaderlessAudioFileWriter {
+
+    private static final Logger logger= getLogger("org.tritonus.TraceAudioFileWriter");
 
     public static final AudioFileFormat.Type OGG = new AudioFileFormat.Type("Vorbis", "ogg");
 
@@ -50,13 +54,8 @@ public class VorbisAudioFileWriter extends THeaderlessAudioFileWriter {
 
     public VorbisAudioFileWriter() {
         super(Arrays.asList(FILE_TYPES), Arrays.asList(AUDIO_FORMATS));
-        if (TDebug.TraceAudioFileWriter) {
-            TDebug.out("VorbisAudioFileWriter.<init>(): begin");
-        }
-        if (TDebug.TraceAudioFileWriter) {
-            TDebug.out("VorbisAudioFileWriter.<init>(): end");
-        }
+        logger.log(Level.TRACE, "VorbisAudioFileWriter.<init>(): begin");
+
+        logger.log(Level.TRACE, "VorbisAudioFileWriter.<init>(): end");
     }
 }
-
-

@@ -1,7 +1,6 @@
 /*
  * BaseAudioFileReaderTestCase.java
  */
-
 /*
  *  Copyright (c) 2001 - 2002 by Matthias Pfisterer
  *
@@ -239,7 +238,7 @@ public class BaseAudioFileReaderTestCase
 // 				assertEquals(strMessagePrefix + "data content", 0, abRetrievedData[i]);
 // 			}
         } else {
-            // TODO: try to at least read some bytes?
+            // TODO try to at least read some bytes?
         }
     }
 

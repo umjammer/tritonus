@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 1999 - 2001 by Matthias Pfisterer
  *
@@ -18,7 +17,10 @@
 
 package org.tritonus.lowlevel.alsa;
 
-import org.tritonus.share.TDebug;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
+
+import static java.lang.System.getLogger;
 
 
 /**
@@ -28,11 +30,10 @@ import org.tritonus.share.TDebug;
  */
 public class AlsaSeqSystemInfo {
 
+    private static final Logger logger = getLogger("org.tritonus.TraceAlsaSeqNative");
+
     static {
         Alsa.loadNativeLibrary();
-        if (TDebug.TraceAlsaSeqNative) {
-            setTrace(true);
-        }
     }
 
     /**
@@ -40,19 +41,17 @@ public class AlsaSeqSystemInfo {
      * for the native code.
      * This must be long to be 64bit-clean.
      */
-    /*private*/ long m_lNativeHandle;
+    /* private */ long m_lNativeHandle;
 
     public AlsaSeqSystemInfo() {
-        if (TDebug.TraceAlsaSeqNative) {
-            TDebug.out("AlsaSeq.SystemInfo.<init>(): begin");
-        }
+        logger.log(Level.TRACE, "AlsaSeq.SystemInfo.<init>(): begin");
+
         int nReturn = malloc();
         if (nReturn < 0) {
             throw new RuntimeException("malloc of system_info failed");
         }
-        if (TDebug.TraceAlsaSeqNative) {
-            TDebug.out("AlsaSeq.SystemInfo.<init>(): end");
-        }
+
+        logger.log(Level.TRACE, "AlsaSeq.SystemInfo.<init>(): end");
     }
 
     private native int malloc();

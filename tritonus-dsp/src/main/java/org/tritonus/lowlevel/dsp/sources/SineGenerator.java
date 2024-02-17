@@ -17,7 +17,7 @@ public class SineGenerator extends AbstractPeriodicGenerator {
     /** {@inheritDoc} */
     @Override
     protected float generateSample(float fPeriodPosition) {
-        // TODO: * Math.PI ??
+        // TODO * Math.PI ??
         return (float) Math.sin(2.0 * fPeriodPosition);
     }
 }

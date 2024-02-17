@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 1999 by Matthias Pfisterer
  *
@@ -19,6 +18,8 @@
 
 package org.tritonus.midi.device.alsa;
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.util.ArrayList;
 import java.util.List;
 import javax.sound.midi.Instrument;
@@ -31,13 +32,14 @@ import javax.sound.midi.Synthesizer;
 import javax.sound.midi.VoiceStatus;
 
 import org.tritonus.share.GlobalInfo;
-import org.tritonus.share.TDebug;
 import org.tritonus.share.midi.TMidiDevice;
 
+import static java.lang.System.getLogger;
 
-public class AlsaSynthesizer
-        extends AlsaMidiDevice
-        implements Synthesizer {
+
+public class AlsaSynthesizer extends AlsaMidiDevice implements Synthesizer {
+
+    private static final Logger logger = getLogger("org.tritonus.TraceAllExceptions");
 
     private static final MidiChannel[] EMPTY_MIDICHANNEL_ARRAY = new MidiChannel[0];
     private static final VoiceStatus[] EMPTY_VOICESTATUS_ARRAY = new VoiceStatus[0];
@@ -46,8 +48,7 @@ public class AlsaSynthesizer
     private int m_nVoices;
 
     public AlsaSynthesizer(int nClient, int nPort, int nVoices) {
-        super(
-                new TMidiDevice.Info(
+        super(new TMidiDevice.Info(
                         "ALSA Synthesizer (" + nClient + ":" + nPort + ")",
                         GlobalInfo.getVendor(),
                         "Synthesizer based on the ALSA sequencer",
@@ -60,20 +61,17 @@ public class AlsaSynthesizer
     @Override
     protected void openImpl() {
         super.openImpl();
-        // TDebug.out("AlsaSynthesizer.openImpl(): called");
+//        logger.log(Level.DEBUG, "AlsaSynthesizer.openImpl(): called");
         // necessary? thread-safe?
         m_channels.clear();
         Receiver receiver = null;
         try {
             receiver = this.getReceiver();
         } catch (MidiUnavailableException e) {
-            if (TDebug.TraceAllExceptions) {
-                TDebug.out(e);
-            }
+            logger.log(Level.ERROR, e.getMessage(), e);
         }
         for (int i = 0; i < 16; i++) {
-            MidiChannel channel = new AlsaMidiChannel(
-                    receiver, i);
+            MidiChannel channel = new AlsaMidiChannel(receiver, i);
             m_channels.add(channel);
         }
     }
@@ -154,8 +152,6 @@ public class AlsaSynthesizer
     @Override
     public void unloadInstruments(Soundbank soundbank, Patch[] aPatches) {
     }
-
-
 }
 
 

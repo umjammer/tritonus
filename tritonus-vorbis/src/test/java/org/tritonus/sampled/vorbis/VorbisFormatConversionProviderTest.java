@@ -23,7 +23,6 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.tritonus.sampled.convert.vorbis.VorbisFormatConversionProvider;
-import org.tritonus.share.TDebug;
 import vavi.util.Debug;
 import vavi.util.properties.annotation.Property;
 import vavi.util.properties.annotation.PropsEntity;
@@ -54,12 +53,6 @@ class VorbisFormatConversionProviderTest {
         if (localPropertiesExists()) {
             PropsEntity.Util.bind(this);
         }
-    }
-
-    static {
-        System.setProperty("vavi.util.logging.VaviFormatter.extraClassMethod", "org\\.tritonus\\.share\\.TDebug#out");
-
-        TDebug.TraceAudioConverter = false;
     }
 
     @Property

@@ -35,7 +35,7 @@ import org.tritonus.share.sampled.file.THeaderlessAudioFileWriter;
  */
 public class VorbisAudioFileWriter extends THeaderlessAudioFileWriter {
 
-    private static final Logger logger = System.getLogger("TraceAudioFileWriter");
+    private static final Logger logger= System.getLogger("org.tritonus.TraceAudioFileWriter");
 
     public static final AudioFileFormat.Type OGG = new AudioFileFormat.Type("Vorbis", "ogg");
 

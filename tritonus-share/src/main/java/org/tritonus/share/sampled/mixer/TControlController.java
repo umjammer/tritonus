@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 2001 by Matthias Pfisterer
  *
@@ -19,14 +18,18 @@
 
 package org.tritonus.share.sampled.mixer;
 
-import org.tritonus.share.TDebug;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
+
+import static java.lang.System.getLogger;
 
 
 /**
  * Base class for classes implementing Line.
  */
-public class TControlController
-        implements TControllable {
+public class TControlController implements TControllable {
+
+    private static final Logger logger= getLogger("org.tritonus.TraceControl");
 
     /**
      * The parent (compound) control.
@@ -50,9 +53,8 @@ public class TControlController
 
     @Override
     public void commit() {
-        if (TDebug.TraceControl) {
-            TDebug.out("TControlController.commit(): called [" + this.getClass().getName() + "]");
-        }
+        logger.log(Level.TRACE, "TControlController.commit(): called [" + this.getClass().getName() + "]");
+
         if (getParentControl() != null) {
             getParentControl().commit();
         }

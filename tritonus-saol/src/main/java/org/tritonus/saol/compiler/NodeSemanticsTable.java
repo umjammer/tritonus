@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 2002 by Matthias Pfisterer
  *
@@ -24,7 +23,7 @@ import org.tritonus.saol.sablecc.node.Node;
 
 /**
  * The instrument table.
- * TODO: use generics
+ * TODO use generics
  */
 public class NodeSemanticsTable extends HashMap<Node, NodeSemantics> {
 

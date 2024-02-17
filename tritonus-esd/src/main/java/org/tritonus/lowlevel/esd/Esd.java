@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 1999 - 2002 by Matthias Pfisterer
  *
@@ -19,10 +18,15 @@
 
 package org.tritonus.lowlevel.esd;
 
-import org.tritonus.share.TDebug;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
+
+import static java.lang.System.getLogger;
 
 
 public class Esd {
+
+    private static final Logger logger = getLogger("org.tritonus.TraceEsdNative");
 
     public static final int ESD_STREAM = 0x0000;
     public static final int ESD_PLAY = 0x1000;
@@ -38,20 +42,16 @@ public class Esd {
     }
 
     public static void loadNativeLibrary() {
-        if (TDebug.TraceEsdNative) {
-            TDebug.out("Esd.loadNativeLibrary(): loading native library tritonusesd");
-        }
+        logger.log(Level.TRACE, "Esd.loadNativeLibrary(): loading native library tritonusesd");
+
         try {
             System.loadLibrary("tritonusesd");
             sm_bIsLibraryAvailable = true;
         } catch (Throwable t) {
-            if (TDebug.TraceEsdNative || TDebug.TraceAllExceptions) {
-                TDebug.out(t);
-            }
+            logger.log(Level.ERROR, t.getMessage(), t);
         }
-        if (TDebug.TraceEsdNative) {
-            TDebug.out("Esd.loadNativeLibrary(): loaded");
-        }
+
+        logger.log(Level.TRACE, "Esd.loadNativeLibrary(): loaded");
     }
 
     /**
@@ -61,5 +61,3 @@ public class Esd {
         return sm_bIsLibraryAvailable;
     }
 }
-
-

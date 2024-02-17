@@ -20,16 +20,22 @@
 
 package org.tritonus.lowlevel.ogg;
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
+
 import com.sun.jna.NativeLong;
-import org.tritonus.share.TDebug;
 import vavi.sound.sampled.jna.ogg.OggLibrary;
 import vavi.sound.sampled.jna.ogg.ogg_page;
+
+import static java.lang.System.getLogger;
 
 
 /**
  * Wrapper for ogg_page.
  */
 public class Page {
+
+    private static final Logger logger= getLogger("org.tritonus.TraceOggNative");
 
     /**
      * Holds the pointer to ogg_page
@@ -43,54 +49,45 @@ public class Page {
     }
 
     public Page() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("<init>: begin");
-        }
+        logger.log(Level.TRACE, "<init>: begin");
+
         int nReturn = malloc();
         if (nReturn < 0) {
             throw new RuntimeException("malloc of ogg_page failed");
         }
-        if (TDebug.TraceOggNative) {
-            TDebug.out("<init>: end");
-        }
+
+        logger.log(Level.TRACE, "<init>: end");
     }
 
     private int malloc() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("malloc: begin");
-        }
+        logger.log(Level.TRACE, "malloc: begin");
+
         handle = new ogg_page();
-        if (TDebug.TraceOggNative) {
-            TDebug.out(String.format("malloc: handle: %s", handle));
-        }
-        if (TDebug.TraceOggNative) {
-            TDebug.out("malloc: end");
-        }
+        logger.log(Level.TRACE, String.format("malloc: handle: %s", handle));
+
+        logger.log(Level.TRACE, "malloc: end");
+
         return 0;
     }
 
     public void free() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("free: begin");
-        }
+        logger.log(Level.TRACE, "free: begin");
+
         handle = null;
-        if (TDebug.TraceOggNative) {
-            TDebug.out("free: end");
-        }
+
+        logger.log(Level.TRACE, "free: end");
     }
 
     /**
      * Calls ogg_page_version().
      */
     public int getVersion() {
-        int nReturn;
-        if (TDebug.TraceOggNative) {
-            TDebug.out("getVersion: begin");
-        }
-        nReturn = OggLibrary.INSTANCE.ogg_page_version(handle);
-        if (TDebug.TraceOggNative) {
-            TDebug.out("getVersion: end");
-        }
+        logger.log(Level.TRACE, "getVersion: begin");
+
+        int nReturn = OggLibrary.INSTANCE.ogg_page_version(handle);
+
+        logger.log(Level.TRACE, "getVersion: end");
+
         return nReturn;
     }
 
@@ -98,13 +95,12 @@ public class Page {
      * Calls ogg_page_continued().
      */
     public boolean isContinued() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("isContinued: begin");
-        }
+        logger.log(Level.TRACE, "isContinued: begin");
+
         int nReturn = OggLibrary.INSTANCE.ogg_page_continued(handle);
-        if (TDebug.TraceOggNative) {
-            TDebug.out("isContinued: end");
-        }
+
+        logger.log(Level.TRACE, "isContinued: end");
+
         return nReturn != 0;
     }
 
@@ -112,13 +108,12 @@ public class Page {
      * Calls ogg_page_packets().
      */
     public int getPackets() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("getPackets: begin");
-        }
+        logger.log(Level.TRACE, "getPackets: begin");
+
         int nReturn = OggLibrary.INSTANCE.ogg_page_packets(handle);
-        if (TDebug.TraceOggNative) {
-            TDebug.out("getPackets: end");
-        }
+
+        logger.log(Level.TRACE, "getPackets: end");
+
         return nReturn;
     }
 
@@ -126,13 +121,12 @@ public class Page {
      * Calls ogg_page_bos().
      */
     public boolean isBos() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("isBos: begin");
-        }
+        logger.log(Level.TRACE, "isBos: begin");
+
         int nReturn = OggLibrary.INSTANCE.ogg_page_bos(handle);
-        if (TDebug.TraceOggNative) {
-            TDebug.out("isBos: end");
-        }
+
+        logger.log(Level.TRACE, "isBos: end");
+
         return nReturn != 0;
     }
 
@@ -140,13 +134,12 @@ public class Page {
      * Calls ogg_page_eos().
      */
     public boolean isEos() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("isEos: begin");
-        }
+        logger.log(Level.TRACE, "isEos: begin");
+
         int nReturn = OggLibrary.INSTANCE.ogg_page_eos(handle);
-        if (TDebug.TraceOggNative) {
-            TDebug.out("isEos: end");
-        }
+
+        logger.log(Level.TRACE, "isEos: end");
+
         return nReturn != 0;
     }
 
@@ -154,13 +147,12 @@ public class Page {
      * Calls ogg_page_granulepos().
      */
     public long getGranulePos() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("getGranulePos: begin");
-        }
+        logger.log(Level.TRACE, "getGranulePos: begin");
+
         long lReturn = OggLibrary.INSTANCE.ogg_page_granulepos(handle);
-        if (TDebug.TraceOggNative) {
-            TDebug.out("getGranulePos: end");
-        }
+
+        logger.log(Level.TRACE, "getGranulePos: end");
+
         return lReturn;
     }
 
@@ -168,13 +160,12 @@ public class Page {
      * Calls ogg_page_serialno().
      */
     public int getSerialNo() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("getSerialNo: begin");
-        }
+        logger.log(Level.TRACE, "getSerialNo: begin");
+
         int nReturn = OggLibrary.INSTANCE.ogg_page_serialno(handle);
-        if (TDebug.TraceOggNative) {
-            TDebug.out("getSerialNo: end");
-        }
+
+        logger.log(Level.TRACE, "getSerialNo: end");
+
         return nReturn;
     }
 
@@ -182,13 +173,12 @@ public class Page {
      * Calls ogg_page_pageno().
      */
     public int getPageNo() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("getPageNo: begin");
-        }
+        logger.log(Level.TRACE, "getPageNo: begin");
+
         NativeLong nReturn = OggLibrary.INSTANCE.ogg_page_pageno(handle);
-        if (TDebug.TraceOggNative) {
-            TDebug.out("getPageNo: end");
-        }
+
+        logger.log(Level.TRACE, "getPageNo: end");
+
         return nReturn.intValue();
     }
 
@@ -196,38 +186,32 @@ public class Page {
      * Calls ogg_page_checksum_set().
      */
     public void setChecksum() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("setChecksum: begin");
-        }
+        logger.log(Level.TRACE, "setChecksum: begin");
+
         OggLibrary.INSTANCE.ogg_page_checksum_set(handle);
-        if (TDebug.TraceOggNative) {
-            TDebug.out("setChecksum: end");
-        }
+
+        logger.log(Level.TRACE, "setChecksum: end");
     }
 
     public byte[] getHeader() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("getHeader: begin");
-        }
+        logger.log(Level.TRACE, "getHeader: begin");
+
         byte[] byteArray = new byte[handle.header_len.intValue()];
         handle.header.read(0, byteArray, 0, handle.header_len.intValue());
-        if (TDebug.TraceOggNative) {
-            TDebug.out("getHeader: end");
-        }
+
+        logger.log(Level.TRACE, "getHeader: end");
+
         return byteArray;
     }
 
     public byte[] getBody() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("getBody: begin");
-        }
+        logger.log(Level.TRACE, "getBody: begin");
+
         byte[] byteArray = new byte[handle.body_len.intValue()];
         handle.body.read(0, byteArray, 0, handle.body_len.intValue());
-        if (TDebug.TraceOggNative) {
-            TDebug.out("getBody: end");
-        }
+
+        logger.log(Level.TRACE, "getBody: end");
+
         return byteArray;
     }
 }
-
-

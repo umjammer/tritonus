@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 2000 by Matthias Pfisterer
  *
@@ -22,6 +21,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -30,10 +31,13 @@ import java.util.List;
 import java.util.Set;
 
 import org.tritonus.share.ArraySet;
-import org.tritonus.share.TDebug;
+
+import static java.lang.System.getLogger;
 
 
 public class Service {
+
+    private static final Logger logger = getLogger("org.tritonus.TraceService");
 
     private static final String BASE_NAME = "META-INF/services/";
 
@@ -51,39 +55,34 @@ public class Service {
     private static final boolean REVERSE_ORDER = true;
 
     public static Iterator<?> providers(Class<?> cls) {
-        if (TDebug.TraceService) {
-            TDebug.out("Service.providers(): begin");
-        }
+        logger.log(Level.TRACE, "Service.providers(): begin");
+
         String strFullName = BASE_NAME + cls.getName();
-        if (TDebug.TraceService) {
-            TDebug.out("Service.providers(): full name: " + strFullName);
-        }
+        logger.log(Level.TRACE, "Service.providers(): full name: " + strFullName);
+
         List<Object> instancesList = createInstancesList(strFullName);
         Iterator<Object> iterator = instancesList.iterator();
-        if (TDebug.TraceService) {
-            TDebug.out("Service.providers(): end");
-        }
+
+        logger.log(Level.TRACE, "Service.providers(): end");
+
         return iterator;
     }
 
     private static List<Object> createInstancesList(String strFullName) {
-        if (TDebug.TraceService) {
-            TDebug.out("Service.createInstancesList(): begin");
-        }
+        logger.log(Level.TRACE, "Service.createInstancesList(): begin");
+
         List<Object> providers = new ArrayList<>();
         Iterator<String> classNames = createClassNames(strFullName);
         if (classNames != null) {
             while (classNames.hasNext()) {
                 String strClassName = classNames.next();
-                if (TDebug.TraceService) {
-                    TDebug.out("Service.createInstancesList(): Class name: " + strClassName);
-                }
+                logger.log(Level.TRACE, "Service.createInstancesList(): Class name: " + strClassName);
+
                 try {
                     ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
                     Class<?> cls = Class.forName(strClassName, true, systemClassLoader);
-                    if (TDebug.TraceService) {
-                        TDebug.out("Service.createInstancesList(): now creating instance of " + cls);
-                    }
+                    logger.log(Level.TRACE, "Service.createInstancesList(): now creating instance of " + cls);
+
                     Object instance = cls.getDeclaredConstructor().newInstance();
                     if (REVERSE_ORDER) {
                         providers.add(0, instance);
@@ -91,42 +90,36 @@ public class Service {
                         providers.add(instance);
                     }
                 } catch (Throwable e) {
-                    if (TDebug.TraceService || TDebug.TraceAllExceptions) {
-                        TDebug.out(e);
-                    }
+                    logger.log(Level.ERROR, e.getMessage(), e);
                 }
             }
         }
-        if (TDebug.TraceService) {
-            TDebug.out("Service.createInstancesList(): end");
-        }
+
+        logger.log(Level.TRACE, "Service.createInstancesList(): end");
+
         return providers;
     }
 
     private static Iterator<String> createClassNames(String strFullName) {
-        if (TDebug.TraceService) TDebug.out("Service.createClassNames(): begin");
+        logger.log(Level.TRACE, "Service.createClassNames(): begin");
+
         Set<String> providers = new ArraySet<>();
         Enumeration<?> configs = null;
         try {
             configs = ClassLoader.getSystemResources(strFullName);
         } catch (IOException e) {
-            if (TDebug.TraceService || TDebug.TraceAllExceptions) {
-                TDebug.out(e);
-            }
+            logger.log(Level.ERROR, e.getMessage(), e);
         }
         if (configs != null) {
             while (configs.hasMoreElements()) {
                 URL configFileUrl = (URL) configs.nextElement();
-                if (TDebug.TraceService) {
-                    TDebug.out("Service.createClassNames(): config: " + configFileUrl);
-                }
+                logger.log(Level.TRACE, "Service.createClassNames(): config: " + configFileUrl);
+
                 InputStream input = null;
                 try {
                     input = configFileUrl.openStream();
                 } catch (IOException e) {
-                    if (TDebug.TraceService || TDebug.TraceAllExceptions) {
-                        TDebug.out(e);
-                    }
+                    logger.log(Level.ERROR, e.getMessage(), e);
                 }
                 if (input != null) {
                     BufferedReader reader = new BufferedReader(new InputStreamReader(input));
@@ -140,24 +133,21 @@ public class Service {
                             }
                             if (!strLine.isEmpty()) {
                                 providers.add(strLine);
-                                if (TDebug.TraceService) {
-                                    TDebug.out("Service.createClassNames(): adding class name: " + strLine);
-                                }
+                                logger.log(Level.TRACE, "Service.createClassNames(): adding class name: " + strLine);
+
                             }
                             strLine = reader.readLine();
                         }
                     } catch (IOException e) {
-                        if (TDebug.TraceService || TDebug.TraceAllExceptions) {
-                            TDebug.out(e);
-                        }
+                        logger.log(Level.ERROR, e.getMessage(), e);
                     }
                 }
             }
         }
         Iterator<String> iterator = providers.iterator();
-        if (TDebug.TraceService) TDebug.out("Service.createClassNames(): end");
+
+        logger.log(Level.TRACE, "Service.createClassNames(): end");
+
         return iterator;
     }
 }
-
-

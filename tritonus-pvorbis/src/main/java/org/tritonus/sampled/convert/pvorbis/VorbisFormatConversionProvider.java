@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 1999 - 2004 by Matthias Pfisterer
  *  Copyright (c) 2001 by Florian Bomers
@@ -39,7 +38,6 @@ import biniu.vorbis.Comment;
 import biniu.vorbis.DspState;
 import biniu.vorbis.Info;
 import biniu.vorbis.VorbisEnc;
-import org.tritonus.share.TDebug;
 import org.tritonus.share.sampled.AudioFormats;
 import org.tritonus.share.sampled.convert.TAsynchronousFilteredAudioInputStream;
 import org.tritonus.share.sampled.convert.TEncodingFormatConversionProvider;
@@ -57,7 +55,7 @@ import static java.lang.System.getLogger;
  */
 public class VorbisFormatConversionProvider extends TEncodingFormatConversionProvider {
 
-    private static final Logger logger = getLogger("TraceAudioConverter");
+    private static final Logger logger= getLogger("org.tritonus.TraceAudioConverter");
 
     // only used as abbreviation
     public static final AudioFormat.Encoding VORBIS = new AudioFormat.Encoding("VORBIS");
@@ -70,29 +68,29 @@ public class VorbisFormatConversionProvider extends TEncodingFormatConversionPro
             // stereo, 16 bit signed
             new AudioFormat(PCM_SIGNED, -1.0F, 16, 2, 4, -1.0F, false),
             new AudioFormat(PCM_SIGNED, -1.0F, 16, 2, 4, -1.0F, true),
-            // TODO: other channel configurations
+            // TODO other channel configurations
 
             // mono
-            // TODO: mechanism to make the double specification with
+            // TODO mechanism to make the double specification with
             // different endianess obsolete.
             new AudioFormat(VORBIS, -1.0F, -1, 1, -1, -1.0F, false),
             new AudioFormat(VORBIS, -1.0F, -1, 1, -1, -1.0F, true),
             // stereo
             new AudioFormat(VORBIS, -1.0F, -1, 2, -1, -1.0F, false),
             new AudioFormat(VORBIS, -1.0F, -1, 2, -1, -1.0F, true),
-            // TODO: other channel configurations
+            // TODO other channel configurations
     };
 
 //    private static final AudioFormat[] OUTPUT_FORMATS = {
 //            // mono
-//            // TODO: mechanism to make the double specification with
+//            // TODO mechanism to make the double specification with
 //            // different endianess obsolete.
 //            new AudioFormat(VORBIS, -1.0F, -1, 1, -1, -1.0F, false),
 //            new AudioFormat(VORBIS, -1.0F, -1, 1, -1, -1.0F, true),
 //            // stereo
 //            new AudioFormat(VORBIS, -1.0F, -1, 2, -1, -1.0F, false),
 //            new AudioFormat(VORBIS, -1.0F, -1, 2, -1, -1.0F, true),
-//            // TODO: other channel configurations
+//            // TODO other channel configurations
 //    };
 
     // Default settings for encoding.
@@ -312,45 +310,34 @@ public class VorbisFormatConversionProvider extends TEncodingFormatConversionPro
                 getCircularBuffer().write(m_page.body_base, m_page.body, m_page.body_len);
             }
 
-            if (TDebug.TraceAudioConverter) {
-                logger.log(Level.TRACE, "<init>: end");
-            }
+            logger.log(Level.TRACE, "<init>: end");
         }
 
         @Override
         public void execute() {
-            if (TDebug.TraceAudioConverter) {
-                logger.log(Level.TRACE, ">execute(): begin");
-            }
+            logger.log(Level.TRACE, ">execute(): begin");
             int nFrameSize = getFrameSize();
             int nChannels = getChannels();
             boolean bBigEndian = isBigEndian();
             int nBytesPerSample = nFrameSize / nChannels;
             int nSampleSizeInBits = nBytesPerSample * 8;
             float fScale = (float) Math.pow(2.0, nSampleSizeInBits - 1);
-            if (TDebug.TraceAudioConverter) {
-                logger.log(Level.TRACE, "frame size: " + nFrameSize);
-                logger.log(Level.TRACE, "channels: " + nChannels);
-                logger.log(Level.TRACE, "big endian: " + bBigEndian);
-                logger.log(Level.TRACE, "sample size (bits): " + nSampleSizeInBits);
-                logger.log(Level.TRACE, "bytes per sample: " + nBytesPerSample);
-                logger.log(Level.TRACE, "scale: " + fScale);
-            }
+            logger.log(Level.TRACE, "frame size: " + nFrameSize);
+            logger.log(Level.TRACE, "channels: " + nChannels);
+            logger.log(Level.TRACE, "big endian: " + bBigEndian);
+            logger.log(Level.TRACE, "sample size (bits): " + nSampleSizeInBits);
+            logger.log(Level.TRACE, "bytes per sample: " + nBytesPerSample);
+            logger.log(Level.TRACE, "scale: " + fScale);
 
             while (!eos && writeMore()) {
-                if (TDebug.TraceAudioConverter) {
-                    logger.log(Level.TRACE, "writeMore: " + writeMore());
-                }
+                logger.log(Level.TRACE, "writeMore: " + writeMore());
                 int bytes;
                 try {
                     bytes = m_decodedStream.read(m_abReadbuffer);
-                    if (TDebug.TraceAudioConverter) {
-                        logger.log(Level.TRACE, "read from PCM stream: " + bytes);
-                    }
+                    logger.log(Level.TRACE, "read from PCM stream: " + bytes);
                 } catch (IOException e) {
-                    if (TDebug.TraceAllExceptions || TDebug.TraceAudioConverter) {
-                        logger.log(Level.TRACE, e);
-                    }
+                    logger.log(Level.ERROR, e.getMessage(), e);
+
                     m_streamState.clear();
                     m_block.clear();
                     m_dspState.clear();
@@ -359,26 +346,18 @@ public class VorbisFormatConversionProvider extends TEncodingFormatConversionPro
                     try {
                         close(); // TODO is it ok as SPI?
                     } catch (IOException e1) {
-                        if (TDebug.TraceAllExceptions || TDebug.TraceAudioConverter) {
-                            logger.log(Level.TRACE, e1);
-                        }
+                        logger.log(Level.ERROR, e1.getMessage(), e1);
                     }
-                    if (TDebug.TraceAudioConverter) {
-                        logger.log(Level.TRACE, "<");
-                    }
+                    logger.log(Level.TRACE, "<");
                     return;
                 }
 
                 if (bytes == 0 || bytes == -1) {
-                    if (TDebug.TraceAudioConverter) {
-                        logger.log(Level.TRACE, "EOS reached; calling DspState.write(0)");
-                    }
+                    logger.log(Level.TRACE, "EOS reached; calling DspState.write(0)");
                     m_dspState.analysisWrote(0);
                 } else {
                     int nFrames = bytes / nFrameSize;
-                    if (TDebug.TraceAudioConverter) {
-                        logger.log(Level.TRACE, "processing frames: " + nFrames);
-                    }
+                    logger.log(Level.TRACE, "processing frames: " + nFrames);
                     float[][] buffer = m_dspState.analysisBuffer(READ);
                     // uninterleave samples
                     for (int i = 0, l = m_dspState.pcm_current; i < bytes / 4; i++, l++) {
@@ -405,9 +384,7 @@ public class VorbisFormatConversionProvider extends TEncodingFormatConversionPro
 
                             if (m_page.eos()) {
                                 eos = true;
-                                if (TDebug.TraceAudioConverter) {
-                                    logger.log(Level.TRACE, "page has detected EOS");
-                                }
+                                logger.log(Level.TRACE, "page has detected EOS");
                             }
                         }
                     }
@@ -415,9 +392,8 @@ public class VorbisFormatConversionProvider extends TEncodingFormatConversionPro
             }
 
             if (eos) {
-                if (TDebug.TraceAudioConverter) {
-                    logger.log(Level.TRACE, "EOS; shutting down encoder");
-                }
+                logger.log(Level.TRACE, "EOS; shutting down encoder");
+
                 m_streamState.clear();
                 m_block.clear();
                 m_dspState.clear();
@@ -427,14 +403,11 @@ public class VorbisFormatConversionProvider extends TEncodingFormatConversionPro
                 try {
                     close();
                 } catch (IOException e) {
-                    if (TDebug.TraceAllExceptions || TDebug.TraceAudioConverter) {
-                        logger.log(Level.TRACE, e);
-                    }
+                    logger.log(Level.ERROR, e.getMessage(), e);
                 }
             }
-            if (TDebug.TraceAudioConverter) {
-                logger.log(Level.TRACE, "<execute(): end");
-            }
+
+            logger.log(Level.TRACE, "<execute(): end");
         }
 
         private int getChannels() {
@@ -498,7 +471,7 @@ public class VorbisFormatConversionProvider extends TEncodingFormatConversionPro
         // is altered later in a dubious way
         @SuppressWarnings("unused")
         private int convsize = -1; // BUFFER_SIZE * 2;
-        // TODO: further checking
+        // TODO further checking
         private byte[] convbuffer = new byte[CONVSIZE];
         private float[][] m_aPcmOut;
 
@@ -509,15 +482,13 @@ public class VorbisFormatConversionProvider extends TEncodingFormatConversionPro
          */
         public DecodedVorbisAudioInputStream(AudioFormat outputFormat, AudioInputStream bitStream) {
             super(outputFormat, AudioSystem.NOT_SPECIFIED);
-            if (TDebug.TraceAudioConverter) {
-                logger.log(Level.TRACE, "DecodedVorbisAudioInputStream.<init>(): begin");
-            }
+            logger.log(Level.TRACE, "DecodedVorbisAudioInputStream.<init>(): begin");
+
             m_oggBitStream = bitStream;
             m_bHeadersExpected = true;
             init_jorbis();
-            if (TDebug.TraceAudioConverter) {
-                logger.log(Level.TRACE, "DecodedVorbisAudioInputStream.<init>(): end");
-            }
+
+            logger.log(Level.TRACE, "DecodedVorbisAudioInputStream.<init>(): end");
         }
 
         /**
@@ -545,47 +516,41 @@ public class VorbisFormatConversionProvider extends TEncodingFormatConversionPro
          */
         @Override
         public void execute() {
-            if (TDebug.TraceAudioConverter) {
-                logger.log(Level.TRACE, ">DecodedVorbisAudioInputStream.execute(): begin");
-            }
+            logger.log(Level.TRACE, ">DecodedVorbisAudioInputStream.execute(): begin");
+
             if (m_bHeadersExpected) {
-                if (TDebug.TraceAudioConverter) {
-                    logger.log(Level.TRACE, "reading headers...");
-                }
+                logger.log(Level.TRACE, "reading headers...");
                 // Headers (+ Comments).
                 try {
                     readHeaders();
                 } catch (IOException e) {
-                    if (TDebug.TraceAllExceptions) {
-                        logger.log(Level.TRACE, e);
-                    }
+                    logger.log(Level.ERROR, e.getMessage(), e);
+
                     closePhysicalStream();
-                    if (TDebug.TraceAudioConverter) {
-                        logger.log(Level.TRACE, "<DecodedVorbisAudioInputStream.execute(): end");
-                    }
+
+                    logger.log(Level.TRACE, "<DecodedVorbisAudioInputStream.execute(): end");
                     return;
                 }
                 m_bHeadersExpected = false;
                 setupVorbisStructures();
             }
-            if (TDebug.TraceAudioConverter) logger.log(Level.TRACE, "decoding...");
+            logger.log(Level.TRACE, "decoding...");
             // Decoding !
             while (writeMore()) {
                 try {
                     readOggPacket();
                 } catch (IOException e) {
-                    if (TDebug.TraceAllExceptions) {
-                        logger.log(Level.TRACE, e);
-                    }
+                    logger.log(Level.ERROR, e.getMessage(), e);
+
                     closePhysicalStream();
-                    if (TDebug.TraceAudioConverter)
-                        logger.log(Level.TRACE, "<DecodedVorbisAudioInputStream.execute(): end");
+
+                    logger.log(Level.TRACE, "<DecodedVorbisAudioInputStream.execute(): end");
                     return;
                 }
                 decodeDataPacket();
             }
             if (m_oggPacket.isEos()) {
-                if (TDebug.TraceAudioConverter) logger.log(Level.TRACE, "end of vorbis stream reached");
+                logger.log(Level.TRACE, "end of vorbis stream reached");
                 // The end of the vorbis stream is reached.
                 // So we shut down the logical bitstream and
                 // vorbis structures.
@@ -595,12 +560,12 @@ public class VorbisFormatConversionProvider extends TEncodingFormatConversionPro
                 m_vorbisInfo.clear();
                 m_bHeadersExpected = true;
             }
-            if (TDebug.TraceAudioConverter) logger.log(Level.TRACE, "<DecodedVorbisAudioInputStream.execute(): end");
+            logger.log(Level.TRACE, "<DecodedVorbisAudioInputStream.execute(): end");
         }
 
         private void closePhysicalStream() {
-            if (TDebug.TraceAudioConverter)
-                logger.log(Level.TRACE, "DecodedVorbisAudioInputStream.closePhysicalStream(): begin");
+            logger.log(Level.TRACE, "DecodedVorbisAudioInputStream.closePhysicalStream(): begin");
+
             m_oggSyncState.clear();
             try {
                 if (m_oggBitStream != null) {
@@ -608,12 +573,10 @@ public class VorbisFormatConversionProvider extends TEncodingFormatConversionPro
                 }
                 getCircularBuffer().close();
             } catch (Exception e) {
-                if (TDebug.TraceAllExceptions) {
-                    logger.log(Level.TRACE, e);
-                }
+                logger.log(Level.ERROR, e.getMessage(), e);
             }
-            if (TDebug.TraceAudioConverter)
-                logger.log(Level.TRACE, "DecodedVorbisAudioInputStream.closePhysicalStream(): end");
+
+            logger.log(Level.TRACE, "DecodedVorbisAudioInputStream.closePhysicalStream(): end");
         }
 
         /**
@@ -663,7 +626,6 @@ public class VorbisFormatConversionProvider extends TEncodingFormatConversionPro
          */
         private void processComments() {
             logger.log(Level.TRACE, "DecodedVorbisAudioInputStream.processComments(): begin");
-            /*if (TDebug.TraceAudioConverter)*/
             logger.log(Level.TRACE, "DecodedVorbisAudioInputStream.processComments(): encoded by: " + m_vorbisComment.getVendor());
 
             String[] astrComments = new String[m_vorbisComment.comments];
@@ -687,13 +649,13 @@ public class VorbisFormatConversionProvider extends TEncodingFormatConversionPro
 //                    String titleLabelValue = currComment.substring(6);
 //                    String miniDragLabel = currComment.substring(6);
 //                }
-//                if (TDebug.TraceAudioConverter) logger.log(Level.TRACE, "Comment: " + currComment);
+//                logger.log(Level.TRACE, "Comment: " + currComment);
 //            }
 //            currComment = "Bitstream: " + m_vorbisInfo.getChannels() + " channel," + m_vorbisInfo.rate + "Hz";
 //            m_songComments.add(currComment);
-//            if (TDebug.TraceAudioConverter) logger.log(Level.TRACE, currComment);
+//            logger.log(Level.TRACE, currComment);
 //            m_songComments.add(currComment);
-//            if (TDebug.TraceAudioConverter) logger.log(Level.TRACE, currComment);
+//            logger.log(Level.TRACE, currComment);
             logger.log(Level.TRACE, "DecodedVorbisAudioInputStream.processComments(): end");
         }
 
@@ -745,7 +707,7 @@ public class VorbisFormatConversionProvider extends TEncodingFormatConversionPro
          */
         private void clipAndWriteSample(float fSample, int nPointer) {
             int nSample;
-            // TODO: check if clipping is necessary
+            // TODO check if clipping is necessary
             if (fSample > 1.0F) {
                 fSample = 1.0F;
             }
@@ -838,9 +800,9 @@ public class VorbisFormatConversionProvider extends TEncodingFormatConversionPro
                     return;
                 }
                 // we need more data from the stream
-                // TODO: call stream.read() directly
+                // TODO call stream.read() directly
                 int nBytes = readFromStream(m_abInputBuffer, 0, m_abInputBuffer.length);
-                // TODO: This clause should become obsolete; readFromStream() should
+                // TODO This clause should become obsolete; readFromStream() should
                 // propagate exceptions directly.
                 if (nBytes == -1) {
                     throw new EOFException();

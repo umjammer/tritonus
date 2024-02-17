@@ -20,15 +20,21 @@
 
 package org.tritonus.lowlevel.ogg;
 
-import org.tritonus.share.TDebug;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
+
 import vavi.sound.sampled.jna.ogg.OggLibrary;
 import vavi.sound.sampled.jna.ogg.ogg_packet;
+
+import static java.lang.System.getLogger;
 
 
 /**
  * Wrapper for ogg_packet.
  */
 public class Packet {
+
+    private static final Logger logger = getLogger(Packet.class.getName());
 
     /**
      * Holds the pointer to ogg_packet
@@ -42,67 +48,57 @@ public class Packet {
     }
 
     public Packet() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("<init>: begin");
-        }
+        logger.log(Level.TRACE, "<init>: begin");
+
         int nReturn = malloc();
         if (nReturn < 0) {
             throw new RuntimeException("malloc of ogg_packet failed");
         }
-        if (TDebug.TraceOggNative) {
-            TDebug.out("<init>: end");
-        }
+
+        logger.log(Level.TRACE, "<init>: end");
     }
 
     private int malloc() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("malloc: begin");
-        }
+        logger.log(Level.TRACE, "malloc: begin");
+
         handle = new ogg_packet();
-        if (TDebug.TraceOggNative) {
-            TDebug.out(String.format("malloc: handle: %s", handle));
-        }
-        if (TDebug.TraceOggNative) {
-            TDebug.out("malloc: end");
-        }
+        logger.log(Level.TRACE, String.format("malloc: handle: %s", handle));
+
+        logger.log(Level.TRACE, "malloc: end");
+
         return 0;
     }
 
     public void free() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("free: begin");
-        }
+        logger.log(Level.TRACE, "free: begin");
+
         handle = null;
-        if (TDebug.TraceOggNative) {
-            TDebug.out("free: end");
-        }
+
+        logger.log(Level.TRACE, "free: end");
     }
 
     /**
      * Calls ogg_packet_clear().
      */
     public void clear() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("clear: begin");
-        }
+        logger.log(Level.TRACE, "clear: begin");
+
         OggLibrary.INSTANCE.ogg_packet_clear(handle);
-        if (TDebug.TraceOggNative) {
-            TDebug.out("clear: end");
-        }
+
+        logger.log(Level.TRACE, "clear: end");
     }
 
     /**
      * Accesses packet and bytes.
      */
     public byte[] getData() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("getData: begin");
-        }
+        logger.log(Level.TRACE, "getData: begin");
+
         byte[] abData = new byte[handle.bytes.intValue()];
         handle.packet.read(0, abData, 0, handle.bytes.intValue());
-        if (TDebug.TraceOggNative) {
-            TDebug.out("getData: end");
-        }
+
+        logger.log(Level.TRACE, "getData: end");
+
         return abData;
     }
 
@@ -110,16 +106,14 @@ public class Packet {
      * Accesses b_o_s.
      */
     public boolean isBos() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("isBos: begin");
-        }
-        if (TDebug.TraceOggNative) {
-            TDebug.out(String.format("isBos: b_o_s: %d", handle.b_o_s.intValue()));
-        }
+        logger.log(Level.TRACE, "isBos: begin");
+
+        logger.log(Level.TRACE, String.format("isBos: b_o_s: %d", handle.b_o_s.intValue()));
+
         boolean bReturn = handle.b_o_s.intValue() != 0;
-        if (TDebug.TraceOggNative) {
-            TDebug.out("isBos: end");
-        }
+
+        logger.log(Level.TRACE, "isBos: end");
+
         return bReturn;
     }
 
@@ -127,15 +121,12 @@ public class Packet {
      * Accesses e_o_s.
      */
     public boolean isEos() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("isEos: begin");
-        }
+        logger.log(Level.TRACE, "isEos: begin");
+
         boolean bReturn = handle.e_o_s.intValue() != 0;
-        if (TDebug.TraceOggNative) {
-            TDebug.out("isEos: end");
-        }
+
+        logger.log(Level.TRACE, "isEos: end");
+
         return bReturn;
     }
 }
-
-

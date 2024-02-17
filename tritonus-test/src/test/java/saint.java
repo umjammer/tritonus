@@ -186,7 +186,7 @@ public class saint {
                     saint.getSamplingRate(),
                     SUPPORTED_FORMATS[nOutputFormatIndex].getSampleSize(),
                     saint.getChannelCount(),
-                    // TODO: 24 bit is not handled correctely!!!
+                    // TODO 24 bit is not handled correctely!!!
                     saint.getChannelCount() * SUPPORTED_FORMATS[nOutputFormatIndex].getSampleSize() / 8,
                     saint.getSamplingRate(),
                     SUPPORTED_FORMATS[nOutputFormatIndex].getBigEndian());
@@ -195,7 +195,7 @@ public class saint {
             SourceDataLine line = null;
             try {
                 line = (SourceDataLine) AudioSystem.getLine(info);
-                // TODO: (Tritonus) check if calling without arguments should work
+                // TODO (Tritonus) check if calling without arguments should work
                 line.open(format);
                 line.start();
             } catch (LineUnavailableException e) {

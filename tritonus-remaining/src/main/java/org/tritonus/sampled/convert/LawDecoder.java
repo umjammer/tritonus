@@ -83,7 +83,7 @@ public class LawDecoder extends TEncodingFormatConversionProvider {
                                                 AudioInputStream sourceStream) {
         AudioFormat sourceFormat = sourceStream.getFormat();
         // the non-conversion case
-        // TODO: does this work OK when some fields are
+        // TODO does this work OK when some fields are
         // AudioSystem.NOT_SPECIFIED ?
         if (AudioFormats.matches(sourceFormat, targetFormat)) {
             return sourceStream;

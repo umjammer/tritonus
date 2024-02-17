@@ -33,7 +33,7 @@ public class Instrument_tone
 
     @Override
     public void doAPass(RTSystem rtSystem) {
-        // TDebug.out("doAPass()");
+        // logger.log(Level.TRACE, "doAPass()");
         a = 0.196307F;
         if (init == 0.0F) {
             init = 1.0F;

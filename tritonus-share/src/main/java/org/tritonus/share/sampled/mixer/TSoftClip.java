@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 1999 by Matthias Pfisterer
  *
@@ -21,6 +20,8 @@ package org.tritonus.share.sampled.mixer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -29,53 +30,44 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.Mixer;
 import javax.sound.sampled.SourceDataLine;
 
-import org.tritonus.share.TDebug;
+import static java.lang.System.getLogger;
 
 
-public class TSoftClip
-        extends TClip
-        implements Runnable {
+public class TSoftClip extends TClip implements Runnable {
 
-    //$$fb the following field is never used
-    //private static final Class[] CONTROL_CLASSES = {/*GainControl.class*/};
+    private static final Logger logger= getLogger("org.tritonus.TraceClip");
+
+    // $$fb the following field is never used
+//    private static final Class[] CONTROL_CLASSES = { /* GainControl.class */ };
     private static final int BUFFER_SIZE = 16384;
 
-    //$$fb the following field is never used
-    //private Mixer   m_mixer;
+    // $$fb the following field is never used
+//    private Mixer m_mixer;
     private SourceDataLine m_line;
     private byte[] m_abClip;
     private int m_nRepeatCount;
     private Thread m_thread;
 
-    public TSoftClip(Mixer mixer, AudioFormat format)
-            throws LineUnavailableException {
-        // TODO: info object
-/*
-  DataLine.Info info = new DataLine.Info(Clip.class,
-        audioFormat, -1);
-*/
+    public TSoftClip(Mixer mixer, AudioFormat format) throws LineUnavailableException {
+        // TODO info object
+//        DataLine.Info info = new DataLine.Info(Clip.class, audioFormat, -1);
         super(null);
-        //m_mixer = mixer;
-        DataLine.Info info = new DataLine.Info(
-                SourceDataLine.class,
-                // TODO: should pass a real AudioFormat object that isn't too restrictive
-                format);
+//        m_mixer = mixer;
+        // TODO should pass a real AudioFormat object that isn't too restrictive
+        DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
         m_line = (SourceDataLine) AudioSystem.getLine(info);
     }
 
     @Override
-    public void open(AudioInputStream audioInputStream)
-            throws LineUnavailableException, IOException {
+    public void open(AudioInputStream audioInputStream) throws LineUnavailableException, IOException {
         AudioFormat audioFormat = audioInputStream.getFormat();
         setFormat(audioFormat);
         int nFrameSize = audioFormat.getFrameSize();
         if (nFrameSize < 1) {
             throw new IllegalArgumentException("frame size must be positive");
         }
-        if (TDebug.TraceClip) {
-            TDebug.out("TSoftClip.open(): format: " + audioFormat);
-            // TDebug.out("sample rate: " + audioFormat.getSampleRate());
-        }
+        logger.log(Level.TRACE, "TSoftClip.open(): format: " + audioFormat);
+//        logger.log(Level.TRACE, "sample rate: " + audioFormat.getSampleRate());
         byte[] abData = new byte[BUFFER_SIZE];
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         int nBytesRead = 0;
@@ -83,18 +75,14 @@ public class TSoftClip
             try {
                 nBytesRead = audioInputStream.read(abData, 0, abData.length);
             } catch (IOException e) {
-                if (TDebug.TraceClip || TDebug.TraceAllExceptions) {
-                    TDebug.out(e);
-                }
+                logger.log(Level.ERROR, e.getMessage(), e);
             }
             if (nBytesRead >= 0) {
-                if (TDebug.TraceClip) {
-                    TDebug.out("TSoftClip.open(): Trying to write: " + nBytesRead);
-                }
+                logger.log(Level.TRACE, "TSoftClip.open(): Trying to write: " + nBytesRead);
+
                 baos.write(abData, 0, nBytesRead);
-                if (TDebug.TraceClip) {
-                    TDebug.out("TSoftClip.open(): Written: " + nBytesRead);
-                }
+
+                logger.log(Level.TRACE, "TSoftClip.open(): Written: " + nBytesRead);
             }
         }
         m_abClip = baos.toByteArray();
@@ -125,96 +113,88 @@ public class TSoftClip
 
     @Override
     public void setFramePosition(int nPosition) {
-        // TOOD:
+        // TODO
     }
 
     @Override
     public void setMicrosecondPosition(long lPosition) {
-        // TOOD:
+        // TODO
     }
 
     @Override
     public int getFramePosition() {
-        // TOOD:
+        // TODO
         return -1;
     }
 
     @Override
     public long getMicrosecondPosition() {
-        // TOOD:
+        // TODO
         return -1;
     }
 
     @Override
     public void setLoopPoints(int nStart, int nEnd) {
-        // TOOD:
+        // TODO
     }
 
     @Override
     public void loop(int nCount) {
-        if (TDebug.TraceClip) {
-            TDebug.out("TSoftClip.loop(int): called; count = " + nCount);
-        }
-        if (false/*isStarted()*/) {
-            /*
-             * only allow zero count to stop the looping
-             * at the end of an iteration.
-             */
+        logger.log(Level.TRACE, "TSoftClip.loop(int): called; count = " + nCount);
+
+        if (false /* isStarted() */) {
+            // only allow zero count to stop the looping
+            // at the end of an iteration.
             if (nCount == 0) {
-                if (TDebug.TraceClip) {
-                    TDebug.out("TSoftClip.loop(int): stopping sample");
-                }
-                // m_esdSample.stop();
+                logger.log(Level.TRACE, "TSoftClip.loop(int): stopping sample");
+
+//                m_esdSample.stop();
             }
         } else {
             m_nRepeatCount = nCount;
             m_thread = new Thread(this);
             m_thread.start();
         }
-        // TOOD:
+        // TODO
     }
 
     @Override
     public void flush() {
-        // TOOD:
+        // TODO
     }
 
     @Override
     public void drain() {
-        // TOOD:
+        // TODO
     }
 
     @Override
     public void close() {
-        // m_esdSample.free();
-        // m_esdSample.close();
-        // TOOD:
+//        m_esdSample.free();
+//        m_esdSample.close();
+        // TODO
     }
 
     @Override
     public void open() {
-        // TODO:
+        // TODO
     }
 
     @Override
     public void start() {
-        if (TDebug.TraceClip) {
-            TDebug.out("TSoftClip.start(): called");
-        }
-        /*
-         * This is a hack. What start() really should do is
-         * start playing at the position playback was stopped.
-         */
-        if (TDebug.TraceClip) {
-            TDebug.out("TSoftClip.start(): calling 'loop(0)' [hack]");
-        }
+        logger.log(Level.TRACE, "TSoftClip.start(): called");
+
+        // This is a hack. What start() really should do is
+        // start playing at the position playback was stopped.
+        logger.log(Level.TRACE, "TSoftClip.start(): calling 'loop(0)' [hack]");
+
         loop(0);
     }
 
     @Override
     public void stop() {
-        // TODO:
-        // m_esdSample.kill();
+        // TODO
+//        m_esdSample.kill();
     }
 
     /*
@@ -233,8 +213,4 @@ public class TSoftClip
             m_nRepeatCount--;
         }
     }
-
 }
-
-
-

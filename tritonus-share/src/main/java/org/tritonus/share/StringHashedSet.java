@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 2000 by Florian Bomers
  *

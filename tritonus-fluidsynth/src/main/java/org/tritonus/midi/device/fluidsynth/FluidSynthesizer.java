@@ -29,6 +29,8 @@
 
 package org.tritonus.midi.device.fluidsynth;
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import javax.sound.midi.Instrument;
 import javax.sound.midi.MidiChannel;
 import javax.sound.midi.MidiDevice;
@@ -42,12 +44,13 @@ import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
 import org.tritonus.midi.sb.fluidsynth.FluidSoundbank;
-import org.tritonus.share.TDebug;
 import org.tritonus.share.midi.TDirectSynthesizer;
 import org.tritonus.share.midi.TMidiChannel;
 import vavi.sound.midi.fluidsynth.jna.audio.AudioLibrary;
 import vavi.sound.midi.fluidsynth.jna.settings.SettingsLibrary;
 import vavi.sound.midi.fluidsynth.jna.synth.SynthLibrary;
+
+import static java.lang.System.getLogger;
 
 
 /*
@@ -56,6 +59,8 @@ import vavi.sound.midi.fluidsynth.jna.synth.SynthLibrary;
  * This file is part of Tritonus: http://www.tritonus.org/
  */
 public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer {
+
+    private static final Logger logger = getLogger("org.tritonus.TraceSynthesizer");
 
     private MidiChannel[] channels;
     private FluidSoundbank defaultSoundbank;
@@ -81,8 +86,8 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
     @Override
     protected void openImpl() throws MidiUnavailableException {
         newSynth();
-        if (TDebug.TraceSynthesizer)
-            TDebug.out("FluidSynthesizer: " + Long.toHexString(Pointer.nativeValue(synth.getValue())));
+
+        logger.log(Level.TRACE, "FluidSynthesizer: " + Long.toHexString(Pointer.nativeValue(synth.getValue())));
 
         channels = new MidiChannel[16];
         for (int i = 0; i < 16; i++) {
@@ -102,8 +107,8 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
 
     @Override
     protected void closeImpl() {
-        if (TDebug.TraceSynthesizer)
-            TDebug.out("FluidSynthesizer.closeImpl(): " + Long.toHexString(Pointer.nativeValue(synth.getValue())));
+        logger.log(Level.TRACE, "FluidSynthesizer.closeImpl(): " + Long.toHexString(Pointer.nativeValue(synth.getValue())));
+
         deleteSynth();
         super.closeImpl();
     }
@@ -139,7 +144,7 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
     public void setReverbPreset(int reverbPreset) {
         // $$mp: currently not functional because fluid_synth_set_reverb_preset() is not
         // present in fluidsynth 1.0.6
-        //fluid_synth_set_reverb_preset(synth, (int) reverbPreset);
+//        fluid_synth_set_reverb_preset(synth, (int) reverbPreset);
     }
 
     @Override
@@ -161,10 +166,7 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
                 throw new MidiUnavailableException("Low-level initialization of the synthesizer failed");
             }
 
-            if (TDebug.TraceFluidNative) {
-                System.err.printf("newSynth: synth: %s\n", synth);
-                System.err.flush();
-            }
+            logger.log(Level.TRACE, "newSynth: synth: " + synth);
 
             this.audioDriver = AudioLibrary.INSTANCE.new_fluid_audio_driver(settings, synth);
             if (audioDriver == null) {
@@ -175,11 +177,7 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
     }
 
     protected void deleteSynth() {
-
-        if (TDebug.TraceFluidNative) {
-            System.err.printf("deleteSynth: synth: %s\n", synth);
-            System.err.flush();
-        }
+        logger.log(Level.TRACE, "deleteSynth: synth: " + synth);
 
         fluid_jni_delete_synth();
     }
@@ -226,7 +224,7 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
     void noteOff(int nChannel, int nNoteNumber, int nVelocity) {
         if (synth != null) {
             // There is no method noteoff that takes a velocity param.
-            //fluid_synth_noteoff(synth, channel, key, velocity);
+//            fluid_synth_noteoff(synth, channel, key, velocity);
             SynthLibrary.INSTANCE.fluid_synth_noteoff(synth, nChannel, nNoteNumber);
         }
     }
@@ -508,7 +506,7 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
             return FluidSynthesizer.this.getPitchBend(getChannel());
         }
 
-        // TODO: emulate by manipulating volume
+        // TODO emulate by manipulating volume
         @Override
         public void setMute(boolean bMute) {
         }
@@ -528,5 +526,3 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
         }
     }
 }
-
-

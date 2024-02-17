@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 2000 by Florian Bomers
  *
@@ -19,14 +18,15 @@
 
 package org.tritonus.share.sampled.convert;
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.util.Collection;
 import javax.sound.sampled.AudioFormat;
 
 import org.tritonus.share.ArraySet;
-import org.tritonus.share.TDebug;
 
+import static java.lang.System.getLogger;
 
-// this class depends on handling of AudioSystem.NOT_SPECIFIED in AudioFormat.matches()
 
 /**
  * This is a base class for FormatConversionProviders that only
@@ -47,11 +47,14 @@ import org.tritonus.share.TDebug;
  * <p>Overriding classes must implement at least
  * <code>AudioInputStream getAudioInputStream(AudioFormat targetFormat, AudioInputStream sourceStream)</code>
  * and provide a constructor that calls the protected constructor of this class.
+ * <p>
+ * this class depends on handling of AudioSystem.NOT_SPECIFIED in AudioFormat.matches()
  *
  * @author Florian Bomers
  */
-public abstract class TEncodingFormatConversionProvider
-        extends TSimpleFormatConversionProvider {
+public abstract class TEncodingFormatConversionProvider extends TSimpleFormatConversionProvider {
+
+    private static final Logger logger= getLogger("org.tritonus.TraceAudioConverter");
 
     /** create an instance. The given formats can be set to null. */
     protected TEncodingFormatConversionProvider(
@@ -82,31 +85,24 @@ public abstract class TEncodingFormatConversionProvider
      */
     @Override
     public AudioFormat[] getTargetFormats(AudioFormat.Encoding targetEncoding, AudioFormat sourceFormat) {
-        if (TDebug.TraceAudioConverter) {
-            TDebug.out(">TEncodingFormatConversionProvider.getTargetFormats(AudioFormat.Encoding, AudioFormat):");
-            TDebug.out("checking if conversion possible");
-            TDebug.out("from: " + sourceFormat);
-            TDebug.out("to: " + targetEncoding);
-        }
+        logger.log(Level.TRACE, ">TEncodingFormatConversionProvider.getTargetFormats(AudioFormat.Encoding, AudioFormat):");
+        logger.log(Level.TRACE, "checking if conversion possible");
+        logger.log(Level.TRACE, "from: " + sourceFormat);
+        logger.log(Level.TRACE, "to: " + targetEncoding);
         if (isConversionSupported(targetEncoding, sourceFormat)) {
-            // TODO: check that no duplicates may occur...
+            // TODO check that no duplicates may occur...
             ArraySet<AudioFormat> result = new ArraySet<>();
             for (AudioFormat targetFormat : getCollectionTargetFormats()) {
                 targetFormat = replaceNotSpecified(sourceFormat, targetFormat);
                 result.add(targetFormat);
             }
-            if (TDebug.TraceAudioConverter) {
-                TDebug.out("< returning " + result.size() + " elements.");
-            }
+            logger.log(Level.TRACE, "< returning " + result.size() + " elements.");
+
             return result.toArray(EMPTY_FORMAT_ARRAY);
         } else {
-            if (TDebug.TraceAudioConverter) {
-                TDebug.out("< returning empty array.");
-            }
+            logger.log(Level.TRACE, "< returning empty array.");
+
             return EMPTY_FORMAT_ARRAY;
         }
     }
-
 }
-
-

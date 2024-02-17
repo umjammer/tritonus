@@ -86,13 +86,13 @@ public abstract class TMidiChannel
 
     @Override
     public void setMono(boolean bMono) {
-        // TODO: check this
+        // TODO check this
         controlChange(bMono ? 126 : 127, 0);
     }
 
     @Override
     public boolean getMono() {
-        // TODO: check this
+        // TODO check this
         return getController(126) == 0;
     }
 
@@ -103,7 +103,7 @@ public abstract class TMidiChannel
 
     @Override
     public boolean getOmni() {
-        // TODO: check this
+        // TODO check this
         return getController(125) == 0;
     }
 }

@@ -20,20 +20,26 @@
 
 package org.tritonus.lowlevel.vorbis;
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
+
 import com.sun.jna.NativeLong;
 import org.tritonus.lowlevel.ogg.Packet;
-import org.tritonus.share.TDebug;
 import vavi.sound.sampled.jna.codec.CodecLibrary;
 import vavi.sound.sampled.jna.codec.vorbis_comment;
 import vavi.sound.sampled.jna.codec.vorbis_info;
 import vavi.sound.sampled.jna.ogg.ogg_packet;
 import vavi.sound.sampled.jna.vorbisenc.VorbisencLibrary;
 
+import static java.lang.System.getLogger;
+
 
 /**
  * Wrapper for vorbis_info.
  */
 public class Info {
+
+    private static final Logger logger= getLogger("org.tritonus.TraceVorbisNative");
 
     /**
      * Holds the pointer to vorbis_info
@@ -47,81 +53,69 @@ public class Info {
     }
 
     public Info() {
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("Info.<init>(): begin");
-        }
+        logger.log(Level.TRACE, "Info.<init>(): begin");
+
         int nReturn = malloc();
         if (nReturn < 0) {
             throw new RuntimeException("malloc of vorbis_info failed");
         }
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("Info.<init>(): end");
-        }
+
+        logger.log(Level.TRACE, "Info.<init>(): end");
     }
 
     private int malloc() {
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("malloc(): begin");
-        }
+        logger.log(Level.TRACE, "malloc(): begin");
+
         handle = new vorbis_info();
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out(String.format("malloc(): handle: %s", handle));
-        }
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("malloc(): end");
-        }
+        logger.log(Level.TRACE, String.format("malloc(): handle: %s", handle));
+
+        logger.log(Level.TRACE, "malloc(): end");
+
         return 0;
     }
 
     public void free() {
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("free(): begin");
-        }
+        logger.log(Level.TRACE, "free(): begin");
+
         handle = null;
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("free(): end");
-        }
+
+        logger.log(Level.TRACE, "free(): end");
     }
 
     /**
      * Calls vorbis_info_init().
      */
     public void init() {
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("init(): begin");
-        }
+        logger.log(Level.TRACE, "init(): begin");
+
         CodecLibrary.INSTANCE.vorbis_info_init(handle);
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("init(): end");
-        }
+
+        logger.log(Level.TRACE, "init(): end");
     }
 
     /**
      * Calls vorbis_info_clear().
      */
     public void clear() {
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("clear(): begin");
-        }
+        logger.log(Level.TRACE, "clear(): begin");
+
         CodecLibrary.INSTANCE.vorbis_info_clear(handle);
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("clear(): end");
-        }
+
+        logger.log(Level.TRACE, "clear(): end");
     }
 
-// blocksize?
+    // blocksize?
 
     /**
      * Accesses channels.
      */
     public int getChannels() {
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("getChannels(): begin");
-        }
+        logger.log(Level.TRACE, "getChannels(): begin");
+
         int nReturn = handle.channels;
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("getChannels(): end");
-        }
+
+        logger.log(Level.TRACE, "getChannels(): end");
+
         return nReturn;
     }
 
@@ -129,13 +123,12 @@ public class Info {
      * Accesses rate.
      */
     public int getRate() {
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("getRate(): begin");
-        }
+        logger.log(Level.TRACE, "getRate(): begin");
+
         NativeLong nReturn = handle.rate;
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("getRate(): end");
-        }
+
+        logger.log(Level.TRACE, "getRate(): end");
+
         return nReturn.intValue();
     }
 
@@ -148,14 +141,13 @@ public class Info {
             int nMaxBitrate,
             int nNominalBitrate,
             int nMinBitrate) {
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("encodeInit(): begin");
-        }
+        logger.log(Level.TRACE, "encodeInit(): begin");
+
         int nReturn = VorbisencLibrary.INSTANCE.vorbis_encode_init(handle, new NativeLong(nChannels), new NativeLong(nRate),
                 new NativeLong(nMaxBitrate), new NativeLong(nNominalBitrate), new NativeLong(nMinBitrate));
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("encodeInit(): end");
-        }
+
+        logger.log(Level.TRACE, "encodeInit(): end");
+
         return nReturn;
     }
 
@@ -166,13 +158,12 @@ public class Info {
             int nChannels,
             int nRate,
             float fQuality) {
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("encodeInitVBR(): begin");
-        }
+        logger.log(Level.TRACE, "encodeInitVBR(): begin");
+
         int nReturn = VorbisencLibrary.INSTANCE.vorbis_encode_init_vbr(handle, new NativeLong(nChannels), new NativeLong(nRate), fQuality);
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("encodeInitVBR(): end");
-        }
+
+        logger.log(Level.TRACE, "encodeInitVBR(): end");
+
         return nReturn;
     }
 
@@ -180,17 +171,14 @@ public class Info {
      * Calls vorbis_synthesis_headerin().
      */
     public int headerIn(Comment comment, Packet packet) {
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("headerIn(): begin");
-        }
+        logger.log(Level.TRACE, "headerIn(): begin");
+
         vorbis_comment commentHandle = comment.getHandle();
         ogg_packet packetHandle = packet.getHandle();
         int nReturn = CodecLibrary.INSTANCE.vorbis_synthesis_headerin(handle, commentHandle, packetHandle);
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("headerIn(): end");
-        }
+
+        logger.log(Level.TRACE, "headerIn(): end");
+
         return nReturn;
     }
 }
-
-

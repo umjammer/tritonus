@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 2000 by Florian Bomers
  *
@@ -122,7 +121,7 @@ public class AudioFormatSet extends ArraySet<AudioFormat> {
         return null;
     }
 
-    // $$mp: TODO: remove; should be obsolete
+    // $$mp: TODO remove; should be obsolete
     public AudioFormat[] toAudioFormatArray() {
         return toArray(EMPTY_FORMAT_ARRAY);
     }

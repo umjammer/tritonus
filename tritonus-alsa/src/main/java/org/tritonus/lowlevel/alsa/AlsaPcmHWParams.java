@@ -16,13 +16,18 @@
 
 package org.tritonus.lowlevel.alsa;
 
-import org.tritonus.share.TDebug;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
+
+import static java.lang.System.getLogger;
 
 
 /**
- * TODO:
+ * TODO
  */
 public class AlsaPcmHWParams {
+
+    private static final Logger logger = getLogger("org.tritonus.TraceAlsaPcmNative");
 
     /**
      * Holds the pointer to snd_pcm_hw_params_t
@@ -33,16 +38,14 @@ public class AlsaPcmHWParams {
     private long m_lNativeHandle;
 
     public AlsaPcmHWParams() {
-        if (TDebug.TraceAlsaPcmNative) {
-            TDebug.out("AlsaPcmHWParams.<init>(): begin");
-        }
+        logger.log(Level.TRACE, "AlsaPcmHWParams.<init>(): begin");
+
         int nReturn = malloc();
         if (nReturn < 0) {
             throw new RuntimeException("malloc of hw_params failed");
         }
-        if (TDebug.TraceAlsaPcmNative) {
-            TDebug.out("AlsaPcmHWParams.<init>(): end");
-        }
+
+        logger.log(Level.TRACE, "AlsaPcmHWParams.<init>(): end");
     }
 
     private native int malloc();
@@ -231,5 +234,3 @@ public class AlsaPcmHWParams {
      */
     public native int getTickTimeMax(int[] anValues);
 }
-
-

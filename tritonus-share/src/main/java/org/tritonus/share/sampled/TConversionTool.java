@@ -509,7 +509,7 @@ public class TConversionTool {
         }
     }
 
-    // TODO: either direct 8bit pcm to ulaw, or better conversion from 8bit to 16bit
+    // TODO either direct 8bit pcm to ulaw, or better conversion from 8bit to 16bit
 
     /**
      * Converts a buffer of 8bit samples to uLaw.
@@ -573,7 +573,7 @@ public class TConversionTool {
         }
     }
 
-    // TODO: either direct 8bit pcm to ulaw, or better conversion from 8bit to 16bit
+    // TODO either direct 8bit pcm to ulaw, or better conversion from 8bit to 16bit
 
     /**
      * Inplace-conversion of a ulaw buffer to 8bit samples.

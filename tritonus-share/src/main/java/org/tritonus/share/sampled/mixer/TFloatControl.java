@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 2001 by Matthias Pfisterer
  *
@@ -19,17 +18,19 @@
 
 package org.tritonus.share.sampled.mixer;
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import javax.sound.sampled.FloatControl;
 
-import org.tritonus.share.TDebug;
+import static java.lang.System.getLogger;
 
 
 /**
  * Base class for classes implementing Line.
  */
-public class TFloatControl
-        extends FloatControl
-        implements TControllable {
+public class TFloatControl extends FloatControl implements TControllable {
+
+    private static final Logger logger= getLogger("org.tritonus.TraceControl");
 
     private TControlController m_controller;
 
@@ -47,13 +48,11 @@ public class TFloatControl
                 nUpdatePeriod,
                 fInitialValue,
                 strUnits);
-        if (TDebug.TraceControl) {
-            TDebug.out("TFloatControl.<init>: begin");
-        }
+        logger.log(Level.TRACE, "TFloatControl.<init>: begin");
+
         m_controller = new TControlController();
-        if (TDebug.TraceControl) {
-            TDebug.out("TFloatControl.<init>: end");
-        }
+
+        logger.log(Level.TRACE, "TFloatControl.<init>: end");
     }
 
     public TFloatControl(FloatControl.Type type,
@@ -76,13 +75,11 @@ public class TFloatControl
                 strMinLabel,
                 strMidLabel,
                 strMaxLabel);
-        if (TDebug.TraceControl) {
-            TDebug.out("TFloatControl.<init>: begin");
-        }
+        logger.log(Level.TRACE, "TFloatControl.<init>: begin");
+
         m_controller = new TControlController();
-        if (TDebug.TraceControl) {
-            TDebug.out("TFloatControl.<init>: end");
-        }
+
+        logger.log(Level.TRACE, "TFloatControl.<init>: end");
     }
 
     @Override

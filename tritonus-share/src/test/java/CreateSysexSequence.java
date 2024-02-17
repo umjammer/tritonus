@@ -1,7 +1,7 @@
 /*
  * CreateSysexSequence.java
  *
- * TODO: short description
+ * TODO short description
  */
 
 /*

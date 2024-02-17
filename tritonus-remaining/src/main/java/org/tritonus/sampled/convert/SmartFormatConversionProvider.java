@@ -76,20 +76,20 @@ public class SmartFormatConversionProvider extends TFormatConversionProvider {
         m_blockedThreads = new HashSet<>();
     }
 
-    // TODO: can use AudioSystem to return all source encodings? (don't forget to block!)
+    // TODO can use AudioSystem to return all source encodings? (don't forget to block!)
     @Override
     public AudioFormat.Encoding[] getSourceEncodings() {
         return EMPTY_ENCODING_ARRAY;
     }
 
-    // TODO: can use AudioSystem to return all target encodings? (don't forget to block!)
+    // TODO can use AudioSystem to return all target encodings? (don't forget to block!)
     @Override
     public AudioFormat.Encoding[] getTargetEncodings() {
         return EMPTY_ENCODING_ARRAY;
     }
 
     @Override
-    public AudioFormat.Encoding[] getTargetEncodings(AudioFormat sourceFormat) { // TODO:
+    public AudioFormat.Encoding[] getTargetEncodings(AudioFormat sourceFormat) { // TODO
         return null;
     }
 

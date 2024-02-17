@@ -54,7 +54,6 @@
           <reuseForks>true</reuseForks>
           <argLine>
             -Djava.util.logging.config.file=src/test/resources/logging.properties
-            -Dvavi.util.logging.VaviFormatter.extraClassMethod=org\\.tritonus\\.share\\.TDebug#out
             -Djava.library.path=${native.library.path}
           </argLine>
         </configuration>

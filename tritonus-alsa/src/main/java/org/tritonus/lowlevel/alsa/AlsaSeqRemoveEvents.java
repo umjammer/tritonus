@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 1999 - 2002 by Matthias Pfisterer
  *
@@ -18,19 +17,21 @@
 
 package org.tritonus.lowlevel.alsa;
 
-import org.tritonus.share.TDebug;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
+
+import static java.lang.System.getLogger;
 
 
 /**
- * TODO:
+ * TODO
  */
 public class AlsaSeqRemoveEvents {
 
+    private static final Logger logger = getLogger("org.tritonus.TraceAlsaSeqNative");
+
     static {
         Alsa.loadNativeLibrary();
-        if (TDebug.TraceAlsaSeqNative) {
-            setTrace(true);
-        }
     }
 
     /**
@@ -38,26 +39,21 @@ public class AlsaSeqRemoveEvents {
      * for the native code.
      * This must be long to be 64bit-clean.
      */
-    /*private*/ long m_lNativeHandle;
+    /* private */ long m_lNativeHandle;
 
     static {
         Alsa.loadNativeLibrary();
-        if (TDebug.TraceAlsaSeqNative) {
-            setTrace(true);
-        }
     }
 
     public AlsaSeqRemoveEvents() {
-        if (TDebug.TraceAlsaSeqNative) {
-            TDebug.out("AlsaSeqRemoveEvents.<init>(): begin");
-        }
+        logger.log(Level.TRACE, "AlsaSeqRemoveEvents.<init>(): begin");
+
         int nReturn = malloc();
         if (nReturn < 0) {
             throw new RuntimeException("malloc of port_info failed");
         }
-        if (TDebug.TraceAlsaSeqNative) {
-            TDebug.out("AlsaSeqRemoveEvents.<init>(): end");
-        }
+
+        logger.log(Level.TRACE, "AlsaSeqRemoveEvents.<init>(): end");
     }
 
     private native int malloc();
@@ -96,5 +92,3 @@ public class AlsaSeqRemoveEvents {
 
     private static native void setTrace(boolean bTrace);
 }
-
-

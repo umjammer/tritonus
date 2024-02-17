@@ -43,14 +43,17 @@ OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 package org.tritonus.sampled.convert;
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.util.Arrays;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 
-import org.tritonus.share.TDebug;
 import org.tritonus.share.sampled.AudioFormats;
 import org.tritonus.share.sampled.convert.TEncodingFormatConversionProvider;
 import org.tritonus.share.sampled.convert.TSynchronousFilteredAudioInputStream;
+
+import static java.lang.System.getLogger;
 
 
 /**
@@ -58,114 +61,96 @@ import org.tritonus.share.sampled.convert.TSynchronousFilteredAudioInputStream;
  *
  * @author Matthias Pfisterer
  */
-public class ImaAdpcmFormatConversionProvider
-        extends TEncodingFormatConversionProvider {
+public class ImaAdpcmFormatConversionProvider extends TEncodingFormatConversionProvider {
+
+    private static final Logger logger= getLogger("org.tritonus.TraceAudioConverter");
 
     // only used as abbreviation
     private static final AudioFormat.Encoding IMA_ADPCM = new AudioFormat.Encoding("IMA_ADPCM");
     private static final AudioFormat.Encoding PCM_SIGNED = new AudioFormat.Encoding("PCM_SIGNED");
 
-    private static final AudioFormat[] INPUT_FORMATS =
-            {
-                    // mono
-                    new AudioFormat(IMA_ADPCM, -1.0F, 4, 1, -1, -1.0F, false),
-                    new AudioFormat(IMA_ADPCM, -1.0F, 4, 1, -1, -1.0F, true),
-                    // mono, 16 bit signed
-                    new AudioFormat(PCM_SIGNED, -1.0F, 16, 1, 2, -1.0F, false),
-                    new AudioFormat(PCM_SIGNED, -1.0F, 16, 1, 2, -1.0F, true),
-            };
+    private static final AudioFormat[] INPUT_FORMATS = {
+            // mono
+            new AudioFormat(IMA_ADPCM, -1.0F, 4, 1, -1, -1.0F, false),
+            new AudioFormat(IMA_ADPCM, -1.0F, 4, 1, -1, -1.0F, true),
+            // mono, 16 bit signed
+            new AudioFormat(PCM_SIGNED, -1.0F, 16, 1, 2, -1.0F, false),
+            new AudioFormat(PCM_SIGNED, -1.0F, 16, 1, 2, -1.0F, true),
+    };
 
+//    private static final AudioFormat[] OUTPUT_FORMATS = {
+//            // mono, 16 bit signed
+//            new AudioFormat(PCM_SIGNED, -1.0F, 16, 1, 2, -1.0F, false),
+//            new AudioFormat(PCM_SIGNED, -1.0F, 16, 1, 2, -1.0F, true),
+//    };
 
-//  private static final AudioFormat[] OUTPUT_FORMATS =
-//  {
-//   // mono, 16 bit signed
-//   new AudioFormat(PCM_SIGNED, -1.0F, 16, 1, 2, -1.0F, false),
-//   new AudioFormat(PCM_SIGNED, -1.0F, 16, 1, 2, -1.0F, true),
-//  };
+    static final int[] indexTable = {
+            -1, -1, -1, -1, 2, 4, 6, 8,
+            -1, -1, -1, -1, 2, 4, 6, 8,
+    };
 
-    static final int[] indexTable =
-            {
-                    -1, -1, -1, -1, 2, 4, 6, 8,
-                    -1, -1, -1, -1, 2, 4, 6, 8,
-            };
-
-    static final int[] stepsizeTable =
-            {
-                    7, 8, 9, 10, 11, 12, 13, 14, 16, 17,
-                    19, 21, 23, 25, 28, 31, 34, 37, 41, 45,
-                    50, 55, 60, 66, 73, 80, 88, 97, 107, 118,
-                    130, 143, 157, 173, 190, 209, 230, 253, 279, 307,
-                    337, 371, 408, 449, 494, 544, 598, 658, 724, 796,
-                    876, 963, 1060, 1166, 1282, 1411, 1552, 1707, 1878, 2066,
-                    2272, 2499, 2749, 3024, 3327, 3660, 4026, 4428, 4871, 5358,
-                    5894, 6484, 7132, 7845, 8630, 9493, 10442, 11487, 12635, 13899,
-                    15289, 16818, 18500, 20350, 22385, 24623, 27086, 29794, 32767
-            };
+    static final int[] stepsizeTable = {
+            7, 8, 9, 10, 11, 12, 13, 14, 16, 17,
+            19, 21, 23, 25, 28, 31, 34, 37, 41, 45,
+            50, 55, 60, 66, 73, 80, 88, 97, 107, 118,
+            130, 143, 157, 173, 190, 209, 230, 253, 279, 307,
+            337, 371, 408, 449, 494, 544, 598, 658, 724, 796,
+            876, 963, 1060, 1166, 1282, 1411, 1552, 1707, 1878, 2066,
+            2272, 2499, 2749, 3024, 3327, 3660, 4026, 4428, 4871, 5358,
+            5894, 6484, 7132, 7845, 8630, 9493, 10442, 11487, 12635, 13899,
+            15289, 16818, 18500, 20350, 22385, 24623, 27086, 29794, 32767
+    };
 
     /**
      * Constructor.
      */
     public ImaAdpcmFormatConversionProvider() {
         super(Arrays.asList(INPUT_FORMATS),
-                Arrays.asList(INPUT_FORMATS)/*,
-           true, // new behaviour
-           false*/); // bidirectional .. constants UNIDIR../BIDIR..?
+                Arrays.asList(INPUT_FORMATS)
+                // true, // new behaviour
+                // false // bidirectional .. constants UNIDIR../BIDIR..?
+        );
     }
 
     @Override
     public AudioInputStream getAudioInputStream(AudioFormat targetFormat, AudioInputStream audioInputStream) {
-        /** The AudioInputStream to return.
-         */
+        // The AudioInputStream to return.
         AudioInputStream convertedAudioInputStream;
 
-        if (TDebug.TraceAudioConverter) {
-            TDebug.out(">ImaAdpcmFormatConversionProvider.getAudioInputStream(): begin");
-            TDebug.out("checking if conversion supported");
-            TDebug.out("from: " + audioInputStream.getFormat());
-            TDebug.out("to: " + targetFormat);
-        }
+        logger.log(Level.TRACE, ">ImaAdpcmFormatConversionProvider.getAudioInputStream(): begin");
+        logger.log(Level.TRACE, "checking if conversion supported");
+        logger.log(Level.TRACE, "from: " + audioInputStream.getFormat());
+        logger.log(Level.TRACE, "to: " + targetFormat);
 
         // what is this ???
         targetFormat = getDefaultTargetFormat(targetFormat, audioInputStream.getFormat());
-        if (isConversionSupported(targetFormat,
-                audioInputStream.getFormat())) {
+        if (isConversionSupported(targetFormat, audioInputStream.getFormat())) {
             if (targetFormat.getEncoding().equals(IMA_ADPCM)) {
-                if (TDebug.TraceAudioConverter) {
-                    TDebug.out("conversion supported; trying to create EncodedImaAdpcmAudioInputStream");
-                }
-                convertedAudioInputStream = new
-                        EncodedImaAdpcmAudioInputStream(
-                        audioInputStream,
-                        targetFormat);
+                logger.log(Level.TRACE, "conversion supported; trying to create EncodedImaAdpcmAudioInputStream");
+
+                convertedAudioInputStream = new EncodedImaAdpcmAudioInputStream(audioInputStream, targetFormat);
             } else {
-                if (TDebug.TraceAudioConverter) {
-                    TDebug.out("conversion supported; trying to create DecodedImaAdpcmAudioInputStream");
-                }
-                convertedAudioInputStream = new
-                        DecodedImaAdpcmAudioInputStream(
-                        audioInputStream,
-                        targetFormat);
+                logger.log(Level.TRACE, "conversion supported; trying to create DecodedImaAdpcmAudioInputStream");
+
+                convertedAudioInputStream = new DecodedImaAdpcmAudioInputStream(audioInputStream, targetFormat);
             }
         } else {
-            if (TDebug.TraceAudioConverter) {
-                TDebug.out("<conversion not supported; throwing IllegalArgumentException");
-            }
+            logger.log(Level.TRACE, "<conversion not supported; throwing IllegalArgumentException");
+
             throw new IllegalArgumentException("conversion not supported");
         }
-        if (TDebug.TraceAudioConverter) {
-            TDebug.out("<ImaAdpcmFormatConversionProvider.getAudioInputStream(): end");
-        }
+
+        logger.log(Level.TRACE, "<ImaAdpcmFormatConversionProvider.getAudioInputStream(): end");
+
         return convertedAudioInputStream;
     }
 
-    // TODO: recheck !!
+    // TODO recheck !!
     protected AudioFormat getDefaultTargetFormat(AudioFormat targetFormat, AudioFormat sourceFormat) {
-        if (TDebug.TraceAudioConverter) {
-            TDebug.out("ImaAdpcmFormatConversionProvider.getDefaultTargetFormat(): target format: " + targetFormat);
-        }
-        if (TDebug.TraceAudioConverter) {
-            TDebug.out("ImaAdpcmFormatConversionProvider.getDefaultTargetFormat(): source format: " + sourceFormat);
-        }
+        logger.log(Level.TRACE, "ImaAdpcmFormatConversionProvider.getDefaultTargetFormat(): target format: " + targetFormat);
+
+        logger.log(Level.TRACE, "ImaAdpcmFormatConversionProvider.getDefaultTargetFormat(): source format: " + sourceFormat);
+
         AudioFormat newTargetFormat = null;
         // return first of the matching formats
         // pre-condition: the predefined target formats (FORMATS2) must be well-defined !
@@ -177,9 +162,9 @@ public class ImaAdpcmFormatConversionProvider
         if (newTargetFormat == null) {
             throw new IllegalArgumentException("conversion not supported");
         }
-        if (TDebug.TraceAudioConverter) {
-            TDebug.out("ImaAdpcmFormatConversionProvider.getDefaultTargetFormat(): new target format: " + newTargetFormat);
-        }
+
+        logger.log(Level.TRACE, "ImaAdpcmFormatConversionProvider.getDefaultTargetFormat(): new target format: " + newTargetFormat);
+
         // hacked together...
         // ... only works for PCM target encoding ...
         newTargetFormat = new AudioFormat(targetFormat.getEncoding(),
@@ -189,9 +174,9 @@ public class ImaAdpcmFormatConversionProvider
                 newTargetFormat.getFrameSize(),
                 sourceFormat.getSampleRate(),
                 newTargetFormat.isBigEndian());
-        if (TDebug.TraceAudioConverter) {
-            TDebug.out("ImaAdpcmFormatConversionProvider.getDefaultTargetFormat(): really new target format: " + newTargetFormat);
-        }
+
+        logger.log(Level.TRACE, "ImaAdpcmFormatConversionProvider.getDefaultTargetFormat(): really new target format: " + newTargetFormat);
+
         return newTargetFormat;
     }
 
@@ -200,11 +185,11 @@ public class ImaAdpcmFormatConversionProvider
      * An instance of this class is returned if you call
      * AudioSystem.getAudioInputStream(AudioFormat, AudioInputStream)
      * to decode an IMA ADPCM stream.
+     * <p>
+     * Class should be private, but is public due to a bug (?) in the
+     * aspectj compiler.
      */
- /* Class should be private, but is public due to a bug (?) in the
-    aspectj compiler. */
-    /*private*/public static class DecodedImaAdpcmAudioInputStream
-            extends TSynchronousFilteredAudioInputStream {
+    /* private */ public static class DecodedImaAdpcmAudioInputStream extends TSynchronousFilteredAudioInputStream {
 
         private ImaAdpcmState m_state;
 
@@ -213,30 +198,27 @@ public class ImaAdpcmFormatConversionProvider
          */
         public DecodedImaAdpcmAudioInputStream(AudioInputStream encodedStream, AudioFormat outputFormat) {
             super(encodedStream, outputFormat);
-            if (TDebug.TraceAudioConverter) {
-                TDebug.out("DecodedImaAdpcmAudioInputStream.<init>(): begin");
-            }
+            logger.log(Level.TRACE, "DecodedImaAdpcmAudioInputStream.<init>(): begin");
+
             m_state = new ImaAdpcmState();
-            if (TDebug.TraceAudioConverter) {
-                TDebug.out("DecodedImaAdpcmAudioInputStream.<init>(): end");
-            }
+
+            logger.log(Level.TRACE, "DecodedImaAdpcmAudioInputStream.<init>(): end");
         }
 
         @Override
         protected int convert(byte[] inBuffer, byte[] outBuffer, int outByteOffset, int inFrameCount) {
-            if (TDebug.TraceAudioConverter) {
-                TDebug.out("DecodedImaAdpcmAudioInputStream.convert(): begin");
-            }
-            int inp;  /* Input buffer pointer */
-            int outp;  /* output buffer pointer */
-            int sign;  /* Current adpcm sign bit */
-            int delta;  /* Current adpcm output value */
-            int step;  /* Stepsize */
-            int valpred;  /* Predicted value */
-            int vpdiff;  /* Current change to valpred */
-            int index;  /* Current step change index */
-            int inputbuffer = 0; /* place to keep next 4-bit value */
-            boolean bufferstep; /* toggle between inputbuffer/input */
+            logger.log(Level.TRACE, "DecodedImaAdpcmAudioInputStream.convert(): begin");
+
+            int inp; // Input buffer pointer
+            int outp; // output buffer pointer
+            int sign; // Current adpcm sign bit
+            int delta; // Current adpcm output value
+            int step; // Stepsize
+            int valpred; // Predicted value
+            int vpdiff; // Current change to valpred
+            int index; // Current step change index
+            int inputbuffer = 0; // place to keep next 4-bit value
+            boolean bufferstep; // toggle between inputbuffer/input
             int len = inFrameCount;
 
             inp = 0;
@@ -249,7 +231,7 @@ public class ImaAdpcmFormatConversionProvider
             bufferstep = false;
 
             for (; len > 0; len--) {
-                /* Step 1 - get the delta value */
+                // Step 1 - get the delta value
                 if (bufferstep) {
                     delta = inputbuffer & 0xf;
                 } else {
@@ -259,20 +241,19 @@ public class ImaAdpcmFormatConversionProvider
                 }
                 bufferstep = !bufferstep;
 
-                /* Step 2 - Find new index value (for later) */
+                // Step 2 - Find new index value (for later)
                 index += indexTable[delta];
                 if (index < 0) index = 0;
                 if (index > 88) index = 88;
 
-                /* Step 3 - Separate sign and magnitude */
+                // Step 3 - Separate sign and magnitude
                 sign = delta & 8;
                 delta = delta & 7;
 
-                /* Step 4 - Compute difference and new predicted value */
-                /*
-                 ** Computes 'vpdiff = (delta+0.5)*step/4', but see comment
-                 ** in adpcm_coder.
-                 */
+                // Step 4 - Compute difference and new predicted value
+                //
+                // Computes 'vpdiff = (delta+0.5)*step/4', but see comment
+                // in adpcm_coder.
                 vpdiff = step >> 3;
                 if ((delta & 4) != 0)
                     vpdiff += step;
@@ -286,16 +267,16 @@ public class ImaAdpcmFormatConversionProvider
                 else
                     valpred += vpdiff;
 
-                /* Step 5 - clamp output value */
+                // Step 5 - clamp output value
                 if (valpred > 32767)
                     valpred = 32767;
                 else if (valpred < -32768)
                     valpred = -32768;
 
-                /* Step 6 - Update step value */
+                // Step 6 - Update step value
                 step = stepsizeTable[index];
 
-                /* Step 7 - Output value */
+                // Step 7 - Output value
                 // *outp++ = valpred;
                 if (isBigEndian()) {
                     outBuffer[outp++] = (byte) (valpred >> 8);
@@ -308,24 +289,18 @@ public class ImaAdpcmFormatConversionProvider
 
             m_state.valprev = valpred;
             m_state.index = index;
-            if (TDebug.TraceAudioConverter) {
-                TDebug.out("DecodedImaAdpcmAudioInputStream.convert(): end");
-            }
+
+            logger.log(Level.TRACE, "DecodedImaAdpcmAudioInputStream.convert(): end");
+
             return inFrameCount;
         }
 
-        /**
-         *
-         */
+        /** */
         protected int getSampleSizeInBytes() {
             return getFormat().getFrameSize() / getFormat().getChannels();
         }
 
-        /**
-         * .
-         *
-         * @return .
-         */
+        /** */
         protected int getFrameSize() {
             return getFormat().getFrameSize();
         }
@@ -358,32 +333,32 @@ public class ImaAdpcmFormatConversionProvider
          */
         public EncodedImaAdpcmAudioInputStream(AudioInputStream decodedStream, AudioFormat outputFormat) {
             super(decodedStream, outputFormat);
-            if (TDebug.TraceAudioConverter) {
-                TDebug.out("EncodedImaAdpcmAudioInputStream.<init>(): begin");
-            }
+            // TraceAudioConverter
+                logger.log(Level.TRACE, "EncodedImaAdpcmAudioInputStream.<init>(): begin");
+
             m_state = new ImaAdpcmState();
-            if (TDebug.TraceAudioConverter) {
-                TDebug.out("EncodedImaAdpcmAudioInputStream.<init>(): end");
-            }
+            // TraceAudioConverter
+                logger.log(Level.TRACE, "EncodedImaAdpcmAudioInputStream.<init>(): end");
+
         }
 
         @Override
         protected int convert(byte[] inBuffer, byte[] outBuffer, int outByteOffset, int inFrameCount) {
-            if (TDebug.TraceAudioConverter) {
-                TDebug.out("EncodedImaAdpcmAudioInputStream.convert(): begin");
-            }
-            int inp;  /* Input buffer pointer */
-            int outp;  /* output buffer pointer */
-            int val;  /* Current input sample value */
-            int sign;  /* Current adpcm sign bit */
-            int delta;  /* Current adpcm output value */
-            int diff;  /* Difference between val and valprev */
-            int step;  /* Stepsize */
-            int valpred;  /* Predicted output value */
-            int vpdiff;  /* Current change to valpred */
-            int index;  /* Current step change index */
-            int outputbuffer = 0; /* place to keep previous 4-bit value */
-            boolean bufferstep; /* toggle between outputbuffer/output */
+            // TraceAudioConverter
+                logger.log(Level.TRACE, "EncodedImaAdpcmAudioInputStream.convert(): begin");
+
+            int inp; // Input buffer pointer
+            int outp; // output buffer pointer
+            int val; // Current input sample value
+            int sign; // Current adpcm sign bit
+            int delta; // Current adpcm output value
+            int diff; // Difference between val and valprev
+            int step; // Stepsize
+            int valpred; // Predicted output value
+            int vpdiff; // Current change to valpred
+            int index; // Current step change index
+            int outputbuffer = 0; // place to keep previous 4-bit value
+            boolean bufferstep; // toggle between outputbuffer/output
             int len = inFrameCount;
 
             inp = 0;
@@ -396,27 +371,26 @@ public class ImaAdpcmFormatConversionProvider
             bufferstep = true;
 
             for (; len > 0; len--) {
-                //val = *inp++;
+                // val = *inp++;
                 val = isBigEndian() ?
                         ((inBuffer[inp] << 8) | (inBuffer[inp + 1] & 0xFF)) :
                         ((inBuffer[inp + 1] << 8) | (inBuffer[inp] & 0xFF));
                 inp += 2;
 
-                /* Step 1 - compute difference with previous value */
+                // Step 1 - compute difference with previous value
                 diff = val - valpred;
                 sign = (diff < 0) ? 8 : 0;
                 if (sign != 0)
                     diff = (-diff);
 
-                /* Step 2 - Divide and clamp */
-                /* Note:
-                 ** This code *approximately* computes:
-                 **    delta = diff*4/step;
-                 **    vpdiff = (delta+0.5)*step/4;
-                 ** but in shift step bits are dropped. The net result of this is
-                 ** that even if you have fast mul/div hardware you cannot put it to
-                 ** good use since the fixup would be too expensive.
-                 */
+                // Step 2 - Divide and clamp
+                // Note:
+                // This code *approximately* computes:
+                //    delta = diff*4/step;
+                //    vpdiff = (delta+0.5)*step/4;
+                // but in shift step bits are dropped. The net result of this is
+                // that even if you have fast mul/div hardware you cannot put it to
+                // good use since the fixup would be too expensive.
                 delta = 0;
                 vpdiff = (step >> 3);
 
@@ -437,19 +411,19 @@ public class ImaAdpcmFormatConversionProvider
                     vpdiff += step;
                 }
 
-                /* Step 3 - Update previous value */
+                // Step 3 - Update previous value
                 if (sign != 0)
                     valpred -= vpdiff;
                 else
                     valpred += vpdiff;
 
-                /* Step 4 - Clamp previous value to 16 bits */
+                // Step 4 - Clamp previous value to 16 bits
                 if (valpred > 32767)
                     valpred = 32767;
                 else if (valpred < -32768)
                     valpred = -32768;
 
-                /* Step 5 - Assemble value, update index and step values */
+                // Step 5 - Assemble value, update index and step values
                 delta |= sign;
 
                 index += indexTable[delta];
@@ -459,7 +433,7 @@ public class ImaAdpcmFormatConversionProvider
                     index = 88;
                 step = stepsizeTable[index];
 
-                /* Step 6 - Output value */
+                // Step 6 - Output value
                 if (bufferstep) {
                     outputbuffer = (delta << 4) & 0xf0;
                 } else {
@@ -468,30 +442,24 @@ public class ImaAdpcmFormatConversionProvider
                 bufferstep = !bufferstep;
             }
 
-            /* Output last step, if needed */
+            // Output last step, if needed
             if (!bufferstep)
                 outBuffer[outp++] = (byte) outputbuffer;
 
             m_state.valprev = valpred;
             m_state.index = index;
-            if (TDebug.TraceAudioConverter) {
-                TDebug.out("EncodedImaAdpcmAudioInputStream.convert(): end");
-            }
+
+            logger.log(Level.TRACE, "EncodedImaAdpcmAudioInputStream.convert(): end");
+
             return inFrameCount;
         }
 
-        /**
-         *
-         */
+        /** */
         protected int getSampleSizeInBytes() {
             return getFormat().getFrameSize() / getFormat().getChannels();
         }
 
-        /**
-         * .
-         *
-         * @return .
-         */
+        /** */
         protected int getFrameSize() {
             return getFormat().getFrameSize();
         }
@@ -518,5 +486,3 @@ public class ImaAdpcmFormatConversionProvider
         public int index;
     }
 }
-
-

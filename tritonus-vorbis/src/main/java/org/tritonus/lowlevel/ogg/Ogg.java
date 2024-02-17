@@ -23,12 +23,6 @@ package org.tritonus.lowlevel.ogg;
  */
 public class Ogg {
 
-    /**
-     * Returns whether the libraries are installed correctly.
-     */
-    public static boolean isLibraryAvailable() {
-        return true;
-    }
 }
 
 

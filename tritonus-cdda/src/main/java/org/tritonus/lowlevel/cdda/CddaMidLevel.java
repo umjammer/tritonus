@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 2001 by Matthias Pfisterer
  *
@@ -35,7 +34,7 @@ public interface CddaMidLevel {
      */
     int FRAME_SIZE = 2352;
 
-    // TODO: document!!
+    // TODO document!!
 
     /**
      * Gives the available CDROM devices.

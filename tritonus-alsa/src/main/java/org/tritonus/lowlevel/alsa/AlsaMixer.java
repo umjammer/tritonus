@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 2001 by Matthias Pfisterer
  *
@@ -17,25 +16,19 @@
 
 package org.tritonus.lowlevel.alsa;
 
-import org.tritonus.share.TDebug;
-
-
 /**
  * Object carrying a snd_mixer_t.
  */
 public class AlsaMixer {
 
-    /*
-      not private because needed to be accessed by AlsaMixerElement.
-      (Better solution: inner classes)
-    */
-    /*private*/ long m_lNativeHandle;
+    /**
+     * not private because needed to be accessed by AlsaMixerElement.
+     * (Better solution: inner classes)
+     */
+    /* private */ long m_lNativeHandle;
 
     static {
         Alsa.loadNativeLibrary();
-        if (TDebug.TraceAlsaMixerNative) {
-            setTrace(true);
-        }
     }
 
     public AlsaMixer(String strMixerName)
@@ -105,5 +98,3 @@ public class AlsaMixer {
 
     public static native void setTrace(boolean bTrace);
 }
-
-

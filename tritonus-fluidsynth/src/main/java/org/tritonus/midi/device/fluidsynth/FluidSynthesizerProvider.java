@@ -19,21 +19,26 @@
 
 package org.tritonus.midi.device.fluidsynth;
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.spi.MidiDeviceProvider;
 
 import org.tritonus.share.GlobalInfo;
-import org.tritonus.share.TDebug;
 import org.tritonus.share.midi.TMidiDevice;
+
+import static java.lang.System.getLogger;
 
 
 public class FluidSynthesizerProvider extends MidiDeviceProvider {
 
+    private static final Logger logger = getLogger("org.tritonus.TraceMidiDeviceProvider");
+
     private static MidiDevice.Info sm_info;
 
     public FluidSynthesizerProvider() {
-        if (TDebug.TraceMidiDeviceProvider)
-            TDebug.out("FluidSynthesizerProvider.<init>(): begin");
+        logger.log(Level.TRACE, "FluidSynthesizerProvider.<init>(): begin");
+
         synchronized (FluidSynthesizerProvider.class) {
             if (sm_info == null) {
                 sm_info = new TMidiDevice.Info(
@@ -43,22 +48,26 @@ public class FluidSynthesizerProvider extends MidiDeviceProvider {
                         GlobalInfo.getVersion());
             }
         }
-        if (TDebug.TraceMidiDeviceProvider)
-            TDebug.out("FluidSynthesizerProvider.<init>(): end");
+
+        logger.log(Level.TRACE, "FluidSynthesizerProvider.<init>(): end");
     }
 
     @Override
     public MidiDevice.Info[] getDeviceInfo() {
-        if (TDebug.TraceMidiDeviceProvider) TDebug.out("FluidSynthesizerProvider.getDeviceInfo(): begin");
+        logger.log(Level.TRACE, "FluidSynthesizerProvider.getDeviceInfo(): begin");
+
         MidiDevice.Info[] infos = new MidiDevice.Info[1];
         infos[0] = sm_info;
-        if (TDebug.TraceMidiDeviceProvider) TDebug.out("FluidSynthesizerProvider.getDeviceInfo(): end");
+
+        logger.log(Level.TRACE, "FluidSynthesizerProvider.getDeviceInfo(): end");
+
         return infos;
     }
 
     @Override
     public MidiDevice getDevice(MidiDevice.Info info) {
-        if (TDebug.TraceMidiDeviceProvider) TDebug.out("FluidSynthesizerProvider.getDevice(): begin");
+        logger.log(Level.TRACE, "FluidSynthesizerProvider.getDevice(): begin");
+
         MidiDevice device;
         if (info != null && info.equals(sm_info)) {
             try {
@@ -69,9 +78,9 @@ public class FluidSynthesizerProvider extends MidiDeviceProvider {
         } else {
             throw new IllegalArgumentException("no device for " + info);
         }
-        if (TDebug.TraceMidiDeviceProvider) TDebug.out("FluidSynthesizerProvider.getDevice(): end");
+
+        logger.log(Level.TRACE, "FluidSynthesizerProvider.getDevice(): end");
+
         return device;
     }
 }
-
-

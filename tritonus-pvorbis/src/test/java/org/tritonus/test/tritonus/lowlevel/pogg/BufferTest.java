@@ -186,7 +186,7 @@ public class BufferTest {
         byte[] buffer;
         int bytes, i;
 
-        // TODO: should free them
+        // TODO should free them
         o = new Buffer();
         r = new Buffer();
         // Test read/write together

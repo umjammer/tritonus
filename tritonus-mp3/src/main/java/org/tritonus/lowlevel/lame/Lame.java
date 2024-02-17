@@ -18,27 +18,30 @@
 
 package org.tritonus.lowlevel.lame;
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 import javax.sound.sampled.AudioFormat;
 
-import org.tritonus.share.TDebug;
 import vavi.util.Debug;
 
+import static java.lang.System.getLogger;
 import static javax.sound.sampled.AudioSystem.NOT_SPECIFIED;
 
 
 /**
  * Low level wrapper for the LAME native encoder.
  * <p>
- * TODO: fill frame rate, frame size
+ * TODO fill frame rate, frame size
  *
  * @author Florian Bomers
  */
 public class Lame {
+
+    private static final Logger logger= getLogger("org.tritonus.TraceAudioConverter");
 
     public static final AudioFormat.Encoding MPEG1L3 = new AudioFormat.Encoding("MPEG1L3");
     // Lame converts automagically to MPEG2 or MPEG2.5, if necessary.
@@ -46,6 +49,7 @@ public class Lame {
     public static final AudioFormat.Encoding MPEG2DOT5L3 = new AudioFormat.Encoding("MPEG2DOT5L3");
 
     // property constants
+
     /**
      * legacy: system property key to read the effective encoding of the encoded
      * audio data, an instance of AudioFormat.Encoding
@@ -208,13 +212,13 @@ public class Lame {
         if (sourceFormat.getSampleRate() < 32000 && bitRate > 160) {
             bitRate = 160;
         }
-        if (TDebug.TraceAudioConverter) {
+        if (logger.isLoggable(Level.TRACE)) {
             String br = bitRate < 0 ? "auto" : (bitRate + "KBit/s");
-            TDebug.out("LAME parameters: channels="
+            logger.log(Level.TRACE, "LAME parameters: channels="
                     + sourceFormat.getChannels() + "  sample rate="
                     + (Math.round(sourceFormat.getSampleRate()) + "Hz")
                     + "  bitrate=" + br);
-            TDebug.out("                 channelMode=" + chmode2string(chMode)
+            logger.log(Level.TRACE, "                 channelMode=" + chmode2string(chMode)
                     + "   quality=" + quality + " (" + quality2string(quality)
                     + ")   VBR=" + vbr + "  bigEndian="
                     + sourceFormat.isBigEndian());
@@ -226,9 +230,8 @@ public class Lame {
             handleNativeException(result);
             throw new IllegalArgumentException("parameters not supported by LAME (returned " + result + ")");
         }
-        if (TDebug.TraceAudioConverter) {
-            TDebug.out("LAME effective quality=" + effQuality + " (" + quality2string(effQuality) + ")");
-        }
+        logger.log(Level.TRACE, "LAME effective quality=" + effQuality + " (" + quality2string(effQuality) + ")");
+
         // legacy provide effective parameters to user by way of system
         // properties
         if (hadSystemProps) {
@@ -244,8 +247,8 @@ public class Lame {
                             int mode, int quality, boolean vbr, boolean bigEndian) {
         int result;
 
-        TDebug.out("initParams: ");
-        TDebug.out(String.format("   %d channels, %d Hz, %d KBit/s, mode %d, quality=%d VBR=%s bigEndian=%s",
+        logger.log(Level.TRACE, "initParams: ");
+        logger.log(Level.TRACE, String.format("   %d channels, %d Hz, %d KBit/s, mode %d, quality=%d VBR=%s bigEndian=%s",
                 channels, sampleRate, bitrate, mode, quality, vbr, bigEndian));
 
         this.lameApi = new LameApi();
@@ -255,7 +258,7 @@ public class Lame {
             // swap samples
             lameApi.swapbytes = true;
         }
-        Debug.println(Level.FINE, "bigEndian: " + bigEndian + ", platformEndianness: " + platformEndianness + ", lameApi.swapbytes: " + lameApi.swapbytes);
+Debug.println(java.util.logging.Level.FINE, "bigEndian: " + bigEndian + ", platformEndianness: " + platformEndianness + ", lameApi.swapbytes: " + lameApi.swapbytes);
         lameApi.channels = channels;
         lameApi.sampleRate = sampleRate;
         lameApi.bitrate = bitrate;
@@ -294,7 +297,7 @@ public class Lame {
         if (res > 0) {
             sRes = string[0];
         }
-        Debug.println(Level.FINE, "getEncoderVersion: " + sRes);
+        Debug.println(java.util.logging.Level.FINE, "getEncoderVersion: " + sRes);
         return sRes;
     }
 
@@ -342,10 +345,10 @@ public class Lame {
         int encodedArrayByteSize = encoded.length;
 
         int pcmArrayByteSize = pcm.length;
-        TDebug.out("Lame#nEncodeBuffer: ");
-        TDebug.out(String.format("   length:%d", length));
-        TDebug.out(String.format("   %d bytes in PCM array", pcmArrayByteSize));
-        TDebug.out(String.format("   %d bytes in to-be-encoded array", encodedArrayByteSize));
+        logger.log(Level.TRACE, "Lame#nEncodeBuffer: ");
+        logger.log(Level.TRACE, String.format("   length:%d", length));
+        logger.log(Level.TRACE, String.format("   %d bytes in PCM array", pcmArrayByteSize));
+        logger.log(Level.TRACE, String.format("   %d bytes in to-be-encoded array", encodedArrayByteSize));
 
         pcmLengthInFrames = length / (lameApi.channels * Short.BYTES); // always 16 bit
         if (lameApi.swapbytes) {
@@ -353,12 +356,12 @@ public class Lame {
             swapSamples(pcm, length / Short.BYTES);
         }
 
-        TDebug.out(String.format("   Encoding %d frames into buffer of size %d bytes.",
+        logger.log(Level.TRACE, String.format("   Encoding %d frames into buffer of size %d bytes.",
                 pcmLengthInFrames, encodedArrayByteSize));
-        //TDebug.out("   Sample1=%d Sample2=%d", pcmSamples[0], pcmSamples[1]);
+//        logger.log(Level.TRACE, "   Sample1=%d Sample2=%d", pcmSamples[0], pcmSamples[1]);
 
         result = lameApi.doEncode(pcm, pcmLengthInFrames, encoded, encodedArrayByteSize);
-        //TDebug.out("   MP3-1=%d MP3-2=%d", (int) encodedBytes[0], (int) encodedBytes[1]);
+//        logger.log(Level.TRACE, "   MP3-1=%d MP3-2=%d", (int) encodedBytes[0], (int) encodedBytes[1]);
 
         return result;
     }
@@ -403,8 +406,8 @@ public class Lame {
         int result = 0;
 
         //jsize length=(*env).GetArrayLength(env, buffer);
-        TDebug.out("encodeFinish: ");
-        //TDebug.out("   %d bytes in the array", (int) length);
+        logger.log(Level.TRACE, "encodeFinish: ");
+//        logger.log(Level.TRACE, "   %d bytes in the array", (int) length);
 
         ByteBuffer charBuffer = ByteBuffer.allocateDirect(encoded.length);
         result = lameApi.doEncodeFinish(charBuffer, encoded.length);
@@ -412,7 +415,7 @@ public class Lame {
 
         lameApi.doClose();
 
-        TDebug.out(String.format("   %d bytes returned", result));
+        logger.log(Level.TRACE, String.format("   %d bytes returned", result));
 
         return result;
     }
@@ -421,8 +424,7 @@ public class Lame {
      * Deallocates resources used by the native library. *MUST* be called !
      */
     public void close() {
-
-        TDebug.out("close. ");
+        logger.log(Level.TRACE, "close. ");
 
         if (lameApi != null) {
             lameApi.doClose();
@@ -484,8 +486,8 @@ public class Lame {
         map.put(P_BITRATE, getEffectiveBitRate());
         map.put(P_CHMODE, chmode2string(getEffectiveChannelMode()));
         map.put(P_VBR, getEffectiveVBR());
-        // map.put(P_SAMPLERATE, getEffectiveSampleRate());
-        // map.put(P_ENCODING,getEffectiveEncoding());
+//        map.put(P_SAMPLERATE, getEffectiveSampleRate());
+//        map.put(P_ENCODING,getEffectiveEncoding());
         map.put("encoder.name", "LAME");
         map.put("encoder.version", getEncoderVersion());
         int channels = 2;
@@ -557,9 +559,7 @@ public class Lame {
             System.setProperty(PROPERTY_PREFIX + "effective" + "." + P_ENCODING, getEffectiveEncoding().toString());
             System.setProperty(PROPERTY_PREFIX + "encoder.version", getEncoderVersion());
         } catch (Throwable t) {
-            if (TDebug.TraceAllExceptions) {
-                TDebug.out(t);
-            }
+            logger.log(Level.ERROR, t.getMessage(), t);
         }
     }
 
@@ -582,14 +582,12 @@ public class Lame {
                 System.setProperty(PROPERTY_PREFIX + P_CHMODE, chmode2string(DEFAULT_CHANNEL_MODE));
                 System.setProperty(PROPERTY_PREFIX + P_VBR, String.valueOf(DEFAULT_VBR));
             } catch (Throwable t) {
-                if (TDebug.TraceAllExceptions) {
-                    TDebug.out(t);
-                }
+                logger.log(Level.ERROR, t.getMessage(), t);
             }
         }
     }
 
-    private String quality2string(int quality) {
+    private static String quality2string(int quality) {
         if (quality >= QUALITY_LOWEST) {
             return "lowest";
         } else if (quality >= QUALITY_LOW) {
@@ -602,23 +600,18 @@ public class Lame {
         return "highest";
     }
 
-    private int string2quality(String quality, int def) {
-        switch (quality) {
-        case "lowest":
-            return QUALITY_LOWEST;
-        case "low":
-            return QUALITY_LOW;
-        case "middle":
-            return QUALITY_MIDDLE;
-        case "high":
-            return QUALITY_HIGH;
-        case "highest":
-            return QUALITY_HIGHEST;
-        }
-        return def;
+    private static int string2quality(String quality, int def) {
+        return switch (quality) {
+            case "lowest" -> QUALITY_LOWEST;
+            case "low" -> QUALITY_LOW;
+            case "middle" -> QUALITY_MIDDLE;
+            case "high" -> QUALITY_HIGH;
+            case "highest" -> QUALITY_HIGHEST;
+            default -> def;
+        };
     }
 
-    private String chmode2string(int chmode) {
+    private static String chmode2string(int chmode) {
         if (chmode == CHANNEL_MODE_STEREO) {
             return "stereo";
         } else if (chmode == CHANNEL_MODE_JOINT_STEREO) {
@@ -633,20 +626,15 @@ public class Lame {
         return "auto";
     }
 
-    private int string2chmode(String chmode, int def) {
-        switch (chmode) {
-        case "stereo":
-            return CHANNEL_MODE_STEREO;
-        case "jointstereo":
-            return CHANNEL_MODE_JOINT_STEREO;
-        case "dual":
-            return CHANNEL_MODE_DUAL_CHANNEL;
-        case "mono":
-            return CHANNEL_MODE_MONO;
-        case "auto":
-            return CHANNEL_MODE_AUTO;
-        }
-        return def;
+    private static int string2chmode(String chmode, int def) {
+        return switch (chmode) {
+            case "stereo" -> CHANNEL_MODE_STEREO;
+            case "jointstereo" -> CHANNEL_MODE_JOINT_STEREO;
+            case "dual" -> CHANNEL_MODE_DUAL_CHANNEL;
+            case "mono" -> CHANNEL_MODE_MONO;
+            case "auto" -> CHANNEL_MODE_AUTO;
+            default -> def;
+        };
     }
 
     /**
@@ -667,8 +655,7 @@ public class Lame {
                 return true;
             }
         }
-        throw new IllegalArgumentException(
-                "wrong string for boolean property: " + val);
+        throw new IllegalArgumentException("wrong string for boolean property: " + val);
     }
 
     private boolean getBooleanProperty(String strName, boolean def) {
@@ -681,9 +668,7 @@ public class Lame {
                 strValue = s;
             }
         } catch (Throwable t) {
-            if (TDebug.TraceAllExceptions) {
-                TDebug.out(t);
-            }
+            logger.log(Level.ERROR, t.getMessage(), t);
         }
         strValue = strValue.toLowerCase();
         boolean bValue = false;
@@ -711,9 +696,7 @@ public class Lame {
                 strValue = s;
             }
         } catch (Throwable t) {
-            if (TDebug.TraceAllExceptions) {
-                TDebug.out(t);
-            }
+            logger.log(Level.ERROR, t.getMessage(), t);
         }
         return strValue;
     }
@@ -728,9 +711,7 @@ public class Lame {
                 value = Integer.parseInt(s);
             }
         } catch (Throwable e) {
-            if (TDebug.TraceAllExceptions) {
-                TDebug.out(e);
-            }
+            logger.log(Level.ERROR, e.getMessage(), e);
         }
         return value;
     }

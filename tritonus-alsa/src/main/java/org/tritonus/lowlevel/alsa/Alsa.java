@@ -18,7 +18,10 @@
 
 package org.tritonus.lowlevel.alsa;
 
-import org.tritonus.share.TDebug;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
+
+import static java.lang.System.getLogger;
 
 
 /**
@@ -30,6 +33,8 @@ import org.tritonus.share.TDebug;
  */
 public class Alsa {
 
+    private static final Logger logger = getLogger("org.tritonus.TraceAlsaNative");
+
     private static boolean sm_bIsLibraryAvailable = false;
 
     static {
@@ -37,16 +42,13 @@ public class Alsa {
     }
 
     public static void loadNativeLibrary() {
-        if (TDebug.TraceAlsaNative) {
-            TDebug.out("Alsa.loadNativeLibrary(): begin");
-        }
+        logger.log(Level.TRACE, "Alsa.loadNativeLibrary(): begin");
 
         if (!isLibraryAvailable()) {
             loadNativeLibraryImpl();
         }
-        if (TDebug.TraceAlsaNative) {
-            TDebug.out("Alsa.loadNativeLibrary(): end");
-        }
+
+        logger.log(Level.TRACE, "Alsa.loadNativeLibrary(): end");
     }
 
     /**
@@ -57,23 +59,17 @@ public class Alsa {
      * check if the library is already loaded.
      */
     private static void loadNativeLibraryImpl() {
-        if (TDebug.TraceAlsaNative) {
-            TDebug.out("Alsa.loadNativeLibraryImpl(): loading native library tritonusalsa");
-        }
+        logger.log(Level.TRACE, "Alsa.loadNativeLibraryImpl(): loading native library tritonusalsa");
+
         try {
             System.loadLibrary("tritonusalsa");
             // only reached if no exception occures
             sm_bIsLibraryAvailable = true;
         } catch (Error e) {
-            if (TDebug.TraceAlsaNative ||
-                    TDebug.TraceAllExceptions) {
-                TDebug.out(e);
-            }
-            // throw e;
+            logger.log(Level.ERROR, e.getMessage(), e);
         }
-        if (TDebug.TraceAlsaNative) {
-            TDebug.out("Alsa.loadNativeLibraryImpl(): loaded");
-        }
+
+        logger.log(Level.TRACE, "Alsa.loadNativeLibraryImpl(): loaded");
     }
 
     /**

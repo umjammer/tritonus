@@ -20,17 +20,23 @@
 
 package org.tritonus.lowlevel.vorbis;
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
+
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
-import org.tritonus.share.TDebug;
 import vavi.sound.sampled.jna.codec.CodecLibrary;
 import vavi.sound.sampled.jna.codec.vorbis_comment;
+
+import static java.lang.System.getLogger;
 
 
 /**
  * Wrapper for vorbis_info.
  */
 public class Comment {
+
+    private static final Logger logger= getLogger("org.tritonus.TraceVorbisNative");
 
     /**
      * Holds the pointer to vorbis_info
@@ -44,92 +50,78 @@ public class Comment {
     }
 
     public Comment() {
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("Comment.<init>(): begin");
-        }
+        logger.log(Level.TRACE, "Comment.<init>(): begin");
+
         int nReturn = malloc();
         if (nReturn < 0) {
             throw new RuntimeException("malloc of vorbis_comment failed");
         }
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("Comment.<init>(): end");
-        }
+
+        logger.log(Level.TRACE, "Comment.<init>(): end");
     }
 
     private int malloc() {
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("malloc(): begin");
-        }
+        logger.log(Level.TRACE, "malloc(): begin");
+
         handle = new vorbis_comment();
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out(String.format("malloc(): handle: %s", handle));
-        }
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("malloc(): end");
-        }
+        logger.log(Level.TRACE, String.format("malloc(): handle: %s", handle));
+
+        logger.log(Level.TRACE, "malloc(): end");
+
         return 0;
     }
 
     public void free() {
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("free(): begin");
-        }
+        logger.log(Level.TRACE, "free(): begin");
+
         handle = null;
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("free(): end");
-        }
+
+        logger.log(Level.TRACE, "free(): end");
     }
 
     /**
      * Calls vorbis_comment_init().
      */
     public void init() {
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("init(): begin");
-        }
+        logger.log(Level.TRACE, "init(): begin");
+
         CodecLibrary.INSTANCE.vorbis_comment_init(handle);
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("init(): end");
-        }
+
+        logger.log(Level.TRACE, "init(): end");
     }
 
     /**
      * Calls vorbis_comment_add().
      */
     public void addComment(String strComment) {
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("addComment(): begin");
-        }
+        logger.log(Level.TRACE, "addComment(): begin");
+
         CodecLibrary.INSTANCE.vorbis_comment_add(handle, strComment);
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("addComment(): end");
-        }
+
+        logger.log(Level.TRACE, "addComment(): end");
     }
 
     /**
      * Calls vorbis_comment_add_tag().
      */
     public void addTag(String strTag, String strComment) {
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("addTag(): begin");
-        }
+        logger.log(Level.TRACE, "addTag(): begin");
+
         CodecLibrary.INSTANCE.vorbis_comment_add_tag(handle, strTag, strComment);
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("addTag(): end");
-        }
+
+        logger.log(Level.TRACE, "addTag(): end");
     }
 
     /**
      * Calls vorbis_comment_query_count().
      */
     public int queryCount(String strTag) {
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("queryCount(): begin");
-        }
+        logger.log(Level.TRACE, "queryCount(): begin");
+
         int nReturn = CodecLibrary.INSTANCE.vorbis_comment_query_count(handle, strTag);
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("queryCount(): end");
-        }
+
+        logger.log(Level.TRACE, "queryCount(): end");
+
         return nReturn;
     }
 
@@ -137,14 +129,13 @@ public class Comment {
      * Calls vorbis_comment_query().
      */
     public String query(String strTag, int nIndex) {
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("query(): begin");
-        }
+        logger.log(Level.TRACE, "query(): begin");
+
         Pointer result = CodecLibrary.INSTANCE.vorbis_comment_query(handle, strTag, nIndex);
         String strReturn = result.getString(0);
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("query(): end");
-        }
+
+        logger.log(Level.TRACE, "query(): end");
+
         return strReturn;
     }
 
@@ -152,17 +143,16 @@ public class Comment {
      * Accesses user_comments, comment_lengths and comments.
      */
     public String[] getUserComments() {
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("getUserComments(): begin");
-        }
+        logger.log(Level.TRACE, "getUserComments(): begin");
+
         String[] stringArray = new String[handle.comments];
         for (int i = 0; i < handle.comments; i++) {
             String string = handle.user_comments.getValue().getString((long) i * Native.POINTER_SIZE);
             stringArray[i] = string;
         }
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("getUserComments(): end");
-        }
+
+        logger.log(Level.TRACE, "getUserComments(): end");
+
         return stringArray;
     }
 
@@ -170,13 +160,12 @@ public class Comment {
      * Accesses vendor.
      */
     public String getVendor() {
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("getVendor(): begin");
-        }
+        logger.log(Level.TRACE, "getVendor(): begin");
+
         String strReturn = handle.vendor.getString(0);
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("getVendor(): end");
-        }
+
+        logger.log(Level.TRACE, "getVendor(): end");
+
         return strReturn;
     }
 
@@ -184,19 +173,15 @@ public class Comment {
      * Calls vorbis_comment_clear().
      */
     public void clear() {
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("clear(): begin");
-        }
+        logger.log(Level.TRACE, "clear(): begin");
+
         CodecLibrary.INSTANCE.vorbis_comment_clear(handle);
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("clear(): end");
-        }
+
+        logger.log(Level.TRACE, "clear(): end");
     }
 
-//  /**
-//   * Calls vorbis_commentheader_out().
-//   */
-//  public void headerOut(Packet packet);
+//    /**
+//     * Calls vorbis_commentheader_out().
+//     */
+//    public void headerOut(Packet packet);
 }
-
-

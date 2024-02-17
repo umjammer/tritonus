@@ -86,7 +86,7 @@ public class InstrumentCompilation extends DepthFirstAdapter {
     private InstructionFactory m_instructionFactory;
 //    private BranchInstruction m_pendingBranchInstruction;
 
-    // TODO: should be made obsolete by using node attributes
+    // TODO should be made obsolete by using node attributes
     private boolean m_bOpvardecls;
     private MemoryClassLoader m_classLoader = new MemoryClassLoader();
 
@@ -287,7 +287,7 @@ public class InstrumentCompilation extends DepthFirstAdapter {
     public void outASimpleLvalue(ASimpleLvalue node) {
         m_aMethods[METHOD_A].appendInstruction(InstructionConst.ALOAD_0);
         String strVariableName = node.getIdentifier().getText();
-        // TODO: use getClassName()
+        // TODO use getClassName()
         // set the instruction to be executed after the rvalue is calculated
         Instruction instruction = getInstructionFactory().createPutField(m_strClassName, strVariableName, Type.FLOAT);
         setNodeAttribute(node, instruction);
@@ -307,7 +307,7 @@ public class InstrumentCompilation extends DepthFirstAdapter {
      */
     @Override
     public void outAIndexedLvalue(AIndexedLvalue node) {
-        // TODO: correct rounding (1.5 -> 2.0)
+        // TODO correct rounding (1.5 -> 2.0)
         m_aMethods[METHOD_A].appendInstruction(InstructionConst.F2I);
         // set the instruction to be executed after the rvalue is calculated
         setNodeAttribute(node, InstructionConst.FASTORE);
@@ -412,12 +412,12 @@ public class InstrumentCompilation extends DepthFirstAdapter {
 
     @Override
     public void outAInchannelsName(AInchannelsName node) {
-        // TODO:
+        // TODO
     }
 
     @Override
     public void outAOutchannelsName(AOutchannelsName node) {
-        // TODO:
+        // TODO
     }
 
     @Override
@@ -437,7 +437,7 @@ public class InstrumentCompilation extends DepthFirstAdapter {
 
     @Override
     public void outAOparrayStype(AOparrayStype node) {
-        // TODO:
+        // TODO
     }
 
     @Override
@@ -514,22 +514,22 @@ public class InstrumentCompilation extends DepthFirstAdapter {
 
     @Override
     public void inAAltExpr(AAltExpr node) {
-        // TODO:
+        // TODO
     }
 
     @Override
     public void outAAltExpr(AAltExpr node) {
-        // TODO:
+        // TODO
     }
 
     @Override
     public void outAOrOrexpr(AOrOrexpr node) {
-        // TODO:
+        // TODO
     }
 
     @Override
     public void outAAndAndexpr(AAndAndexpr node) {
-        // TODO:
+        // TODO
     }
 
     @Override
@@ -643,7 +643,7 @@ public class InstrumentCompilation extends DepthFirstAdapter {
      */
     @Override
     public void outAIndexedTerm(AIndexedTerm node) {
-        // TODO: correct rounding (1.5 -> 2.0)
+        // TODO correct rounding (1.5 -> 2.0)
         m_aMethods[METHOD_A].appendInstruction(InstructionConst.F2I);
         // and now fetch the value from the array
         setNodeAttribute(node, InstructionConst.FALOAD);

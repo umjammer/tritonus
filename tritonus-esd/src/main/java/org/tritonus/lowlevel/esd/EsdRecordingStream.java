@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 1999 by Matthias Pfisterer
  *
@@ -19,11 +18,7 @@
 
 package org.tritonus.lowlevel.esd;
 
-import org.tritonus.share.TDebug;
-
-
-public class EsdRecordingStream
-        extends Esd {
+public class EsdRecordingStream extends Esd {
 
     /**
      * Holds socket fd to EsounD.
@@ -35,9 +30,6 @@ public class EsdRecordingStream
 
     static {
         Esd.loadNativeLibrary();
-        if (TDebug.TraceEsdRecordingStreamNative) {
-            setTrace(true);
-        }
     }
 
     public EsdRecordingStream() {
@@ -69,5 +61,3 @@ public class EsdRecordingStream
 
     private static native void setTrace(boolean bTrace);
 }
-
-

@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 1999,2000,2001 by Florian Bomers
  *  Copyright (c) 1999 by Matthias Pfisterer
@@ -38,39 +37,37 @@ import org.tritonus.share.sampled.file.TDataOutputStream;
  */
 public class AuAudioFileWriter extends TAudioFileWriter {
 
-    private static final AudioFileFormat.Type[] FILE_TYPES =
-            {
-                    AudioFileFormat.Type.AU
-            };
+    private static final AudioFileFormat.Type[] FILE_TYPES = {
+            AudioFileFormat.Type.AU
+    };
 
-    // IMPORTANT: this array depends on the AudioFormat.match() algorithm which takes
-    //            AudioSystem.NOT_SPECIFIED into account !
-    private static final AudioFormat[] AUDIO_FORMATS =
-            {
-                    new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, ALL, 8, ALL, ALL, ALL, true),
-                    new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, ALL, 8, ALL, ALL, ALL, false),
+    /**
+     * IMPORTANT: this array depends on the AudioFormat.match() algorithm which takes
+     * AudioSystem.NOT_SPECIFIED into account !
+     */
+    private static final AudioFormat[] AUDIO_FORMATS = {
+            new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, ALL, 8, ALL, ALL, ALL, true),
+            new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, ALL, 8, ALL, ALL, ALL, false),
 
-                    new AudioFormat(AudioFormat.Encoding.ULAW, ALL, 8, ALL, ALL, ALL, false),
-                    new AudioFormat(AudioFormat.Encoding.ULAW, ALL, 8, ALL, ALL, ALL, true),
+            new AudioFormat(AudioFormat.Encoding.ULAW, ALL, 8, ALL, ALL, ALL, false),
+            new AudioFormat(AudioFormat.Encoding.ULAW, ALL, 8, ALL, ALL, ALL, true),
 
-                    new AudioFormat(AudioFormat.Encoding.ALAW, ALL, 8, ALL, ALL, ALL, false),
-                    new AudioFormat(AudioFormat.Encoding.ALAW, ALL, 8, ALL, ALL, ALL, true),
+            new AudioFormat(AudioFormat.Encoding.ALAW, ALL, 8, ALL, ALL, ALL, false),
+            new AudioFormat(AudioFormat.Encoding.ALAW, ALL, 8, ALL, ALL, ALL, true),
 
-                    new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, ALL, 16, ALL, ALL, ALL, true),
+            new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, ALL, 16, ALL, ALL, ALL, true),
 
-                    new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, ALL, 24, ALL, ALL, ALL, true),
+            new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, ALL, 24, ALL, ALL, ALL, true),
 
-                    new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, ALL, 32, ALL, ALL, ALL, true),
-            };
+            new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, ALL, 32, ALL, ALL, ALL, true),
+    };
 
     public AuAudioFileWriter() {
-        super(Arrays.asList(FILE_TYPES),
-                Arrays.asList(AUDIO_FORMATS));
+        super(Arrays.asList(FILE_TYPES), Arrays.asList(AUDIO_FORMATS));
     }
 
     @Override
-    protected boolean isAudioFormatSupportedImpl(AudioFormat format,
-                                                 AudioFileFormat.Type fileType) {
+    protected boolean isAudioFormatSupportedImpl(AudioFormat format, AudioFileFormat.Type fileType) {
         return AuTool.getFormatCode(format) != AuTool.SND_FORMAT_UNSPECIFIED;
     }
 
@@ -79,11 +76,6 @@ public class AuAudioFileWriter extends TAudioFileWriter {
                                                      long lLengthInBytes,
                                                      AudioFileFormat.Type fileType,
                                                      TDataOutputStream dataOutputStream) throws IOException {
-        return new AuAudioOutputStream(audioFormat,
-                lLengthInBytes,
-                dataOutputStream);
+        return new AuAudioOutputStream(audioFormat, lLengthInBytes, dataOutputStream);
     }
-
 }
-
-

@@ -74,7 +74,7 @@ public class JavaSequencerClockTestCase {
         assertSame(clock, seq.getClock(), "setClock");
     }
 
-    // TODO: setClock() in open state throws IllegalStateException
+    // TODO setClock() in open state throws IllegalStateException
 
     private JavaSequencer getSequencer() {
         return new JavaSequencer(null);

@@ -1,7 +1,6 @@
 /*
  * AudioFileFormatTestCase.java
  */
-
 /*
  *  Copyright (c) 2003 - 2004 by Matthias Pfisterer
  *

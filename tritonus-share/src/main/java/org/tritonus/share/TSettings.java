@@ -28,9 +28,9 @@ public class TSettings {
     private static boolean getBooleanProperty(String strName) {
         String strPropertyName = PROPERTY_PREFIX + strName;
         String strValue = System.getProperty(strPropertyName, "false");
-        // TDebug.out("property: " + strPropertyName + "=" + strValue);
+        // logger.log(Level.TRACE, "property: " + strPropertyName + "=" + strValue);
         boolean bValue = strValue.equalsIgnoreCase("true");
-        // TDebug.out("bValue: " + bValue);
+        // logger.log(Level.TRACE, "bValue: " + bValue);
         return bValue;
     }
 }

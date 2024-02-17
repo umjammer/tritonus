@@ -84,7 +84,6 @@
           <reuseForks>true</reuseForks>
           <argLine>
             -Djava.util.logging.config.file=src/test/resources/logging.properties
-            -Dvavi.util.logging.VaviFormatter.extraClassMethod=org\\.tritonus\\.share\\.TDebug#out
             -Djna.library.path=${native.library.path}
             -Dvavi.test.volume=0.02
           </argLine>

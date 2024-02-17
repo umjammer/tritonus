@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 1999 by Matthias Pfisterer
  *
@@ -19,23 +18,26 @@
 
 package org.tritonus.midi.device.java;
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.spi.MidiDeviceProvider;
 
 import org.tritonus.share.GlobalInfo;
-import org.tritonus.share.TDebug;
 import org.tritonus.share.midi.TMidiDevice;
 
+import static java.lang.System.getLogger;
 
-public class JavaSequencerProvider
-        extends MidiDeviceProvider {
+
+public class JavaSequencerProvider extends MidiDeviceProvider {
+
+    private static final Logger logger = getLogger("org.tritonus.TraceMidiDeviceProvider");
 
     private static MidiDevice.Info sm_info;
 
     public JavaSequencerProvider() {
-        if (TDebug.TraceMidiDeviceProvider) {
-            TDebug.out("JavaSequencerProvider.<init>(): begin");
-        }
+        logger.log(Level.TRACE, "JavaSequencerProvider.<init>(): begin");
+
         synchronized (JavaSequencerProvider.class) {
             if (sm_info == null) {
                 sm_info = new TMidiDevice.Info(
@@ -45,29 +47,26 @@ public class JavaSequencerProvider
                         GlobalInfo.getVersion());
             }
         }
-        if (TDebug.TraceMidiDeviceProvider) {
-            TDebug.out("JavaSequencerProvider.<init>(): end");
-        }
+
+        logger.log(Level.TRACE, "JavaSequencerProvider.<init>(): end");
     }
 
     @Override
     public MidiDevice.Info[] getDeviceInfo() {
-        if (TDebug.TraceMidiDeviceProvider) {
-            TDebug.out("JavaSequencerProvider.getDeviceInfo(): begin");
-        }
+        logger.log(Level.TRACE, "JavaSequencerProvider.getDeviceInfo(): begin");
+
         MidiDevice.Info[] infos = new MidiDevice.Info[1];
         infos[0] = sm_info;
-        if (TDebug.TraceMidiDeviceProvider) {
-            TDebug.out("JavaSequencerProvider.getDeviceInfo(): end");
-        }
+
+        logger.log(Level.TRACE, "JavaSequencerProvider.getDeviceInfo(): end");
+
         return infos;
     }
 
     @Override
     public MidiDevice getDevice(MidiDevice.Info info) {
-        if (TDebug.TraceMidiDeviceProvider) {
-            TDebug.out("JavaSequencerProvider.getDevice(): begin");
-        }
+        logger.log(Level.TRACE, "JavaSequencerProvider.getDevice(): begin");
+
         MidiDevice device = null;
         if (info != null && info.equals(sm_info)) {
             device = new JavaSequencer(sm_info);
@@ -75,9 +74,9 @@ public class JavaSequencerProvider
         if (device == null) {
             throw new IllegalArgumentException("no device for " + info);
         }
-        if (TDebug.TraceMidiDeviceProvider) {
-            TDebug.out("JavaSequencerProvider.getDevice(): end");
-        }
+
+        logger.log(Level.TRACE, "JavaSequencerProvider.getDevice(): end");
+
         return device;
     }
 }

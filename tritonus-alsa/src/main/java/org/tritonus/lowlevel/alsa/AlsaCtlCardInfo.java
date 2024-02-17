@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 2000 - 2002 by Matthias Pfisterer
  *
@@ -17,14 +16,19 @@
 
 package org.tritonus.lowlevel.alsa;
 
-import org.tritonus.share.TDebug;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
+
+import static java.lang.System.getLogger;
 
 
 /**
- * TODO:
+ * TODO
  */
 public class AlsaCtlCardInfo {
 
+    private static final Logger logger = getLogger("org.tritonus.TraceAlsaCtlNative");
+    
     /**
      * Holds the pointer to snd_ctl_card_info_t.
      * for the native code.
@@ -35,16 +39,14 @@ public class AlsaCtlCardInfo {
     long m_lNativeHandle;
 
     public AlsaCtlCardInfo() {
-        if (TDebug.TraceAlsaCtlNative) {
-            TDebug.out("AlsaPcm.CardInfo.<init>(): begin");
-        }
+        logger.log(Level.TRACE, "AlsaPcm.CardInfo.<init>(): begin");
+
         int nReturn = malloc();
         if (nReturn < 0) {
             throw new RuntimeException("malloc of card_info failed");
         }
-        if (TDebug.TraceAlsaCtlNative) {
-            TDebug.out("AlsaPcm.CardInfo.<init>(): end");
-        }
+
+        logger.log(Level.TRACE, "AlsaPcm.CardInfo.<init>(): end");
     }
 
     /**
@@ -94,5 +96,3 @@ public class AlsaCtlCardInfo {
 
     private static native void setTrace(boolean bTrace);
 }
-
-

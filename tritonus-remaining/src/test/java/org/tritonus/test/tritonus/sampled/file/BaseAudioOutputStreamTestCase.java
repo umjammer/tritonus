@@ -1,7 +1,6 @@
 /*
  * BaseAudioOutputStreamTestCase.java
  */
-
 /*
  *  Copyright (c) 2001 - 2002 by Matthias Pfisterer
  *

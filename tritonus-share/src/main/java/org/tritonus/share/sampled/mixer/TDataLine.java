@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 1999 - 2004 by Matthias Pfisterer
  *
@@ -19,6 +18,8 @@
 
 package org.tritonus.share.sampled.mixer;
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.util.Collection;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
@@ -26,15 +27,15 @@ import javax.sound.sampled.Control;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineEvent;
 
-import org.tritonus.share.TDebug;
+import static java.lang.System.getLogger;
 
 
 /**
  * Base class for classes implementing DataLine.
  */
-public abstract class TDataLine
-        extends TLine
-        implements DataLine {
+public abstract class TDataLine extends TLine implements DataLine {
+
+    private static final Logger logger= getLogger("org.tritonus.TraceSourceDataLine");
 
     private static final int DEFAULT_BUFFER_SIZE = 128000;
 
@@ -43,19 +44,13 @@ public abstract class TDataLine
     private boolean m_bRunning;
     // private boolean   m_bActive;
 
-    public TDataLine(TMixer mixer,
-                     DataLine.Info info) {
-        super(mixer,
-                info);
+    public TDataLine(TMixer mixer, DataLine.Info info) {
+        super(mixer, info);
         init(info);
     }
 
-    public TDataLine(TMixer mixer,
-                     DataLine.Info info,
-                     Collection<Control> controls) {
-        super(mixer,
-                info,
-                controls);
+    public TDataLine(TMixer mixer, DataLine.Info info, Collection<Control> controls) {
+        super(mixer, info, controls);
         init(info);
     }
 
@@ -64,7 +59,7 @@ public abstract class TDataLine
         m_format = null;
         m_nBufferSize = AudioSystem.NOT_SPECIFIED;
         setRunning(false);
-        // setActive(false);
+//        setActive(false);
     }
 
     // not defined here:
@@ -73,17 +68,15 @@ public abstract class TDataLine
 
     @Override
     public void start() {
-        if (TDebug.TraceSourceDataLine) {
-            TDebug.out("TDataLine.start(): called");
-        }
+        logger.log(Level.TRACE, "TDataLine.start(): called");
+
         setRunning(true);
     }
 
     @Override
     public void stop() {
-        if (TDebug.TraceSourceDataLine) {
-            TDebug.out("TDataLine.stop(): called");
-        }
+        logger.log(Level.TRACE, "TDataLine.stop(): called");
+
         setRunning(false);
     }
 
@@ -92,7 +85,7 @@ public abstract class TDataLine
         return m_bRunning;
     }
 
-    // TODO: recheck
+    // TODO recheck
     protected void setRunning(boolean bRunning) {
         boolean bOldValue = isRunning();
         m_bRunning = bRunning;
@@ -123,26 +116,18 @@ public abstract class TDataLine
         return isRunning();
     }
 
+//    public boolean isStarted() {
+//        return m_bStarted;
+//    }
 
-/*
- public boolean isStarted()
- {
-  return m_bStarted;
- }
-*/
-
-    // TODO: should only ALLOW engaging in data I/O.
+    // TODO should only ALLOW engaging in data I/O.
     // actual START event should only be sent when line really becomes active
-/*
- protected void setStarted(boolean bStarted)
- {
-  m_bStarted = bStarted;
-  if (!isRunning())
-  {
-   setActive(false);
-  }
- }
-*/
+//    protected void setStarted(boolean bStarted) {
+//        m_bStarted = bStarted;
+//        if (!isRunning()) {
+//            setActive(false);
+//        }
+//    }
 
     @Override
     public AudioFormat getFormat() {
@@ -150,9 +135,8 @@ public abstract class TDataLine
     }
 
     protected void setFormat(AudioFormat format) {
-        if (TDebug.TraceDataLine) {
-            TDebug.out("TDataLine.setFormat(): setting: " + format);
-        }
+        logger.log(Level.TRACE, "TDataLine.setFormat(): setting: " + format);
+
         m_format = format;
     }
 
@@ -162,9 +146,8 @@ public abstract class TDataLine
     }
 
     protected void setBufferSize(int nBufferSize) {
-        if (TDebug.TraceDataLine) {
-            TDebug.out("TDataLine.setBufferSize(): setting: " + nBufferSize);
-        }
+        logger.log(Level.TRACE, "TDataLine.setBufferSize(): setting: " + nBufferSize);
+
         m_nBufferSize = nBufferSize;
     }
 
@@ -173,13 +156,13 @@ public abstract class TDataLine
 
     @Override
     public int getFramePosition() {
-        // TODO:
+        // TODO
         return -1;
     }
 
     @Override
     public long getLongFramePosition() {
-        // TODO:
+        // TODO
         return -1;
     }
 
@@ -214,6 +197,3 @@ public abstract class TDataLine
         notifyLineEvent(new LineEvent(this, type, getFramePosition()));
     }
 }
-
-
-

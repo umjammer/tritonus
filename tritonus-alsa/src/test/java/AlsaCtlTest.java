@@ -8,7 +8,7 @@ import org.tritonus.lowlevel.alsa.AlsaCtl;
 import org.tritonus.lowlevel.alsa.AlsaCtlCardInfo;
 
 
-// TODO: dump pcm info
+// TODO dump pcm info
 public class AlsaCtlTest {
 
     public static void main(String[] args)

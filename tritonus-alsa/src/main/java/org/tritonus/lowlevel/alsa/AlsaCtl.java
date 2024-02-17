@@ -16,11 +16,8 @@
 
 package org.tritonus.lowlevel.alsa;
 
-import org.tritonus.share.TDebug;
-
-
 /**
- * TODO:
+ * TODO
  */
 public class AlsaCtl {
 
@@ -32,9 +29,6 @@ public class AlsaCtl {
 
     static {
         Alsa.loadNativeLibrary();
-        if (TDebug.TraceAlsaCtlNative) {
-            setTrace(true);
-        }
     }
 
     public static native int loadCard(int nCard);
@@ -62,15 +56,13 @@ public class AlsaCtl {
      *                like SND_CTL_NONBLOCK, SND_CTL_ASYNC. Normally, set
      *                this to 0.
      */
-    public AlsaCtl(String strName, int nMode)
-            throws Exception {
+    public AlsaCtl(String strName, int nMode) throws Exception {
         if (open(strName, nMode) < 0) {
             throw new Exception();
         }
     }
 
-    public AlsaCtl(int nCard)
-            throws Exception {
+    public AlsaCtl(int nCard) throws Exception {
         this("hw:" + nCard, 0);
     }
 
@@ -89,10 +81,10 @@ public class AlsaCtl {
      */
     public native int getCardInfo(AlsaCtlCardInfo cardInfo);
 
-    // TODO: ??
+    // TODO ??
     public native int[] getPcmDevices();
 
-    // TODO: remove
+    // TODO remove
 
     /**
      * anValues[0] device (inout)
@@ -112,5 +104,3 @@ public class AlsaCtl {
 
     private static native void setTrace(boolean bTrace);
 }
-
-

@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 1999 - 2003 by Matthias Pfisterer
  *
@@ -19,6 +18,8 @@ package org.tritonus.share.midi;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.Iterator;
@@ -35,12 +36,13 @@ import javax.sound.midi.Sequencer;
 import javax.sound.midi.ShortMessage;
 
 import org.tritonus.share.ArraySet;
-import org.tritonus.share.TDebug;
+
+import static java.lang.System.getLogger;
 
 
-public abstract class TSequencer
-        extends TMidiDevice
-        implements Sequencer {
+public abstract class TSequencer extends TMidiDevice implements Sequencer {
+
+    private static final Logger logger= getLogger("org.tritonus.TraceSequencer");
 
     private static final float MPQ_BPM_FACTOR = 6.0E7F;
     // This is for use in Collection.toArray(Object[]).
@@ -113,7 +115,7 @@ public abstract class TSequencer
         m_aControllerListeners = (Set<ControllerEventListener>[]) new Set[128];
         setTempoFactor(1.0F);
         setTempoInMPQ(500000);
-        // TODO: make a copy
+        // TODO make a copy
         m_masterSyncModes = masterSyncModes;
         m_slaveSyncModes = slaveSyncModes;
         if (getMasterSyncModes().length > 0) {
@@ -132,18 +134,16 @@ public abstract class TSequencer
     }
 
     @Override
-    public void setSequence(Sequence sequence)
-            throws InvalidMidiDataException {
-        // TODO: what if playing is in progress?
+    public void setSequence(Sequence sequence) throws InvalidMidiDataException {
+        // TODO what if playing is in progress?
         if (getSequence() != sequence) {
             m_sequence = sequence;
             setSequenceImpl();
-   /* Yes, resetting the tempo factor is required by the specification.
-      TODO: can't find this any more in the spec.
-
-      It is unclear whether this should be executed in any case
-      (even if in fact the sequence didn't change).
-    */
+            // Yes, resetting the tempo factor is required by the specification.
+            // TODO can't find this any more in the spec.
+            //
+            // It is unclear whether this should be executed in any case
+            // (even if in fact the sequence didn't change).
             setTempoFactor(1.0F);
         }
     }
@@ -153,14 +153,14 @@ public abstract class TSequencer
      * Subclasses that need to be informed when a Sequence is set
      * should override this method. It is called by setSequence().
      * Subclasses can find out the new Sequence by calling getSequence().
+     * <p>
+     * TODO make abstract
      */
-    // TODO: make abstract
     protected void setSequenceImpl() {
     }
 
     @Override
-    public void setSequence(InputStream inputStream)
-            throws InvalidMidiDataException, IOException {
+    public void setSequence(InputStream inputStream) throws InvalidMidiDataException, IOException {
         Sequence sequence = MidiSystem.getSequence(inputStream);
         setSequence(sequence);
     }
@@ -205,7 +205,7 @@ public abstract class TSequencer
         checkOpen();
         if (!isRunning()) {
             m_bRunning = true;
-            // TODO: perhaps check if sequence present
+            // TODO perhaps check if sequence present
             startImpl();
         }
     }
@@ -275,9 +275,9 @@ public abstract class TSequencer
             fTempoFactor = 0.01F;
         }
         float fRealTempo = getTempoInMPQ() / fTempoFactor;
-        if (TDebug.TraceSequencer) {
-            TDebug.out("TSequencer.setRealTempo(): real tempo: " + fRealTempo);
-        }
+
+        logger.log(Level.TRACE, "TSequencer.setRealTempo(): real tempo: " + fRealTempo);
+
         setTempoImpl(fRealTempo);
     }
 
@@ -382,11 +382,9 @@ public abstract class TSequencer
     public int[] addControllerEventListener(ControllerEventListener listener, int[] anControllers) {
         synchronized (m_aControllerListeners) {
             if (anControllers == null) {
-                /*
-                 * Add to all controllers. NOTE: this
-                 * is an implementation-specific
-                 * semantic!
-                 */
+                // Add to all controllers. NOTE: this
+                // is an implementation-specific
+                // semantic!
                 for (int i = 0; i < 128; i++) {
                     addControllerListener(i, listener);
                 }
@@ -399,8 +397,7 @@ public abstract class TSequencer
         return getListenedControllers(listener);
     }
 
-    private void addControllerListener(int i,
-                                       ControllerEventListener listener) {
+    private void addControllerListener(int i, ControllerEventListener listener) {
         if (m_aControllerListeners[i] == null) {
             m_aControllerListeners[i] = new ArraySet<>();
         }
@@ -411,10 +408,8 @@ public abstract class TSequencer
     public int[] removeControllerEventListener(ControllerEventListener listener, int[] anControllers) {
         synchronized (m_aControllerListeners) {
             if (anControllers == null) {
-                /*
-                 * Remove from all controllers. Unlike
-                 * above, this is specified semantics.
-                 */
+                // Remove from all controllers. Unlike
+                // above, this is specified semantics.
                 for (int i = 0; i < 128; i++) {
                     removeControllerListener(i, listener);
                 }
@@ -427,8 +422,7 @@ public abstract class TSequencer
         return getListenedControllers(listener);
     }
 
-    private void removeControllerListener(int i,
-                                          ControllerEventListener listener) {
+    private void removeControllerListener(int i, ControllerEventListener listener) {
         if (m_aControllerListeners[i] != null) {
             m_aControllerListeners[i].add(listener);
         }
@@ -485,8 +479,8 @@ public abstract class TSequencer
         }
     }
 
-    /*
-      This method is guaranteed only to be called if the sync mode really changes.
+    /**
+     * This method is guaranteed only to be called if the sync mode really changes.
      */
     protected void setMasterSyncModeImpl(SyncMode syncMode) {
         // DO NOTHING
@@ -515,8 +509,8 @@ public abstract class TSequencer
         }
     }
 
-    /*
-      This method is guaranteed only to be called if the sync mode really changes.
+    /**
+     * This method is guaranteed only to be called if the sync mode really changes.
      */
     protected void setSlaveSyncModeImpl(SyncMode syncMode) {
         // DO NOTHING
@@ -607,9 +601,8 @@ public abstract class TSequencer
             }
         }
         oldEnabledBitSet.xor(m_enabledBitSet);
-  /* oldEnabledBitSet now has a bit set if the status for
-   this bit changed.
-  */
+        // oldEnabledBitSet now has a bit set if the status for
+        // this bit changed.
         for (int i = 0; i < oldEnabledBitSet.size(); i++) {
             if (oldEnabledBitSet.get(i)) {
                 setTrackEnabledImpl(i, m_enabledBitSet.get(i));
@@ -647,11 +640,9 @@ public abstract class TSequencer
      * Get the preloading intervall.
      *
      * @return the preloading intervall in milliseconds, or -1 if the sequencer
-     * doesn't repond to changes in the <code>Sequence</code> at all.
+     * doesn't respond to changes in the <code>Sequence</code> at all.
      */
     public int getLatency() {
         return -1;
     }
 }
-
-

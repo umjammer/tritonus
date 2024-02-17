@@ -19,14 +19,17 @@ package org.tritonus.sampled.file.mpeg;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import org.tritonus.share.TDebug;
 import org.tritonus.share.sampled.file.TAudioFileFormat;
 import org.tritonus.share.sampled.file.TAudioFileReader;
+
+import static java.lang.System.getLogger;
 
 
 /**
@@ -34,24 +37,29 @@ import org.tritonus.share.sampled.file.TAudioFileReader;
  *
  * @author Matthias Pfisterer
  */
-public class MpegAudioFileReader
-        extends TAudioFileReader {
+public class MpegAudioFileReader extends TAudioFileReader {
+
+     private static final Logger logger= getLogger("org.tritonus.TraceAudioFileReader");
 
     private static final int SYNC = 0xFFE00000;
 
-    private static final AudioFormat.Encoding[][] sm_aEncodings = {
-            {new AudioFormat.Encoding("MPEG2DOT5L3"),
-                    new AudioFormat.Encoding("MPEG2DOT5L2"),
-                    new AudioFormat.Encoding("MPEG2DOT5L1")},
-            {null,
-                    null,
-                    null},    // reserved
-            {new AudioFormat.Encoding("MPEG2L3"),
-                    new AudioFormat.Encoding("MPEG2L2"),
-                    new AudioFormat.Encoding("MPEG2L1")},
-            {new AudioFormat.Encoding("MPEG1L3"),
-                    new AudioFormat.Encoding("MPEG1L2"),
-                    new AudioFormat.Encoding("MPEG1L1")},
+    private static final AudioFormat.Encoding[][] sm_aEncodings = {{
+            new AudioFormat.Encoding("MPEG2DOT5L3"),
+            new AudioFormat.Encoding("MPEG2DOT5L2"),
+            new AudioFormat.Encoding("MPEG2DOT5L1")
+        }, { // reserved
+            null,
+            null,
+            null
+        }, {
+            new AudioFormat.Encoding("MPEG2L3"),
+            new AudioFormat.Encoding("MPEG2L2"),
+            new AudioFormat.Encoding("MPEG2L1")
+        }, {
+            new AudioFormat.Encoding("MPEG1L3"),
+            new AudioFormat.Encoding("MPEG1L2"),
+            new AudioFormat.Encoding("MPEG1L1")
+        },
     };
 
     private static final float[][] sm_afSamplingRates = {
@@ -71,9 +79,7 @@ public class MpegAudioFileReader
     protected AudioFileFormat getAudioFileFormat(InputStream inputStream, long lFileSizeInBytes)
             throws UnsupportedAudioFileException, IOException {
 
-        if (TDebug.TraceAudioFileReader) {
-            TDebug.out("MpegAudioFileReader.getAudioFileFormat(): begin");
-        }
+        logger.log(Level.TRACE, "MpegAudioFileReader.getAudioFileFormat(): begin");
 
         int b0 = inputStream.read();
         int b1 = inputStream.read();
@@ -97,7 +103,7 @@ public class MpegAudioFileReader
             throw new UnsupportedAudioFileException("not a MPEG stream: wrong layer");
         }
         AudioFormat.Encoding encoding = sm_aEncodings[nVersion][nLayer - 1];
-        // TODO: bit rate, protection
+        // TODO bit rate, protection
         int nSFIndex = (nHeader >> 10) & 0x3;
         if (nSFIndex == 3) {
             throw new UnsupportedAudioFileException("not a MPEG stream: wrong sampling rate");
@@ -114,7 +120,7 @@ public class MpegAudioFileReader
                 AudioSystem.NOT_SPECIFIED, // ????
                 AudioSystem.NOT_SPECIFIED, // ????
                 true);
-        //$$fb 2000-08-15: workaround for the fixed extension problem in AudioFileFormat.Type
+        // $$fb 2000-08-15: workaround for the fixed extension problem in AudioFileFormat.Type
         // see org.tritonus.share.sampled.AudioFileTypes.java
         AudioFileFormat.Type type = new AudioFileFormat.Type("MPEG", "mpeg");
         if (encoding.equals(new AudioFormat.Encoding("MPEG1L3"))) {
@@ -129,11 +135,10 @@ public class MpegAudioFileReader
         // [fb] not specifying it causes Sun's Wave file writer to write rubbish
         int nByteSize = AudioSystem.NOT_SPECIFIED;
         int nFrameSize = AudioSystem.NOT_SPECIFIED;
-        if (lFileSizeInBytes != AudioSystem.NOT_SPECIFIED
-                && lFileSizeInBytes <= Integer.MAX_VALUE) {
+        if (lFileSizeInBytes != AudioSystem.NOT_SPECIFIED && lFileSizeInBytes <= Integer.MAX_VALUE) {
             nByteSize = (int) lFileSizeInBytes;
-            // TODO: check if we can calculate a useful value here
-            // nFrameSize = (int) (lFileSizeInBytes / 33);
+            // TODO check if we can calculate a useful value here
+//            nFrameSize = (int) (lFileSizeInBytes / 33);
         }
 
         AudioFileFormat audioFileFormat =
@@ -142,9 +147,9 @@ public class MpegAudioFileReader
                         format,
                         nFrameSize,
                         nByteSize);
-        if (TDebug.TraceAudioFileReader) {
-            TDebug.out("MpegAudioFileReader.getAudioFileFormat(): end");
-        }
+
+        logger.log(Level.TRACE, "MpegAudioFileReader.getAudioFileFormat(): end");
+
         return audioFileFormat;
     }
 }

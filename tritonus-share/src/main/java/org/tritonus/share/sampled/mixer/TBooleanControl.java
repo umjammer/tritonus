@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 2001 by Matthias Pfisterer
  *
@@ -19,36 +18,33 @@
 
 package org.tritonus.share.sampled.mixer;
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import javax.sound.sampled.BooleanControl;
 
-import org.tritonus.share.TDebug;
+import static java.lang.System.getLogger;
 
 
 /**
  * Base class for classes implementing BooleanControl.
  */
-public class TBooleanControl
-        extends BooleanControl
-        implements TControllable {
+public class TBooleanControl extends BooleanControl implements TControllable {
 
-    private TControlController m_controller;
+    private static final Logger logger = getLogger(TBooleanControl.class.getName());
 
-    public TBooleanControl(BooleanControl.Type type,
-                           boolean bInitialValue) {
+    private final TControlController m_controller;
+
+    public TBooleanControl(BooleanControl.Type type, boolean bInitialValue) {
         this(type, bInitialValue, null);
     }
 
-    public TBooleanControl(BooleanControl.Type type,
-                           boolean bInitialValue,
-                           TCompoundControl parentControl) {
+    public TBooleanControl(BooleanControl.Type type, boolean bInitialValue, TCompoundControl parentControl) {
         super(type, bInitialValue);
-        if (TDebug.TraceControl) {
-            TDebug.out("TBooleanControl.<init>: begin");
-        }
+        logger.log(Level.TRACE, "TBooleanControl.<init>: begin");
+
         m_controller = new TControlController();
-        if (TDebug.TraceControl) {
-            TDebug.out("TBooleanControl.<init>: end");
-        }
+
+        logger.log(Level.TRACE, "TBooleanControl.<init>: end");
     }
 
     public TBooleanControl(BooleanControl.Type type,
@@ -64,13 +60,11 @@ public class TBooleanControl
                            String strFalseStateLabel,
                            TCompoundControl parentControl) {
         super(type, bInitialValue, strTrueStateLabel, strFalseStateLabel);
-        if (TDebug.TraceControl) {
-            TDebug.out("TBooleanControl.<init>: begin");
-        }
+        logger.log(Level.TRACE, "TBooleanControl.<init>: begin");
+
         m_controller = new TControlController();
-        if (TDebug.TraceControl) {
-            TDebug.out("TBooleanControl.<init>: end");
-        }
+
+        logger.log(Level.TRACE, "TBooleanControl.<init>: end");
     }
 
     @Override
@@ -88,5 +82,3 @@ public class TBooleanControl
         m_controller.commit();
     }
 }
-
-

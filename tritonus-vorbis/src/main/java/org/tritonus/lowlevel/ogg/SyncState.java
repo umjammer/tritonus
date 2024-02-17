@@ -16,18 +16,24 @@
 
 package org.tritonus.lowlevel.ogg;
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
+
 import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
-import org.tritonus.share.TDebug;
 import vavi.sound.sampled.jna.ogg.OggLibrary;
 import vavi.sound.sampled.jna.ogg.ogg_page;
 import vavi.sound.sampled.jna.ogg.ogg_sync_state;
+
+import static java.lang.System.getLogger;
 
 
 /**
  * Wrapper for ogg_sync_state.
  */
 public class SyncState {
+
+    private static final Logger logger= getLogger("org.tritonus.TraceOggNative");
 
     /**
      * Holds the pointer to ogg_sync_state
@@ -37,92 +43,77 @@ public class SyncState {
     private ogg_sync_state handle;
 
     public SyncState() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("<init>: begin");
-        }
+        logger.log(Level.TRACE, "<init>: begin");
+
         int nReturn = malloc();
         if (nReturn < 0) {
             throw new RuntimeException("malloc of ogg_sync_state failed");
         }
-        if (TDebug.TraceOggNative) {
-            TDebug.out("<init>: end");
-        }
+
+        logger.log(Level.TRACE, "<init>: end");
     }
 
     private int malloc() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("malloc: begin");
-        }
+        logger.log(Level.TRACE, "malloc: begin");
+
         handle = new ogg_sync_state();
-        if (TDebug.TraceOggNative) {
-            TDebug.out(String.format("malloc: handle: %s", handle));
-        }
-        if (TDebug.TraceOggNative) {
-            TDebug.out("malloc: end");
-        }
+        logger.log(Level.TRACE, String.format("malloc: handle: %s", handle));
+
+        logger.log(Level.TRACE, "malloc: end");
+
         return 0;
     }
 
     public void free() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("free: begin");
-        }
+        logger.log(Level.TRACE, "free: begin");
+
         handle = null;
-        if (TDebug.TraceOggNative) {
-            TDebug.out("free: end");
-        }
+
+        logger.log(Level.TRACE, "free: end");
     }
 
     /**
      * Calls ogg_sync_init().
      */
     public void init() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("init: begin");
-        }
+        logger.log(Level.TRACE, "init: begin");
+
         OggLibrary.INSTANCE.ogg_sync_init(handle);
-        if (TDebug.TraceOggNative) {
-            TDebug.out("init: end");
-        }
+
+        logger.log(Level.TRACE, "init: end");
     }
 
     /**
      * Calls ogg_sync_clear().
      */
     public void clear() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("clear: begin");
-        }
+        logger.log(Level.TRACE, "clear: begin");
+
         OggLibrary.INSTANCE.ogg_sync_clear(handle);
-        if (TDebug.TraceOggNative) {
-            TDebug.out("clear: end");
-        }
+
+        logger.log(Level.TRACE, "clear: end");
     }
 
     /**
      * Calls ogg_sync_reset().
      */
     public void reset() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("reset: begin");
-        }
+        logger.log(Level.TRACE, "reset: begin");
+
         OggLibrary.INSTANCE.ogg_sync_reset(handle);
-        if (TDebug.TraceOggNative) {
-            TDebug.out("reset: end");
-        }
+
+        logger.log(Level.TRACE, "reset: end");
     }
 
     /**
      * Calls ogg_sync_destroy().
      */
     public void destroy() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("destroy: begin");
-        }
+        logger.log(Level.TRACE, "destroy: begin");
+
         OggLibrary.INSTANCE.ogg_sync_destroy(handle);
-        if (TDebug.TraceOggNative) {
-            TDebug.out("destroy: end");
-        }
+
+        logger.log(Level.TRACE, "destroy: end");
     }
 
     /**
@@ -130,15 +121,14 @@ public class SyncState {
      * and ogg_sync_wrote().
      */
     public int write(byte[] abBuffer, int nBytes) {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("write: begin");
-        }
+        logger.log(Level.TRACE, "write: begin");
+
         Pointer buffer = OggLibrary.INSTANCE.ogg_sync_buffer(handle, new NativeLong(nBytes));
         buffer.write(0, abBuffer, 0, nBytes);
         int nReturn = OggLibrary.INSTANCE.ogg_sync_wrote(handle, new NativeLong(nBytes));
-        if (TDebug.TraceOggNative) {
-            TDebug.out("write: end");
-        }
+
+        logger.log(Level.TRACE, "write: end");
+
         return nReturn;
     }
 
@@ -146,14 +136,13 @@ public class SyncState {
      * Calls ogg_sync_pageseek().
      */
     public int pageseek(Page page) {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("pageseek: begin");
-        }
+        logger.log(Level.TRACE, "pageseek: begin");
+
         ogg_page pageHandle = page.getHandle();
         NativeLong nReturn = OggLibrary.INSTANCE.ogg_sync_pageseek(handle, pageHandle);
-        if (TDebug.TraceOggNative) {
-            TDebug.out("pageseek: end");
-        }
+
+        logger.log(Level.TRACE, "pageseek: end");
+
         return nReturn.intValue();
     }
 
@@ -161,16 +150,13 @@ public class SyncState {
      * Calls ogg_sync_pageout().
      */
     public int pageOut(Page page) {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("pageOut: begin");
-        }
+        logger.log(Level.TRACE, "pageOut: begin");
+
         ogg_page pageHandle = page.getHandle();
         int nReturn = OggLibrary.INSTANCE.ogg_sync_pageout(handle, pageHandle);
-        if (TDebug.TraceOggNative) {
-            TDebug.out("pageOut: end");
-        }
+
+        logger.log(Level.TRACE, "pageOut: end");
+
         return nReturn;
     }
 }
-
-

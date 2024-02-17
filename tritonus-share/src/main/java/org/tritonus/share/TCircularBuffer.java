@@ -19,7 +19,15 @@
 package org.tritonus.share;
 
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
+
+import static java.lang.System.getLogger;
+
+
 public class TCircularBuffer {
+
+    private static final Logger logger= getLogger("org.tritonus.TraceCircularBuffer");
 
     private boolean m_bBlockingRead;
     private boolean m_bBlockingWrite;
@@ -43,7 +51,7 @@ public class TCircularBuffer {
 
     public void close() {
         m_bOpen = false;
-        // TODO: call notify() ?
+        // TODO call notify() ?
     }
 
     private boolean isOpen() {
@@ -71,28 +79,25 @@ public class TCircularBuffer {
     }
 
     public int read(byte[] abData, int nOffset, int nLength) {
-        if (TDebug.TraceCircularBuffer) {
-            TDebug.out(">TCircularBuffer.read(): called.");
+        if (logger.isLoggable(Level.TRACE)) {
+            logger.log(Level.TRACE, ">TCircularBuffer.read(): called.");
             dumpInternalState();
         }
         if (!isOpen()) {
             if (availableRead() > 0) {
                 nLength = Math.min(nLength, availableRead());
-                if (TDebug.TraceCircularBuffer) {
-                    TDebug.out("reading rest in closed buffer, length: " + nLength);
-                }
+                logger.log(Level.TRACE, "reading rest in closed buffer, length: " + nLength);
+
             } else {
-                if (TDebug.TraceCircularBuffer) {
-                    TDebug.out("< not open. returning -1.");
-                }
+                logger.log(Level.TRACE, "< not open. returning -1.");
+
                 return -1;
             }
         }
         synchronized (this) {
             if (m_trigger != null && availableRead() < nLength) {
-                if (TDebug.TraceCircularBuffer) {
-                    TDebug.out("executing trigger.");
-                }
+                logger.log(Level.TRACE, "executing trigger.");
+
                 m_trigger.execute();
             }
             if (!m_bBlockingRead) {
@@ -104,9 +109,7 @@ public class TCircularBuffer {
                     try {
                         wait();
                     } catch (InterruptedException e) {
-                        if (TDebug.TraceAllExceptions) {
-                            TDebug.out(e);
-                        }
+                        logger.log(Level.ERROR, e.getMessage(), e);
                     }
                 }
                 int nAvailable = Math.min(availableRead(), nRemainingBytes);
@@ -120,10 +123,10 @@ public class TCircularBuffer {
                 }
                 notifyAll();
             }
-            if (TDebug.TraceCircularBuffer) {
-                TDebug.out("After read:");
+            if (logger.isLoggable(Level.TRACE)) {
+                logger.log(Level.TRACE, "After read:");
                 dumpInternalState();
-                TDebug.out("< completed. Read " + nLength + " bytes");
+                logger.log(Level.TRACE, "< completed. Read " + nLength + " bytes");
             }
             return nLength;
         }
@@ -134,14 +137,13 @@ public class TCircularBuffer {
     }
 
     public int write(byte[] abData, int nOffset, int nLength) {
-        if (TDebug.TraceCircularBuffer) {
-            TDebug.out(">TCircularBuffer.write(): called; nLength: " + nLength);
+        if (logger.isLoggable(Level.TRACE)) {
+            logger.log(Level.TRACE, ">TCircularBuffer.write(): called; nLength: " + nLength);
             dumpInternalState();
         }
         synchronized (this) {
-            if (TDebug.TraceCircularBuffer) {
-                TDebug.out("entered synchronized block.");
-            }
+            logger.log(Level.TRACE, "entered synchronized block.");
+
             if (!m_bBlockingWrite) {
                 nLength = Math.min(availableWrite(), nLength);
             }
@@ -151,15 +153,13 @@ public class TCircularBuffer {
                     try {
                         wait();
                     } catch (InterruptedException e) {
-                        if (TDebug.TraceAllExceptions) {
-                            TDebug.out(e);
-                        }
+                        logger.log(Level.ERROR, e.getMessage(), e);
                     }
                 }
                 int nAvailable = Math.min(availableWrite(), nRemainingBytes);
                 while (nAvailable > 0) {
                     int nToWrite = Math.min(nAvailable, m_nSize - getWritePos());
-                    //TDebug.out("src buf size= " + abData.length + ", offset = " + nOffset + ", dst buf size=" + m_abData.length + " write pos=" + getWritePos() + " len=" + nToWrite);
+//logger.log(Level.DEBUG, "src buf size= " + abData.length + ", offset = " + nOffset + ", dst buf size=" + m_abData.length + " write pos=" + getWritePos() + " len=" + nToWrite);
                     System.arraycopy(abData, nOffset, m_abData, getWritePos(), nToWrite);
                     m_lWritePos += nToWrite;
                     nOffset += nToWrite;
@@ -168,20 +168,20 @@ public class TCircularBuffer {
                 }
                 notifyAll();
             }
-            if (TDebug.TraceCircularBuffer) {
-                TDebug.out("After write:");
+            if (logger.isLoggable(Level.TRACE)) {
+                logger.log(Level.TRACE, "After write:");
                 dumpInternalState();
-                TDebug.out("< completed. Wrote " + nLength + " bytes");
+                logger.log(Level.TRACE, "< completed. Wrote " + nLength + " bytes");
             }
             return nLength;
         }
     }
 
     private void dumpInternalState() {
-        TDebug.out("m_lReadPos  = " + m_lReadPos + " ^= " + getReadPos());
-        TDebug.out("m_lWritePos = " + m_lWritePos + " ^= " + getWritePos());
-        TDebug.out("availableRead()  = " + availableRead());
-        TDebug.out("availableWrite() = " + availableWrite());
+        logger.log(Level.TRACE, "m_lReadPos  = " + m_lReadPos + " ^= " + getReadPos());
+        logger.log(Level.TRACE, "m_lWritePos = " + m_lWritePos + " ^= " + getWritePos());
+        logger.log(Level.TRACE, "availableRead()  = " + availableRead());
+        logger.log(Level.TRACE, "availableWrite() = " + availableWrite());
     }
 
     public interface Trigger {

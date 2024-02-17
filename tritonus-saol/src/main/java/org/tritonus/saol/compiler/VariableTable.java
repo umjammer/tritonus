@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 2002 by Matthias Pfisterer
  *
@@ -22,7 +21,7 @@ import java.util.HashMap;
 
 /**
  * The variable table.
- * TODO: use generics
+ * TODO use generics
  */
 public class VariableTable extends HashMap<String, VariableEntry> {
 

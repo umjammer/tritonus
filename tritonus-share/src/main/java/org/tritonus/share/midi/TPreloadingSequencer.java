@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 2003 - 2004 by Matthias Pfisterer
  *
@@ -17,12 +16,13 @@
 
 package org.tritonus.share.midi;
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.util.Collection;
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiMessage;
-import javax.sound.midi.Sequencer.SyncMode;
 
-import org.tritonus.share.TDebug;
+import static java.lang.System.getLogger;
 
 
 /**
@@ -33,6 +33,8 @@ import org.tritonus.share.TDebug;
  * queue while running.
  */
 public abstract class TPreloadingSequencer extends TSequencer {
+
+    private static final Logger logger= getLogger("org.tritonus.TraceSequencer");
 
     /**
      * The default value for {@link #m_nLatency}.
@@ -55,13 +57,11 @@ public abstract class TPreloadingSequencer extends TSequencer {
                                    Collection<SyncMode> masterSyncModes,
                                    Collection<SyncMode> slaveSyncModes) {
         super(info, masterSyncModes, slaveSyncModes);
-        if (TDebug.TraceSequencer) {
-            TDebug.out("TPreloadingSequencer.<init>(): begin");
-        }
+        logger.log(Level.TRACE, "TPreloadingSequencer.<init>(): begin");
+
         m_nLatency = DEFAULT_LATENCY;
-        if (TDebug.TraceSequencer) {
-            TDebug.out("TPreloadingSequencer.<init>(): end");
-        }
+
+        logger.log(Level.TRACE, "TPreloadingSequencer.<init>(): end");
     }
 
     /**
@@ -72,7 +72,7 @@ public abstract class TPreloadingSequencer extends TSequencer {
      */
     @Override
     public void setLatency(int nLatency) {
-        // TODO: preload if latency becomes shorter
+        // TODO preload if latency becomes shorter
         m_nLatency = nLatency;
     }
 
@@ -87,14 +87,13 @@ public abstract class TPreloadingSequencer extends TSequencer {
         return m_nLatency;
     }
 
-    // currently not called by subclasses. order has to be assured (subclass first)
+    /** currently not called by subclasses. order has to be assured (subclass first) */
     @Override
     protected void openImpl() {
-        if (TDebug.TraceSequencer) {
-            TDebug.out("AlsaSequencer.openImpl(): begin");
-        }
-        // m_loaderThread = new LoaderThread();
-        // m_loaderThread.start();
+        logger.log(Level.TRACE, "AlsaSequencer.openImpl(): begin");
+
+//        m_loaderThread = new LoaderThread();
+//        m_loaderThread.start();
     }
 
     /**
@@ -115,5 +114,3 @@ public abstract class TPreloadingSequencer extends TSequencer {
      */
     public abstract void sendMessageTick(MidiMessage message, long lTick);
 }
-
-

@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 2002 by Matthias Pfisterer
  *
@@ -62,7 +61,7 @@ public class PinkNoise
     }
 
     private PinkNoise(float fSampleRate, Source whiteNoiseSource) {
-        // TODO: scale filter for sample rate
+        // TODO scale filter for sample rate
         m_whiteNoiseSource = whiteNoiseSource;
     }
 

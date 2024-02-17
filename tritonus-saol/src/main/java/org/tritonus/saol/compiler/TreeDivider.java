@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 2002 by Matthias Pfisterer
  *
@@ -17,17 +16,22 @@
 
 package org.tritonus.saol.compiler;
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
+
 import org.tritonus.saol.sablecc.analysis.DepthFirstAdapter;
 import org.tritonus.saol.sablecc.node.AGlobaldeclGlobaldecl;
 import org.tritonus.saol.sablecc.node.AInstrdeclInstrdecl;
 import org.tritonus.saol.sablecc.node.AOpcodedeclOpcodedecl;
 import org.tritonus.saol.sablecc.node.ATemplatedeclTemplatedecl;
-import org.tritonus.share.TDebug;
+
+import static java.lang.System.getLogger;
 
 
-public class TreeDivider
-        extends DepthFirstAdapter {
+public class TreeDivider extends DepthFirstAdapter {
 
+    private static final Logger logger = getLogger(TreeDivider.class.getName());
+    
     private static final boolean DEBUG = true;
 
     private InstrumentTable m_instrumentTable;
@@ -64,7 +68,7 @@ public class TreeDivider
 
     @Override
     public void inAGlobaldeclGlobaldecl(AGlobaldeclGlobaldecl node) {
-        TDebug.out("TreeDivider.inAGlobaldeclGlobaldecl()");
+        logger.log(Level.TRACE, "TreeDivider.inAGlobaldeclGlobaldecl()");
         m_globalNode = node;
     }
 

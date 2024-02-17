@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 2001 by Matthias Pfisterer
  *
@@ -27,7 +26,7 @@ import org.tritonus.lowlevel.cdda.cdparanoia.CdparanoiaMidLevel;
  */
 public class CddaUtils {
 
-    // TODO: use some automatic lookup mechanism.
+    // TODO use some automatic lookup mechanism.
     public static CddaMidLevel getCddaMidLevel() {
         CddaMidLevel cddaMidLevel = new CdparanoiaMidLevel();
         // CddaMidLevel cddaMidLevel = new CookedIoctlMidLevel();

@@ -16,13 +16,18 @@
 
 package org.tritonus.lowlevel.alsa;
 
-import org.tritonus.share.TDebug;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
+
+import static java.lang.System.getLogger;
 
 
 /**
- * TODO:
+ * TODO
  */
 public class AlsaPcmSWParams {
+
+    private static final Logger logger = getLogger("org.tritonus.TraceAlsaPcmNative");
 
     /**
      * Holds the pointer to snd_pcm_sw_params_t
@@ -33,16 +38,14 @@ public class AlsaPcmSWParams {
     private long m_lNativeHandle;
 
     public AlsaPcmSWParams() {
-        if (TDebug.TraceAlsaPcmNative) {
-            TDebug.out("AlsaPcmSWParams.<init>(): begin");
-        }
+        logger.log(Level.TRACE, "AlsaPcmSWParams.<init>(): begin");
+
         int nReturn = malloc();
         if (nReturn < 0) {
             throw new RuntimeException("malloc of hw_params failed");
         }
-        if (TDebug.TraceAlsaPcmNative) {
-            TDebug.out("AlsaPcmSWParams.<init>(): end");
-        }
+
+        logger.log(Level.TRACE, "AlsaPcmSWParams.<init>(): end");
     }
 
     private native int malloc();
@@ -69,5 +72,3 @@ public class AlsaPcmSWParams {
 
     public native int getSilenceSize();
 }
-
-

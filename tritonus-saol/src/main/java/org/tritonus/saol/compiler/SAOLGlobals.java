@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 2002 by Matthias Pfisterer
  *
@@ -22,7 +21,7 @@ public class SAOLGlobals {
 
     private static final int DEFAULT_ARATE = 32000;
     private static final int DEFAULT_KRATE = 100;
-    private static final int DEFAULT_INCHANNELS = 0; /*?? TODO: */
+    private static final int DEFAULT_INCHANNELS = 0; /*?? TODO */
     private static final int DEFAULT_OUTCHANNELS = 1;
     private static final int DEFAULT_INTERP = 0;
 

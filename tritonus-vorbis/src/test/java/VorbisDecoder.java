@@ -28,7 +28,6 @@ import org.tritonus.lowlevel.vorbis.Block;
 import org.tritonus.lowlevel.vorbis.Comment;
 import org.tritonus.lowlevel.vorbis.DspState;
 import org.tritonus.lowlevel.vorbis.Info;
-import org.tritonus.share.TDebug;
 import vavi.util.Debug;
 import vavi.util.properties.annotation.Property;
 import vavi.util.properties.annotation.PropsEntity;
@@ -40,14 +39,6 @@ import static vavi.sound.SoundUtil.volume;
 
 @PropsEntity(url = "file:local.properties")
 public class VorbisDecoder {
-
-    static {
-        System.setProperty("vavi.util.logging.VaviFormatter.extraClassMethod",
-                "org\\.tritonus\\.share\\.TDebug#out");
-
-        TDebug.TraceOggNative = false;
-        TDebug.TraceVorbisNative = false;
-    }
 
     static boolean localPropertiesExists() {
         return Files.exists(Paths.get("local.properties"));

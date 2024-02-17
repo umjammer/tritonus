@@ -16,18 +16,24 @@
 
 package org.tritonus.lowlevel.vorbis;
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
+
 import org.tritonus.lowlevel.ogg.Packet;
-import org.tritonus.share.TDebug;
 import vavi.sound.sampled.jna.codec.CodecLibrary;
 import vavi.sound.sampled.jna.codec.vorbis_block;
 import vavi.sound.sampled.jna.codec.vorbis_dsp_state;
 import vavi.sound.sampled.jna.ogg.ogg_packet;
+
+import static java.lang.System.getLogger;
 
 
 /**
  * Wrapper for vorbis_block.
  */
 public class Block {
+
+    private static final Logger logger= getLogger("org.tritonus.TraceVorbisNative");
 
     /**
      * Holds the pointer to vorbis_block
@@ -41,54 +47,46 @@ public class Block {
     }
 
     public Block() {
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("Block.<init>(): begin");
-        }
+        logger.log(Level.TRACE, "Block.<init>(): begin");
+
         int nReturn = malloc();
         if (nReturn < 0) {
             throw new RuntimeException("malloc of vorbis_block failed");
         }
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("Block.<init>(): end");
-        }
+
+        logger.log(Level.TRACE, "Block.<init>(): end");
     }
 
     private int malloc() {
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("malloc(): begin");
-        }
+        logger.log(Level.TRACE, "malloc(): begin");
+
         handle = new vorbis_block();
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out(String.format("malloc(): handle: %s", handle));
-        }
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("malloc(): end");
-        }
+        logger.log(Level.TRACE, String.format("malloc(): handle: %s", handle));
+
+        logger.log(Level.TRACE, "malloc(): end");
+
         return 0;
     }
 
     public void free() {
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("free(): begin");
-        }
+        logger.log(Level.TRACE, "free(): begin");
+
         handle = null;
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("free(): end");
-        }
+
+        logger.log(Level.TRACE, "free(): end");
     }
 
     /**
      * Calls vorbis_block_init().
      */
     public int init(DspState dspState) {
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("init(): begin");
-        }
+        logger.log(Level.TRACE, "init(): begin");
+
         vorbis_dsp_state dspStateHandle = dspState.getHandle();
         int nReturn = CodecLibrary.INSTANCE.vorbis_block_init(dspStateHandle, handle);
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("init(): end");
-        }
+
+        logger.log(Level.TRACE, "init(): end");
+
         return nReturn;
     }
 
@@ -96,13 +94,12 @@ public class Block {
      * Calls vorbis_bitrate_addblock().
      */
     public int addBlock() {
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("addBlock(): begin");
-        }
+        logger.log(Level.TRACE, "addBlock(): begin");
+
         int nReturn = CodecLibrary.INSTANCE.vorbis_bitrate_addblock(handle);
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("addBlock(): end");
-        }
+
+        logger.log(Level.TRACE, "addBlock(): end");
+
         return nReturn;
     }
 
@@ -110,17 +107,16 @@ public class Block {
      * Calls vorbis_analysis().
      */
     public int analysis(Packet packet) {
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("analysis(): begin");
-        }
+        logger.log(Level.TRACE, "analysis(): begin");
+
         ogg_packet packetHandle = null;
         if (packet != null) {
             packetHandle = packet.getHandle();
         }
         int nReturn = CodecLibrary.INSTANCE.vorbis_analysis(handle, packetHandle);
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("analysis(): end");
-        }
+
+        logger.log(Level.TRACE, "analysis(): end");
+
         return nReturn;
     }
 
@@ -128,20 +124,18 @@ public class Block {
      * Calls vorbis_synthesis().
      */
     public int synthesis(Packet packet) {
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("synthesis(): begin");
-        }
+        logger.log(Level.TRACE, "synthesis(): begin");
+
         ogg_packet packetHandle = null;
         if (packet != null) {
             packetHandle = packet.getHandle();
         }
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out(String.format("synthesis(): packet handle: %s", packetHandle));
-        }
+        logger.log(Level.TRACE, String.format("synthesis(): packet handle: %s", packetHandle));
+
         int nReturn = CodecLibrary.INSTANCE.vorbis_synthesis(handle, packetHandle);
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("synthesis(): end");
-        }
+
+        logger.log(Level.TRACE, "synthesis(): end");
+
         return nReturn;
     }
 
@@ -149,15 +143,12 @@ public class Block {
      * Calls vorbis_block_clear().
      */
     public int clear() {
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("clear(): begin");
-        }
+        logger.log(Level.TRACE, "clear(): begin");
+
         int nReturn = CodecLibrary.INSTANCE.vorbis_block_clear(handle);
-        if (TDebug.TraceVorbisNative) {
-            TDebug.out("clear(): end");
-        }
+
+        logger.log(Level.TRACE, "clear(): end");
+
         return nReturn;
     }
 }
-
-

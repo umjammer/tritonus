@@ -16,13 +16,18 @@
 
 package org.tritonus.lowlevel.alsa;
 
-import org.tritonus.share.TDebug;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
+
+import static java.lang.System.getLogger;
 
 
 /**
- * TODO:
+ * TODO
  */
 public class AlsaPcmHWParamsFormatMask {
+
+    private static final Logger logger = getLogger("org.tritonus.TraceAlsaPcmNative");
 
     /**
      * Holds the pointer to snd_pcm_format_mask_t
@@ -33,16 +38,14 @@ public class AlsaPcmHWParamsFormatMask {
     private long m_lNativeHandle;
 
     public AlsaPcmHWParamsFormatMask() {
-        if (TDebug.TraceAlsaPcmNative) {
-            TDebug.out("AlsaPcmHWParamsFormatMask.<init>(): begin");
-        }
+        logger.log(Level.TRACE, "AlsaPcmHWParamsFormatMask.<init>(): begin");
+
         int nReturn = malloc();
         if (nReturn < 0) {
             throw new RuntimeException("malloc of format_mask failed");
         }
-        if (TDebug.TraceAlsaPcmNative) {
-            TDebug.out("AlsaPcmHWParamsFormatMask.<init>(): end");
-        }
+
+        logger.log(Level.TRACE, "AlsaPcmHWParamsFormatMask.<init>(): end");
     }
 
     /**
@@ -80,5 +83,3 @@ public class AlsaPcmHWParamsFormatMask {
      */
     public native void reset(int nFormat);
 }
-
-

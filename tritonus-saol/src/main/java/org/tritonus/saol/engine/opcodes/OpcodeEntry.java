@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 2002 by Matthias Pfisterer
  *
@@ -28,7 +27,7 @@ public class OpcodeEntry {
     private OpcodeClass m_opcodeClass;
     private String m_strMethodName;
     private int m_nRate;
-    // TODO: parameter description, including dummy params
+    // TODO parameter description, including dummy params
 
     // if opcode and method name are the same
     public OpcodeEntry(String strOpcodeName,

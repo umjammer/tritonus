@@ -16,14 +16,17 @@
 
 package org.tritonus.lowlevel.ogg;
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.nio.ByteBuffer;
 
 import com.sun.jna.Memory;
 import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
-import org.tritonus.share.TDebug;
 import vavi.sound.sampled.jna.ogg.OggLibrary;
 import vavi.sound.sampled.jna.ogg.oggpack_buffer;
+
+import static java.lang.System.getLogger;
 
 
 /**
@@ -33,6 +36,8 @@ import vavi.sound.sampled.jna.ogg.oggpack_buffer;
  */
 public class Buffer {
 
+    private static final Logger logger= getLogger("org.tritonus.TraceOggNative");
+
     /**
      * Holds the pointer to oggpack_buffer
      * for the code.
@@ -41,79 +46,66 @@ public class Buffer {
     private oggpack_buffer handle;
 
     public Buffer() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("<init>: begin");
-        }
+        logger.log(Level.TRACE, "<init>: begin");
+
         int nReturn = malloc();
         if (nReturn < 0) {
             throw new RuntimeException("malloc of ogg_page failed");
         }
-        if (TDebug.TraceOggNative) {
-            TDebug.out("<init>: end");
-        }
+
+        logger.log(Level.TRACE, "<init>: end");
     }
 
     private int malloc() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("malloc: begin");
-        }
+        logger.log(Level.TRACE, "malloc: begin");
+
         handle = new oggpack_buffer();
-        if (TDebug.TraceOggNative) {
-            TDebug.out(String.format("malloc: handle: %s", handle));
-        }
-        if (TDebug.TraceOggNative) {
-            TDebug.out("malloc: end");
-        }
+        logger.log(Level.TRACE, String.format("malloc: handle: %s", handle));
+
+        logger.log(Level.TRACE, "malloc: end");
+
         return 0;
     }
 
     public void free() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("free: begin");
-        }
+        logger.log(Level.TRACE, "free: begin");
+
         handle = null;
-        if (TDebug.TraceOggNative) {
-            TDebug.out("free: end");
-        }
+
+        logger.log(Level.TRACE, "free: end");
     }
 
     /**
      * Calls oggpack_writeinit().
      */
     public void writeInit() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("writeInit: begin");
-        }
+        logger.log(Level.TRACE, "writeInit: begin");
+
         OggLibrary.INSTANCE.oggpack_writeinit(handle);
-        if (TDebug.TraceOggNative) {
-            TDebug.out("writeInit: end");
-        }
+
+        logger.log(Level.TRACE, "writeInit: end");
     }
 
     /**
      * Calls oggpack_writetrunc().
      */
     public void writeTrunc(int nBits) {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("writeTrunc: begin");
-        }
+        logger.log(Level.TRACE, "writeTrunc: begin");
+
         OggLibrary.INSTANCE.oggpack_writetrunc(handle, new NativeLong(nBits));
-        if (TDebug.TraceOggNative) {
-            TDebug.out("writeTrunc: end");
-        }
+
+        logger.log(Level.TRACE, "writeTrunc: end");
     }
 
     /**
      * Calls oggpack_writealign().
      */
     public void writeAlign() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("writeAlign: begin");
-        }
+        logger.log(Level.TRACE, "writeAlign: begin");
+
         OggLibrary.INSTANCE.oggpack_writealign(handle);
-        if (TDebug.TraceOggNative) {
-            TDebug.out("writeAlign: end");
-        }
+
+        logger.log(Level.TRACE, "writeAlign: end");
     }
 
     /**
@@ -121,94 +113,77 @@ public class Buffer {
      */
     public void writeCopy(byte[] abSource, int nBits) {
         Memory source = new Memory(abSource.length);
-        if (TDebug.TraceOggNative) {
-            TDebug.out("writeCopy: begin");
-        }
+        logger.log(Level.TRACE, "writeCopy: begin");
+
         source.write(0, abSource, 0, abSource.length);
         OggLibrary.INSTANCE.oggpack_writecopy(handle, source, new NativeLong(nBits));
         source.close();
-        if (TDebug.TraceOggNative) {
-            TDebug.out("writeCopy: end");
-        }
+
+        logger.log(Level.TRACE, "writeCopy: end");
     }
 
     /**
      * Calls oggpack_reset().
      */
     public void reset() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("reset: begin");
-        }
+        logger.log(Level.TRACE, "reset: begin");
+
         OggLibrary.INSTANCE.oggpack_reset(handle);
-        if (TDebug.TraceOggNative) {
-            TDebug.out("reset: end");
-        }
+
+        logger.log(Level.TRACE, "reset: end");
     }
 
     /**
      * Calls oggpack_writeclear().
      */
     public void writeClear() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("writeClear: begin");
-        }
+        logger.log(Level.TRACE, "writeClear: begin");
+
         OggLibrary.INSTANCE.oggpack_writeclear(handle);
-        if (TDebug.TraceOggNative) {
-            TDebug.out("writeClear: end");
-        }
+
+        logger.log(Level.TRACE, "writeClear: end");
     }
 
     /**
      * Calls oggpack_readinit().
      */
     public void readInit(byte[] abBuffer, int nBytes) {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("readInit: begin");
-        }
-        if (TDebug.TraceOggNative) {
-            TDebug.out(String.format("readInit: nBytes: %d", nBytes));
-        }
+        logger.log(Level.TRACE, "readInit: begin");
+
+        logger.log(Level.TRACE, "readInit: nBytes: " + nBytes);
+
         ByteBuffer buffer = ByteBuffer.allocate(abBuffer.length);
-        if (TDebug.TraceOggNative) {
-            TDebug.out(String.format("readInit: buffer[0]: %d", buffer.get(0)));
-        }
-        if (TDebug.TraceOggNative) {
-            TDebug.out(String.format("readInit: buffer[1]: %d", buffer.get(1)));
-        }
-        if (TDebug.TraceOggNative) {
-            TDebug.out(String.format("readInit: buffer[2]: %d", buffer.get(2)));
-        }
+        logger.log(Level.TRACE, "readInit: buffer[0]: " + buffer.get(0));
+        logger.log(Level.TRACE, "readInit: buffer[1]: " + buffer.get(1));
+        logger.log(Level.TRACE, "readInit: buffer[2]: " + buffer.get(2));
+
         OggLibrary.INSTANCE.oggpack_readinit(handle, buffer, nBytes);
         buffer.get(abBuffer);
-        if (TDebug.TraceOggNative) {
-            TDebug.out("readInit: end");
-        }
+
+        logger.log(Level.TRACE, "readInit: end");
     }
 
     /**
      * Calls oggpack_write().
      */
     public void write(int nValue, int nBits) {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("write: begin");
-        }
+        logger.log(Level.TRACE, "write: begin");
+
         OggLibrary.INSTANCE.oggpack_write(handle, new NativeLong(nValue), nBits);
-        if (TDebug.TraceOggNative) {
-            TDebug.out("write: end");
-        }
+
+        logger.log(Level.TRACE, "write: end");
     }
 
     /**
      * Calls oggpack_look().
      */
     public int look(int nBits) {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("look: begin");
-        }
+        logger.log(Level.TRACE, "look: begin");
+
         NativeLong nReturn = OggLibrary.INSTANCE.oggpack_look(handle, nBits);
-        if (TDebug.TraceOggNative) {
-            TDebug.out("look: end");
-        }
+
+        logger.log(Level.TRACE, "look: end");
+
         return nReturn.intValue();
     }
 
@@ -216,13 +191,12 @@ public class Buffer {
      * Calls oggpack_look1().
      */
     public int look1() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("look1: begin");
-        }
+        logger.log(Level.TRACE, "look1: begin");
+
         NativeLong nReturn = OggLibrary.INSTANCE.oggpack_look1(handle);
-        if (TDebug.TraceOggNative) {
-            TDebug.out("look1: end");
-        }
+
+        logger.log(Level.TRACE, "look1: end");
+
         return nReturn.intValue();
     }
 
@@ -230,39 +204,34 @@ public class Buffer {
      * Calls oggpack_adv().
      */
     public void adv(int nBits) {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("adv: begin");
-        }
+        logger.log(Level.TRACE, "adv: begin");
+
         OggLibrary.INSTANCE.oggpack_adv(handle, nBits);
-        if (TDebug.TraceOggNative) {
-            TDebug.out("adv: end");
-        }
+
+        logger.log(Level.TRACE, "adv: end");
     }
 
     /**
      * Calls oggpack_adv1().
      */
     public void adv1() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("adv1: begin");
-        }
+        logger.log(Level.TRACE, "adv1: begin");
+
         OggLibrary.INSTANCE.oggpack_adv1(handle);
-        if (TDebug.TraceOggNative) {
-            TDebug.out("adv1: end");
-        }
+
+        logger.log(Level.TRACE, "adv1: end");
     }
 
     /**
      * Calls oggpack_read().
      */
     public int read(int nBits) {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("read: begin");
-        }
+        logger.log(Level.TRACE, "read: begin");
+
         NativeLong nReturn = OggLibrary.INSTANCE.oggpack_read(handle, nBits);
-        if (TDebug.TraceOggNative) {
-            TDebug.out("read: end");
-        }
+
+        logger.log(Level.TRACE, "read: end");
+
         return nReturn.intValue();
     }
 
@@ -270,13 +239,12 @@ public class Buffer {
      * Calls oggpack_read1().
      */
     public int read1() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("read1: begin");
-        }
+        logger.log(Level.TRACE, "read1: begin");
+
         NativeLong nReturn = OggLibrary.INSTANCE.oggpack_read1(handle);
-        if (TDebug.TraceOggNative) {
-            TDebug.out("read1: end");
-        }
+
+        logger.log(Level.TRACE, "read1: end");
+
         return nReturn.intValue();
     }
 
@@ -284,13 +252,12 @@ public class Buffer {
      * Calls oggpack_bytes().
      */
     public int bytes() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("bytes: begin");
-        }
+        logger.log(Level.TRACE, "bytes: begin");
+
         NativeLong nReturn = OggLibrary.INSTANCE.oggpack_bytes(handle);
-        if (TDebug.TraceOggNative) {
-            TDebug.out("bytes: end");
-        }
+
+        logger.log(Level.TRACE, "bytes: end");
+
         return nReturn.intValue();
     }
 
@@ -298,13 +265,12 @@ public class Buffer {
      * Calls oggpack_bits().
      */
     public int bits() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("bits: begin");
-        }
+        logger.log(Level.TRACE, "bits: begin");
+
         NativeLong nReturn = OggLibrary.INSTANCE.oggpack_bits(handle);
-        if (TDebug.TraceOggNative) {
-            TDebug.out("bits: end");
-        }
+
+        logger.log(Level.TRACE, "bits: end");
+
         return nReturn.intValue();
     }
 
@@ -312,17 +278,14 @@ public class Buffer {
      * Calls oggpack_get_buffer().
      */
     public byte[] getBuffer() {
-        if (TDebug.TraceOggNative) {
-            TDebug.out("getBuffer: begin");
-        }
+        logger.log(Level.TRACE, "getBuffer: begin");
+
         Pointer buffer = OggLibrary.INSTANCE.oggpack_get_buffer(handle);
         byte[] abBuffer = new byte[handle.storage.intValue()];
         buffer.read(0, abBuffer, 0, handle.storage.intValue());
-        if (TDebug.TraceOggNative) {
-            TDebug.out("getBuffer: end");
-        }
+
+        logger.log(Level.TRACE, "getBuffer: end");
+
         return abBuffer;
     }
 }
-
-

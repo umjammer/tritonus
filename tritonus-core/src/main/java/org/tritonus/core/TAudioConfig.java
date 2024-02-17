@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 1999 - 2004 by Matthias Pfisterer
  *
@@ -31,7 +30,7 @@ import org.tritonus.share.ArraySet;
 
 
 /**
- * TODO:
+ * TODO
  */
 public class TAudioConfig {
 
@@ -166,7 +165,7 @@ public class TAudioConfig {
         return sm_mixerProviders;
     }
 
-    // TODO: a way to set the default mixer
+    // TODO a way to set the default mixer
     public static Mixer.Info getDefaultMixerInfo() {
         return sm_defaultMixerInfo;
     }

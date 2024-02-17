@@ -30,7 +30,6 @@ import biniu.ogg.Packet;
 import biniu.ogg.Page;
 import biniu.ogg.StreamState;
 import biniu.ogg.SyncState;
-import org.tritonus.share.TDebug;
 import org.tritonus.share.sampled.file.TAudioFileFormat;
 import org.tritonus.share.sampled.file.TAudioFileReader;
 
@@ -44,7 +43,7 @@ import static org.tritonus.sampled.file.pvorbis.VorbisAudioFileWriter.OGG;
  */
 public class VorbisAudioFileReader extends TAudioFileReader {
 
-    private static final Logger logger = getLogger("TraceAudioFileReader");
+    private static final Logger logger= getLogger("org.tritonus.TraceAudioFileReader");
 
     private static final int INITAL_READ_LENGTH = 4096;
     private static final int MARK_LIMIT = INITAL_READ_LENGTH + 1;
@@ -77,36 +76,36 @@ public class VorbisAudioFileReader extends TAudioFileReader {
         // submit a 4k block to libvorbis' Ogg layer
         byte[] abBuffer = new byte[INITAL_READ_LENGTH];
         bytes = inputStream.read(abBuffer);
-        if (TDebug.TraceAudioFileReader) {
-            TDebug.out("read bytes from input stream: " + bytes);
-        }
+        // TraceAudioFileReader
+            logger.log(Level.TRACE, "read bytes from input stream: " + bytes);
+
         int nResult = oggSyncState.write(abBuffer, bytes);
-        if (TDebug.TraceAudioFileReader) {
-            TDebug.out("SyncState.write() returned " + nResult);
-        }
+        // TraceAudioFileReader
+            logger.log(Level.TRACE, "SyncState.write() returned " + nResult);
+
 
         // Get the first page.
         if (oggSyncState.pageOut(oggPage) != 1) {
             // have we simply run out of data?  If so, we're done.
             if (bytes < INITAL_READ_LENGTH) {
-                if (TDebug.TraceAudioFileReader) {
-                    TDebug.out("stream ended prematurely");
-                }
-                if (TDebug.TraceAudioFileReader) {
-                    TDebug.out("<VorbisAudioFileReader.getAudioFileFormat(): throwing exception");
-                }
+                // TraceAudioFileReader
+                    logger.log(Level.TRACE, "stream ended prematurely");
+
+                // TraceAudioFileReader
+                    logger.log(Level.TRACE, "<VorbisAudioFileReader.getAudioFileFormat(): throwing exception");
+
                 // IDEA: throw EOFException?
                 oggSyncState.clear();
                 oggStreamState.clear();
                 oggPacket.clear();
                 throw new UnsupportedAudioFileException("not a Vorbis stream: ended prematurely");
             }
-            if (TDebug.TraceAudioFileReader) {
-                TDebug.out("not in Ogg bitstream format");
-            }
-            if (TDebug.TraceAudioFileReader) {
-                TDebug.out("<VorbisAudioFileReader.getAudioFileFormat(): throwing exception");
-            }
+            // TraceAudioFileReader
+                logger.log(Level.TRACE, "not in Ogg bitstream format");
+
+            // TraceAudioFileReader
+                logger.log(Level.TRACE, "<VorbisAudioFileReader.getAudioFileFormat(): throwing exception");
+
             oggSyncState.clear();
             oggStreamState.clear();
             oggPacket.clear();
@@ -116,7 +115,9 @@ public class VorbisAudioFileReader extends TAudioFileReader {
         // Get the serial number and set up the rest of decode.
         // serialno first; use it to set up a logical stream
         int nSerialNo = oggPage.serialNo();
-        if (TDebug.TraceAudioFileReader) TDebug.out("serial no.: " + nSerialNo);
+        // TraceAudioFileReader
+ logger.log(Level.TRACE, "serial no.: " + nSerialNo);
+
         oggStreamState.init(nSerialNo);
 
         // extract the initial header from the first page and verify that the
@@ -129,9 +130,9 @@ public class VorbisAudioFileReader extends TAudioFileReader {
 
         if (oggStreamState.pageIn(oggPage) < 0) {
             logger.log(Level.TRACE, "can't read first page of Ogg bitstream data");
-            if (TDebug.TraceAudioFileReader) {
-                TDebug.out("<VorbisAudioFileReader.getAudioFileFormat(): throwing exception");
-            }
+            // TraceAudioFileReader
+                logger.log(Level.TRACE, "<VorbisAudioFileReader.getAudioFileFormat(): throwing exception");
+
             // error; stream version mismatch perhaps
             oggSyncState.clear();
             oggStreamState.clear();
@@ -140,12 +141,12 @@ public class VorbisAudioFileReader extends TAudioFileReader {
         }
 
         if (oggStreamState.packetOut(oggPacket) != 1) {
-            if (TDebug.TraceAudioFileReader) {
-                TDebug.out("can't read initial header packet");
-            }
-            if (TDebug.TraceAudioFileReader) {
-                TDebug.out("<VorbisAudioFileReader.getAudioFileFormat(): throwing exception");
-            }
+            // TraceAudioFileReader
+                logger.log(Level.TRACE, "can't read initial header packet");
+
+            // TraceAudioFileReader
+                logger.log(Level.TRACE, "<VorbisAudioFileReader.getAudioFileFormat(): throwing exception");
+
             // no page? must not be vorbis
             oggSyncState.clear();
             oggStreamState.clear();
@@ -154,25 +155,25 @@ public class VorbisAudioFileReader extends TAudioFileReader {
         }
 
         byte[] abData = oggPacket.packetByte;
-        if (TDebug.TraceAudioFileReader) {
+        if (logger.isLoggable(Level.TRACE)) {
             StringBuilder strData = new StringBuilder();
             for (byte abDatum : abData) {
                 strData.append(" ").append(abDatum);
             }
-            TDebug.out("packet data: " + strData);
+            logger.log(Level.TRACE, "packet data: " + strData);
         }
 
         int nPacketType = abData[0];
-        if (TDebug.TraceAudioFileReader) {
-            TDebug.out("packet type: " + nPacketType);
-        }
+        // TraceAudioFileReader
+            logger.log(Level.TRACE, "packet type: " + nPacketType);
+
         if (nPacketType != 1) {
-            if (TDebug.TraceAudioFileReader) {
-                TDebug.out("first packet is not the identification header");
-            }
-            if (TDebug.TraceAudioFileReader) {
-                TDebug.out("<VorbisAudioFileReader.getAudioFileFormat(): throwing exception");
-            }
+            // TraceAudioFileReader
+                logger.log(Level.TRACE, "first packet is not the identification header");
+
+            // TraceAudioFileReader
+                logger.log(Level.TRACE, "<VorbisAudioFileReader.getAudioFileFormat(): throwing exception");
+
             oggSyncState.clear();
             oggStreamState.clear();
             oggPacket.clear();
@@ -184,40 +185,40 @@ public class VorbisAudioFileReader extends TAudioFileReader {
                 abData[4] != 'b' ||
                 abData[5] != 'i' ||
                 abData[6] != 's') {
-            if (TDebug.TraceAudioFileReader) {
-                TDebug.out("not a vorbis header packet");
-            }
-            if (TDebug.TraceAudioFileReader) {
-                TDebug.out("<VorbisAudioFileReader.getAudioFileFormat(): throwing exception");
-            }
+            // TraceAudioFileReader
+                logger.log(Level.TRACE, "not a vorbis header packet");
+
+            // TraceAudioFileReader
+                logger.log(Level.TRACE, "<VorbisAudioFileReader.getAudioFileFormat(): throwing exception");
+
             oggSyncState.clear();
             oggStreamState.clear();
             oggPacket.clear();
             throw new UnsupportedAudioFileException("not a Vorbis stream: not a vorbis header packet");
         }
         if (!oggPacket.isBos()) {
-            if (TDebug.TraceAudioFileReader) {
-                TDebug.out("initial packet not marked as beginning of stream");
-            }
-            if (TDebug.TraceAudioFileReader) {
-                TDebug.out("<VorbisAudioFileReader.getAudioFileFormat(): throwing exception");
-            }
+            // TraceAudioFileReader
+                logger.log(Level.TRACE, "initial packet not marked as beginning of stream");
+
+            // TraceAudioFileReader
+                logger.log(Level.TRACE, "<VorbisAudioFileReader.getAudioFileFormat(): throwing exception");
+
             oggSyncState.clear();
             oggStreamState.clear();
             oggPacket.clear();
             throw new UnsupportedAudioFileException("not a Vorbis stream: initial packet not marked as beginning of stream");
         }
         int nVersion = (abData[7] & 0xFF) + 256 * (abData[8] & 0xFF) + 65536 * (abData[9] & 0xFF) + 16777216 * (abData[10] & 0xFF);
-        if (TDebug.TraceAudioFileReader) {
-            TDebug.out("version: " + nVersion);
-        }
+        // TraceAudioFileReader
+            logger.log(Level.TRACE, "version: " + nVersion);
+
         if (nVersion != 0) {
-            if (TDebug.TraceAudioFileReader) {
-                TDebug.out("wrong vorbis version");
-            }
-            if (TDebug.TraceAudioFileReader) {
-                TDebug.out("<VorbisAudioFileReader.getAudioFileFormat(): throwing exception");
-            }
+            // TraceAudioFileReader
+                logger.log(Level.TRACE, "wrong vorbis version");
+
+            // TraceAudioFileReader
+                logger.log(Level.TRACE, "<VorbisAudioFileReader.getAudioFileFormat(): throwing exception");
+
             oggSyncState.clear();
             oggStreamState.clear();
             oggPacket.clear();
@@ -225,12 +226,12 @@ public class VorbisAudioFileReader extends TAudioFileReader {
         }
         int nChannels = (abData[11] & 0xFF);
         float fSampleRate = (abData[12] & 0xFF) + 256 * (abData[13] & 0xFF) + 65536 * (abData[14] & 0xFF) + 16777216 * (abData[15] & 0xFF);
-        if (TDebug.TraceAudioFileReader) {
-            TDebug.out("channels: " + nChannels);
-        }
-        if (TDebug.TraceAudioFileReader) {
-            TDebug.out("rate: " + fSampleRate);
-        }
+        // TraceAudioFileReader
+            logger.log(Level.TRACE, "channels: " + nChannels);
+
+        // TraceAudioFileReader
+            logger.log(Level.TRACE, "rate: " + fSampleRate);
+
 
         // These are only used for error checking.
 //int bitrate_upper = abData[16] + 256 * abData[17] + 65536 * abData[18] + 16777216 * abData[19];
@@ -240,24 +241,24 @@ public class VorbisAudioFileReader extends TAudioFileReader {
         int[] blocksizes = new int[2];
         blocksizes[0] = 1 << (abData[28] & 0xF);
         blocksizes[1] = 1 << ((abData[28] >>> 4) & 0xF);
-        if (TDebug.TraceAudioFileReader) {
-            TDebug.out("blocksizes[0]: " + blocksizes[0]);
-        }
-        if (TDebug.TraceAudioFileReader) {
-            TDebug.out("blocksizes[1]: " + blocksizes[1]);
-        }
+        // TraceAudioFileReader
+            logger.log(Level.TRACE, "blocksizes[0]: " + blocksizes[0]);
+
+        // TraceAudioFileReader
+            logger.log(Level.TRACE, "blocksizes[1]: " + blocksizes[1]);
+
 
         if (fSampleRate < 1.0F ||
                 nChannels < 1 ||
                 blocksizes[0] < 8 ||
                 blocksizes[1] < blocksizes[0] ||
                 (abData[29] & 0x1) != 1) {
-            if (TDebug.TraceAudioFileReader) {
-                TDebug.out("illegal values in initial header");
-            }
-            if (TDebug.TraceAudioFileReader) {
-                TDebug.out("<VorbisAudioFileReader.getAudioFileFormat(): throwing exception");
-            }
+            // TraceAudioFileReader
+                logger.log(Level.TRACE, "illegal values in initial header");
+
+            // TraceAudioFileReader
+                logger.log(Level.TRACE, "<VorbisAudioFileReader.getAudioFileFormat(): throwing exception");
+
             oggSyncState.clear();
             oggStreamState.clear();
             oggPacket.clear();
@@ -293,9 +294,9 @@ public class VorbisAudioFileReader extends TAudioFileReader {
                 AudioSystem.NOT_SPECIFIED,
                 AudioSystem.NOT_SPECIFIED,
                 true); // this value is chosen arbitrarily
-        if (TDebug.TraceAudioFileReader) {
-            TDebug.out("AudioFormat: " + format);
-        }
+        // TraceAudioFileReader
+            logger.log(Level.TRACE, "AudioFormat: " + format);
+
         AudioFileFormat.Type type = OGG;
         AudioFileFormat audioFileFormat =
                 new TAudioFileFormat(
@@ -303,12 +304,12 @@ public class VorbisAudioFileReader extends TAudioFileReader {
                         format,
                         nFrameSize,
                         nByteSize);
-        if (TDebug.TraceAudioFileReader) {
-            TDebug.out("AudioFileFormat: " + audioFileFormat);
-        }
-        if (TDebug.TraceAudioFileReader) {
-            TDebug.out("<VorbisAudioFileReader.getAudioFileFormat(): end");
-        }
+        // TraceAudioFileReader
+            logger.log(Level.TRACE, "AudioFileFormat: " + audioFileFormat);
+
+        // TraceAudioFileReader
+            logger.log(Level.TRACE, "<VorbisAudioFileReader.getAudioFileFormat(): end");
+
         return audioFileFormat;
     }
 }

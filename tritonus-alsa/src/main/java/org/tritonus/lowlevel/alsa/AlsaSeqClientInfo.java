@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 1999 - 2001 by Matthias Pfisterer
  *
@@ -18,16 +17,18 @@
 
 package org.tritonus.lowlevel.alsa;
 
-import org.tritonus.share.TDebug;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
+
+import static java.lang.System.getLogger;
 
 
 public class AlsaSeqClientInfo {
 
+    private static final Logger logger = getLogger("org.tritonus.TraceAlsaSeqNative");
+
     static {
         Alsa.loadNativeLibrary();
-        if (TDebug.TraceAlsaSeqNative) {
-            setTrace(true);
-        }
     }
 
     /**
@@ -35,22 +36,19 @@ public class AlsaSeqClientInfo {
      * for the native code.
      * This must be long to be 64bit-clean.
      */
-    /*private*/ long m_lNativeHandle;
+    /* private */ long m_lNativeHandle;
 
     public AlsaSeqClientInfo() {
-        if (TDebug.TraceAlsaSeqNative) {
-            TDebug.out("AlsaSeq.ClientInfo.<init>(): begin");
-        }
+        logger.log(Level.TRACE, "AlsaSeq.ClientInfo.<init>(): begin");
+
         int nReturn = malloc();
-        if (TDebug.TraceAlsaSeqNative) {
-            TDebug.out("AlsaSeq.ClientInfo.<init>(): malloc() returns: " + nReturn);
-        }
+        logger.log(Level.TRACE, "AlsaSeq.ClientInfo.<init>(): malloc() returns: " + nReturn);
+
         if (nReturn < 0) {
             throw new RuntimeException("malloc of client_info failed");
         }
-        if (TDebug.TraceAlsaSeqNative) {
-            TDebug.out("AlsaSeq.ClientInfo.<init>(): end");
-        }
+
+        logger.log(Level.TRACE, "AlsaSeq.ClientInfo.<init>(): end");
     }
 
     private native int malloc();
@@ -67,7 +65,7 @@ public class AlsaSeqClientInfo {
 
     public native int getErrorBounce();
 
-    // TODO: event filter
+    // TODO event filter
 
     public native int getNumPorts();
 
@@ -82,7 +80,6 @@ public class AlsaSeqClientInfo {
     public native void setErrorBounce(int nErrorBounce);
 
     private static native void setTrace(boolean bTrace);
-    // TODO: event filter
+
+    // TODO event filter
 }
-
-

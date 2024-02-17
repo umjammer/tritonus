@@ -28,6 +28,8 @@
 
 package org.tritonus.midi.sb.fluidsynth;
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import javax.sound.midi.Instrument;
 import javax.sound.midi.Patch;
 import javax.sound.midi.Soundbank;
@@ -35,9 +37,10 @@ import javax.sound.midi.SoundbankResource;
 
 import com.sun.jna.ptr.PointerByReference;
 import org.tritonus.midi.device.fluidsynth.FluidSynthesizer;
-import org.tritonus.share.TDebug;
 import vavi.sound.midi.fluidsynth.jna.sfont.SfontLibrary;
 import vavi.sound.midi.fluidsynth.jna.synth.SynthLibrary;
+
+import static java.lang.System.getLogger;
 
 
 /**
@@ -48,6 +51,8 @@ import vavi.sound.midi.fluidsynth.jna.synth.SynthLibrary;
  * @author Manson
  */
 public class FluidSoundbank implements Soundbank {
+
+    private static final Logger logger = getLogger("org.tritonus.TraceFluidNative");
 
     private FluidSynthesizer synth;
     private int sfontID;
@@ -80,9 +85,7 @@ public class FluidSoundbank implements Soundbank {
 
         PointerByReference /* fluid_synth_t */ synth = this.synth.getSynthesizer();
 
-        if (TDebug.TraceFluidNative) {
-            TDebug.out(String.format("nGetInstruments: synth: %s\n", synth));
-        }
+        logger.log(Level.TRACE, String.format("nGetInstruments: synth: %s\n", synth));
 
         if (synth != null) {
 
@@ -157,7 +160,3 @@ public class FluidSoundbank implements Soundbank {
         return "Mansoft";
     }
 }
-
-
-
-

@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 1999 by Matthias Pfisterer
  *
@@ -19,9 +18,6 @@
 
 package org.tritonus.lowlevel.esd;
 
-import org.tritonus.share.TDebug;
-
-
 public class EsdStream
         extends Esd {
 
@@ -35,9 +31,6 @@ public class EsdStream
 
     static {
         Esd.loadNativeLibrary();
-        if (TDebug.TraceEsdStreamNative) {
-            setTrace(true);
-        }
     }
 
     public EsdStream() {
@@ -69,5 +62,3 @@ public class EsdStream
 
     private static native void setTrace(boolean bTrace);
 }
-
-

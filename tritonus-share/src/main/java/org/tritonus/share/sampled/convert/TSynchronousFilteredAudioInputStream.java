@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 1999,2000 by Florian Bomers
  *
@@ -20,13 +19,16 @@
 package org.tritonus.share.sampled.convert;
 
 import java.io.IOException;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 
-import org.tritonus.share.TDebug;
 import org.tritonus.share.sampled.AudioUtils;
 import org.tritonus.share.sampled.FloatSampleBuffer;
 import org.tritonus.share.sampled.FloatSampleInput;
+
+import static java.lang.System.getLogger;
 
 
 /**
@@ -36,9 +38,10 @@ import org.tritonus.share.sampled.FloatSampleInput;
  *
  * @author Florian Bomers
  */
-public abstract class TSynchronousFilteredAudioInputStream
-        extends TAudioInputStream implements FloatSampleInput {
+public abstract class TSynchronousFilteredAudioInputStream extends TAudioInputStream implements FloatSampleInput {
 
+    private static final Logger logger = getLogger("org.tritonus.TraceAudioConverter");
+    
     private AudioInputStream originalStream;
 
     /** the same originalStream cast to FloatSampleInput, if it is one */
@@ -82,12 +85,8 @@ public abstract class TSynchronousFilteredAudioInputStream
         if (originalStream instanceof FloatSampleInput) {
             originalStreamFloat = (FloatSampleInput) originalStream;
         }
-        if (TDebug.TraceAudioConverter) {
-            TDebug.out("TSynchronousFilteredAudioInputStream: original format ="
-                    + AudioUtils.format2ShortStr(originalFormat));
-            TDebug.out("TSynchronousFilteredAudioInputStream: converted format="
-                    + AudioUtils.format2ShortStr(getFormat()));
-        }
+        logger.log(Level.TRACE, "TSynchronousFilteredAudioInputStream: original format =" + AudioUtils.format2ShortStr(originalFormat));
+        logger.log(Level.TRACE, "TSynchronousFilteredAudioInputStream: converted format=" + AudioUtils.format2ShortStr(getFormat()));
         m_bConvertInPlace = false;
         m_enableFloatConversion = false;
     }
@@ -150,8 +149,7 @@ public abstract class TSynchronousFilteredAudioInputStream
     }
 
     @Override
-    public int read()
-            throws IOException {
+    public int read() throws IOException {
         if (newFrameSize != 1) {
             throw new IOException("frame size must be 1 to read a single byte");
         }
@@ -189,18 +187,15 @@ public abstract class TSynchronousFilteredAudioInputStream
      * this method may read less than nLength bytes.
      */
     @Override
-    public final int read(byte[] abData, int nOffset, int nLength)
-            throws IOException {
+    public final int read(byte[] abData, int nOffset, int nLength) throws IOException {
         // number of frames that we have to read from the underlying stream.
         int nFrameLength = nLength / newFrameSize;
 
         // number of bytes that we need to read from underlying stream.
         int originalBytes = nFrameLength * originalFrameSize;
 
-        if (TDebug.TraceAudioConverter) {
-            TDebug.out("> TSynchronousFilteredAIS.read(buffer[" + abData.length + "], "
-                    + nOffset + " ," + nLength + " bytes ^=" + nFrameLength + " frames)");
-        }
+        logger.log(Level.TRACE, "> TSynchronousFilteredAIS.read(buffer[" + abData.length + "], " +
+                nOffset + " ," + nLength + " bytes ^=" + nFrameLength + " frames)");
         int nFramesConverted;
 
         // set up buffer to read
@@ -225,25 +220,20 @@ public abstract class TSynchronousFilteredAudioInputStream
             return -1;
         }
         int nFramesRead = nBytesRead / originalFrameSize;
-        if (TDebug.TraceAudioConverter) {
-            TDebug.out("original.read returned "
-                    + nBytesRead + " bytes ^=" + nFramesRead + " frames");
-        }
+        logger.log(Level.TRACE, "original.read returned " + nBytesRead + " bytes ^=" + nFramesRead + " frames");
         if (m_bConvertInPlace) {
             convertInPlace(abData, nOffset, nFramesRead);
             nFramesConverted = nFramesRead;
         } else {
             nFramesConverted = convert(m_buffer, abData, nOffset, nFramesRead);
         }
-        if (TDebug.TraceAudioConverter) {
-            TDebug.out("< converted " + nFramesConverted + " frames");
-        }
+        logger.log(Level.TRACE, "< converted " + nFramesConverted + " frames");
+
         return nFramesConverted * newFrameSize;
     }
 
     @Override
-    public long skip(long nSkip)
-            throws IOException {
+    public long skip(long nSkip) throws IOException {
         // only returns integral frames
         long skipFrames = nSkip / newFrameSize;
         long originalSkippedBytes = originalStream.skip(skipFrames * originalFrameSize);
@@ -252,15 +242,13 @@ public abstract class TSynchronousFilteredAudioInputStream
     }
 
     @Override
-    public int available()
-            throws IOException {
+    public int available() throws IOException {
         int origAvailFrames = originalStream.available() / originalFrameSize;
         return origAvailFrames * newFrameSize;
     }
 
     @Override
-    public void close()
-            throws IOException {
+    public void close() throws IOException {
         EOF = true;
         originalStream.close();
         clearBuffer();
@@ -273,8 +261,7 @@ public abstract class TSynchronousFilteredAudioInputStream
     }
 
     @Override
-    public void reset()
-            throws IOException {
+    public void reset() throws IOException {
         originalStream.reset();
     }
 
@@ -322,18 +309,15 @@ public abstract class TSynchronousFilteredAudioInputStream
             if (originalStreamFloat == null && m_enableFloatConversion) {
                 // currently cannot convert in the middle of the buffer
                 if (offset > 0 || sampleCount != buffer.getSampleCount()) {
-                    throw new IllegalArgumentException(
-                            "float reading with offset not supported");
+                    throw new IllegalArgumentException("float reading with offset not supported");
                 }
                 // allocate a byte array large enough to hold the byte data
                 int reqSize = sampleCount * originalFrameSize;
-                if (m_floatByteBuffer == null
-                        || m_floatByteBuffer.length < reqSize) {
+                if (m_floatByteBuffer == null || m_floatByteBuffer.length < reqSize) {
                     m_floatByteBuffer = new byte[reqSize];
                 }
                 // read into byte array -- is already processed
-                int bytesRead = originalStream.read(m_floatByteBuffer, 0,
-                        reqSize);
+                int bytesRead = originalStream.read(m_floatByteBuffer, 0, reqSize);
                 // convert the byte array to float
                 if (bytesRead <= 0) {
                     // EOF or nothing read
@@ -341,8 +325,7 @@ public abstract class TSynchronousFilteredAudioInputStream
                     return;
                 }
                 // convert to float
-                buffer.initFromByteArray(m_floatByteBuffer, 0, bytesRead,
-                        originalFormat);
+                buffer.initFromByteArray(m_floatByteBuffer, 0, bytesRead, originalFormat);
                 // do the processing
                 convert(buffer, 0, buffer.getSampleCount());
             } else
@@ -351,13 +334,11 @@ public abstract class TSynchronousFilteredAudioInputStream
                 if (originalStreamFloat == null || !m_enableFloatConversion) {
                     // currently cannot convert in the middle of the buffer
                     if (offset > 0 || sampleCount != buffer.getSampleCount()) {
-                        throw new IllegalArgumentException(
-                                "float reading with offset not supported");
+                        throw new IllegalArgumentException("float reading with offset not supported");
                     }
                     // allocate a byte array large enough to hold the converted data
                     int reqSize = sampleCount * format.getFrameSize();
-                    if (m_floatByteBuffer == null
-                            || m_floatByteBuffer.length < reqSize) {
+                    if (m_floatByteBuffer == null || m_floatByteBuffer.length < reqSize) {
                         m_floatByteBuffer = new byte[reqSize];
                     }
                     // read into byte array -- is already processed
@@ -369,8 +350,7 @@ public abstract class TSynchronousFilteredAudioInputStream
                         return;
                     }
                     // convert to float
-                    buffer.initFromByteArray(m_floatByteBuffer, 0, bytesRead,
-                            format);
+                    buffer.initFromByteArray(m_floatByteBuffer, 0, bytesRead, format);
                 } else {
                     // read from the source stream
                     originalStreamFloat.read(buffer, offset, sampleCount);
@@ -384,10 +364,8 @@ public abstract class TSynchronousFilteredAudioInputStream
                     convert(buffer, offset, sampleCount);
                 }
 
-        } catch (IOException ioe) {
-            if (TDebug.TraceAllExceptions) {
-                ioe.printStackTrace();
-            }
+        } catch (IOException e) {
+            logger.log(Level.ERROR, e.getMessage(), e);
             buffer.setSampleCount(0, false);
         }
     }
@@ -396,7 +374,4 @@ public abstract class TSynchronousFilteredAudioInputStream
     public void read(FloatSampleBuffer buffer) {
         read(buffer, 0, buffer.getSampleCount());
     }
-
 }
-
-

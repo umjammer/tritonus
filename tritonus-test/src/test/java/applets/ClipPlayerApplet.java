@@ -72,7 +72,7 @@ public class ClipPlayerApplet
         loadClip(clipURL);
         JPanel panel = new JPanel();
         this.getContentPane().add(panel);
-        // TODO: label showing the url
+        // TODO label showing the url
         m_loopButton = new JButton("Loop");
         m_loopButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
@@ -119,7 +119,7 @@ public class ClipPlayerApplet
             }
             // m_clip.loop(nLoopCount);
         } else {
-            // TODO: popup (also for other error conditions)
+            // TODO popup (also for other error conditions)
             System.out.println("ClipPlayerApplet.<init>(): can't get data from URL " + clipURL);
         }
         Thread.currentThread().setContextClassLoader(originalClassLoader);

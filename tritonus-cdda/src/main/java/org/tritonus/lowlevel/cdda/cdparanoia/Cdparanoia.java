@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 2001 by Matthias Pfisterer
  *
@@ -19,7 +18,10 @@
 
 package org.tritonus.lowlevel.cdda.cdparanoia;
 
-import org.tritonus.share.TDebug;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
+
+import static java.lang.System.getLogger;
 
 
 /**
@@ -27,22 +29,20 @@ import org.tritonus.share.TDebug;
  */
 public class Cdparanoia {
 
+    private static final Logger logger = getLogger("org.tritonus.TraceCdda");
+
     static {
-        if (TDebug.TraceCdda) {
-            TDebug.out("Cdparanoia.<clinit>(): loading native library tritonuscdparanoia");
-        }
+        logger.log(Level.TRACE, "Cdparanoia.<clinit>(): loading native library tritonuscdparanoia");
+
         System.loadLibrary("tritonuscdparanoia");
-        if (TDebug.TraceCdda) {
-            TDebug.out("Cdparanoia.<clinit>(): loaded");
-        }
-        setTrace(TDebug.TraceCddaNative);
+        logger.log(Level.TRACE, "Cdparanoia.<clinit>(): loaded");
 
         if (Boolean.getBoolean("tritonus.DisableParanoia")) {
             setParanoiaMode(false);
         }
     }
 
-    /*
+    /**
      * This holds a pointer for the native code -
      * do not touch!
      */
@@ -50,16 +50,14 @@ public class Cdparanoia {
     private long m_lNativeHandle;
 
     public Cdparanoia(String strDevice) {
-        if (TDebug.TraceCdda) {
-            TDebug.out("Cdparanoia.<init>: begin");
-        }
+        logger.log(Level.TRACE, "Cdparanoia.<init>: begin");
+
         int nResult = open(strDevice);
         if (nResult < 0) {
             throw new RuntimeException("cannot open device '" + strDevice + "'");
         }
-        if (TDebug.TraceCdda) {
-            TDebug.out("Cdparanoia.<init>: end");
-        }
+
+        logger.log(Level.TRACE, "Cdparanoia.<init>: end");
     }
 
     /**
@@ -85,13 +83,14 @@ public class Cdparanoia {
      */
     public native void close();
 
-    /* Read the table of contents.
-     anValues[0] first track
-     anValues[1] last track
-
-     anStartTrack[x] start sector of the track x.
-     anType[x] type of track x.
-    */
+    /**
+     * Read the table of contents.
+     * anValues[0] first track
+     * anValues[1] last track
+     * <p>
+     * anStartTrack[x] start sector of the track x.
+     * anType[x] type of track x.
+     */
     public native int readTOC(int[] anValues,
                               int[] anStartFrame,
                               int[] anLength,
@@ -128,5 +127,3 @@ public class Cdparanoia {
      */
     private static native void setParanoiaMode(boolean bPoranoiaMode);
 }
-
-
