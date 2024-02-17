@@ -135,7 +135,7 @@
     </dependency>
 
     <dependency>
-      <groupId>vavi</groupId>
+      <groupId>${vavi-sound.groupId}</groupId>
       <artifactId>vavi-sound</artifactId>
       <scope>test</scope>
     </dependency>
