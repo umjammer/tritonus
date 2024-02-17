@@ -6,12 +6,14 @@
 
 # tritonus
 
-♪ This is mavenized Tritonus
+<img alt="tritone logo" src="https://github.com/umjammer/tritonus/assets/493908/11bc60d6-643f-47ba-a8b1-d451056ed247" width="320" />
+
+♪ This is mavenized Tritonus.
 
 Tritonus is an implementation of the Java Sound API and several Java Sound SPI.<br/>
-For original
-versions of these components, see:
-http://www.tritonus.org/
+For original versions of these components, see: http://www.tritonus.org/
+
+All modules are implemented in jna or pure Java.
 
 | module        | status<sup>[1]</sup> |    spi     | comment                 | library                                                 |
 |---------------|:--------------------:|:----------:|-------------------------|---------------------------------------------------------|
@@ -41,9 +43,7 @@ http://www.tritonus.org/
 
 ## Installation
 
-* https://github.com/umjammer/tritonus/packages
-* this project uses github packages. add a personal access token to `~/.m2/settings.xml`
-* see https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry
+* https://jitpack.io/#umjammer/tritonus
 
 ## License
 
@@ -61,7 +61,7 @@ Version 2.0. See the file [LICENSE](LICENSE) for details.
 
 ### fluidsynth
 
-* https://github.com/atsushieno/fluidsynth-midi-service-j
+* https://github.com/atsushieno/fluidsynth-midi-service-j (android)
 
 ### lame
 
@@ -77,7 +77,7 @@ Version 2.0. See the file [LICENSE](LICENSE) for details.
 
 ### pvorbis
 
- * [jVorbisEnc](https://src.fedoraproject.org/repo/pkgs/jVorbisEnc/)
+ * [jVorbisEnc](https://src.fedoraproject.org/repo/pkgs/jVorbisEnc/) (pure) ... [patched](https://github.com/umjammer/jVorbisEnc)
 
 ## TODO
 
