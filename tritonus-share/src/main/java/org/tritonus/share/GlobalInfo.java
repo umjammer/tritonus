@@ -19,10 +19,30 @@
 package org.tritonus.share;
 
 
+import java.io.InputStream;
+import java.util.Properties;
+
+
 public class GlobalInfo {
 
+    static {
+        try {
+            try (InputStream is = GlobalInfo.class.getResourceAsStream("/META-INF/maven/org.tritonus/tritonus-share/pom.properties")) {
+                if (is != null) {
+                    Properties props = new Properties();
+                    props.load(is);
+                    VERSION = props.getProperty("version", "undefined in pom.properties");
+                } else {
+                    VERSION = System.getProperty("vavi.test.version", "undefined");
+                }
+            }
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
     private static final String VENDOR = "Tritonus is free software. See http://www.tritonus.org/";
-    private static final String VERSION = "0.3.1";
+    private static final String VERSION;
 
     public static String getVendor() {
         return VENDOR;
