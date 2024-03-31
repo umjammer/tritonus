@@ -114,5 +114,3 @@ public class Test1 {
         sequencer.close();
     }
 }
-
-/* */
