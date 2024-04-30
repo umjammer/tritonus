@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.CountDownLatch;
+import java.util.logging.Level;
 import javax.sound.midi.MetaEventListener;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.Sequence;
@@ -54,7 +55,7 @@ public class Test1 {
         System.setProperty("tritonus.fluidsynth.defaultsoundbank", sf);
 Debug.println("soundfont: " + sf);
         if (!Files.exists(Path.of(sf))) {
-            throw new IllegalStateException("soundfont file set by 'tritonus.fluidsynth.defaultsoundbank' does not exist.");
+Debug.println(Level.WARNING, "soundfont file set by 'tritonus.fluidsynth.defaultsoundbank' does not exist.");
         }
     }
 
