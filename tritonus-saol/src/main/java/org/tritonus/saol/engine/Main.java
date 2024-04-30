@@ -39,19 +39,18 @@ import static java.lang.System.getLogger;
 public class Main {
 
     private static final Logger logger = getLogger(Main.class.getName());
-    
-    public static void main(String[] args) throws IOException {
+
+    /**
+     * @param args 0: saol, 1: sasl, 2: out
+     */
+    public static void main(String[] args) throws Exception {
         File saolFile = new File(args[0]);
         File saslFile = new File(args[1]);
         File outputFile = new File(args[2]);
         Compiler compiler = new Compiler(saolFile);
-        try {
-            compiler.compile();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        compiler.compile();
         Map<String, Class<AbstractInstrument>> instrumentMap = compiler.getInstrumentMap();
-        logger.log(Level.TRACE, "Main.main(): IM: " + instrumentMap);
+logger.log(Level.TRACE, "Main.main(): IM: " + instrumentMap);
         AudioFileFormat.Type targetType = AudioFileFormat.Type.WAVE;
         AudioFormat audioFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 44100.0F, 16, 2, 4, 44100.0F, false);
         SystemOutput output = new FileOutput(outputFile, targetType, audioFormat);

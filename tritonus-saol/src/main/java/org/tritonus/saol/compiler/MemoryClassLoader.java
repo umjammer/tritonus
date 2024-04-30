@@ -27,25 +27,6 @@ public class MemoryClassLoader extends ClassLoader {
         Class<?> cls = defineClass(strName, classData, 0, classData.length);
         return cls;
     }
-
-    /**
-     * For testing
-     */
-    public static void main(String[] args) throws Exception {
-        FileInputStream fis = new FileInputStream("Instrument.class");
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        byte[] buffer = new byte[4096];
-        while (true) {
-            int nRead = fis.read(buffer);
-            if (nRead == -1) {
-                break;
-            }
-            baos.write(buffer, 0, nRead);
-        }
-        MemoryClassLoader mcl = new MemoryClassLoader();
-        Class<?> cls = mcl.findClass("Instrument", baos.toByteArray());
-        System.out.println("class loaded: " + cls.getName());
-    }
 }
 
 
