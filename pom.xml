@@ -35,7 +35,26 @@
 
   <properties>
     <vavi-sound.groupId>com.github.umjammer</vavi-sound.groupId> <!-- vavi / com.github.umjammer -->
+
+    <native.library.path>/usr/local/lib</native.library.path>
+    <vavi.test.volume>0.02</vavi.test.volume>
+    <vavi.test.volume.midi>0.2</vavi.test.volume.midi>
   </properties>
+
+  <profiles>
+    <profile>
+      <id>mac arm64</id>
+      <activation>
+        <os>
+          <family>mac</family>
+          <arch>aarch64</arch>
+        </os>
+      </activation>
+      <properties>
+        <native.library.path>/opt/homebrew/lib</native.library.path>
+  </properties>
+    </profile>
+  </profiles>
 
   <build>
     <pluginManagement>
@@ -121,7 +140,7 @@
       <dependency>
         <groupId>${vavi-sound.groupId}</groupId>
         <artifactId>vavi-sound</artifactId>
-        <version>1.0.16</version>
+        <version>1.0.18</version>
         <scope>test</scope>
       </dependency>
     </dependencies>

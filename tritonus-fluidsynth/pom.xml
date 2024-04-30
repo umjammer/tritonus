@@ -47,7 +47,7 @@
       <id>local</id>
       <activation>
         <file>
-          <exists>${basedir}/local.properties</exists>
+          <exists>local.properties</exists>
         </file>
       </activation>
       <build>
@@ -55,17 +55,19 @@
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>properties-maven-plugin</artifactId>
-            <version>1.1.0</version>
+            <version>1.2.1</version>
             <executions>
               <execution>
+                <id>read-properties</id>
                 <phase>initialize</phase>
                 <goals>
                   <goal>read-project-properties</goal>
                 </goals>
                 <configuration>
                   <files>
-                    <file>${basedir}/local.properties</file>
+                    <file>local.properties</file>
                   </files>
+                  <quiet>false</quiet>
                 </configuration>
               </execution>
             </executions>
@@ -88,10 +90,10 @@
           <!-- mvn clean install -Dtritonus.fluidsynth.defaultsoundbank=your_soundfont_path -->
           <argLine>
             -Djava.util.logging.config.file=src/test/resources/logging.properties
-            -Djna.library.path=${native.library.path}
+            -Djna.library.path=@{native.library.path}
+            -Dvavi.test.volume.midi=@{vavi.test.volume.midi}
           </argLine>
           <systemProperties>
-            <tritonus.fluidsynth.defaultsoundbank>${tritonus.fluidsynth.defaultsoundbank}</tritonus.fluidsynth.defaultsoundbank>
           </systemProperties>
         </configuration>
       </plugin>
