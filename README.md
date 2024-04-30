@@ -1,5 +1,5 @@
 [![Release](https://jitpack.io/v/umjammer/tritonus.svg)](https://jitpack.io/#umjammer/tritonus)
-[![Java CI](https://github.com/umjammer/tritonus/actions/workflows/maven.yml/badge.svg)](https://github.com/umjammer/tritonus/actions)
+[![Java CI](https://github.com/umjammer/tritonus/actions/workflows/maven.yml/badge.svg)](https://github.com/umjammer/tritonus/actions/workflows/maven.yml)
 [![CodeQL](https://github.com/umjammer/tritonus/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/umjammer/tritonus/actions/workflows/codeql-analysis.yml)
 ![Java](https://img.shields.io/badge/Java-17-b07219)
 [![Parent](https://img.shields.io/badge/Parent-vavi--sound--sandbox-pink)](https://github.com/umjammer/vavi-sound-sandbox)
@@ -15,35 +15,52 @@ For original versions of these components, see: http://www.tritonus.org/
 
 All modules are implemented in jna or pure Java.
 
-| module        | status<sup>[1]</sup> |    spi     | comment                 | library                                                 |
-|---------------|:--------------------:|:----------:|-------------------------|---------------------------------------------------------|
-| share         |          ✅           |            |                         |                                                         |
-| remaining     |          ✅           | `RWCMDIOB` |                         |                                                         |
-| dsp           |          ✅           |            |                         |                                                         |
-| core          |          ✅           |            |                         |                                                         |
-| gsm           |          ✅           | `RWC-----` |                         |                                                         |
-| javasequencer |          ✅           | `----D---` |                         |                                                         |
-| jorbis        |          ✅           | `R-C-----` | pure                    | [jorbis](http://www.jcraft.com/jorbis/)                 |
-| midishare     |          ✅           | `----D---` |                         |                                                         |
-| mp3           |          ✅           | `RWC-----` | jna                     | brew:lame, [jlayer](https://github.com/umjammer/jlayer) |
-| esd           |          🚫          | `---M----` | linux only              | libesd                                                  |
-| alsa          |          🚫          | `---MD---` | linux only              | libasound                                               |
-| vorbis        |   ✅<sup>[2]</sup>    | `RWC-----` | jna                     | brew:libvorbis                                          |
-| pvorbis       |          ✅           | `-WC-----` | pure                    | [jVorbisEnc](https://github.com/umjammer/jVorbisEnc)    |
-| cdda          |          🚫          |            | linux only              | libcdda_interface libcdda_paranoia                      |
-| fluidsynth    |          ✅           | `----D---` | jna                     | brew:fluid-synth                                        |
-| src           |          ✅           | `--C-----` | sampling rate converter |                                                         |
-| aos           |          ✅           |            |                         |                                                         |
-| saol          |          🚧          |            |                         |                                                         |
-| test          |          🚧          |            |                         |                                                         |
-| timidity      |          🚧          |            |                         | [libtimidity](https://github.com/sezero/libtimidity)    |
+| module        |      status      | spi <sup>[1]</sup> | comment                 | library                                                 |
+|---------------|:----------------:|:------------------:|-------------------------|---------------------------------------------------------|
+| share         |        ✅         |                    |                         |                                                         |
+| remaining     |        ✅         |     `RWC--IO-`     |                         |                                                         |
+| dsp           |        ✅         |                    |                         |                                                         |
+| core          |        ✅         |                    |                         |                                                         |
+| gsm           |        ✅         |     `RWC-----`     |                         |                                                         |
+| javasequencer |        ✅         |     `----D---`     |                         |                                                         |
+| jorbis        |        ✅         |     `R-C-----`     | pure                    | [jorbis](http://www.jcraft.com/jorbis/)                 |
+| midishare     |        ✅         |     `----D---`     |                         |                                                         |
+| mp3           |        ✅         |     `RWC-----`     | jna                     | brew:lame, [jlayer](https://github.com/umjammer/jlayer) |
+| esd           |        🚫        |     `---M----`     | linux only              | libesd                                                  |
+| alsa          |        🚫        |     `---MD---`     | linux only              | libasound                                               |
+| vorbis        | ✅<sup>[2]</sup>  |     `RWC-----`     | jna                     | brew:libvorbis                                          |
+| pvorbis       |        ✅         |     `-WC-----`     | pure                    | [jVorbisEnc](https://github.com/umjammer/jVorbisEnc)    |
+| cdda          |        🚫        |                    | linux only              | libcdda_interface libcdda_paranoia                      |
+| fluidsynth    |        ✅         |     `----D---`     | jna                     | brew:fluid-synth                                        |
+| src           |        ✅         |     `--C-----`     | sampling rate converter |                                                         |
+| aos           |        ✅         |                    |                         |                                                         |
+| saol          |        🚧        |                    |                         |                                                         |
+| test          |        🚧        |                    |                         |                                                         |
+| timidity      |        🚧        |                    |                         | [libtimidity](https://github.com/sezero/libtimidity)    |
 
-<sub>[1] R: reader, W: writer, C: converter, M: midi device, D: midi driver, I: midi reader, O: midi writer, B: sound bank SPI</sub><br/>
-<sub>[2] unstable use jorbis, pvprbis</sub>
+<sub>[1] R: reader, W: writer, C: converter, M: mixer device, D: midi driver, I: midi reader, O: midi writer, B: sound bank SPI</sub><br/>
+<sub>[2] unstable, use jorbis, pvprbis</sub>
 
 ## Installation
 
+### natives
+
+ * lame
+ * fluid-synth
+ * libvorbis
+
+e.g.
+```shell
+$ brew install lame fluid-synth libvorbis
+```
+
+### maven
+
 * https://jitpack.io/#umjammer/tritonus
+
+### jvm option
+
+e.g. `-Djna.native.path=/opt/homebrew/lib`
 
 ## License
 
@@ -83,4 +100,6 @@ Version 2.0. See the file [LICENSE](LICENSE) for details.
 
 * ~~deploy to bintray via github actions~~
 * timidity (lost by disk crash)
-* use jna instead of jni
+* ~~use jna instead of jni~~
+  * sub modules for linux only 
+* make logging use lazy evaluation 

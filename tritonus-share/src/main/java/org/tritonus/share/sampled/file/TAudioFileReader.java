@@ -156,10 +156,13 @@ public abstract class TAudioFileReader extends AudioFileReader {
         try {
             audioFileFormat = getAudioFileFormat(inputStream, lFileLengthInBytes);
         } finally {
-            // TODO required semantics is unclear: should reset()
             // be executed only when there is an exception or
             // should it be done always?
-            inputStream.reset();
+            try {
+                inputStream.reset();
+            } catch (IOException f) {
+                logger.log(Level.WARNING, f.toString());
+            }
         }
 
         logger.log(Level.TRACE, "TAudioFileReader.getAudioFileFormat(InputStream): end");
@@ -275,23 +278,12 @@ public abstract class TAudioFileReader extends AudioFileReader {
         inputStream.mark(getMarkLimit());
         try {
             audioInputStream = getAudioInputStream(inputStream, lFileLengthInBytes);
-        } catch (UnsupportedAudioFileException e) {
+        } finally {
             try {
                 inputStream.reset();
             } catch (IOException f) {
-                logger.log(Level.ERROR, f.getMessage(), f);
+                logger.log(Level.WARNING, f.toString());
             }
-            throw e;
-        } catch (IOException e) {
-            try {
-                inputStream.reset();
-            } catch (IOException e2) {
-                if (e2.getCause() == null) {
-                    e2.initCause(e);
-                    throw e2;
-                }
-            }
-            throw e;
         }
 
         logger.log(Level.TRACE, "TAudioFileReader.getAudioInputStream(InputStream): end");

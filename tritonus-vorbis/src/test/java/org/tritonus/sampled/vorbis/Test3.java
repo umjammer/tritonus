@@ -104,5 +104,3 @@ class Test3 {
         line.close();
     }
 }
-
-/* */

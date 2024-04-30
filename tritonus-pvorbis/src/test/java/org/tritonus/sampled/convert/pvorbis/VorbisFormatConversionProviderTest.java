@@ -156,5 +156,3 @@ class VorbisFormatConversionProviderTest {
         assertEquals(Checksum.getChecksum(out2), Checksum.getChecksum(Paths.get(ogg)));
     }
 }
-
-/* */

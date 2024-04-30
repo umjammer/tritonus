@@ -18,7 +18,6 @@
 
 package org.tritonus.sampled.convert.javalayer;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.System.Logger;
@@ -406,100 +405,5 @@ public class MpegFormatConversionProvider extends TEncodingFormatConversionProvi
                 }
             }
         }
-    }
-
-    private static int test(AudioFormat target, AudioFormat source, boolean failSupported, boolean failAIS, int testNum) {
-        boolean verbose = false;
-        AudioInputStream ais = new AudioInputStream(new ByteArrayInputStream(new byte[8]), source, 8);
-        MpegFormatConversionProvider provider = new MpegFormatConversionProvider();
-        boolean isConversionSupported = provider.isConversionSupported(target, source);
-        AudioInputStream convertedAIS = null;
-        try {
-            convertedAIS = provider.getAudioInputStream(target, ais);
-        } catch (Exception e) {
-            // ignore
-        }
-        boolean failed = (failSupported == isConversionSupported) || (failAIS != (convertedAIS == null));
-        if (failed || verbose) {
-            if (failed) {
-                logger.log(Level.DEBUG, (testNum) + ".ERROR:");
-            } else {
-                logger.log(Level.DEBUG, (testNum) + ".PASSED:");
-            }
-            logger.log(Level.DEBUG, "    source: " + source);
-            logger.log(Level.DEBUG, "    target: " + target);
-            if (failSupported == isConversionSupported) {
-                logger.log(Level.DEBUG, "  isConversionSupported() erronously returned " + isConversionSupported);
-            } else {
-                logger.log(Level.DEBUG, "  isConversionSupported() correctly returned " + isConversionSupported);
-            }
-            if (convertedAIS != null) {
-                if (failAIS) {
-                    logger.log(Level.DEBUG, "  converted stream was erronously returned with format:");
-                } else {
-                    logger.log(Level.DEBUG, "  converted stream was correctly returned with format:");
-                }
-                logger.log(Level.DEBUG, "  converted format: " + convertedAIS.getFormat());
-            } else {
-                if (failAIS) {
-                    logger.log(Level.DEBUG, "  converted stream was correctly not returned.");
-                } else {
-                    logger.log(Level.DEBUG, "  converted stream was erronously not returned.");
-                }
-            }
-        } else if (!failed) {
-            logger.log(Level.DEBUG, (testNum) + ".OK");
-        }
-        return failed ? 0 : 1;
-    }
-
-    /** unit test */
-    public static void main(String[] args) {
-        int testNum = 0;
-        int passed = 0;
-
-        // negative tests: should not be able to convert mp3 to mp3
-        AudioFormat source = new AudioFormat(MPEG1L3, 44100, -1, 2, -1, -1, false);
-        AudioFormat target = new AudioFormat(MPEG1L3, 44100, 16, 2, 4, 44100, false);
-        passed += test(target, source, true, true, testNum++);
-        source = new AudioFormat(MPEG1L3, 44100, -1, 2, -1, -1, false);
-        target = new AudioFormat(MPEG1L3, -1, 16, -1, -1, -1, false);
-        passed += test(target, source, true, true, testNum++);
-        source = new AudioFormat(MPEG1L3, 44100, -1, 2, -1, -1, false);
-        target = new AudioFormat(MPEG1L3, -1, 32, 2, 8, -1, false);
-        passed += test(target, source, true, true, testNum++);
-
-        // negative test: should not claim to convert channels
-        source = new AudioFormat(MPEG1L3, 44100, -1, 1, -1, -1, false);
-        target = new AudioFormat(PCM_SIGNED, -1, 16, 2, 4, -1, false);
-        passed += test(target, source, true, true, testNum++);
-        source = new AudioFormat(MPEG1L3, 44100, -1, 2, -1, -1, false);
-        target = new AudioFormat(PCM_SIGNED, -1, 16, 1, 2, -1, false);
-        passed += test(target, source, true, true, testNum++);
-
-        // negative test: should not claim to convert sample rate
-        source = new AudioFormat(MPEG1L3, 44100, -1, 2, -1, -1, false);
-        target = new AudioFormat(PCM_SIGNED, 8000, 16, 2, 4, 8000, false);
-        passed += test(target, source, true, true, testNum++);
-
-        // positive test: should convert MP3 to PCM
-        source = new AudioFormat(MPEG1L3, 44100, -1, 2, -1, -1, false);
-        target = new AudioFormat(PCM_SIGNED, 44100, 16, 2, 4, 44100, false);
-        passed += test(target, source, false, false, testNum++);
-
-        // positive test: should convert MP3 to PCM
-        source = new AudioFormat(MPEG1L3, 44100, -1, 1, -1, -1, false);
-        target = new AudioFormat(PCM_SIGNED, 44100, 16, 1, 2, 44100, false);
-        passed += test(target, source, false, false, testNum++);
-
-        // special case: can check isSupported with -1 for both fields, but should not return an AIS
-        source = new AudioFormat(MPEG1L3, -1, -1, 1, -1, -1, false);
-        target = new AudioFormat(PCM_SIGNED, -1, 16, 1, 2, -1, false);
-        passed += test(target, source, false, true, testNum++);
-        source = new AudioFormat(MPEG1L3, 8000, -1, -1, -1, -1, false);
-        target = new AudioFormat(PCM_SIGNED, 8000, 16, -1, -1, 8000, false);
-        passed += test(target, source, false, true, testNum++);
-
-        logger.log(Level.DEBUG, "Passed " + passed + " tests of " + testNum);
     }
 }

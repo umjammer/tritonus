@@ -31,6 +31,7 @@ import vavix.util.Checksum;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.tritonus.sampled.file.mpeg.MpegAudioFileWriter.MP3;
+import static vavi.sound.SoundUtil.volume;
 
 
 /**
@@ -92,7 +93,7 @@ class Test3 {
                 4,
                 originalAudioFormat.getSampleRate(),
                 false);
-        Debug.println(targetAudioFormat);
+Debug.println(targetAudioFormat);
         AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(targetAudioFormat, originalAudioInputStream);
         AudioFormat audioFormat = audioInputStream.getFormat();
         DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat, AudioSystem.NOT_SPECIFIED);
@@ -101,7 +102,7 @@ class Test3 {
 
         byte[] buf = new byte[8192];
         line.open(audioFormat, buf.length);
-        SoundUtil.volume(line, volume);
+        volume(line, volume);
         line.start();
         int r;
         while (true) {
@@ -121,7 +122,7 @@ class Test3 {
     void test1() throws Exception {
         AudioInputStream ais = AudioSystem.getAudioInputStream(new BufferedInputStream(Files.newInputStream(Path.of(wav))));
         AudioFormat inFormat = ais.getFormat();
-        Debug.println(inFormat);
+Debug.println(inFormat);
         AudioFormat outFormat = new AudioFormat(
                 MpegFormatConversionProvider.MPEG1L3,
                 -1f,
@@ -130,7 +131,7 @@ class Test3 {
                 -1,
                 -1f,
                 false);
-        Debug.println(outFormat);
+Debug.println(outFormat);
         AudioInputStream aout = AudioSystem.getAudioInputStream(outFormat, ais);
 
         Path out = Paths.get("tmp", "out.mp3");
@@ -154,7 +155,7 @@ class Test3 {
     void test4() throws Exception {
         AudioInputStream ais = AudioSystem.getAudioInputStream(new BufferedInputStream(Files.newInputStream(Path.of(wav))));
         AudioFormat inFormat = ais.getFormat();
-        Debug.println(inFormat);
+Debug.println(inFormat);
         AudioFormat outFormat = new AudioFormat(
                 MpegFormatConversionProvider.MPEG1L3,
                 inFormat.getSampleRate(),
@@ -163,7 +164,7 @@ class Test3 {
                 -1,
                 -1f,
                 false);
-        Debug.println(outFormat);
+Debug.println(outFormat);
         AudioInputStream aout = AudioSystem.getAudioInputStream(outFormat, ais);
 
         Path out2 = Paths.get("tmp", "out2.mp3");
@@ -177,7 +178,7 @@ class Test3 {
     void test3() throws Exception {
         AudioInputStream ais = AudioSystem.getAudioInputStream(new BufferedInputStream(Files.newInputStream(Path.of(mp3raw))));
         AudioFormat inFormat = ais.getFormat();
-        Debug.println(inFormat);
+Debug.println(inFormat);
 
         Path out2 = Paths.get("tmp", "out2.mp3");
         AudioSystem.write(ais, MP3, new BufferedOutputStream(Files.newOutputStream(out2)));
@@ -185,5 +186,3 @@ class Test3 {
         assertEquals(Checksum.getChecksum(out2), Checksum.getChecksum(Paths.get(mp3raw)));
     }
 }
-
-/* */

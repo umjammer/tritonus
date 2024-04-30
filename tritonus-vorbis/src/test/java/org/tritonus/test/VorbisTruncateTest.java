@@ -41,6 +41,7 @@ import org.tritonus.share.sampled.file.AudioOutputStream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import static vavi.sound.SoundUtil.volume;
 
 
 /**
@@ -49,6 +50,8 @@ import static org.junit.jupiter.api.Assertions.fail;
  * which is deleted after the test completes, but be sure you have sufficient disk space.
  */
 public class VorbisTruncateTest {
+
+    static final double volume = Double.parseDouble(System.getProperty("vavi.test.volume", "0.2"));
 
     private static final File _sourceFileOgg = new File("src/test/resources/" + "sounds/testtruncate.ogg");
     private static final File _destFileWav = new File("src/test/resources/" + "sounds/testtruncate.wav");
@@ -139,7 +142,7 @@ public class VorbisTruncateTest {
     }
 
     /**
-     * Play the given audio stream. Closes the stream when finised.
+     * Play the given audio stream. Closes the stream when finished.
      *
      * @param fileToPlay the audio file to play
      * @throws LineUnavailableException if can't get line for stream's format
@@ -154,10 +157,7 @@ public class VorbisTruncateTest {
                 new DataLine.Info(SourceDataLine.class, streamToPlay.getFormat()));
 
         line.open();
-        FloatControl gainControl = (FloatControl) line.getControl(FloatControl.Type.MASTER_GAIN);
-        double gain = .02d; // number between 0 and 1 (loudest)
-        float dB = (float) (Math.log(gain) / Math.log(10.0) * 20.0);
-        gainControl.setValue(dB);
+        volume(line, volume);
         line.start();
         try {
             byte[] buf = new byte[1024];
@@ -173,6 +173,3 @@ public class VorbisTruncateTest {
         }
     }
 }
-
-
-

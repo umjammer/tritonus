@@ -64,41 +64,24 @@ public class saint {
         }
     }
 
-    private static final SupportedFormat[] SUPPORTED_FORMATS =
-            {
-                    new SupportedFormat("s8", Saint.SND_PCM_SFMT_S8,
-                            AudioFormat.Encoding.PCM_SIGNED, 8, true),
-                    new SupportedFormat("u8", Saint.SND_PCM_SFMT_U8,
-                            AudioFormat.Encoding.PCM_UNSIGNED, 8, true),
-                    new SupportedFormat("s16l", Saint.SND_PCM_SFMT_S16_LE,
-                            AudioFormat.Encoding.PCM_SIGNED, 16, false),
-                    new SupportedFormat("s16b", Saint.SND_PCM_SFMT_S16_BE,
-                            AudioFormat.Encoding.PCM_SIGNED, 16, true),
-                    new SupportedFormat("u16l", Saint.SND_PCM_SFMT_U16_LE,
-                            AudioFormat.Encoding.PCM_UNSIGNED, 16, false),
-                    new SupportedFormat("u16b", Saint.SND_PCM_SFMT_U16_BE,
-                            AudioFormat.Encoding.PCM_UNSIGNED, 16, true),
-                    new SupportedFormat("s24l", Saint.SND_PCM_SFMT_S24_LE,
-                            AudioFormat.Encoding.PCM_SIGNED, 24, false),
-                    new SupportedFormat("s24b", Saint.SND_PCM_SFMT_S24_BE,
-                            AudioFormat.Encoding.PCM_SIGNED, 24, true),
-                    new SupportedFormat("u24l", Saint.SND_PCM_SFMT_U24_LE,
-                            AudioFormat.Encoding.PCM_UNSIGNED, 24, false),
-                    new SupportedFormat("u24b", Saint.SND_PCM_SFMT_U24_BE,
-                            AudioFormat.Encoding.PCM_UNSIGNED, 24, true),
-                    new SupportedFormat("s32l", Saint.SND_PCM_SFMT_S32_LE,
-                            AudioFormat.Encoding.PCM_SIGNED, 32, false),
-                    new SupportedFormat("s32b", Saint.SND_PCM_SFMT_S32_BE,
-                            AudioFormat.Encoding.PCM_SIGNED, 32, true),
-                    new SupportedFormat("u32l", Saint.SND_PCM_SFMT_U32_LE,
-                            AudioFormat.Encoding.PCM_UNSIGNED, 32, false),
-                    new SupportedFormat("u32b", Saint.SND_PCM_SFMT_U32_BE,
-                            AudioFormat.Encoding.PCM_UNSIGNED, 32, true),
-                    new SupportedFormat("f32l", Saint.SND_PCM_SFMT_S32_LE,
-                            AudioFormat.Encoding.PCM_SIGNED /* obviously wrong */, 32, false),
-                    new SupportedFormat("f32b", Saint.SND_PCM_SFMT_S32_BE,
-                            AudioFormat.Encoding.PCM_SIGNED /* obviously wrong */, 32, true),
-            };
+    private static final SupportedFormat[] SUPPORTED_FORMATS = {
+            new SupportedFormat("s8", Saint.SND_PCM_SFMT_S8, AudioFormat.Encoding.PCM_SIGNED, 8, true),
+            new SupportedFormat("u8", Saint.SND_PCM_SFMT_U8, AudioFormat.Encoding.PCM_UNSIGNED, 8, true),
+            new SupportedFormat("s16l", Saint.SND_PCM_SFMT_S16_LE, AudioFormat.Encoding.PCM_SIGNED, 16, false),
+            new SupportedFormat("s16b", Saint.SND_PCM_SFMT_S16_BE, AudioFormat.Encoding.PCM_SIGNED, 16, true),
+            new SupportedFormat("u16l", Saint.SND_PCM_SFMT_U16_LE, AudioFormat.Encoding.PCM_UNSIGNED, 16, false),
+            new SupportedFormat("u16b", Saint.SND_PCM_SFMT_U16_BE, AudioFormat.Encoding.PCM_UNSIGNED, 16, true),
+            new SupportedFormat("s24l", Saint.SND_PCM_SFMT_S24_LE, AudioFormat.Encoding.PCM_SIGNED, 24, false),
+            new SupportedFormat("s24b", Saint.SND_PCM_SFMT_S24_BE, AudioFormat.Encoding.PCM_SIGNED, 24, true),
+            new SupportedFormat("u24l", Saint.SND_PCM_SFMT_U24_LE, AudioFormat.Encoding.PCM_UNSIGNED, 24, false),
+            new SupportedFormat("u24b", Saint.SND_PCM_SFMT_U24_BE, AudioFormat.Encoding.PCM_UNSIGNED, 24, true),
+            new SupportedFormat("s32l", Saint.SND_PCM_SFMT_S32_LE, AudioFormat.Encoding.PCM_SIGNED, 32, false),
+            new SupportedFormat("s32b", Saint.SND_PCM_SFMT_S32_BE, AudioFormat.Encoding.PCM_SIGNED, 32, true),
+            new SupportedFormat("u32l", Saint.SND_PCM_SFMT_U32_LE, AudioFormat.Encoding.PCM_UNSIGNED, 32, false),
+            new SupportedFormat("u32b", Saint.SND_PCM_SFMT_U32_BE, AudioFormat.Encoding.PCM_UNSIGNED, 32, true),
+            new SupportedFormat("f32l", Saint.SND_PCM_SFMT_S32_LE, AudioFormat.Encoding.PCM_SIGNED /* obviously wrong */, 32, false),
+            new SupportedFormat("f32b", Saint.SND_PCM_SFMT_S32_BE, AudioFormat.Encoding.PCM_SIGNED /* obviously wrong */, 32, true),
+    };
 
     private static final int DEFAULT_FORMAT = 2;
 
@@ -211,18 +194,14 @@ public class saint {
         }
     }
 
-    public static void
-    printUsageAndExit() {
+    public static void printUsageAndExit() {
         System.out.println("usage:");
         System.out.println("\t[TODO]:");
         System.exit(1);
     }
 
-    public static void
-    printVersionAndExit() {
+    public static void printVersionAndExit() {
         System.out.println("saint (new) version 0.1");
         System.exit(0);
     }
 }
-
-

@@ -62,6 +62,7 @@ jobs:
       #    and modify them (or add more) to build your code if your project
       #    uses a compiled language
 
+      # DON'T ADD -Dmaven.test.skip=true because this project uses test-jars
       - name: Build with Maven
         run: |
           brew install lame fluid-synth libvorbis
