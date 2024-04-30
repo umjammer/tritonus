@@ -352,7 +352,7 @@ Debug.println(java.util.logging.Level.FINE, "bigEndian: " + bigEndian + ", platf
 
         pcmLengthInFrames = length / (lameApi.channels * Short.BYTES); // always 16 bit
         if (lameApi.swapbytes) {
-            Debug.println("@@@ SWAP");
+//Debug.println("@@@ SWAP");
             swapSamples(pcm, length / Short.BYTES);
         }
 
@@ -564,7 +564,7 @@ Debug.println(java.util.logging.Level.FINE, "bigEndian: " + bigEndian + ", platf
     }
 
     /**
-     * workaround for missing paramtrization possibilities for
+     * workaround for missing parameterization possibilities for
      * FormatConversionProviders
      */
     private void readSystemProps() {

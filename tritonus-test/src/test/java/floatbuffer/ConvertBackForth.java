@@ -18,5 +18,4 @@ public class ConvertBackForth {
             throw new RuntimeException("Wrote " + ret + " bytes to the array instead of " + bytes.length + " bytes!");
         }
     }
-
 }
