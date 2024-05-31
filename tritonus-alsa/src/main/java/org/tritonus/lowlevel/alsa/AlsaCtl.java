@@ -25,22 +25,22 @@ public class AlsaCtl {
      * Contains a pointer to snd_ctl_t.
      */
     @SuppressWarnings("unused")
-    private long m_lNativeHandle;
+    private long nativeHandle;
 
     static {
         Alsa.loadNativeLibrary();
     }
 
-    public static native int loadCard(int nCard);
+    public static native int loadCard(int card);
 
     // this encapsulates snd_card_next()
     public static native int[] getCards();
 
-    public static native int getCardIndex(String strName);
+    public static native int getCardIndex(String name);
 
-    public static native String getCardName(int nCard);
+    public static native String getCardName(int card);
 
-    public static native String getCardLongName(int nCard);
+    public static native String getCardLongName(int card);
 
     /**
      * Open a ctl.
@@ -49,27 +49,27 @@ public class AlsaCtl {
      * closed by calling {@link #close() close()}. This is
      * necessary to free native resources.
      *
-     * @param strName The name of the sound card. For
+     * @param name The name of the sound card. For
      *                instance, "hw:0", or an identifier you gave the
      *                card ("CARD1").
-     * @param nMode   Special modes for the low-level opening
+     * @param mode   Special modes for the low-level opening
      *                like SND_CTL_NONBLOCK, SND_CTL_ASYNC. Normally, set
      *                this to 0.
      */
-    public AlsaCtl(String strName, int nMode) throws Exception {
-        if (open(strName, nMode) < 0) {
-            throw new Exception();
+    public AlsaCtl(String name, int mode) throws Exception {
+        if (open(name, mode) < 0) {
+            throw new IllegalStateException("open");
         }
     }
 
-    public AlsaCtl(int nCard) throws Exception {
-        this("hw:" + nCard, 0);
+    public AlsaCtl(int card) throws Exception {
+        this("hw:" + card, 0);
     }
 
     /**
      * Calls snd_ctl_open().
      */
-    private native int open(String strName, int nMode);
+    private native int open(String name, int mode);
 
     /**
      * Calls snd_ctl_close().
@@ -87,20 +87,20 @@ public class AlsaCtl {
     // TODO remove
 
     /**
-     * anValues[0] device (inout)
-     * anValues[1] subdevice (inout)
-     * anValues[2] stream (inout)
-     * anValues[3] card (out)
-     * anValues[4] class (out)
-     * anValues[5] subclass (out)
-     * anValues[6] subdevice count (out)
-     * anValues[7] subdevice available (out)
+     * values[0] device (inout)
+     * values[1] subdevice (inout)
+     * values[2] stream (inout)
+     * values[3] card (out)
+     * values[4] class (out)
+     * values[5] subclass (out)
+     * values[6] subdevice count (out)
+     * values[7] subdevice available (out)
      * <p>
-     * astrValues[0] id (out)
-     * astrValues[1] name (out)
-     * astrValues[2] subdevice name (out)
+     * strings[0] id (out)
+     * strings[1] name (out)
+     * strings[2] subdevice name (out)
      */
-    public native int getPcmInfo(int[] anValues, String[] astrValues);
+    public native int getPcmInfo(int[] values, String[] strings);
 
-    private static native void setTrace(boolean bTrace);
+    private static native void setTrace(boolean trace);
 }

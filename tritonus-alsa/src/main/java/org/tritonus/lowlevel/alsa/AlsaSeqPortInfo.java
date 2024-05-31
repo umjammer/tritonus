@@ -37,17 +37,17 @@ public class AlsaSeqPortInfo {
      * for the native code.
      * This must be long to be 64bit-clean.
      */
-    /* private */ long m_lNativeHandle;
+    /* private */ long nativeHandle;
 
     public AlsaSeqPortInfo() {
-        logger.log(Level.TRACE, "AlsaSeq.PortInfo.<init>(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        int nReturn = malloc();
-        if (nReturn < 0) {
+        int ret = malloc();
+        if (ret < 0) {
             throw new RuntimeException("malloc of port_info failed");
         }
 
-        logger.log(Level.TRACE, "AlsaSeq.PortInfo.<init>(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     private native int malloc();
@@ -80,7 +80,5 @@ public class AlsaSeqPortInfo {
 
     public native int getPortSpecified();
 
-    private static native void setTrace(boolean bTrace);
+    private static native void setTrace(boolean trace);
 }
-
-

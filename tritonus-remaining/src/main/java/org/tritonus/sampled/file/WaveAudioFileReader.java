@@ -73,8 +73,7 @@ public class WaveAudioFileReader extends TAudioFileReader {
             try {
                 thisKey = dis.readInt();
             } catch (IOException e) {
-                // TraceAllExceptions
-                    logger.log(Level.TRACE, e);
+                logger.log(Level.TRACE, e);
 
                 // $$fb: when we come here, we skipped past the end of the wave file
                 // without finding the chunk.
@@ -221,7 +220,7 @@ public class WaveAudioFileReader extends TAudioFileReader {
     }
 
     @Override
-    protected AudioFileFormat getAudioFileFormat(InputStream inputStream, long lFileLengthInBytes)
+    protected AudioFileFormat getAudioFileFormat(InputStream inputStream, long fileLengthInBytes)
             throws UnsupportedAudioFileException, IOException {
         DataInputStream dataInputStream = new DataInputStream(inputStream);
         int magic = dataInputStream.readInt();

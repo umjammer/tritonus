@@ -36,17 +36,17 @@ public class AlsaSeqQueueTempo {
      * for the native code.
      * This must be long to be 64bit-clean.
      */
-    /* private */ long m_lNativeHandle;
+    /* private */ long nativeHandle;
 
     public AlsaSeqQueueTempo() {
-        logger.log(Level.TRACE, "AlsaSeq.QueueTempo.<init>(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        int nReturn = malloc();
-        if (nReturn < 0) {
+        int ret = malloc();
+        if (ret < 0) {
             throw new RuntimeException("malloc of port_info failed");
         }
 
-        logger.log(Level.TRACE, "AlsaSeq.QueueTempo.<init>(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     private native int malloc();
@@ -59,9 +59,9 @@ public class AlsaSeqQueueTempo {
 
     public native int getPpq();
 
-    public native void setTempo(int nTempo);
+    public native void setTempo(int tempo);
 
-    public native void setPpq(int nPpq);
+    public native void setPpq(int ppq);
 
-    private static native void setTrace(boolean bTrace);
+    private static native void setTrace(boolean trace);
 }

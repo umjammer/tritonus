@@ -14,10 +14,6 @@
  *   limitations under the License.
  */
 
-/*
- |<---            this code is formatted to fit into 80 columns             --->|
- */
-
 package org.tritonus.lowlevel.dsp;
 
 import java.util.Random;
@@ -25,21 +21,19 @@ import java.util.Random;
 
 public class WhiteNoise implements Source {
 
-    private Random m_random;
+    private Random random;
 
     public WhiteNoise() {
         this(new Random());
     }
 
     public WhiteNoise(Random random) {
-        m_random = random;
+        this.random = random;
     }
 
     @Override
     public float process() {
-        float fOutput = m_random.nextFloat() * 2.0F - 1.0F;
-        return fOutput;
+        float output = random.nextFloat() * 2.0F - 1.0F;
+        return output;
     }
 }
-
-

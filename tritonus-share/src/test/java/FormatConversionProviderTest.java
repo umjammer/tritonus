@@ -2,11 +2,12 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioFormat.Encoding;
-import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.spi.FormatConversionProvider;
 
+import static javax.sound.sampled.AudioSystem.NOT_SPECIFIED;
 
-/*
+
+/**
  * FormatConversionProviderTest
  */
 public class FormatConversionProviderTest {
@@ -31,65 +32,55 @@ public class FormatConversionProviderTest {
     };
 
     public static void main(String[] args) throws Exception {
-        String strProviderClassName = args[0];
-        FormatConversionProvider provider = getProvider(strProviderClassName);
+        String providerClassName = args[0];
+        FormatConversionProvider provider = getProvider(providerClassName);
 
         outSeparator();
         out("FormatConversionProvider: " + provider.getClass().getName());
         outSeparator();
 
-        Encoding[] aSourceEncodings = provider.getSourceEncodings();
+        Encoding[] sourceEncodings = provider.getSourceEncodings();
         out("Source Encodings:");
-        out(aSourceEncodings);
+        out(sourceEncodings);
         outSeparator();
 
-        Encoding[] aTargetEncodings = provider.getTargetEncodings();
+        Encoding[] targetEncodings = provider.getTargetEncodings();
         out("Target Encodings:");
-        out(aTargetEncodings);
+        out(targetEncodings);
         outSeparator();
 
-        for (Encoding aSourceEncoding : aSourceEncodings) {
-            outTargetEncodingsForFormat(provider, aSourceEncoding);
+        for (Encoding sourceEncoding : sourceEncodings) {
+            outTargetEncodingsForFormat(provider, sourceEncoding);
         }
 
         // test getAudioInputStream(AudioFormat.Encoding targetEncoding, AudioInputStream sourceStream)
-        for (Encoding sourceEncoding : aSourceEncodings) {
-            AudioFormat[] aSourceFormats = createAudioFormatsForEncoding(sourceEncoding);
-            for (AudioFormat sourceFormat : aSourceFormats) {
-                for (Encoding targetEncoding : aTargetEncodings) {
-                    boolean bSupported = provider.isConversionSupported(targetEncoding, sourceFormat);
-                    out("conversion supported " + getAudioFormatString(sourceFormat) + " --> " + targetEncoding + ": " + bSupported);
+        for (Encoding sourceEncoding : sourceEncodings) {
+            AudioFormat[] sourceFormats = createAudioFormatsForEncoding(sourceEncoding);
+            for (AudioFormat sourceFormat : sourceFormats) {
+                for (Encoding targetEncoding : targetEncodings) {
+                    boolean supported = provider.isConversionSupported(targetEncoding, sourceFormat);
+                    out("conversion supported " + getAudioFormatString(sourceFormat) + " --> " + targetEncoding + ": " + supported);
                 }
             }
         }
     }
 
-    private static void outTargetEncodingsForFormat(
-            FormatConversionProvider provider, Encoding sourceEncoding) {
+    private static void outTargetEncodingsForFormat(FormatConversionProvider provider, Encoding sourceEncoding) {
         AudioFormat audioFormat = new AudioFormat(
-                sourceEncoding,
-                AudioSystem.NOT_SPECIFIED,
-                AudioSystem.NOT_SPECIFIED,
-                AudioSystem.NOT_SPECIFIED,
-                AudioSystem.NOT_SPECIFIED,
-                AudioSystem.NOT_SPECIFIED,
-                false);
-        Encoding[] aTargetEncodingsForFormat = provider.getTargetEncodings();
+                sourceEncoding, NOT_SPECIFIED, NOT_SPECIFIED, NOT_SPECIFIED, NOT_SPECIFIED, NOT_SPECIFIED, false);
+        Encoding[] targetEncodingsForFormat = provider.getTargetEncodings();
         out("Target Encodings for " + getAudioFormatString(audioFormat));
-        out(aTargetEncodingsForFormat);
+        out(targetEncodingsForFormat);
         outSeparator();
     }
 
     private static AudioFormat[] createAudioFormatsForEncoding(Encoding encoding) {
         List<AudioFormat> formats = new ArrayList<>();
-        if (encoding == Encoding.PCM_SIGNED ||
-                encoding == Encoding.PCM_UNSIGNED) {
+        if (encoding == Encoding.PCM_SIGNED || encoding == Encoding.PCM_UNSIGNED) {
             for (int commonSampleSize : COMMON_SAMPLE_SIZES) {
-                createAudioFormatsForEncodingSub(formats, encoding,
-                        commonSampleSize);
+                createAudioFormatsForEncodingSub(formats, encoding, commonSampleSize);
             }
-        } else if (encoding == Encoding.ALAW ||
-                encoding == Encoding.ULAW) {
+        } else if (encoding == Encoding.ALAW || encoding == Encoding.ULAW) {
             createAudioFormatsForEncodingSub(formats, encoding, 8);
         }
         return formats.toArray(new AudioFormat[0]);
@@ -97,28 +88,28 @@ public class FormatConversionProviderTest {
 
     private static void createAudioFormatsForEncodingSub(List<AudioFormat> formats,
                                                          Encoding encoding,
-                                                         int nSampleSizeInBits) {
+                                                         int sampleSizeInBits) {
         for (float commonSampleRate : COMMON_SAMPLE_RATES) {
             for (int commonChannel : COMMON_CHANNELS) {
-                for (int nEndianess = 0; nEndianess <= 1; nEndianess++) {
-                    boolean bEndianess = (nEndianess == 0);
+                for (int _endianess = 0; _endianess <= 1; _endianess++) {
+                    boolean endianess = (_endianess == 0);
                     AudioFormat format = new AudioFormat(
                             encoding,
                             commonSampleRate,
-                            nSampleSizeInBits,
+                            sampleSizeInBits,
                             commonChannel,
-                            nSampleSizeInBits * commonChannel / 8,
+                            sampleSizeInBits * commonChannel / 8,
                             commonSampleRate,
-                            bEndianess);
+                            endianess);
                     formats.add(format);
                 }
             }
         }
     }
 
-    private static FormatConversionProvider getProvider(String strProviderClassName) throws Exception {
-        Class<?> providerClass = Class.forName(strProviderClassName);
-        FormatConversionProvider provider = (FormatConversionProvider) providerClass.getDeclaredConstructor().newInstance();
+    private static FormatConversionProvider getProvider(String providerClassName) throws Exception {
+        Class<?> providerClass = Class.forName(providerClassName);
+        var provider = (FormatConversionProvider) providerClass.getDeclaredConstructor().newInstance();
         return provider;
     }
 
@@ -127,7 +118,7 @@ public class FormatConversionProviderTest {
     }
 
     private static String getAudioFormatStringImpl0(AudioFormat audioFormat) {
-        String strBuf = audioFormat.getEncoding().toString() +
+        String buf = audioFormat.getEncoding().toString() +
                 ", " +
                 audioFormat.getSampleRate() +
                 " Hz , " +
@@ -140,11 +131,11 @@ public class FormatConversionProviderTest {
                 audioFormat.getFrameRate() +
                 " Hz, " +
                 (audioFormat.isBigEndian() ? "BE" : "le");
-        return strBuf;
+        return buf;
     }
 
     private static String getAudioFormatStringImpl1(AudioFormat audioFormat) {
-        String strBuf = "enc: " +
+        String buf = "enc: " +
                 audioFormat.getEncoding().toString() +
                 ", sr: " +
                 audioFormat.getSampleRate() +
@@ -157,11 +148,11 @@ public class FormatConversionProviderTest {
                 ", fr: " +
                 audioFormat.getFrameRate() +
                 (audioFormat.isBigEndian() ? ", BE" : ", le");
-        return strBuf;
+        return buf;
     }
 
-    private static void out(Encoding[] aEncodings) {
-        for (Encoding aEncoding : aEncodings) {
+    private static void out(Encoding[] encodings) {
+        for (Encoding aEncoding : encodings) {
             out(aEncoding.toString());
         }
     }
@@ -170,9 +161,7 @@ public class FormatConversionProviderTest {
         out("------------------------------------------------------------------------------");
     }
 
-    private static void out(String strMessage) {
-        System.out.println(strMessage);
+    private static void out(String message) {
+        System.out.println(message);
     }
 }
-
-

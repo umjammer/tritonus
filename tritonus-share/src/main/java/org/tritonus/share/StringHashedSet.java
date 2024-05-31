@@ -42,7 +42,6 @@ import java.util.Collection;
  * <p>
  * It is not possible to add <code>null</code> elements.
  */
-
 public class StringHashedSet<E> extends ArraySet<E> {
 
     @Serial
@@ -90,7 +89,4 @@ public class StringHashedSet<E> extends ArraySet<E> {
         }
         return null;
     }
-
 }
-
-

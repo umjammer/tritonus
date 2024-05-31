@@ -30,36 +30,36 @@ public class AlsaPortMixerProvider extends TMixerProvider {
 
     private static final Logger logger = getLogger("org.tritonus.TraceMixerProvider");
 
-    private static boolean sm_bInitialized = false;
+    private static boolean initialized = false;
 
     public AlsaPortMixerProvider() {
-        logger.log(Level.TRACE, "AlsaPortMixerProvider.<init>(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        if (!sm_bInitialized && !isDisabled()) {
+        if (!initialized && !isDisabled()) {
             if (!Alsa.isLibraryAvailable()) {
                 disable();
             } else {
                 staticInit();
-                sm_bInitialized = true;
+                initialized = true;
             }
         } else {
-            logger.log(Level.TRACE, "AlsaDataLineMixerProvider.<init>(): already initialized or disabled");
+            logger.log(Level.TRACE, "already initialized or disabled");
         }
 
-        logger.log(Level.TRACE, "AlsaPortMixerProvider.<init>(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     @Override
     protected void staticInit() {
-        logger.log(Level.TRACE, "AlsaPortMixerProvider.staticInit(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        int[] anCards = AlsaCtl.getCards();
-        logger.log(Level.DEBUG,"AlsaPortMixerProvider.staticInit(): num cards: " + anCards.length);
-        for (int anCard : anCards) {
-            AlsaPortMixer mixer = new AlsaPortMixer(anCard);
+        int[] cards = AlsaCtl.getCards();
+        logger.log(Level.DEBUG,"num cards: " + cards.length);
+        for (int card : cards) {
+            AlsaPortMixer mixer = new AlsaPortMixer(card);
             addMixer(mixer);
         }
 
-        logger.log(Level.TRACE, "AlsaPortMixerProvider.staticInit(): end");
+        logger.log(Level.TRACE, "end");
     }
 }

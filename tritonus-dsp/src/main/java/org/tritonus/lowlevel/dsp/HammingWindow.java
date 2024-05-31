@@ -14,10 +14,6 @@
  *   limitations under the License.
  */
 
-/*
- |<---            this code is formatted to fit into 80 columns             --->|
- */
-
 package org.tritonus.lowlevel.dsp;
 
 /**
@@ -25,16 +21,12 @@ package org.tritonus.lowlevel.dsp;
  */
 public class HammingWindow implements FIRWindow {
 
-    /** {@inheritDoc} */
     @Override
-    public double[] getWindow(int nOrder) {
-        double[] adWindow = new double[nOrder];
-        for (int n = 0; n < nOrder; n++) {
-            adWindow[n] = 0.54 - 0.46 * Math.cos((2.0 * Math.PI * n)
-                    / (nOrder - 1));
+    public double[] getWindow(int order) {
+        double[] window = new double[order];
+        for (int n = 0; n < order; n++) {
+            window[n] = 0.54 - 0.46 * Math.cos((2.0 * Math.PI * n) / (order - 1));
         }
-        return adWindow;
+        return window;
     }
 }
-
-

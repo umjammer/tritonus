@@ -19,7 +19,7 @@
 package org.tritonus.sampled.file;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.List;
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioFormat;
 
@@ -33,54 +33,46 @@ import org.tritonus.share.sampled.file.TDataOutputStream;
  *
  * @author Florian Bomers
  */
-
 public class AiffAudioFileWriter extends TAudioFileWriter {
 
-    private static final AudioFileFormat.Type[] FILE_TYPES =
-            {
-                    AudioFileFormat.Type.AIFF,
-                    AudioFileFormat.Type.AIFC
-            };
+    private static final AudioFileFormat.Type[] FILE_TYPES = {
+            AudioFileFormat.Type.AIFF,
+            AudioFileFormat.Type.AIFC
+    };
 
     private static final AudioFormat.Encoding ULAW = AudioFormat.Encoding.ULAW;
     private static final AudioFormat.Encoding IMA_ADPCM = new AudioFormat.Encoding("IMA_ADPCM");
 
-    // IMPORTANT: this array depends on the AudioFormat.match() algorithm which takes
-    //            AudioSystem.NOT_SPECIFIED into account !
-    private static final AudioFormat[] AUDIO_FORMATS =
-            {
-                    new AudioFormat(PCM_SIGNED, ALL, 8, ALL, ALL, ALL, true),
-                    new AudioFormat(PCM_SIGNED, ALL, 8, ALL, ALL, ALL, false),
-                    new AudioFormat(ULAW, ALL, 8, ALL, ALL, ALL, false),
-                    new AudioFormat(ULAW, ALL, 8, ALL, ALL, ALL, true),
-                    new AudioFormat(PCM_SIGNED, ALL, 16, ALL, ALL, ALL, true),
-                    new AudioFormat(PCM_SIGNED, ALL, 24, ALL, ALL, ALL, true),
-                    new AudioFormat(PCM_SIGNED, ALL, 32, ALL, ALL, ALL, true),
-                    new AudioFormat(IMA_ADPCM, ALL, 4, ALL, ALL, ALL, true),
-                    new AudioFormat(IMA_ADPCM, ALL, 4, ALL, ALL, ALL, false),
-            };
+    /**
+     * IMPORTANT: this array depends on the AudioFormat.match() algorithm which takes
+     *            AudioSystem.NOT_SPECIFIED into account !
+     */
+    private static final AudioFormat[] AUDIO_FORMATS = {
+            new AudioFormat(PCM_SIGNED, ALL, 8, ALL, ALL, ALL, true),
+            new AudioFormat(PCM_SIGNED, ALL, 8, ALL, ALL, ALL, false),
+            new AudioFormat(ULAW, ALL, 8, ALL, ALL, ALL, false),
+            new AudioFormat(ULAW, ALL, 8, ALL, ALL, ALL, true),
+            new AudioFormat(PCM_SIGNED, ALL, 16, ALL, ALL, ALL, true),
+            new AudioFormat(PCM_SIGNED, ALL, 24, ALL, ALL, ALL, true),
+            new AudioFormat(PCM_SIGNED, ALL, 32, ALL, ALL, ALL, true),
+            new AudioFormat(IMA_ADPCM, ALL, 4, ALL, ALL, ALL, true),
+            new AudioFormat(IMA_ADPCM, ALL, 4, ALL, ALL, ALL, false),
+    };
 
     public AiffAudioFileWriter() {
-        super(Arrays.asList(FILE_TYPES),
-                Arrays.asList(AUDIO_FORMATS));
+        super(List.of(FILE_TYPES), List.of(AUDIO_FORMATS));
     }
 
     @Override
-    protected boolean isAudioFormatSupportedImpl(AudioFormat format,
-                                                 AudioFileFormat.Type fileType) {
+    protected boolean isAudioFormatSupportedImpl(AudioFormat format, AudioFileFormat.Type fileType) {
         return AiffTool.getFormatCode(format) != AiffTool.AIFF_COMM_UNSPECIFIED;
     }
 
     @Override
     protected AudioOutputStream getAudioOutputStream(AudioFormat audioFormat,
-                                                     long lLengthInBytes,
+                                                     long lengthInBytes,
                                                      AudioFileFormat.Type fileType,
                                                      TDataOutputStream dataOutputStream) throws IOException {
-        return new AiffAudioOutputStream(audioFormat, fileType,
-                lLengthInBytes,
-                dataOutputStream);
+        return new AiffAudioOutputStream(audioFormat, fileType, lengthInBytes, dataOutputStream);
     }
-
 }
-
-

@@ -42,16 +42,16 @@ public abstract class TSynchronousFilteredAudioInputStream extends TAudioInputSt
 
     private static final Logger logger = getLogger("org.tritonus.TraceAudioConverter");
     
-    private AudioInputStream originalStream;
+    private final AudioInputStream originalStream;
 
     /** the same originalStream cast to FloatSampleInput, if it is one */
     private FloatSampleInput originalStreamFloat;
 
-    private AudioFormat originalFormat;
+    private final AudioFormat originalFormat;
     /** 1 if original format's frame size is NOT_SPECIFIED */
-    private int originalFrameSize;
+    private final int originalFrameSize;
     /** 1 if original format's frame size is NOT_SPECIFIED */
-    private int newFrameSize;
+    private final int newFrameSize;
 
     private boolean EOF = false;
 
@@ -62,13 +62,13 @@ public abstract class TSynchronousFilteredAudioInputStream extends TAudioInputSt
      * and grows with the time - it always has the size of the
      * largest intermediate buffer ever needed.
      */
-    protected byte[] m_buffer = null;
+    protected byte[] buffer = null;
 
     /**
      * For use of the more efficient method convertInPlace.
      * it will be set to true when (frameSizeFactor==1)
      */
-    private boolean m_bConvertInPlace;
+    private boolean convertInPlace;
 
     /** if this flag is set, convert(FloatSampleBuffer) is implemented by overriding classes */
     private boolean m_enableFloatConversion;
@@ -78,16 +78,14 @@ public abstract class TSynchronousFilteredAudioInputStream extends TAudioInputSt
         super(audioInputStream, newFormat, audioInputStream.getFrameLength());
         originalStream = audioInputStream;
         originalFormat = audioInputStream.getFormat();
-        originalFrameSize = (originalFormat.getFrameSize() <= 0) ?
-                1 : originalFormat.getFrameSize();
-        newFrameSize = (getFormat().getFrameSize() <= 0) ?
-                1 : getFormat().getFrameSize();
+        originalFrameSize = (originalFormat.getFrameSize() <= 0) ? 1 : originalFormat.getFrameSize();
+        newFrameSize = (getFormat().getFrameSize() <= 0) ? 1 : getFormat().getFrameSize();
         if (originalStream instanceof FloatSampleInput) {
             originalStreamFloat = (FloatSampleInput) originalStream;
         }
-        logger.log(Level.TRACE, "TSynchronousFilteredAudioInputStream: original format =" + AudioUtils.format2ShortStr(originalFormat));
-        logger.log(Level.TRACE, "TSynchronousFilteredAudioInputStream: converted format=" + AudioUtils.format2ShortStr(getFormat()));
-        m_bConvertInPlace = false;
+        logger.log(Level.TRACE, "original format =" + AudioUtils.format2ShortStr(originalFormat));
+        logger.log(Level.TRACE, "converted format=" + AudioUtils.format2ShortStr(getFormat()));
+        convertInPlace = false;
         m_enableFloatConversion = false;
     }
 
@@ -98,9 +96,9 @@ public abstract class TSynchronousFilteredAudioInputStream extends TAudioInputSt
      */
     protected boolean enableConvertInPlace() {
         if (newFrameSize >= originalFrameSize) {
-            m_bConvertInPlace = true;
+            convertInPlace = true;
         }
-        return m_bConvertInPlace;
+        return convertInPlace;
     }
 
     /**
@@ -168,8 +166,8 @@ public abstract class TSynchronousFilteredAudioInputStream extends TAudioInputSt
 
     /** remove the temporary read buffer to save heap */
     private void clearBuffer() {
-        m_buffer = null;
-        m_floatByteBuffer = null;
+        buffer = null;
+        floatByteBuffer = null;
     }
 
     public AudioInputStream getOriginalStream() {
@@ -181,61 +179,61 @@ public abstract class TSynchronousFilteredAudioInputStream extends TAudioInputSt
     }
 
     /**
-     * Read nLength bytes that will be the converted samples
+     * Read length bytes that will be the converted samples
      * of the original InputStream.
-     * When nLength is not an integral number of frames,
-     * this method may read less than nLength bytes.
+     * When length is not an integral number of frames,
+     * this method may read less than length bytes.
      */
     @Override
-    public final int read(byte[] abData, int nOffset, int nLength) throws IOException {
+    public final int read(byte[] data, int offset, int length) throws IOException {
         // number of frames that we have to read from the underlying stream.
-        int nFrameLength = nLength / newFrameSize;
+        int frameLength = length / newFrameSize;
 
         // number of bytes that we need to read from underlying stream.
-        int originalBytes = nFrameLength * originalFrameSize;
+        int originalBytes = frameLength * originalFrameSize;
 
-        logger.log(Level.TRACE, "> TSynchronousFilteredAIS.read(buffer[" + abData.length + "], " +
-                nOffset + " ," + nLength + " bytes ^=" + nFrameLength + " frames)");
-        int nFramesConverted;
+        logger.log(Level.TRACE, "> TSynchronousFilteredAIS.read(buffer[" + data.length + "], " +
+                offset + " ," + length + " bytes ^=" + frameLength + " frames)");
+        int framesConverted;
 
         // set up buffer to read
         byte[] readBuffer;
         int readOffset;
-        if (m_bConvertInPlace) {
-            readBuffer = abData;
-            readOffset = nOffset;
+        if (convertInPlace) {
+            readBuffer = data;
+            readOffset = offset;
         } else {
             // assert that the buffer fits
-            if (m_buffer == null || m_buffer.length < originalBytes) {
-                m_buffer = new byte[originalBytes];
+            if (buffer == null || buffer.length < originalBytes) {
+                buffer = new byte[originalBytes];
             }
-            readBuffer = m_buffer;
+            readBuffer = buffer;
             readOffset = 0;
         }
-        int nBytesRead = originalStream.read(readBuffer, readOffset, originalBytes);
-        if (nBytesRead == -1) {
+        int bytesRead = originalStream.read(readBuffer, readOffset, originalBytes);
+        if (bytesRead == -1) {
             // end of stream
             clearBuffer();
             EOF = true;
             return -1;
         }
-        int nFramesRead = nBytesRead / originalFrameSize;
-        logger.log(Level.TRACE, "original.read returned " + nBytesRead + " bytes ^=" + nFramesRead + " frames");
-        if (m_bConvertInPlace) {
-            convertInPlace(abData, nOffset, nFramesRead);
-            nFramesConverted = nFramesRead;
+        int framesRead = bytesRead / originalFrameSize;
+        logger.log(Level.TRACE, "original.read returned " + bytesRead + " bytes ^=" + framesRead + " frames");
+        if (convertInPlace) {
+            convertInPlace(data, offset, framesRead);
+            framesConverted = framesRead;
         } else {
-            nFramesConverted = convert(m_buffer, abData, nOffset, nFramesRead);
+            framesConverted = convert(buffer, data, offset, framesRead);
         }
-        logger.log(Level.TRACE, "< converted " + nFramesConverted + " frames");
+        logger.log(Level.TRACE, "< converted " + framesConverted + " frames");
 
-        return nFramesConverted * newFrameSize;
+        return framesConverted * newFrameSize;
     }
 
     @Override
-    public long skip(long nSkip) throws IOException {
+    public long skip(long skip) throws IOException {
         // only returns integral frames
-        long skipFrames = nSkip / newFrameSize;
+        long skipFrames = skip / newFrameSize;
         long originalSkippedBytes = originalStream.skip(skipFrames * originalFrameSize);
         long skippedFrames = originalSkippedBytes / originalFrameSize;
         return skippedFrames * newFrameSize;
@@ -255,8 +253,8 @@ public abstract class TSynchronousFilteredAudioInputStream extends TAudioInputSt
     }
 
     @Override
-    public void mark(int readlimit) {
-        int readLimitFrames = readlimit / newFrameSize;
+    public void mark(int readLimit) {
+        int readLimitFrames = readLimit / newFrameSize;
         originalStream.mark(readLimitFrames * originalFrameSize);
     }
 
@@ -293,7 +291,7 @@ public abstract class TSynchronousFilteredAudioInputStream extends TAudioInputSt
     }
 
     /** temporary byte buffer for conversion from/to byte/float arrays */
-    private byte[] m_floatByteBuffer = null;
+    private byte[] floatByteBuffer = null;
 
     /**
      * read sampleCount converted samples at the specified offset. The current
@@ -303,8 +301,7 @@ public abstract class TSynchronousFilteredAudioInputStream extends TAudioInputSt
     @Override
     public void read(FloatSampleBuffer buffer, int offset, int sampleCount) {
         try {
-            // Case 1: reading cannot, but processing can be done in float
-            // layer,
+            // Case 1: reading cannot, but processing can be done in float layer,
             // so read unconverted bytes, then convert to float and process
             if (originalStreamFloat == null && m_enableFloatConversion) {
                 // currently cannot convert in the middle of the buffer
@@ -313,11 +310,11 @@ public abstract class TSynchronousFilteredAudioInputStream extends TAudioInputSt
                 }
                 // allocate a byte array large enough to hold the byte data
                 int reqSize = sampleCount * originalFrameSize;
-                if (m_floatByteBuffer == null || m_floatByteBuffer.length < reqSize) {
-                    m_floatByteBuffer = new byte[reqSize];
+                if (floatByteBuffer == null || floatByteBuffer.length < reqSize) {
+                    floatByteBuffer = new byte[reqSize];
                 }
                 // read into byte array -- is already processed
-                int bytesRead = originalStream.read(m_floatByteBuffer, 0, reqSize);
+                int bytesRead = originalStream.read(floatByteBuffer, 0, reqSize);
                 // convert the byte array to float
                 if (bytesRead <= 0) {
                     // EOF or nothing read
@@ -325,7 +322,7 @@ public abstract class TSynchronousFilteredAudioInputStream extends TAudioInputSt
                     return;
                 }
                 // convert to float
-                buffer.initFromByteArray(m_floatByteBuffer, 0, bytesRead, originalFormat);
+                buffer.initFromByteArray(floatByteBuffer, 0, bytesRead, originalFormat);
                 // do the processing
                 convert(buffer, 0, buffer.getSampleCount());
             } else
@@ -338,11 +335,11 @@ public abstract class TSynchronousFilteredAudioInputStream extends TAudioInputSt
                     }
                     // allocate a byte array large enough to hold the converted data
                     int reqSize = sampleCount * format.getFrameSize();
-                    if (m_floatByteBuffer == null || m_floatByteBuffer.length < reqSize) {
-                        m_floatByteBuffer = new byte[reqSize];
+                    if (floatByteBuffer == null || floatByteBuffer.length < reqSize) {
+                        floatByteBuffer = new byte[reqSize];
                     }
                     // read into byte array -- is already processed
-                    int bytesRead = read(m_floatByteBuffer, 0, reqSize);
+                    int bytesRead = read(floatByteBuffer, 0, reqSize);
                     // convert the byte array to float
                     if (bytesRead <= 0) {
                         // EOF or nothing read
@@ -350,7 +347,7 @@ public abstract class TSynchronousFilteredAudioInputStream extends TAudioInputSt
                         return;
                     }
                     // convert to float
-                    buffer.initFromByteArray(m_floatByteBuffer, 0, bytesRead, format);
+                    buffer.initFromByteArray(floatByteBuffer, 0, bytesRead, format);
                 } else {
                     // read from the source stream
                     originalStreamFloat.read(buffer, offset, sampleCount);

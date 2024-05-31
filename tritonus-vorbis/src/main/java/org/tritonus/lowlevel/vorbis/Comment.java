@@ -14,10 +14,6 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --.|
-*/
-
 package org.tritonus.lowlevel.vorbis;
 
 import java.lang.System.Logger;
@@ -50,100 +46,100 @@ public class Comment {
     }
 
     public Comment() {
-        logger.log(Level.TRACE, "Comment.<init>(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        int nReturn = malloc();
-        if (nReturn < 0) {
+        int ret = malloc();
+        if (ret < 0) {
             throw new RuntimeException("malloc of vorbis_comment failed");
         }
 
-        logger.log(Level.TRACE, "Comment.<init>(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     private int malloc() {
-        logger.log(Level.TRACE, "malloc(): begin");
+        logger.log(Level.TRACE, "begin");
 
         handle = new vorbis_comment();
-        logger.log(Level.TRACE, String.format("malloc(): handle: %s", handle));
+        logger.log(Level.TRACE, "handle: %s".formatted(handle));
 
-        logger.log(Level.TRACE, "malloc(): end");
+        logger.log(Level.TRACE, "end");
 
         return 0;
     }
 
     public void free() {
-        logger.log(Level.TRACE, "free(): begin");
+        logger.log(Level.TRACE, "begin");
 
         handle = null;
 
-        logger.log(Level.TRACE, "free(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     /**
      * Calls vorbis_comment_init().
      */
     public void init() {
-        logger.log(Level.TRACE, "init(): begin");
+        logger.log(Level.TRACE, "begin");
 
         CodecLibrary.INSTANCE.vorbis_comment_init(handle);
 
-        logger.log(Level.TRACE, "init(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     /**
      * Calls vorbis_comment_add().
      */
-    public void addComment(String strComment) {
-        logger.log(Level.TRACE, "addComment(): begin");
+    public void addComment(String comment) {
+        logger.log(Level.TRACE, "begin");
 
-        CodecLibrary.INSTANCE.vorbis_comment_add(handle, strComment);
+        CodecLibrary.INSTANCE.vorbis_comment_add(handle, comment);
 
-        logger.log(Level.TRACE, "addComment(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     /**
      * Calls vorbis_comment_add_tag().
      */
-    public void addTag(String strTag, String strComment) {
-        logger.log(Level.TRACE, "addTag(): begin");
+    public void addTag(String tag, String comment) {
+        logger.log(Level.TRACE, "begin");
 
-        CodecLibrary.INSTANCE.vorbis_comment_add_tag(handle, strTag, strComment);
+        CodecLibrary.INSTANCE.vorbis_comment_add_tag(handle, tag, comment);
 
-        logger.log(Level.TRACE, "addTag(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     /**
      * Calls vorbis_comment_query_count().
      */
-    public int queryCount(String strTag) {
-        logger.log(Level.TRACE, "queryCount(): begin");
+    public int queryCount(String tag) {
+        logger.log(Level.TRACE, "begin");
 
-        int nReturn = CodecLibrary.INSTANCE.vorbis_comment_query_count(handle, strTag);
+        int ret = CodecLibrary.INSTANCE.vorbis_comment_query_count(handle, tag);
 
-        logger.log(Level.TRACE, "queryCount(): end");
+        logger.log(Level.TRACE, "end");
 
-        return nReturn;
+        return ret;
     }
 
     /**
      * Calls vorbis_comment_query().
      */
-    public String query(String strTag, int nIndex) {
-        logger.log(Level.TRACE, "query(): begin");
+    public String query(String tag, int index) {
+        logger.log(Level.TRACE, "begin");
 
-        Pointer result = CodecLibrary.INSTANCE.vorbis_comment_query(handle, strTag, nIndex);
-        String strReturn = result.getString(0);
+        Pointer result = CodecLibrary.INSTANCE.vorbis_comment_query(handle, tag, index);
+        String ret = result.getString(0);
 
-        logger.log(Level.TRACE, "query(): end");
+        logger.log(Level.TRACE, "end");
 
-        return strReturn;
+        return ret;
     }
 
     /**
      * Accesses user_comments, comment_lengths and comments.
      */
     public String[] getUserComments() {
-        logger.log(Level.TRACE, "getUserComments(): begin");
+        logger.log(Level.TRACE, "begin");
 
         String[] stringArray = new String[handle.comments];
         for (int i = 0; i < handle.comments; i++) {
@@ -151,7 +147,7 @@ public class Comment {
             stringArray[i] = string;
         }
 
-        logger.log(Level.TRACE, "getUserComments(): end");
+        logger.log(Level.TRACE, "end");
 
         return stringArray;
     }
@@ -160,24 +156,24 @@ public class Comment {
      * Accesses vendor.
      */
     public String getVendor() {
-        logger.log(Level.TRACE, "getVendor(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        String strReturn = handle.vendor.getString(0);
+        String ret = handle.vendor.getString(0);
 
-        logger.log(Level.TRACE, "getVendor(): end");
+        logger.log(Level.TRACE, "end");
 
-        return strReturn;
+        return ret;
     }
 
     /**
      * Calls vorbis_comment_clear().
      */
     public void clear() {
-        logger.log(Level.TRACE, "clear(): begin");
+        logger.log(Level.TRACE, "begin");
 
         CodecLibrary.INSTANCE.vorbis_comment_clear(handle);
 
-        logger.log(Level.TRACE, "clear(): end");
+        logger.log(Level.TRACE, "end");
     }
 
 //    /**

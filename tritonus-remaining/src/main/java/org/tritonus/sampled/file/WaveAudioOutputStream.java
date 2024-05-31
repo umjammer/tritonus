@@ -43,20 +43,20 @@ public class WaveAudioOutputStream extends TAudioOutputStream {
     private static final int LENGTH_NOT_KNOWN = -1;
 
     public WaveAudioOutputStream(AudioFormat audioFormat,
-                                 long lLength,
+                                 long length,
                                  TDataOutputStream dataOutputStream) {
         // always do back-patching if the stream supports seeking, in case the
         // reported stream length is longer than the actual data
         super(audioFormat,
-                lLength,
+                length,
                 dataOutputStream,
                 dataOutputStream.supportsSeek());
         // wave cannot store more than 4GB
-        if (lLength != AudioSystem.NOT_SPECIFIED && (lLength + WaveTool.DATA_OFFSET) > 0xFFFF_FFFFL) {
+        if (length != AudioSystem.NOT_SPECIFIED && (length + WaveTool.DATA_OFFSET) > 0xffff_ffffL) {
             logger.log(Level.TRACE, "WaveAudioOutputStream: Length exceeds 4GB: " +
-                    lLength + "=0x" + Long.toHexString(lLength) +
-                    " with header=" + (lLength + WaveTool.DATA_OFFSET) +
-                    "=0x" + Long.toHexString(lLength + WaveTool.DATA_OFFSET));
+                    length + "=0x" + Long.toHexString(length) +
+                    " with header=" + (length + WaveTool.DATA_OFFSET) +
+                    "=0x" + Long.toHexString(length + WaveTool.DATA_OFFSET));
             throw new IllegalArgumentException("Wave files cannot be larger than 4GB.");
         }
         // double-check that we can write this audio format
@@ -77,7 +77,7 @@ public class WaveAudioOutputStream extends TAudioOutputStream {
 
         int formatCode = WaveTool.getFormatCode(getFormat());
         AudioFormat format = getFormat();
-        long lLength = getLength();
+        long length = getLength();
         int formatChunkAdd = 0;
         if (formatCode == WaveTool.WAVE_FORMAT_GSM610) {
             // space for extra fields
@@ -91,18 +91,18 @@ public class WaveAudioOutputStream extends TAudioOutputStream {
 
         // if patching the header, and the length has not been known at first
         // writing of the header, just truncate the size fields, don't throw an exception
-        if (lLength != AudioSystem.NOT_SPECIFIED && lLength + dataOffset > 0xFFFF_FFFFL) {
-            lLength = 0xFFFF_FFFFL - dataOffset;
+        if (length != AudioSystem.NOT_SPECIFIED && length + dataOffset > 0xFFFF_FFFFL) {
+            length = 0xFFFF_FFFFL - dataOffset;
         }
 
         // chunks must be on word-boundaries
-        long lDataChunkSize = lLength + (lLength % 2);
-        if (lLength == AudioSystem.NOT_SPECIFIED || lDataChunkSize > 0xFFFF_FFFFL) {
-            lDataChunkSize = 0xFFFF_FFFFL;
+        long dataChunkSize = length + (length % 2);
+        if (length == AudioSystem.NOT_SPECIFIED || dataChunkSize > 0xFFFF_FFFFL) {
+            dataChunkSize = 0xFFFF_FFFFL;
         }
 
-        long RIFF_Size = lDataChunkSize + dataOffset - WaveTool.CHUNK_HEADER_SIZE;
-        if (lLength == AudioSystem.NOT_SPECIFIED || RIFF_Size > 0xFFFF_FFFFL) {
+        long RIFF_Size = dataChunkSize + dataOffset - WaveTool.CHUNK_HEADER_SIZE;
+        if (length == AudioSystem.NOT_SPECIFIED || RIFF_Size > 0xFFFF_FFFFL) {
             RIFF_Size = 0xFFFF_FFFFL;
         }
 
@@ -152,8 +152,8 @@ public class WaveAudioOutputStream extends TAudioOutputStream {
             // TODO add this as an attribute or property
             //  in AudioOutputStream or AudioInputStream
             long samples = 0;
-            if (lLength != AudioSystem.NOT_SPECIFIED) {
-                samples = lLength / format.getFrameSize() * decodedSamplesPerBlock;
+            if (length != AudioSystem.NOT_SPECIFIED) {
+                samples = length / format.getFrameSize() * decodedSamplesPerBlock;
             }
             // saturate sample count
             if (samples > 0xFFFF_FFFFL) {
@@ -166,7 +166,7 @@ public class WaveAudioOutputStream extends TAudioOutputStream {
 
         // write header of data chunk
         dos.writeInt(WaveTool.WAVE_DATA_MAGIC);
-        dos.writeLittleEndian32((lLength != AudioSystem.NOT_SPECIFIED) ? ((int) lLength) : LENGTH_NOT_KNOWN);
+        dos.writeLittleEndian32((length != AudioSystem.NOT_SPECIFIED) ? ((int) length) : LENGTH_NOT_KNOWN);
     }
 
     @Override

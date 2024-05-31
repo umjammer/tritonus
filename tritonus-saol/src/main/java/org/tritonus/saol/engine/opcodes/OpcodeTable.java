@@ -30,10 +30,10 @@ public class OpcodeTable {
      * Key: the name of the opcode.
      * Value: a OpcodeEntry instance.
      */
-    private Map<String, OpcodeEntry> m_opcodeMap;
+    private final Map<String, OpcodeEntry> opcodeMap;
 
     public OpcodeTable() {
-        m_opcodeMap = new HashMap<>();
+        opcodeMap = new HashMap<>();
         buildOpcodeTable();
     }
 
@@ -43,12 +43,10 @@ public class OpcodeTable {
     }
 
     public void addEntry(OpcodeEntry opcodeEntry) {
-        m_opcodeMap.put(opcodeEntry.getOpcodeName(), opcodeEntry);
+        opcodeMap.put(opcodeEntry.getOpcodeName(), opcodeEntry);
     }
 
-    public OpcodeEntry getOpcode(String strOpcodeName) {
-        return m_opcodeMap.get(strOpcodeName);
+    public OpcodeEntry getOpcode(String opcodeName) {
+        return opcodeMap.get(opcodeName);
     }
 }
-
-

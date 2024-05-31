@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 1999 - 2006 by Matthias Pfisterer
  *
@@ -46,24 +45,24 @@ public abstract class TMidiDevice implements MidiDevice {
     /**
      * The Info object for a certain instance of MidiDevice.
      */
-    private MidiDevice.Info m_info;
+    private final MidiDevice.Info info;
 
     /**
      * A flag to store whether the device is "open".
      */
-    private boolean m_bDeviceOpen;
+    private boolean deviceOpen;
 
     /**
      * Whether to handle input from the physical port
      * and to allow Transmitters.
      */
-    private boolean m_bUseTransmitter;
+    private final boolean useTransmitter;
 
     /**
      * Whether to handle output to the physical port
      * and to allow Receivers.
      */
-    private boolean m_bUseReceiver;
+    private final boolean useReceiver;
 
     /**
      * The list of Receiver objects that belong to this
@@ -72,7 +71,7 @@ public abstract class TMidiDevice implements MidiDevice {
      * @see #addReceiver
      * @see #removeReceiver
      */
-    private final List<Receiver> m_receivers;
+    private final List<Receiver> receivers;
 
     /**
      * The list of Transmitter objects that belong to this
@@ -81,7 +80,7 @@ public abstract class TMidiDevice implements MidiDevice {
      * @see #addTransmitter
      * @see #removeTransmitter
      */
-    private final List<Transmitter> m_transmitters;
+    private final List<Transmitter> transmitters;
 
     /**
      * Initialize this class.
@@ -103,15 +102,13 @@ public abstract class TMidiDevice implements MidiDevice {
      *
      * @param info The info object that describes this instance.
      */
-    public TMidiDevice(MidiDevice.Info info,
-                       boolean bUseTransmitter,
-                       boolean bUseReceiver) {
-        m_info = info;
-        m_bUseTransmitter = bUseTransmitter;
-        m_bUseReceiver = bUseReceiver;
-        m_bDeviceOpen = false;
-        m_receivers = new ArrayList<>();
-        m_transmitters = new ArrayList<>();
+    public TMidiDevice(MidiDevice.Info info, boolean useTransmitter, boolean useReceiver) {
+        this.info = info;
+        this.useTransmitter = useTransmitter;
+        this.useReceiver = useReceiver;
+        deviceOpen = false;
+        receivers = new ArrayList<>();
+        transmitters = new ArrayList<>();
     }
 
     /**
@@ -123,21 +120,21 @@ public abstract class TMidiDevice implements MidiDevice {
      */
     @Override
     public MidiDevice.Info getDeviceInfo() {
-        return m_info;
+        return info;
     }
 
     @Override
     public synchronized void open() throws MidiUnavailableException {
-        logger.log(Level.TRACE, "TMidiDevice.open(): begin");
+        logger.log(Level.TRACE, "begin");
 
         if (!isOpen()) {
             openImpl();
-            // If openImpl() throws a MidiUnavailableException, m_bDeviceOpen
+            // If openImpl() throws a MidiUnavailableException, deviceOpen
             // remains false.
-            m_bDeviceOpen = true;
+            deviceOpen = true;
         }
 
-        logger.log(Level.TRACE, "TMidiDevice.open(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     /**
@@ -145,22 +142,22 @@ public abstract class TMidiDevice implements MidiDevice {
      * opening.
      */
     protected void openImpl() throws MidiUnavailableException {
-        logger.log(Level.TRACE, "TMidiDevice.openImpl(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        logger.log(Level.TRACE, "TMidiDevice.openImpl(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     @Override
     public synchronized void close() {
-        logger.log(Level.TRACE, "TMidiDevice.close(): begin");
+        logger.log(Level.TRACE, "begin");
 
         if (isOpen()) {
             closeImpl();
             // TODO close all Receivers and Transmitters
-            m_bDeviceOpen = false;
+            deviceOpen = false;
         }
 
-        logger.log(Level.TRACE, "TMidiDevice.close(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     /**
@@ -168,14 +165,14 @@ public abstract class TMidiDevice implements MidiDevice {
      * closeing.
      */
     protected void closeImpl() {
-        logger.log(Level.TRACE, "TMidiDevice.closeImpl(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        logger.log(Level.TRACE, "TMidiDevice.closeImpl(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     @Override
     public boolean isOpen() {
-        return m_bDeviceOpen;
+        return deviceOpen;
     }
 
     /**
@@ -186,7 +183,7 @@ public abstract class TMidiDevice implements MidiDevice {
      * @see #getUseReceiver
      */
     protected boolean getUseTransmitter() {
-        return m_bUseTransmitter;
+        return useTransmitter;
     }
 
     /**
@@ -197,7 +194,7 @@ public abstract class TMidiDevice implements MidiDevice {
      * @see #getUseTransmitter
      */
     protected boolean getUseReceiver() {
-        return m_bUseReceiver;
+        return useReceiver;
     }
 
     /**
@@ -213,22 +210,22 @@ public abstract class TMidiDevice implements MidiDevice {
 
     @Override
     public int getMaxReceivers() {
-        int nMaxReceivers = 0;
+        int maxReceivers = 0;
         if (getUseReceiver()) {
             // The value -1 means unlimited.
-            nMaxReceivers = -1;
+            maxReceivers = -1;
         }
-        return nMaxReceivers;
+        return maxReceivers;
     }
 
     @Override
     public int getMaxTransmitters() {
-        int nMaxTransmitters = 0;
+        int maxTransmitters = 0;
         if (getUseTransmitter()) {
             // The value -1 means unlimited.
-            nMaxTransmitters = -1;
+            maxTransmitters = -1;
         }
-        return nMaxTransmitters;
+        return maxTransmitters;
     }
 
     /**
@@ -259,12 +256,12 @@ public abstract class TMidiDevice implements MidiDevice {
 
     @Override
     public List<Receiver> getReceivers() {
-        return Collections.unmodifiableList(m_receivers);
+        return Collections.unmodifiableList(receivers);
     }
 
     @Override
     public List<Transmitter> getTransmitters() {
-        return Collections.unmodifiableList(m_transmitters);
+        return Collections.unmodifiableList(transmitters);
     }
 
     /**
@@ -272,33 +269,31 @@ public abstract class TMidiDevice implements MidiDevice {
      * This method is called by TMidiDevice.Receiver object on
      * receipt of a MidiMessage.
      */
-    protected void receive(MidiMessage message, long lTimeStamp) {
-        // TraceMidiDevice
-            logger.log(Level.TRACE, "### [should be overridden] TMidiDevice.receive(): message " + message);
-
+    protected void receive(MidiMessage message, long timeStamp) {
+        logger.log(Level.TRACE, "### [should be overridden] message " + message);
     }
 
     protected void addReceiver(Receiver receiver) {
-        synchronized (m_receivers) {
-            m_receivers.add(receiver);
+        synchronized (receivers) {
+            receivers.add(receiver);
         }
     }
 
     protected void removeReceiver(Receiver receiver) {
-        synchronized (m_receivers) {
-            m_receivers.remove(receiver);
+        synchronized (receivers) {
+            receivers.remove(receiver);
         }
     }
 
     protected void addTransmitter(Transmitter transmitter) {
-        synchronized (m_transmitters) {
-            m_transmitters.add(transmitter);
+        synchronized (transmitters) {
+            transmitters.add(transmitter);
         }
     }
 
     protected void removeTransmitter(Transmitter transmitter) {
-        synchronized (m_transmitters) {
-            m_transmitters.remove(transmitter);
+        synchronized (transmitters) {
+            transmitters.remove(transmitter);
         }
     }
 
@@ -307,18 +302,17 @@ public abstract class TMidiDevice implements MidiDevice {
      * This method should be called by subclasses when they get a
      * message from a physical MIDI port.
      */
-    protected void sendImpl(MidiMessage message, long lTimeStamp) {
-        logger.log(Level.TRACE, "TMidiDevice.sendImpl(): begin");
+    protected void sendImpl(MidiMessage message, long timeStamp) {
+        logger.log(Level.TRACE, "begin");
 
-        for (Transmitter m_transmitter : m_transmitters) {
-            TTransmitter transmitter = (TTransmitter) m_transmitter;
+        for (Transmitter _transmitter : transmitters) {
+            TTransmitter transmitter = (TTransmitter) _transmitter;
             // due to a bug in the Sun jdk1.3, we cannot use
             // clone() for MetaMessages. So we have to do the
             // equivalent ourselves.
             //MidiMessage copiedMessage = (MidiMessage) message.clone();
             MidiMessage copiedMessage;
-            if (message instanceof MetaMessage) {
-                MetaMessage origMessage = (MetaMessage) message;
+            if (message instanceof MetaMessage origMessage) {
                 MetaMessage metaMessage = new MetaMessage();
                 try {
                     metaMessage.setMessage(origMessage.getType(), origMessage.getData(), origMessage.getData().length);
@@ -331,14 +325,14 @@ public abstract class TMidiDevice implements MidiDevice {
             }
 
             if (message instanceof MetaMessage) {
-                logger.log(Level.TRACE, "TMidiDevice.sendImpl(): MetaMessage.getData().length (original): " + ((MetaMessage) message).getData().length);
+                logger.log(Level.TRACE, "MetaMessage.getData().length (original): " + ((MetaMessage) message).getData().length);
 
-                logger.log(Level.TRACE, "TMidiDevice.sendImpl(): MetaMessage.getData().length (cloned): " + ((MetaMessage) copiedMessage).getData().length);
+                logger.log(Level.TRACE, "MetaMessage.getData().length (cloned): " + ((MetaMessage) copiedMessage).getData().length);
             }
-            transmitter.send(copiedMessage, lTimeStamp);
+            transmitter.send(copiedMessage, timeStamp);
         }
 
-        logger.log(Level.TRACE, "TMidiDevice.sendImpl(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     // INNER CLASSES
@@ -350,26 +344,26 @@ public abstract class TMidiDevice implements MidiDevice {
      */
     public class TReceiver implements Receiver {
 
-        private boolean m_bOpen;
+        private boolean open;
 
         public TReceiver() {
             TMidiDevice.this.addReceiver(this);
-            m_bOpen = true;
+            open = true;
         }
 
         protected boolean isOpen() {
-            return m_bOpen;
+            return open;
         }
 
         /**
          * Receive a MidiMessage.
          */
         @Override
-        public void send(MidiMessage message, long lTimeStamp) {
-            logger.log(Level.TRACE, "TMidiDevice.TReceiver.send(): message " + message);
+        public void send(MidiMessage message, long timeStamp) {
+            logger.log(Level.TRACE, "message " + message);
 
-            if (m_bOpen) {
-                TMidiDevice.this.receive(message, lTimeStamp);
+            if (open) {
+                TMidiDevice.this.receive(message, timeStamp);
             } else {
                 throw new IllegalStateException("receiver is not open");
             }
@@ -383,35 +377,35 @@ public abstract class TMidiDevice implements MidiDevice {
         @Override
         public void close() {
             TMidiDevice.this.removeReceiver(this);
-            m_bOpen = false;
+            open = false;
         }
     }
 
     public class TTransmitter implements Transmitter {
 
-        private boolean m_bOpen;
-        private Receiver m_receiver;
+        private boolean open;
+        private Receiver receiver;
 
         public TTransmitter() {
-            m_bOpen = true;
+            open = true;
             TMidiDevice.this.addTransmitter(this);
         }
 
         @Override
         public void setReceiver(Receiver receiver) {
             synchronized (this) {
-                m_receiver = receiver;
+                this.receiver = receiver;
             }
         }
 
         @Override
         public Receiver getReceiver() {
-            return m_receiver;
+            return receiver;
         }
 
-        public void send(MidiMessage message, long lTimeStamp) {
-            if (getReceiver() != null && m_bOpen) {
-                getReceiver().send(message, lTimeStamp);
+        public void send(MidiMessage message, long timeStamp) {
+            if (getReceiver() != null && open) {
+                getReceiver().send(message, timeStamp);
             }
         }
 
@@ -424,8 +418,8 @@ public abstract class TMidiDevice implements MidiDevice {
         @Override
         public void close() {
             TMidiDevice.this.removeTransmitter(this);
-            m_bOpen = false;
-            // Previously, this method just set m_receiver to null
+            open = false;
+            // Previously, this method just set receiver to null
             // instead of maintaining an open flag. This allows to exploit
             // the behaviour of calling close(), the setReceiver() again,
             // and the Transmitter is "reopened".
@@ -444,6 +438,4 @@ public abstract class TMidiDevice implements MidiDevice {
         }
     }
 }
-
-
 

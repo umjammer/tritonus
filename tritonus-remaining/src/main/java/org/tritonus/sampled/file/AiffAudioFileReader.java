@@ -61,62 +61,62 @@ public class AiffAudioFileReader extends TAudioFileReader {
     private AudioFormat readCommChunk(DataInputStream dataInputStream, int chunkLength)
             throws IOException, UnsupportedAudioFileException {
 
-        int nNumChannels = dataInputStream.readShort();
-        if (nNumChannels <= 0) {
+        int numChannels = dataInputStream.readShort();
+        if (numChannels <= 0) {
             throw new UnsupportedAudioFileException("not an AIFF file: number of channels must be positive");
         }
-        logger.log(Level.TRACE, "Found " + nNumChannels + " channels.");
+        logger.log(Level.TRACE, "Found " + numChannels + " channels.");
 
         // ignored: frame count
         dataInputStream.readInt();
-        int nSampleSize = dataInputStream.readShort();
-        float fSampleRate = (float) readIeeeExtended(dataInputStream);
-        if (fSampleRate <= 0.0) {
+        int sampleSize = dataInputStream.readShort();
+        float sampleRate = (float) readIeeeExtended(dataInputStream);
+        if (sampleRate <= 0.0) {
             throw new UnsupportedAudioFileException("not an AIFF file: sample rate must be positive");
         }
-        logger.log(Level.TRACE, "Found framerate " + fSampleRate);
+        logger.log(Level.TRACE, "Found framerate " + sampleRate);
 
         AudioFormat.Encoding encoding = AudioFormat.Encoding.PCM_SIGNED;
-        int nRead = 18;
+        int read = 18;
         boolean isLittleEndian = false;
-        if (chunkLength > nRead) {
-            int nEncoding = dataInputStream.readInt();
-            nRead += 4;
-            if (nEncoding == AiffTool.AIFF_COMM_PCM
-                    || nEncoding == AiffTool.AIFF_COMM_TWOS
-                    || nEncoding == AiffTool.AIFF_COMM_SOWT) {
+        if (chunkLength > read) {
+            int _encoding = dataInputStream.readInt();
+            read += 4;
+            if (_encoding == AiffTool.AIFF_COMM_PCM
+                    || _encoding == AiffTool.AIFF_COMM_TWOS
+                    || _encoding == AiffTool.AIFF_COMM_SOWT) {
                 // PCM
                 // Check for little-endian
-                isLittleEndian = nEncoding == AiffTool.AIFF_COMM_SOWT;
-            } else if (nEncoding == AiffTool.AIFF_COMM_ULAW) {
+                isLittleEndian = _encoding == AiffTool.AIFF_COMM_SOWT;
+            } else if (_encoding == AiffTool.AIFF_COMM_ULAW) {
                 // ULAW
                 encoding = AudioFormat.Encoding.ULAW;
-                nSampleSize = 8;
-            } else if (nEncoding == AiffTool.AIFF_COMM_IMA_ADPCM) {
+                sampleSize = 8;
+            } else if (_encoding == AiffTool.AIFF_COMM_IMA_ADPCM) {
                 encoding = new AudioFormat.Encoding("IMA_ADPCM");
-                nSampleSize = 4;
+                sampleSize = 4;
             } else {
                 throw new UnsupportedAudioFileException(
-                        "Encoding 0x" + Integer.toHexString(nEncoding) + " of AIFF file not supported");
+                        "Encoding 0x" + Integer.toHexString(_encoding) + " of AIFF file not supported");
             }
         }
         // In case of IMA ADPCM, frame size is 0.5 bytes (since it is
         // always mono). A value of 1 as frame size would be wrong.
         // Handling of frame size 0 in defined nowhere. So the best
         // solution is to set the frame size to unspecified (-1).
-        int nFrameSize = (nSampleSize == 4) ?
+        int frameSize = (sampleSize == 4) ?
                 AudioSystem.NOT_SPECIFIED :
-                calculateFrameSize(nSampleSize, nNumChannels);
-        logger.log(Level.TRACE, "calculated frame size: " + nFrameSize);
+                calculateFrameSize(sampleSize, numChannels);
+        logger.log(Level.TRACE, "calculated frame size: " + frameSize);
 
-        skipChunk(dataInputStream, chunkLength, nRead);
+        skipChunk(dataInputStream, chunkLength, read);
         AudioFormat format = new AudioFormat(encoding,
-                fSampleRate,
-                nSampleSize,
-                nNumChannels,
-                nFrameSize,
-                fSampleRate,
-                nSampleSize > 8 && !isLittleEndian);
+                sampleRate,
+                sampleSize,
+                numChannels,
+                frameSize,
+                sampleRate,
+                sampleSize > 8 && !isLittleEndian);
         return format;
     }
 
@@ -125,86 +125,86 @@ public class AiffAudioFileReader extends TAudioFileReader {
         if (chunkLength < 4) {
             throw new UnsupportedAudioFileException("Corrput AIFF file: FVER chunk too small.");
         }
-        int nVer = dataInputStream.readInt();
-        if (nVer != AiffTool.AIFF_FVER_TIME_STAMP) {
+        int ver = dataInputStream.readInt();
+        if (ver != AiffTool.AIFF_FVER_TIME_STAMP) {
             throw new UnsupportedAudioFileException("Unsupported AIFF file: version not known.");
         }
         skipChunk(dataInputStream, chunkLength, 4);
     }
 
     @Override
-    protected AudioFileFormat getAudioFileFormat(InputStream inputStream, long lFileSizeInBytes)
+    protected AudioFileFormat getAudioFileFormat(InputStream inputStream, long fileLengthInBytes)
             throws UnsupportedAudioFileException, IOException {
-        logger.log(Level.TRACE, "AiffAudioFileReader.getAudioFileFormat(InputStream, long): begin");
+        logger.log(Level.TRACE, "begin");
 
         DataInputStream dataInputStream = new DataInputStream(inputStream);
-        int nMagic = dataInputStream.readInt();
-        if (nMagic != AiffTool.AIFF_FORM_MAGIC) {
+        int magic = dataInputStream.readInt();
+        if (magic != AiffTool.AIFF_FORM_MAGIC) {
             throw new UnsupportedAudioFileException("not an AIFF file: header magic is not FORM");
         }
-        int nTotalLength = dataInputStream.readInt();
-        nMagic = dataInputStream.readInt();
-        boolean bIsAifc;
-        if (nMagic == AiffTool.AIFF_AIFF_MAGIC) {
-            bIsAifc = false;
-        } else if (nMagic == AiffTool.AIFF_AIFC_MAGIC) {
-            bIsAifc = true;
+        int totalLength = dataInputStream.readInt();
+        magic = dataInputStream.readInt();
+        boolean isAifc;
+        if (magic == AiffTool.AIFF_AIFF_MAGIC) {
+            isAifc = false;
+        } else if (magic == AiffTool.AIFF_AIFC_MAGIC) {
+            isAifc = true;
         } else {
             throw new UnsupportedAudioFileException("unsupported IFF file: header magic neither AIFF nor AIFC");
         }
-        boolean bFVerFound = !bIsAifc;
-        boolean bCommFound = false;
-        boolean bSSndFound = false;
+        boolean fVerFound = !isAifc;
+        boolean commFound = false;
+        boolean sSndFound = false;
         AudioFormat format = null;
-        int nDataChunkLength = 0;
+        int dataChunkLength = 0;
 
-        // walk through the chunks
+        // walk through the chunks.
         // chunks may be in any order. However, in this implementation, SSND must be last
-        while (!bFVerFound || !bCommFound || !bSSndFound) {
-            nMagic = dataInputStream.readInt();
-            int nChunkLength = dataInputStream.readInt();
-            switch (nMagic) {
+        while (!fVerFound || !commFound || !sSndFound) {
+            magic = dataInputStream.readInt();
+            int chunkLength = dataInputStream.readInt();
+            switch (magic) {
             case AiffTool.AIFF_COMM_MAGIC:
-                format = readCommChunk(dataInputStream, nChunkLength);
-                logger.log(Level.TRACE, "Read COMM chunk with length " + nChunkLength);
+                format = readCommChunk(dataInputStream, chunkLength);
+                logger.log(Level.TRACE, "Read COMM chunk with length " + chunkLength);
 
-                bCommFound = true;
+                commFound = true;
                 break;
             case AiffTool.AIFF_FVER_MAGIC:
-                if (!bFVerFound) {
-                    readVerChunk(dataInputStream, nChunkLength);
-                    logger.log(Level.TRACE, "Read FVER chunk with length " + nChunkLength);
+                if (!fVerFound) {
+                    readVerChunk(dataInputStream, chunkLength);
+                    logger.log(Level.TRACE, "Read FVER chunk with length " + chunkLength);
 
-                    bFVerFound = true;
+                    fVerFound = true;
                 } else {
-                    skipChunk(dataInputStream, nChunkLength, 0);
+                    skipChunk(dataInputStream, chunkLength, 0);
                 }
                 break;
             case AiffTool.AIFF_SSND_MAGIC:
-                if (!bCommFound || !bFVerFound) {
+                if (!commFound || !fVerFound) {
                     throw new UnsupportedAudioFileException("cannot handle AIFF file: SSND not last chunk");
                 }
-                bSSndFound = true;
-                nDataChunkLength = nChunkLength - 8;
+                sSndFound = true;
+                dataChunkLength = chunkLength - 8;
                 // 8 information bytes of no interest
-                dataInputStream.skip(8);
-                logger.log(Level.TRACE, "Found SSND chunk with length " + nChunkLength);
+                dataInputStream.skipBytes(8);
+                logger.log(Level.TRACE, "Found SSND chunk with length " + chunkLength);
 
                 break;
             default:
-                logger.log(Level.TRACE, "Skipping unknown chunk: " + Integer.toHexString(nMagic));
-                skipChunk(dataInputStream, nChunkLength, 0);
+                logger.log(Level.TRACE, "Skipping unknown chunk: " + Integer.toHexString(magic));
+                skipChunk(dataInputStream, chunkLength, 0);
                 break;
             }
         }
 
         // TODO length argument has to be in frames
         AudioFileFormat audioFileFormat = new TAudioFileFormat(
-                bIsAifc ? AudioFileFormat.Type.AIFC : AudioFileFormat.Type.AIFF,
+                isAifc ? AudioFileFormat.Type.AIFC : AudioFileFormat.Type.AIFF,
                 format,
-                nDataChunkLength / format.getFrameSize(),
-                nTotalLength + 8);
-        logger.log(Level.TRACE, "AiffAudioFileReader.getAudioFileFormat(InputStream, long): end");
+                dataChunkLength / format.getFrameSize(),
+                totalLength + 8);
+        logger.log(Level.TRACE, "end");
 
         return audioFileFormat;
     }

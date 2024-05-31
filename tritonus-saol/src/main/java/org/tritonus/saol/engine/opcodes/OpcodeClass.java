@@ -44,29 +44,28 @@ public class OpcodeClass {
      * The name of the opcode class.
      * A fully qualified class name (package.class).
      */
-    private String m_strName;
+    private final String name;
 
     /**
      * The type of the opcode class.
      * One of TYPE_STATIC, TYPE_RUNTIME_INSTANCE
      * and TYPE_OPCODE_INSTANCE.
      */
-    private int m_nType;
+    private final int type;
 
     /**
      * Constructor.
      *
-     * @param strName the name of the opcode class.
+     * @param name the name of the opcode class.
      *                A fully qualified class name is expected
      *                (package.class).
-     * @param nType   the instantiation type of the class.
+     * @param type   the instantiation type of the class.
      *                One of TYPE_STATIC, TYPE_RUNTIME_INSTANCE
      *                and TYPE_OPCODE_INSTANCE.
      */
-    public OpcodeClass(String strName, int nType) {
-        m_strName = strName;
-        m_nType = nType;
-
+    public OpcodeClass(String name, int type) {
+        this.name = name;
+        this.type = type;
     }
 
     /**
@@ -77,7 +76,7 @@ public class OpcodeClass {
      * (package.class)
      */
     public String getName() {
-        return m_strName;
+        return name;
     }
 
     /**
@@ -88,8 +87,6 @@ public class OpcodeClass {
      * and TYPE_OPCODE_INSTANCE.
      */
     public int getType() {
-        return m_nType;
+        return type;
     }
 }
-
-

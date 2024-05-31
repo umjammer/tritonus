@@ -25,8 +25,10 @@ public class AlsaPcm {
     /** Capture stream */
     public static final int SND_PCM_STREAM_CAPTURE = 1;
 
-/** PCM access type */
-    /* snd_pcm_access_t */
+    // PCM access type
+
+    // snd_pcm_access_t
+
     /** mmap access with simple interleaved channels */
     public static final int SND_PCM_ACCESS_MMAP_INTERLEAVED = 0;
     /** mmap access with simple non interleaved channels */
@@ -114,6 +116,7 @@ public class AlsaPcm {
 //#endif
 
     // PCM state (snd_pcm_state_t)
+
     /** Open */
     public static final int SND_PCM_STATE_OPEN = 0;
     /** Setup installed */
@@ -130,18 +133,21 @@ public class AlsaPcm {
     public static final int SND_PCM_STATE_PAUSED = 6;
 
     // PCM start mode (snd_pcm_start_t)
+
     /** Automatic start on data read/write */
     public static final int SND_PCM_START_DATA = 0;
     /** Explicit start */
     public static final int SND_PCM_START_EXPLICIT = 1;
 
     // PCM xrun mode (snd_pcm_xrun_t)
+
     /** Xrun detection disabled */
     public static final int SND_PCM_XRUN_NONE = 0;
     /** Stop on xrun detection */
     public static final int SND_PCM_XRUN_STOP = 1;
 
     // PCM timestamp mode (snd_pcm_tstamp_t)
+
     /** No timestamp */
     public static final int SND_PCM_TSTAMP_NONE = 0;
     /** Update mmap'ed timestamp */
@@ -156,27 +162,26 @@ public class AlsaPcm {
      * This must be long to be 64bit-clean.
      */
     @SuppressWarnings("unused")
-    private long m_lNativeHandle;
+    private long nativeHandle;
 
     /**
      * For parameter documentation, see open().
      */
-    public AlsaPcm(String strPcmName, int nDirection, int nMode) throws Exception {
-        int nReturn;
-        nReturn = open(strPcmName, nDirection, nMode);
-        if (nReturn < 0) {
-            throw new Exception(Alsa.getStringError(nReturn));
+    public AlsaPcm(String pcmName, int direction, int mode) throws Exception {
+        int ret = open(pcmName, direction, mode);
+        if (ret < 0) {
+            throw new Exception(Alsa.getStringError(ret));
         }
     }
 
     /**
      * Calls snd_pcm_open().
      *
-     * @param strPcmName An ALSA pcm name, e.g. 'hw:0,0'.
-     * @param nDirection one of SND_PCM_STREAM_PLAYBACK, SND_PCM_STREAM_CAPTURE.
-     * @param nMode      optional file open modes (non-blocking,...)
+     * @param pcmName An ALSA pcm name, e.g. 'hw:0,0'.
+     * @param direction one of SND_PCM_STREAM_PLAYBACK, SND_PCM_STREAM_CAPTURE.
+     * @param mode      optional file open modes (non-blocking,...)
      */
-    private native int open(String strPcmName, int nDirection, int nMode);
+    private native int open(String pcmName, int direction, int mode);
 
     /**
      * Calls snd_pcm_close().
@@ -191,12 +196,12 @@ public class AlsaPcm {
     /**
      * Calls snd_pcm_hw_params_set_access().
      */
-    public native int setHWParamsAccess(AlsaPcmHWParams hwParams, int nAccess);
+    public native int setHWParamsAccess(AlsaPcmHWParams hwParams, int access);
 
     /**
      * Calls snd_pcm_hw_params_set_format().
      */
-    public native int setHWParamsFormat(AlsaPcmHWParams hwParams, int nFormat);
+    public native int setHWParamsFormat(AlsaPcmHWParams hwParams, int format);
 
     /**
      * Calls snd_pcm_hw_params_set_format_mask().
@@ -206,22 +211,22 @@ public class AlsaPcm {
     /**
      * Calls snd_pcm_hw_params_set_channels().
      */
-    public native int setHWParamsChannels(AlsaPcmHWParams hwParams, int nChannels);
+    public native int setHWParamsChannels(AlsaPcmHWParams hwParams, int channels);
 
     /**
      * Calls snd_pcm_hw_params_set_rate_near().
      */
-    public native int setHWParamsRateNear(AlsaPcmHWParams hwParams, int nRate /* missing: out parameter direction? */);
+    public native int setHWParamsRateNear(AlsaPcmHWParams hwParams, int rate /* missing: out parameter direction? */);
 
     /**
      * Calls snd_pcm_hw_params_set_buffer_time_near().
      */
-    public native int setHWParamsBufferTimeNear(AlsaPcmHWParams hwParams, int nBufferTime /* missing: out parameter direction? */);
+    public native int setHWParamsBufferTimeNear(AlsaPcmHWParams hwParams, int bufferTime /* missing: out parameter direction? */);
 
     /**
      * Calls snd_pcm_hw_params_set_period_time_near().
      */
-    public native int setHWParamsPeriodTimeNear(AlsaPcmHWParams hwParams, int nPeriodTime /* missing: out parameter direction? */);
+    public native int setHWParamsPeriodTimeNear(AlsaPcmHWParams hwParams, int periodTime /* missing: out parameter direction? */);
 
     /**
      * Calls snd_pcm_hw_params().
@@ -254,14 +259,14 @@ public class AlsaPcm {
     public native int setSWParams(AlsaPcmSWParams swParams);
 
     /**
-     * @param lOffset     Offset where the data should be read from
+     * @param offset     Offset where the data should be read from
      *                    the buffer, in bytes.
-     * @param lFrameCount Length of the data to write, in number of PCM
+     * @param frameCount Length of the data to write, in number of PCM
      *                    frames.
      */
-    public native long writei(byte[] abBuffer, long lOffset, long lFrameCount);
+    public native long writei(byte[] buffer, long offset, long frameCount);
 
-    public native long readi(byte[] abBuffer, long lOffset, long lFrameCount);
+    public native long readi(byte[] buffer, long offset, long frameCount);
 
-    public static native void setTrace(boolean bTrace);
+    public static native void setTrace(boolean trace);
 }

@@ -28,5 +28,3 @@ public class Mp3AudioFileReaderTestCase
         setCheckRealLengths(false);
     }
 }
-
-

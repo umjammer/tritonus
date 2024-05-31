@@ -61,45 +61,45 @@ public class PageTest {
     @Test
     public void testSetData() throws Exception {
         Page p = new Page();
-        byte[] abHeader = new byte[1024];
-        for (int i = 0; i < abHeader.length; i++) {
-            abHeader[i] = (byte) (i + 128);
+        byte[] header = new byte[1024];
+        for (int i = 0; i < header.length; i++) {
+            header[i] = (byte) (i + 128);
         }
-        byte[] abBody = new byte[1024];
-        for (int i = 0; i < abBody.length; i++) {
-            abBody[i] = (byte) i;
+        byte[] body = new byte[1024];
+        for (int i = 0; i < body.length; i++) {
+            body[i] = (byte) i;
         }
-        p.header_base = abHeader;
+        p.header_base = header;
         p.header = 0;
-        p.header_len = abHeader.length;
-        p.body_base = abBody;
+        p.header_len = header.length;
+        p.body_base = body;
         p.body = 0;
-        p.body_len = abBody.length;
-        checkData(p, "set data test", abHeader, abBody);
+        p.body_len = body.length;
+        checkData(p, "set data test", header, body);
     }
 
     @Test
     public void testSetDataOffset() throws Exception {
         Page p = new Page();
-        byte[] abHeader = new byte[102];
-        for (int i = 0; i < abHeader.length; i++) {
-            abHeader[i] = (byte) (i + 128);
+        byte[] header = new byte[102];
+        for (int i = 0; i < header.length; i++) {
+            header[i] = (byte) (i + 128);
         }
-        byte[] abBody = new byte[1024];
-        for (int i = 0; i < abBody.length; i++) {
-            abBody[i] = (byte) i;
+        byte[] body = new byte[1024];
+        for (int i = 0; i < body.length; i++) {
+            body[i] = (byte) i;
         }
-        p.header_base = abHeader;
+        p.header_base = header;
         p.header = 12;
         p.header_len = 88;
-        p.body_base = abBody;
+        p.body_base = body;
         p.body = 511;
         p.body_len = 513;
-        byte[] abHeaderCompare = new byte[88];
-        System.arraycopy(abHeader, 12, abHeaderCompare, 0, 88);
-        byte[] abBodyCompare = new byte[513];
-        System.arraycopy(abBody, 511, abBodyCompare, 0, 513);
-        checkData(p, "set data offset test", abHeaderCompare, abBodyCompare);
+        byte[] headerCompare = new byte[88];
+        System.arraycopy(header, 12, headerCompare, 0, 88);
+        byte[] bodyCompare = new byte[513];
+        System.arraycopy(body, 511, bodyCompare, 0, 513);
+        checkData(p, "set data offset test", headerCompare, bodyCompare);
     }
 
     @Test
@@ -114,33 +114,33 @@ public class PageTest {
                 0x04030201, 8);
     }
 
-    private void checkHeaderProperties(
-            String strMessage, byte[] abHeader,
-            int nVersionExpected, boolean bContinuedExpected, int nPacketsExpected,
-            boolean bBosExpected, boolean bEosExpected, long lGranulePosExpected,
-            int nSerialNoExpected, int nPageNoExpected) throws Exception {
+    private static void checkHeaderProperties(
+            String message, byte[] header,
+            int versionExpected, boolean continuedExpected, int packetsExpected,
+            boolean bosExpected, boolean eosExpected, long granulePosExpected,
+            int serialNoExpected, int pageNoExpected) throws Exception {
         Page p = new Page();
-        byte[] abData = new byte[12];
-        p.header_base = abHeader;
+        byte[] data = new byte[12];
+        p.header_base = header;
         p.header = 0;
-        p.header_len = abHeader.length;
-        p.body_base = abData;
+        p.header_len = header.length;
+        p.body_base = data;
         p.body = 0;
-        p.body_len = abData.length;
+        p.body_len = data.length;
 
-        assertEquals(nVersionExpected, p.version(), constructErrorMessage(strMessage, "version"));
-        assertEquals(bContinuedExpected, p.continued(), constructErrorMessage(strMessage, "continued flag"));
-        assertEquals(nPacketsExpected, p.getPackets(), constructErrorMessage(strMessage, "packets"));
-        assertEquals(bBosExpected, p.bos(), constructErrorMessage(strMessage, "bos flag"));
-        assertEquals(bEosExpected, p.eos(), constructErrorMessage(strMessage, "eos flag"));
-        assertEquals(lGranulePosExpected, p.granulePos(), constructErrorMessage(strMessage, "granulepos"));
-        assertEquals(nSerialNoExpected, p.serialNo(), constructErrorMessage(strMessage, "serialno"));
-        assertEquals(nPageNoExpected, p.pageNo(), constructErrorMessage(strMessage, "pageno"));
+        assertEquals(versionExpected, p.version(), constructErrorMessage(message, "version"));
+        assertEquals(continuedExpected, p.continued(), constructErrorMessage(message, "continued flag"));
+        assertEquals(packetsExpected, p.getPackets(), constructErrorMessage(message, "packets"));
+        assertEquals(bosExpected, p.bos(), constructErrorMessage(message, "bos flag"));
+        assertEquals(eosExpected, p.eos(), constructErrorMessage(message, "eos flag"));
+        assertEquals(granulePosExpected, p.granulePos(), constructErrorMessage(message, "granulepos"));
+        assertEquals(serialNoExpected, p.serialNo(), constructErrorMessage(message, "serialno"));
+        assertEquals(pageNoExpected, p.pageNo(), constructErrorMessage(message, "pageno"));
     }
 
-    private void checkData(Page p, String strMessage, byte[] abHeaderExpected, byte[] abBodyExpected) throws Exception {
-        assertArrayEquals(abHeaderExpected, Arrays.copyOfRange(p.header_base, p.header, p.header + p.header_len), constructErrorMessage(strMessage, "header content"));
-        assertArrayEquals(abBodyExpected, Arrays.copyOfRange(p.body_base, p.body, p.body + p.body_len), constructErrorMessage(strMessage, "body content"));
+    private static void checkData(Page p, String message, byte[] headerExpected, byte[] bodyExpected) throws Exception {
+        assertArrayEquals(headerExpected, Arrays.copyOfRange(p.header_base, p.header, p.header + p.header_len), constructErrorMessage(message, "header content"));
+        assertArrayEquals(bodyExpected, Arrays.copyOfRange(p.body_base, p.body, p.body + p.body_len), constructErrorMessage(message, "body content"));
     }
 
     private static boolean equals(byte[] b1, byte[] b2) {
@@ -151,15 +151,13 @@ public class PageTest {
         return false;
     }
 
-    private static boolean equals(byte[] b1, int nOffset1,
-                                  byte[] b2, int nOffset2,
-                                  int nLength) {
+    private static boolean equals(byte[] b1, int offset1, byte[] b2, int offset2, int length) {
         if (b1 == null && b2 == null)
             return true;
-        if (nOffset1 + nLength > b1.length || nOffset2 + nLength > b2.length)
+        if (offset1 + length > b1.length || offset2 + length > b2.length)
             return false;
-        for (int i = 0; i < nLength; i++) {
-            if (b1[nOffset1 + i] != b2[nOffset2 + i])
+        for (int i = 0; i < length; i++) {
+            if (b1[offset1 + i] != b2[offset2 + i])
                 return false;
         }
         return true;

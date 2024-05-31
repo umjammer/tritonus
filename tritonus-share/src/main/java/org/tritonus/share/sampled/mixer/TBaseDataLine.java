@@ -42,15 +42,15 @@ public abstract class TBaseDataLine extends TDataLine {
         super(mixer, info, controls);
     }
 
-    public void open(AudioFormat format, int nBufferSize) throws LineUnavailableException {
-        logger.log(Level.TRACE, "TBaseDataLine.open(AudioFormat, int): called with buffer size: " + nBufferSize);
+    public void open(AudioFormat format, int bufferSize) throws LineUnavailableException {
+        logger.log(Level.TRACE, "called with buffer size: " + bufferSize);
 
-        setBufferSize(nBufferSize);
+        setBufferSize(bufferSize);
         open(format);
     }
 
     public void open(AudioFormat format) throws LineUnavailableException {
-        logger.log(Level.TRACE, "TBaseDataLine.open(AudioFormat): called");
+        logger.log(Level.TRACE, "called");
 
         setFormat(format);
         open();

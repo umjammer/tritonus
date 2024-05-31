@@ -1,10 +1,4 @@
 /*
- * CreateSysexSequence.java
- *
- * TODO short description
- */
-
-/*
  *  Copyright (c) 2000 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -43,83 +37,81 @@ import javax.sound.midi.Track;
  */
 public class CreateSysexSequence {
 
-    public static void main(String[] args)
-            throws IOException, InvalidMidiDataException {
+    public static void main(String[] args) throws IOException, InvalidMidiDataException {
         if (args.length != 1) {
             out("usage:");
             out("java CreateSysexSequence <midifile>");
             System.exit(1);
         }
-        int nResolution = 480;
-        String strFilename = args[0];
-        Sequence sequence = new Sequence(Sequence.PPQ,
-                nResolution);
+        int resolution = 480;
+        String filename = args[0];
+        Sequence sequence = new Sequence(Sequence.PPQ, resolution);
         Track track = sequence.createTrack();
         SysexMessage sm;
         MetaMessage mm;
         MidiEvent me;
-        byte[] abData;
+        byte[] data;
 
         // [F0 01 F7]
         sm = new SysexMessage();
-        abData = new byte[] {(byte) 0xF0, (byte) 0x01, (byte) 0xF7};
-        sm.setMessage(abData, abData.length);
+        data = new byte[] {(byte) 0xF0, (byte) 0x01, (byte) 0xF7};
+        sm.setMessage(data, data.length);
         me = new MidiEvent(sm, 0);
         track.add(me);
 
 //   // [F0 F7]
 //   sm = new SysexMessage();
-//   abData = new byte[]{(byte) 0xF0, (byte) 0xF7};
-//   sm.setMessage(abData, abData.length);
+//   data = new byte[]{(byte) 0xF0, (byte) 0xF7};
+//   sm.setMessage(data, data.length);
 //   me = new MidiEvent(sm, 0);
 //   track.add(me);
 
         // [F0 02]
         sm = new SysexMessage();
-        abData = new byte[] {(byte) 0xF0, (byte) 0x02};
-        sm.setMessage(abData, abData.length);
+        data = new byte[] {(byte) 0xF0, (byte) 0x02};
+        sm.setMessage(data, data.length);
         me = new MidiEvent(sm, 0);
         track.add(me);
 
         // [F7 02 F7]
         sm = new SysexMessage();
-        abData = new byte[] {(byte) 0xF7, (byte) 0x02, (byte) 0xF7};
-        sm.setMessage(abData, abData.length);
+        data = new byte[] {(byte) 0xF7, (byte) 0x02, (byte) 0xF7};
+        sm.setMessage(data, data.length);
         me = new MidiEvent(sm, 0);
         track.add(me);
 
-//   // [F0 02]
-//   sm = new SysexMessage();
-//   abData = new byte[]{(byte) 0xF0, (byte) 0x02};
-//   sm.setMessage(abData, abData.length);
-//   me = new MidiEvent(sm, 0);
-//   track.add(me);
+//        // [F0 02]
+//        sm = new SysexMessage();
+//        data = new byte[] {(byte) 0xF0, (byte) 0x02};
+//        sm.setMessage(data, data.length);
+//        me = new MidiEvent(sm, 0);
+//        track.add(me);
 
-//   // [F7 F7]
-//   sm = new SysexMessage();
-//   abData = new byte[]{(byte) 0xF7, (byte) 0xF7};
-//   sm.setMessage(abData, abData.length);
-//   me = new MidiEvent(sm, 0);
-//   track.add(me);
+//        // [F7 F7]
+//        sm = new SysexMessage();
+//        data = new byte[] {(byte) 0xF7, (byte) 0xF7};
+//        sm.setMessage(data, data.length);
+//        me = new MidiEvent(sm, 0);
+//        track.add(me);
 
-//   // [F0 03]
-//   sm = new SysexMessage();
-//   abData = new byte[]{(byte) 0xF0, (byte) 0x03};
-//   sm.setMessage(abData, abData.length);
-//   me = new MidiEvent(sm, 0);
-//   track.add(me);
+//        // [F0 03]
+//        sm = new SysexMessage();
+//        data = new byte[] {(byte) 0xF0, (byte) 0x03};
+//        sm.setMessage(data, data.length);
+//        me = new MidiEvent(sm, 0);
+//        track.add(me);
 
-//   // [F7]
-//   sm = new SysexMessage();
-//   abData = new byte[]{(byte) 0xF7};
-//   sm.setMessage(abData, abData.length);
-//   me = new MidiEvent(sm, 0);
-//   track.add(me);
+//        // [F7]
+//        sm = new SysexMessage();
+//        data = new byte[] {(byte) 0xF7};
+//        sm.setMessage(data, data.length);
+//        me = new MidiEvent(sm, 0);
+//        track.add(me);
 
         // [F7 F0 04 F7]
         sm = new SysexMessage();
-        abData = new byte[] {(byte) 0xF7, (byte) 0xF0, (byte) 0x04, (byte) 0xF7};
-        sm.setMessage(abData, abData.length);
+        data = new byte[] {(byte) 0xF7, (byte) 0xF0, (byte) 0x04, (byte) 0xF7};
+        sm.setMessage(data, data.length);
         me = new MidiEvent(sm, 0);
         track.add(me);
 
@@ -128,7 +120,7 @@ public class CreateSysexSequence {
         me = new MidiEvent(mm, 10);
         track.add(me);
 
-        MidiSystem.write(sequence, 0, new File(strFilename));
+        MidiSystem.write(sequence, 0, new File(filename));
 
         /*
          * This is only necessary because of a bug in the Sun jdk1.3
@@ -136,9 +128,7 @@ public class CreateSysexSequence {
         System.exit(0);
     }
 
-    private static void out(String strMessage) {
-        System.out.println(strMessage);
+    private static void out(String message) {
+        System.out.println(message);
     }
 }
-
-

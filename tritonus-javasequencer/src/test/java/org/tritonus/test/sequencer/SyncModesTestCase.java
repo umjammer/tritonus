@@ -1,8 +1,4 @@
 /*
- * SyncModesTestCase.java
- */
-
-/*
  *  Copyright (c) 2003 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,26 +27,22 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Tests for class javax.sound.midi.MidiMessage.
  */
-public class SyncModesTestCase
-        extends BaseSequencerTestCase {
+public class SyncModesTestCase extends BaseSequencerTestCase {
 
-    private static final Sequencer.SyncMode[] MASTER_SYNC_MODES =
-            {
-                    Sequencer.SyncMode.INTERNAL_CLOCK,
-                    Sequencer.SyncMode.MIDI_SYNC,
-                    Sequencer.SyncMode.MIDI_TIME_CODE
-            };
+    private static final Sequencer.SyncMode[] MASTER_SYNC_MODES = {
+            Sequencer.SyncMode.INTERNAL_CLOCK,
+            Sequencer.SyncMode.MIDI_SYNC,
+            Sequencer.SyncMode.MIDI_TIME_CODE
+    };
 
-    private static final Sequencer.SyncMode[] SLAVE_SYNC_MODES =
-            {
-                    Sequencer.SyncMode.NO_SYNC,
-                    Sequencer.SyncMode.MIDI_SYNC,
-                    Sequencer.SyncMode.MIDI_TIME_CODE
-            };
+    private static final Sequencer.SyncMode[] SLAVE_SYNC_MODES = {
+            Sequencer.SyncMode.NO_SYNC,
+            Sequencer.SyncMode.MIDI_SYNC,
+            Sequencer.SyncMode.MIDI_TIME_CODE
+    };
 
     @Override
-    protected void checkSequencer(Sequencer seq)
-            throws Exception {
+    protected void checkSequencer(Sequencer seq) throws Exception {
         Sequencer.SyncMode syncMode;
         Sequencer.SyncMode[] syncModes;
 
@@ -83,29 +75,26 @@ public class SyncModesTestCase
         checkSyncModeAccepted(seq, Sequencer.SyncMode.INTERNAL_CLOCK, true);
     }
 
-    private void checkSyncModeAccepted(Sequencer seq,
-                                       Sequencer.SyncMode syncMode,
-                                       boolean bMaster) {
-        String strErrorMessage = constructErrorMessage(seq, syncMode,
-                bMaster);
-        if (bMaster) {
+    private static void checkSyncModeAccepted(Sequencer seq, Sequencer.SyncMode syncMode, boolean master) {
+        String errorMessage = constructErrorMessage(seq, syncMode, master);
+        if (master) {
             seq.setMasterSyncMode(syncMode);
-            assertSame(syncMode, seq.getMasterSyncMode(), strErrorMessage);
+            assertSame(syncMode, seq.getMasterSyncMode(), errorMessage);
         } else {
             seq.setSlaveSyncMode(syncMode);
-            assertSame(syncMode, seq.getSlaveSyncMode(), strErrorMessage);
+            assertSame(syncMode, seq.getSlaveSyncMode(), errorMessage);
         }
     }
 
-    private boolean isMasterSyncMode(SyncMode syncMode) {
+    private static boolean isMasterSyncMode(SyncMode syncMode) {
         return contains(MASTER_SYNC_MODES, syncMode);
     }
 
-    private boolean isSlaveSyncMode(SyncMode syncMode) {
+    private static boolean isSlaveSyncMode(SyncMode syncMode) {
         return contains(SLAVE_SYNC_MODES, syncMode);
     }
 
-    private boolean contains(SyncMode[] list, SyncMode test) {
+    private static boolean contains(SyncMode[] list, SyncMode test) {
         for (SyncMode syncMode : list) {
             if (syncMode.equals(test)) {
                 return true;
@@ -114,14 +103,10 @@ public class SyncModesTestCase
         return false;
     }
 
-    private static String constructErrorMessage(Sequencer seq,
-                                                Sequencer.SyncMode syncMode,
-                                                boolean bMaster) {
-        String strMessage = seq.getDeviceInfo().getName() + ": ";
-        strMessage += syncMode.toString();
-        strMessage += bMaster ? " as master " : " as slave ";
-        return strMessage;
+    private static String constructErrorMessage(Sequencer seq, Sequencer.SyncMode syncMode, boolean master) {
+        String message = seq.getDeviceInfo().getName() + ": ";
+        message += syncMode.toString();
+        message += master ? " as master " : " as slave ";
+        return message;
     }
 }
-
-

@@ -17,13 +17,11 @@ public interface GsmEncodings {
      * Encoding for the "toast" frame format. Corresponds to
      * {@link GsmFrameFormat#TOAST}.
      */
-    Encoding TOAST_GSM_ENCODING = new AudioFormat.Encoding(
-            "GSM0610");
+    Encoding TOAST_GSM_ENCODING = new AudioFormat.Encoding("GSM0610");
 
     /**
      * Encoding for the Microsoft frame format. Corresponds to
      * {@link GsmFrameFormat#MICROSOFT}.
      */
-    Encoding MS_GSM_ENCODING = new AudioFormat.Encoding(
-            "MS GSM0610");
+    Encoding MS_GSM_ENCODING = new AudioFormat.Encoding("MS GSM0610");
 }

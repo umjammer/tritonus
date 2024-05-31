@@ -1,8 +1,4 @@
 /*
- * TDirectSynthesizerTestCase.java
- */
-
-/*
  *  Copyright (c) 2003 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -35,6 +31,9 @@ import org.tritonus.share.midi.TDirectSynthesizer;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
+/**
+ * TDirectSynthesizerTestCase.
+ */
 class TDirectSynthesizerTestCase {
 
     @Test
@@ -70,83 +69,74 @@ class TDirectSynthesizerTestCase {
     @Test
     public void testPitchbend() throws Exception {
         Synthesizer synth = new TestSynthesizer();
-        synth.open();
-        TestSynthesizer.TestChannel[] channels = (TestSynthesizer.TestChannel[]) synth.getChannels();
-        try {
+        try (synth) {
+            synth.open();
+            TestSynthesizer.TestChannel[] channels = (TestSynthesizer.TestChannel[]) synth.getChannels();
             Receiver r = synth.getReceiver();
             checkPitchbend(channels, r, 0, 0);
             checkPitchbend(channels, r, 5, 127);
             checkPitchbend(channels, r, 7, 128);
             checkPitchbend(channels, r, 15, 16383);
-        } finally {
-            synth.close();
         }
     }
 
-    private void checkPitchbend(TestSynthesizer.TestChannel[] channels, Receiver r, int nChannel, int nBend)
+    private static void checkPitchbend(TestSynthesizer.TestChannel[] channels, Receiver r, int channel, int bend)
             throws Exception {
         Type type = Type.PITCHBEND;
         ShortMessage shMsg = new ShortMessage();
-        shMsg.setMessage(type.getCommand(), nChannel, nBend & 0x7F, nBend >> 7);
+        shMsg.setMessage(type.getCommand(), channel, bend & 0x7F, bend >> 7);
         resetResults(channels);
         r.send(shMsg, -1);
-        checkResult(channels, nChannel, type, nBend, -1);
+        checkResult(channels, channel, type, bend, -1);
     }
 
     /**
      * @param type if true, note on is tested. If false, note off is tested.
-     * @throws Exception
      */
-    private void checkMessage2(Type type) throws Exception {
+    private static void checkMessage2(Type type) throws Exception {
         Synthesizer synth = new TestSynthesizer();
-        synth.open();
-        TestSynthesizer.TestChannel[] channels = (TestSynthesizer.TestChannel[]) synth.getChannels();
-        try {
+        try (synth) {
+            synth.open();
+            TestSynthesizer.TestChannel[] channels = (TestSynthesizer.TestChannel[]) synth.getChannels();
             Receiver r = synth.getReceiver();
             checkMessage(type, channels, r, 0, 17, 55);
             checkMessage(type, channels, r, 15, 0, 0);
             checkMessage(type, channels, r, 5, 127, 127);
-        } finally {
-            synth.close();
         }
     }
 
     /**
      * @param type
-     * @throws Exception
      */
-    private void checkMessage1(Type type) throws Exception {
+    private static void checkMessage1(Type type) throws Exception {
         Synthesizer synth = new TestSynthesizer();
-        synth.open();
-        TestSynthesizer.TestChannel[] channels = (TestSynthesizer.TestChannel[]) synth.getChannels();
-        try {
+        try (synth) {
+            synth.open();
+            TestSynthesizer.TestChannel[] channels = (TestSynthesizer.TestChannel[]) synth.getChannels();
             Receiver r = synth.getReceiver();
             checkMessage(type, channels, r, 0, 57, 0);
             checkMessage(type, channels, r, 15, 0, 0);
             checkMessage(type, channels, r, 5, 127, 0);
-        } finally {
-            synth.close();
         }
     }
 
-    private void checkMessage(Type type,
-                              TestSynthesizer.TestChannel[] channels,
-                              Receiver r, int nChannel, int nValue1, int nValue2) throws Exception {
-        ShortMessage shMsg = new ShortMessage();
-        shMsg.setMessage(type.getCommand(), nChannel, nValue1, nValue2);
+    private static void checkMessage(Type type, TestSynthesizer.TestChannel[] channels,
+                                     Receiver r, int channel, int value1, int value2) throws Exception {
+        ShortMessage shortMessage = new ShortMessage();
+        shortMessage.setMessage(type.getCommand(), channel, value1, value2);
         resetResults(channels);
-        r.send(shMsg, -1);
-        checkResult(channels, nChannel, type, nValue1, nValue2);
+        r.send(shortMessage, -1);
+        checkResult(channels, channel, type, value1, value2);
     }
 
-    private void resetResults(TestSynthesizer.TestChannel[] channels) {
+    private static void resetResults(TestSynthesizer.TestChannel[] channels) {
         for (TestSynthesizer.TestChannel channel : channels) {
             channel.resetValues();
         }
     }
 
-    private void checkResult(TestSynthesizer.TestChannel[] channels,
-                             int channel, Type type, int value1, int value2) {
+    private static void checkResult(TestSynthesizer.TestChannel[] channels,
+                                    int channel, Type type, int value1, int value2) {
         for (int i = 0; i < channels.length; i++) {
             TestSynthesizer.TestChannel ch = channels[i];
             if (i == channel) {
@@ -163,14 +153,14 @@ class TDirectSynthesizerTestCase {
 
     private static class TestSynthesizer extends TDirectSynthesizer {
 
-        private MidiChannel[] m_channels;
+        private final MidiChannel[] channels;
 
         public TestSynthesizer() {
             // no MidiDevice.Info
             super(null);
-            m_channels = new TestChannel[16];
+            channels = new TestChannel[16];
             for (int i = 0; i < 16; i++) {
-                m_channels[i] = new TestChannel(i);
+                channels[i] = new TestChannel(i);
             }
         }
 
@@ -186,7 +176,7 @@ class TDirectSynthesizerTestCase {
 
         @Override
         public MidiChannel[] getChannels() {
-            return m_channels;
+            return channels;
         }
 
         @Override
@@ -248,29 +238,29 @@ class TDirectSynthesizerTestCase {
 
         public static class TestChannel implements MidiChannel {
 
-            private Type m_nType;
-            private int m_nValue1;
-            private int m_nValue2;
+            private Type type;
+            private int value1;
+            private int value2;
 
-            public TestChannel(int nChannel) {
+            public TestChannel(int channel) {
             }
 
             public void resetValues() {
-                m_nType = Type.NONE;
-                m_nValue1 = -1;
-                m_nValue2 = -1;
+                type = Type.NONE;
+                value1 = -1;
+                value2 = -1;
             }
 
             public Type getType() {
-                return m_nType;
+                return type;
             }
 
             public int getValue1() {
-                return m_nValue1;
+                return value1;
             }
 
             public int getValue2() {
-                return m_nValue2;
+                return value2;
             }
 
             @Override
@@ -282,10 +272,10 @@ class TDirectSynthesizerTestCase {
             }
 
             @Override
-            public void controlChange(int nController, int nValue) {
-                m_nType = Type.CONTROL_CHANGE;
-                m_nValue1 = nController;
-                m_nValue2 = nValue;
+            public void controlChange(int controller, int value) {
+                type = Type.CONTROL_CHANGE;
+                value1 = controller;
+                value2 = value;
             }
 
             @Override
@@ -294,7 +284,7 @@ class TDirectSynthesizerTestCase {
             }
 
             @Override
-            public int getController(int nController) {
+            public int getController(int controller) {
                 return 0;
             }
 
@@ -319,7 +309,7 @@ class TDirectSynthesizerTestCase {
             }
 
             @Override
-            public int getPolyPressure(int nNoteNumber) {
+            public int getPolyPressure(int noteNumber) {
                 return 0;
             }
 
@@ -334,40 +324,40 @@ class TDirectSynthesizerTestCase {
             }
 
             @Override
-            public boolean localControl(boolean bOn) {
+            public boolean localControl(boolean on) {
                 return false;
             }
 
             @Override
-            public void noteOff(int nNoteNumber, int nVelocity) {
-                m_nType = Type.NOTEOFF;
-                m_nValue1 = nNoteNumber;
-                m_nValue2 = nVelocity;
+            public void noteOff(int noteNumber, int velocity) {
+                type = Type.NOTEOFF;
+                value1 = noteNumber;
+                value2 = velocity;
             }
 
             @Override
-            public void noteOff(int nNoteNumber) {
+            public void noteOff(int noteNumber) {
             }
 
             @Override
-            public void noteOn(int nNoteNumber, int nVelocity) {
-                m_nType = Type.NOTEON;
-                m_nValue1 = nNoteNumber;
-                m_nValue2 = nVelocity;
+            public void noteOn(int noteNumber, int velocity) {
+                type = Type.NOTEON;
+                value1 = noteNumber;
+                value2 = velocity;
             }
 
             @Override
-            public void programChange(int nBank, int nProgram) {
-                m_nType = Type.BANK_PROGRAM;
-                m_nValue1 = nBank;
-                m_nValue2 = nProgram;
+            public void programChange(int bank, int program) {
+                type = Type.BANK_PROGRAM;
+                value1 = bank;
+                value2 = program;
             }
 
             @Override
-            public void programChange(int nProgram) {
-                m_nType = Type.PROGRAM;
-                m_nValue1 = nProgram;
-                m_nValue2 = 0;
+            public void programChange(int program) {
+                type = Type.PROGRAM;
+                value1 = program;
+                value2 = 0;
             }
 
             @Override
@@ -375,39 +365,39 @@ class TDirectSynthesizerTestCase {
             }
 
             @Override
-            public void setChannelPressure(int nPressure) {
-                m_nType = Type.CHANNEL_PRESSURE;
-                m_nValue1 = nPressure;
-                m_nValue2 = 0;
+            public void setChannelPressure(int pressure) {
+                type = Type.CHANNEL_PRESSURE;
+                value1 = pressure;
+                value2 = 0;
             }
 
             @Override
-            public void setMono(boolean bMono) {
+            public void setMono(boolean mono) {
             }
 
             @Override
-            public void setMute(boolean bMute) {
+            public void setMute(boolean mute) {
             }
 
             @Override
-            public void setOmni(boolean bOmni) {
+            public void setOmni(boolean omni) {
             }
 
             @Override
-            public void setPitchBend(int nBend) {
-                m_nType = Type.PITCHBEND;
-                m_nValue1 = nBend;
+            public void setPitchBend(int bend) {
+                type = Type.PITCHBEND;
+                value1 = bend;
             }
 
             @Override
-            public void setPolyPressure(int nNoteNumber, int nPressure) {
-                m_nType = Type.POLY_PRESSURE;
-                m_nValue1 = nNoteNumber;
-                m_nValue2 = nPressure;
+            public void setPolyPressure(int noteNumber, int pressure) {
+                type = Type.POLY_PRESSURE;
+                value1 = noteNumber;
+                value2 = pressure;
             }
 
             @Override
-            public void setSolo(boolean bSolo) {
+            public void setSolo(boolean solo) {
             }
         }
     }
@@ -423,20 +413,18 @@ class TDirectSynthesizerTestCase {
         POLY_PRESSURE(ShortMessage.POLY_PRESSURE),
         CHANNEL_PRESSURE(ShortMessage.CHANNEL_PRESSURE);
 
-        private final int m_nCommand;
+        private final int command;
 
         Type() {
             this(0);
         }
 
-        Type(int nCommand) {
-            m_nCommand = nCommand;
+        Type(int command) {
+            this.command = command;
         }
 
         public int getCommand() {
-            return m_nCommand;
+            return command;
         }
     }
 }
-
-

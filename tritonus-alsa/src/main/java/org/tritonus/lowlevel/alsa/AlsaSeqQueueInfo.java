@@ -36,13 +36,13 @@ public class AlsaSeqQueueInfo {
      * for the native code.
      * This must be long to be 64bit-clean.
      */
-    /* private */ long m_lNativeHandle;
+    /* private */ long nativeHandle;
 
     public AlsaSeqQueueInfo() {
         logger.log(Level.TRACE, "AlsaSeq.QueueInfo.<init>(): begin");
 
-        int nReturn = malloc();
-        if (nReturn < 0) {
+        int ret = malloc();
+        if (ret < 0) {
             throw new RuntimeException("malloc of port_info failed");
         }
 
@@ -63,15 +63,13 @@ public class AlsaSeqQueueInfo {
 
     public native int getFlags();
 
-    public native void setName(String strName);
+    public native void setName(String name);
 
-    public native void setOwner(int nOwner);
+    public native void setOwner(int owner);
 
-    public native void setLocked(boolean bLocked);
+    public native void setLocked(boolean locked);
 
-    public native void setFlags(int nFlags);
+    public native void setFlags(int flags);
 
-    private static native void setTrace(boolean bTrace);
+    private static native void setTrace(boolean trace);
 }
-
-

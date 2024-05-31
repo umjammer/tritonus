@@ -35,13 +35,13 @@ public class AlsaPcmHWParamsFormatMask {
      * This must be long to be 64bit-clean.
      */
     @SuppressWarnings("unused")
-    private long m_lNativeHandle;
+    private long nativeHandle;
 
     public AlsaPcmHWParamsFormatMask() {
         logger.log(Level.TRACE, "AlsaPcmHWParamsFormatMask.<init>(): begin");
 
-        int nReturn = malloc();
-        if (nReturn < 0) {
+        int ret = malloc();
+        if (ret < 0) {
             throw new RuntimeException("malloc of format_mask failed");
         }
 
@@ -71,15 +71,15 @@ public class AlsaPcmHWParamsFormatMask {
     /**
      * Calls snd_pcm_format_mask_test().
      */
-    public native boolean test(int nFormat);
+    public native boolean test(int format);
 
     /**
      * Calls snd_pcm_format_mask_set().
      */
-    public native void set(int nFormat);
+    public native void set(int format);
 
     /**
      * Calls snd_pcm_format_mask_reset().
      */
-    public native void reset(int nFormat);
+    public native void reset(int format);
 }

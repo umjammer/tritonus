@@ -34,7 +34,7 @@ public class Utils {
     /**
      * Indentation step.
      * This value determines how many spaces are added/removed
-     * for each step of indantation.
+     * for each step of indentation.
      */
     private static final int INDENTATION_STEP = 2;
 
@@ -50,7 +50,7 @@ public class Utils {
      * The value starts with -INDENTATION_STEP because the first call to
      * outSteppingIn will increase this value prior to printing.
      */
-    private static int sm_nIndentation = -INDENTATION_STEP;
+    private static int indentation = -INDENTATION_STEP;
 
     public static void outEnteringJoinPoint(JoinPoint joinPoint) {
         outSteppingIn("-> " + getSignature(joinPoint));
@@ -67,23 +67,23 @@ public class Utils {
     /**
      * Print message, increasing the indentation.
      */
-    public static void outSteppingIn(String strMessage) {
-        sm_nIndentation += INDENTATION_STEP;
-        out(strMessage);
+    public static void outSteppingIn(String message) {
+        indentation += INDENTATION_STEP;
+        out(message);
     }
 
     /**
      * Print message, decreasing the indentation.
      */
-    public static void outSteppingOut(String strMessage) {
-        out(strMessage);
-        sm_nIndentation -= INDENTATION_STEP;
+    public static void outSteppingOut(String message) {
+        out(message);
+        indentation -= INDENTATION_STEP;
     }
 
     /**
      * Print message with the current indentation.
      */
-    public static void out(String strMessage) {
-        logger.log(Level.TRACE, INDENTATION_STRING.substring(0, sm_nIndentation) + strMessage);
+    public static void out(String message) {
+        logger.log(Level.TRACE, INDENTATION_STRING.substring(0, indentation) + message);
     }
 }

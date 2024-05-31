@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 2006 by Matthias Pfisterer
  *
@@ -36,31 +35,30 @@ import javax.sound.midi.MidiChannel;
  *
  * @author Matthias Pfisterer
  */
-public abstract class TMidiChannel
-        implements MidiChannel {
+public abstract class TMidiChannel implements MidiChannel {
 
-    private int m_nChannel;
+    private final int channel;
 
-    protected TMidiChannel(int nChannel) {
-        m_nChannel = nChannel;
+    protected TMidiChannel(int channel) {
+        this.channel = channel;
     }
 
     protected int getChannel() {
-        return m_nChannel;
+        return channel;
     }
 
     @Override
-    public void noteOff(int nNoteNumber) {
-        noteOff(nNoteNumber, 0);
+    public void noteOff(int noteNumber) {
+        noteOff(noteNumber, 0);
     }
 
     @Override
-    public void programChange(int nBank, int nProgram) {
-        int nBankMSB = nBank >> 7;
-        int nBankLSB = nBank & 0x7F;
-        controlChange(0, nBankMSB);
-        controlChange(32, nBankLSB);
-        programChange(nProgram);
+    public void programChange(int bank, int program) {
+        int bankMSB = bank >> 7;
+        int bankLSB = bank & 0x7F;
+        controlChange(0, bankMSB);
+        controlChange(32, bankLSB);
+        programChange(program);
     }
 
     @Override
@@ -79,15 +77,15 @@ public abstract class TMidiChannel
     }
 
     @Override
-    public boolean localControl(boolean bOn) {
-        controlChange(122, bOn ? 127 : 0);
+    public boolean localControl(boolean on) {
+        controlChange(122, on ? 127 : 0);
         return getController(122) >= 64;
     }
 
     @Override
-    public void setMono(boolean bMono) {
+    public void setMono(boolean mono) {
         // TODO check this
-        controlChange(bMono ? 126 : 127, 0);
+        controlChange(mono ? 126 : 127, 0);
     }
 
     @Override
@@ -97,8 +95,8 @@ public abstract class TMidiChannel
     }
 
     @Override
-    public void setOmni(boolean bOmni) {
-        controlChange(bOmni ? 125 : 124, 0);
+    public void setOmni(boolean omni) {
+        controlChange(omni ? 125 : 124, 0);
     }
 
     @Override
@@ -107,5 +105,3 @@ public abstract class TMidiChannel
         return getController(125) == 0;
     }
 }
-
-

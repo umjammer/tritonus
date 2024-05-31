@@ -1,10 +1,4 @@
 /*
- * CreateEmptySequence.java
- *
- * TODO short description
- */
-
-/*
  *  Copyright (c) 2000 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -42,40 +36,40 @@ public class CreateEmptySequence {
             out("java CreateEmptySequence <duration> <tempo_in_MPQ> <resolution> <midifile>");
             System.exit(1);
         }
-        long lDuration = Long.parseLong(args[0]);
-        int nTempoInMPQ = Integer.parseInt(args[1]);
-        int nResolution = Integer.parseInt(args[2]);
-        String strFilename = args[3];
-        out("Clock distance (µs): " + nTempoInMPQ / 24);
-        out("Tick distance (µs): " + nTempoInMPQ / nResolution);
+        long duration = Long.parseLong(args[0]);
+        int tempoInMPQ = Integer.parseInt(args[1]);
+        int resolution = Integer.parseInt(args[2]);
+        String filename = args[3];
+        out("Clock distance (µs): " + tempoInMPQ / 24);
+        out("Tick distance (µs): " + tempoInMPQ / resolution);
         Sequence sequence = null;
         try {
             sequence = new Sequence(Sequence.PPQ,
-                    nResolution);
+                    resolution);
             Track track = sequence.createTrack();
             MetaMessage mm;
             MidiEvent me;
 
             mm = new MetaMessage();
-            byte[] abTempo = new byte[3];
-            abTempo[0] = (byte) ((nTempoInMPQ >> 16) & 0xFF);
-            abTempo[1] = (byte) ((nTempoInMPQ >> 8) & 0xFF);
-            abTempo[2] = (byte) ((nTempoInMPQ) & 0xFF);
-            mm.setMessage(0x51, abTempo, 3);
+            byte[] tempo = new byte[3];
+            tempo[0] = (byte) ((tempoInMPQ >> 16) & 0xFF);
+            tempo[1] = (byte) ((tempoInMPQ >> 8) & 0xFF);
+            tempo[2] = (byte) ((tempoInMPQ) & 0xFF);
+            mm.setMessage(0x51, tempo, 3);
             me = new MidiEvent(mm, 0);
             track.add(me);
             mm = new MetaMessage();
             mm.setMessage(0x2F, new byte[0], 0);
-            me = new MidiEvent(mm, lDuration);
+            me = new MidiEvent(mm, duration);
             track.add(me);
         } catch (InvalidMidiDataException e) {
-            e.printStackTrace();
+            e.printStackTrace(System.err);
             System.exit(1);
         }
         try {
-            MidiSystem.write(sequence, 0, new File(strFilename));
+            MidiSystem.write(sequence, 0, new File(filename));
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace(System.err);
             System.exit(1);
         }
 
@@ -85,9 +79,7 @@ public class CreateEmptySequence {
         System.exit(0);
     }
 
-    private static void out(String strMessage) {
-        System.out.println(strMessage);
+    private static void out(String message) {
+        System.out.println(message);
     }
 }
-
-

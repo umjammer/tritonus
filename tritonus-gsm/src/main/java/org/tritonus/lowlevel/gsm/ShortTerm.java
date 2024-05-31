@@ -21,13 +21,13 @@
 package org.tritonus.lowlevel.gsm;
 
 
-public class Short_term {
+public class ShortTerm {
 
     /**
      * @param LARc IN coded log area ratio [0..7]
      * @param s    IN/OUT signal [0..159]
      */
-    public void Gsm_Short_Term_Analysis_Filter(Gsm_State S, short[] LARc, short[] s)
+    public void Gsm_Short_Term_Analysis_Filter(GsmState S, short[] LARc, short[] s)
             throws ArrayIndexOutOfBoundsException {
 
         short[] LARp = new short[8];
@@ -39,8 +39,7 @@ public class Short_term {
         S.setJ((short) array_index1);
 
         if (array_index0 < 0 || array_index0 > 1 || array_index1 < 0 || array_index1 > 1) {
-            throw new ArrayIndexOutOfBoundsException("Gsm_Short_Term_Synthesis_Filter: Indexing LARpp "
-                    + "incorrectly. Should be >= 0 and <= 1");
+            throw new ArrayIndexOutOfBoundsException("Indexing LARpp " + "incorrectly. Should be >= 0 and <= 1");
         }
 
         short[] LARpp_j = S.getLARppIndexed(array_index0);
@@ -70,45 +69,44 @@ public class Short_term {
      * @param wt    IN received d [0..159]
      * @param s     OUT signal s [0..159]
      */
-    public void Gsm_Short_Term_Synthesis_Filter(Gsm_State S, short[] LARcr, short[] wt, int[] s)
+    public void Gsm_Short_Term_Synthesis_Filter(GsmState gsm, short[] LARcr, short[] wt, int[] s)
             throws ArrayIndexOutOfBoundsException {
 
         short[] LARp = new short[8];
 
-        int array_index0 = S.getJ();
+        int array_index0 = gsm.getJ();
         int array_index1 = array_index0;
 
         array_index1 ^= 1;
-        S.setJ((short) array_index1);
+        gsm.setJ((short) array_index1);
 
         if (array_index0 < 0 || array_index0 > 1 || array_index1 < 0 || array_index1 > 1) {
-            throw new ArrayIndexOutOfBoundsException("Gsm_Short_Term_Synthesis_Filter: " +
-                    "Indexing LARpp incorrectly. Should be >= 0 and <= 1");
+            throw new ArrayIndexOutOfBoundsException("Indexing LARpp incorrectly. Should be >= 0 and <= 1");
         }
 
-        short[] LARpp_j = S.getLARppIndexed(array_index0);
-        short[] LARpp_j_1 = S.getLARppIndexed(array_index1);
+        short[] LARpp_j = gsm.getLARppIndexed(array_index0);
+        short[] LARpp_j_1 = gsm.getLARppIndexed(array_index1);
 
         Decoding_of_the_coded_Log_Area_Ratios(LARcr, LARpp_j);
 
         Coefficients_0_12(LARpp_j_1, LARpp_j, LARp);
         LARp_to_rp(LARp);
-        Short_term_synthesis_filtering(S, LARp, 13, wt, s, 0);
+        Short_term_synthesis_filtering(gsm, LARp, 13, wt, s, 0);
 
         Coefficients_13_26(LARpp_j_1, LARpp_j, LARp);
         LARp_to_rp(LARp);
-        Short_term_synthesis_filtering(S, LARp, 14, wt, s, 13);
+        Short_term_synthesis_filtering(gsm, LARp, 14, wt, s, 13);
 
         Coefficients_27_39(LARpp_j_1, LARpp_j, LARp);
         LARp_to_rp(LARp);
-        Short_term_synthesis_filtering(S, LARp, 13, wt, s, 27);
+        Short_term_synthesis_filtering(gsm, LARp, 13, wt, s, 27);
 
         Coefficients_40_159(LARpp_j, LARp);
         LARp_to_rp(LARp);
-        Short_term_synthesis_filtering(S, LARp, 120, wt, s, 40);
+        Short_term_synthesis_filtering(gsm, LARp, 120, wt, s, 40);
 
-        S.setLARppIndexed(array_index0, LARpp_j);
-        S.setLARppIndexed(array_index1, LARpp_j_1);
+        gsm.setLARppIndexed(array_index0, LARpp_j);
+        gsm.setLARppIndexed(array_index1, LARpp_j_1);
     }
 
     /**
@@ -142,10 +140,10 @@ public class Short_term {
     }
 
     public static void STEP(short[] LARc, short[] LARpp, int index, short temp1, short B, short MIC, short INVA) {
-        temp1 = (short) (Add.GSM_ADD(LARc[index], MIC) << 10);
-        temp1 = Add.GSM_SUB(temp1, (short) (B << 1));
-        temp1 = Add.GSM_MULT_R(INVA, temp1);
-        LARpp[index] = Add.GSM_ADD(temp1, temp1);
+        temp1 = (short) (GsmMath.add(LARc[index], MIC) << 10);
+        temp1 = GsmMath.sub(temp1, (short) (B << 1));
+        temp1 = GsmMath.multR(INVA, temp1);
+        LARpp[index] = GsmMath.add(temp1, temp1);
     }
 
     /**
@@ -159,30 +157,25 @@ public class Short_term {
      * @since 4.2.9 Computation of the quantized reflection coefficients
      * @since 4.2.9.1 Interpolation of the LARpp[1..8] to get the LARp[1..8]
      */
-    public static void Coefficients_0_12(
-            short[] LARpp_j_1,
-            short[] LARpp_j,
-            short[] LARp) {
+    public static void Coefficients_0_12(short[] LARpp_j_1, short[] LARpp_j, short[] LARp) {
         for (int i = 0; i < 8; i++) {
-            LARp[i] = Add.GSM_ADD(Add.SASR(LARpp_j_1[i], 2),
-                    Add.SASR(LARpp_j[i], 2));
+            LARp[i] = GsmMath.add(GsmMath.sasr(LARpp_j_1[i], 2), GsmMath.sasr(LARpp_j[i], 2));
 
-            LARp[i] = Add.GSM_ADD(LARp[i],
-                    Add.SASR(LARpp_j_1[i], 1));
+            LARp[i] = GsmMath.add(LARp[i], GsmMath.sasr(LARpp_j_1[i], 1));
         }
     }
 
     public static void Coefficients_13_26(short[] LARpp_j_1, short[] LARpp_j, short[] LARp) {
         for (int i = 0; i < 8; i++) {
-            LARp[i] = Add.GSM_ADD(Add.SASR(LARpp_j_1[i], 1), Add.SASR(LARpp_j[i], 1));
+            LARp[i] = GsmMath.add(GsmMath.sasr(LARpp_j_1[i], 1), GsmMath.sasr(LARpp_j[i], 1));
         }
     }
 
     public static void Coefficients_27_39(short[] LARpp_j_1, short[] LARpp_j, short[] LARp) {
         for (int i = 0; i < 8; i++) {
-            LARp[i] = Add.GSM_ADD(Add.SASR(LARpp_j_1[i], 2), Add.SASR(LARpp_j[i], 2));
+            LARp[i] = GsmMath.add(GsmMath.sasr(LARpp_j_1[i], 2), GsmMath.sasr(LARpp_j[i], 2));
 
-            LARp[i] = Add.GSM_ADD(LARp[i], Add.SASR(LARpp_j[i], 1));
+            LARp[i] = GsmMath.add(LARp[i], GsmMath.sasr(LARpp_j[i], 1));
         }
     }
 
@@ -203,18 +196,18 @@ public class Short_term {
 
         for (int i = 0; i < 8; i++) {
             if (LARp[i] < 0) {
-                temp = (short) (LARp[i] == Gsm_Def.MIN_WORD ? Gsm_Def.MAX_WORD : -(LARp[i]));
+                temp = (short) (LARp[i] == GsmDef.MIN_WORD ? GsmDef.MAX_WORD : -(LARp[i]));
 
                 LARp[i] = (short) (-((temp < 11059)
                         ? temp << 1
                         : ((temp < 20070) ? temp + 11059
-                        : Add.GSM_ADD((short) (temp >> 2), (short) 26112))));
+                        : GsmMath.add((short) (temp >> 2), (short) 26112))));
             } else {
                 temp = LARp[i];
                 LARp[i] = (short) ((temp < 11059)
                         ? temp << 1
                         : ((temp < 20070) ? temp + 11059
-                        : Add.GSM_ADD((short) (temp >> 2), (short) 26112)));
+                        : GsmMath.add((short) (temp >> 2), (short) 26112)));
             }
         }
     }
@@ -233,7 +226,7 @@ public class Short_term {
      * @param k_n     k_end - k_start
      * @param s_index IN/OUT [0..n-1]
      */
-    private void Short_term_analysis_filtering(Gsm_State S, short[] rp, int k_n, short[] s, int s_index) {
+    private void Short_term_analysis_filtering(GsmState S, short[] rp, int k_n, short[] s, int s_index) {
         short[] u = S.getU();
         short di, zzz, ui, sav, rpi;
 
@@ -247,11 +240,11 @@ public class Short_term {
                 rpi = rp[i];
                 u[i] = sav;
 
-                zzz = Add.GSM_MULT_R(rpi, di);
-                sav = Add.GSM_ADD(ui, zzz);
+                zzz = GsmMath.multR(rpi, di);
+                sav = GsmMath.add(ui, zzz);
 
-                zzz = Add.GSM_MULT_R(rpi, ui);
-                di = Add.GSM_ADD(di, zzz);
+                zzz = GsmMath.multR(rpi, ui);
+                di = GsmMath.add(di, zzz);
             }
             s[s_index++] = di;
         }
@@ -265,7 +258,7 @@ public class Short_term {
      * @param sr  OUT [0..k-1]
      */
     public static void Short_term_synthesis_filtering(
-            Gsm_State S, short[] rrp, int k, short[] wt, int[] sr, int wt_sr_index_start) {
+            GsmState S, short[] rrp, int k, short[] wt, int[] sr, int wt_sr_index_start) {
 
         short[] v_temp = S.getV();
         short sri, tmp1, tmp2;
@@ -277,27 +270,27 @@ public class Short_term {
             sri = wt[index];
             for (int i = 7; i >= 0; i--) {
 
-                //sri = GSM_SUB(sri, gsm_mult_r( rrp[i], v_temp[i]));
+//                sri = GSM_SUB(sri, gsm_mult_r( rrp[i], v_temp[i]));
 
                 tmp1 = rrp[i];
                 tmp2 = v_temp[i];
-                tmp2 = (short) (tmp1 == Gsm_Def.MIN_WORD &&
-                        tmp2 == Gsm_Def.MIN_WORD
-                        ? Gsm_Def.MAX_WORD
-                        : 0x0FFFF & (((int) tmp1 * (int) tmp2
+                tmp2 = (short) (tmp1 == GsmDef.MIN_WORD &&
+                        tmp2 == GsmDef.MIN_WORD
+                        ? GsmDef.MAX_WORD
+                        : 0x0ffff & (((int) tmp1 * (int) tmp2
                         + 16384) >> 15));
 
-                sri = Add.GSM_SUB(sri, tmp2);
+                sri = GsmMath.sub(sri, tmp2);
 
-                //v[i+1] = GSM_ADD( v_temp[i], gsm_mult_r(rrp[i], sri));
+//                v[i+1] = GSM_ADD( v_temp[i], gsm_mult_r(rrp[i], sri));
 
-                tmp1 = (short) (tmp1 == Gsm_Def.MIN_WORD &&
-                        sri == Gsm_Def.MIN_WORD
-                        ? Gsm_Def.MAX_WORD
-                        : 0x0FFFF & (((int) tmp1 * (int) sri
+                tmp1 = (short) (tmp1 == GsmDef.MIN_WORD &&
+                        sri == GsmDef.MIN_WORD
+                        ? GsmDef.MAX_WORD
+                        : 0x0ffff & (((int) tmp1 * (int) sri
                         + 16384) >> 15));
 
-                v_temp[i + 1] = Add.GSM_ADD(v_temp[i], tmp1);
+                v_temp[i + 1] = GsmMath.add(v_temp[i], tmp1);
             }
             sr[index++] = v_temp[0] = sri;
         }

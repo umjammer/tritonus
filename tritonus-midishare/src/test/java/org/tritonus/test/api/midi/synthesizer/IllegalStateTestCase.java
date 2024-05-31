@@ -1,8 +1,4 @@
 /*
- * IllegalStateTestCase.java
- */
-
-/*
  *  Copyright (c) 2006 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,12 +24,10 @@ import org.junit.jupiter.api.Assertions;
 /**
  * Tests for class javax.sound.midi.Synthesizer.
  */
-public class IllegalStateTestCase
-        extends BaseSynthesizerTestCase {
+public class IllegalStateTestCase extends BaseSynthesizerTestCase {
 
     @Override
-    protected void checkSynthesizer(Synthesizer synth)
-            throws Exception {
+    protected void checkSynthesizer(Synthesizer synth) throws Exception {
         // Synthesizer is closed
         checkMethods(synth, false);
 
@@ -46,58 +40,53 @@ public class IllegalStateTestCase
         synth.close();
     }
 
-    private void checkMethods(Synthesizer synth, boolean bOpen)
-            throws Exception {
-        boolean bExpectingException = false;
-        checkMethod(synth, "getMaxPolyphony()", bExpectingException, bOpen);
-        checkMethod(synth, "getLatency()", bExpectingException, bOpen);
-        checkMethod(synth, "getChannels()", bExpectingException, bOpen);
-        checkMethod(synth, "getVoiceStatus()", bExpectingException, bOpen);
-        checkMethod(synth, "getDefaultSoundbank()", bExpectingException, bOpen);
-        checkMethod(synth, "getAvailableInstruments()", bExpectingException, bOpen);
-        checkMethod(synth, "getLoadedInstruments()", bExpectingException, bOpen);
+    private static void checkMethods(Synthesizer synth, boolean open) throws Exception {
+        boolean expectingException = false;
+        checkMethod(synth, "getMaxPolyphony()", expectingException, open);
+        checkMethod(synth, "getLatency()", expectingException, open);
+        checkMethod(synth, "getChannels()", expectingException, open);
+        checkMethod(synth, "getVoiceStatus()", expectingException, open);
+        checkMethod(synth, "getDefaultSoundbank()", expectingException, open);
+        checkMethod(synth, "getAvailableInstruments()", expectingException, open);
+        checkMethod(synth, "getLoadedInstruments()", expectingException, open);
     }
 
-    private void checkMethod(Synthesizer synth, String strMethodName,
-                             boolean bExceptionExpected, boolean bOpen)
-            throws Exception {
+    private static void checkMethod(
+            Synthesizer synth, String methodName, boolean exceptionExpected, boolean open) throws Exception {
         try {
-            if ("getMaxPolyphony()".equals(strMethodName))
+            if ("getMaxPolyphony()".equals(methodName))
                 synth.getMaxPolyphony();
-            else if ("getLatency()".equals(strMethodName))
+            else if ("getLatency()".equals(methodName))
                 synth.getLatency();
-            else if ("getChannels()".equals(strMethodName))
+            else if ("getChannels()".equals(methodName))
                 synth.getChannels();
-            else if ("getVoiceStatus()".equals(strMethodName))
+            else if ("getVoiceStatus()".equals(methodName))
                 synth.getVoiceStatus();
-            else if ("getDefaultSoundbank()".equals(strMethodName))
+            else if ("getDefaultSoundbank()".equals(methodName))
                 synth.getDefaultSoundbank();
-            else if ("getAvailableInstruments()".equals(strMethodName))
+            else if ("getAvailableInstruments()".equals(methodName))
                 synth.getAvailableInstruments();
-            else if ("getLoadedInstruments()".equals(strMethodName))
+            else if ("getLoadedInstruments()".equals(methodName))
                 synth.getLoadedInstruments();
             else
                 throw new RuntimeException("unknown method name");
-            if (bExceptionExpected) {
-                Assertions.fail(constructErrorMessage(synth, strMethodName, bExceptionExpected, bOpen));
+            if (exceptionExpected) {
+                Assertions.fail(constructErrorMessage(synth, methodName, exceptionExpected, open));
             }
         } catch (IllegalStateException e) {
-            if (!bExceptionExpected) {
-                Assertions.fail(constructErrorMessage(synth, strMethodName, bExceptionExpected, bOpen));
+            if (!exceptionExpected) {
+                Assertions.fail(constructErrorMessage(synth, methodName, exceptionExpected, open));
             }
         }
     }
 
     private static String constructErrorMessage(Synthesizer synth,
-                                                String strMethodName,
-                                                boolean bExceptionExpected,
-                                                boolean bOpen) {
-        String strMessage = ": IllegalStateException ";
-        strMessage += (bExceptionExpected ? "not thrown" : "thrown");
-        strMessage += " on " + strMethodName;
-        return BaseSynthesizerTestCase.constructErrorMessage(synth,
-                strMessage, bOpen);
+                                                String methodName,
+                                                boolean exceptionExpected,
+                                                boolean open) {
+        String message = ": IllegalStateException ";
+        message += (exceptionExpected ? "not thrown" : "thrown");
+        message += " on " + methodName;
+        return BaseSynthesizerTestCase.errmsg(synth, message, open);
     }
 }
-
-

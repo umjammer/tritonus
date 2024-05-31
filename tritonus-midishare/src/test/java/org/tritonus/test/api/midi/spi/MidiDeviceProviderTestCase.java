@@ -34,10 +34,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class MidiDeviceProviderTestCase {
 
     @Test
-    public void testIsDeviceSupported()
-            throws Exception {
-        MidiDevice.Info info = new TestInfo("name", "vendor",
-                "description", "version");
+    public void testIsDeviceSupported() throws Exception {
+        MidiDevice.Info info = new TestInfo("name", "vendor", "description", "version");
         checkIsDeviceSupported(new MidiDevice.Info[0], info, false);
         checkIsDeviceSupported(new MidiDevice.Info[] {info}, info, true);
         assertThrows(NullPointerException.class, () -> {
@@ -46,49 +44,42 @@ public class MidiDeviceProviderTestCase {
         });
     }
 
-    private void checkIsDeviceSupported(MidiDevice.Info[] aSupportedInfos,
-                                        MidiDevice.Info testInfo,
-                                        boolean bExpectedResult)
-            throws Exception {
-        MidiDeviceProvider provider = new TestMidiDeviceProvider(aSupportedInfos);
-        assertFalse(bExpectedResult ^ provider.isDeviceSupported(testInfo), "empty supported array");
+    private static void checkIsDeviceSupported(MidiDevice.Info[] supportedInfos,
+                                               MidiDevice.Info testInfo,
+                                               boolean expectedResult) throws Exception {
+        MidiDeviceProvider provider = new TestMidiDeviceProvider(supportedInfos);
+        assertFalse(expectedResult ^ provider.isDeviceSupported(testInfo), "empty supported array");
     }
 
     /**
      * Concrete subclass of MidiDeviceProvider.
      */
-    private static class TestMidiDeviceProvider
-            extends MidiDeviceProvider {
+    private static class TestMidiDeviceProvider extends MidiDeviceProvider {
 
-        MidiDevice.Info[] m_aSupportedInfos;
+        MidiDevice.Info[] supportedInfos;
 
-        public TestMidiDeviceProvider(MidiDevice.Info[] aSupportedInfos) {
-            m_aSupportedInfos = aSupportedInfos;
+        public TestMidiDeviceProvider(MidiDevice.Info[] supportedInfos) {
+            this.supportedInfos = supportedInfos;
         }
 
         @Override
         public MidiDevice.Info[] getDeviceInfo() {
-            return m_aSupportedInfos;
+            return supportedInfos;
         }
 
         @Override
         public MidiDevice getDevice(MidiDevice.Info info) {
             return null;
         }
-
     }
 
     /**
      * Accessible subclass of MidiDevice.Info.
      */
-    private static class TestInfo
-            extends MidiDevice.Info {
+    private static class TestInfo extends MidiDevice.Info {
 
-        public TestInfo(String name, String vendor, String description,
-                        String version) {
+        public TestInfo(String name, String vendor, String description, String version) {
             super(name, vendor, description, version);
         }
     }
 }
-
-

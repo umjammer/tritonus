@@ -50,34 +50,32 @@ public class AudioSystemShadow {
         return new TNonSeekableDataOutputStream(stream);
     }
 
-    // TODO lLengthInBytes actually should be lLengthInFrames (design problem of A.O.S.)
-    public static AudioOutputStream getAudioOutputStream(AudioFileFormat.Type type, AudioFormat audioFormat, long lLengthInBytes, TDataOutputStream dataOutputStream) {
+    // TODO lengthInBytes actually should be lLengthInFrames (design problem of A.O.S.)
+    public static AudioOutputStream getAudioOutputStream(AudioFileFormat.Type type, AudioFormat audioFormat, long lengthInBytes, TDataOutputStream dataOutputStream) {
         AudioOutputStream audioOutputStream = null;
 
         if (type.equals(AudioFileFormat.Type.AIFF) ||
                 type.equals(AudioFileFormat.Type.AIFF)) {
-            audioOutputStream = new AiffAudioOutputStream(audioFormat, type, lLengthInBytes, dataOutputStream);
+            audioOutputStream = new AiffAudioOutputStream(audioFormat, type, lengthInBytes, dataOutputStream);
         } else if (type.equals(AudioFileFormat.Type.AU)) {
-            audioOutputStream = new AuAudioOutputStream(audioFormat, lLengthInBytes, dataOutputStream);
+            audioOutputStream = new AuAudioOutputStream(audioFormat, lengthInBytes, dataOutputStream);
         } else if (type.equals(AudioFileFormat.Type.WAVE)) {
-            audioOutputStream = new WaveAudioOutputStream(audioFormat, lLengthInBytes, dataOutputStream);
+            audioOutputStream = new WaveAudioOutputStream(audioFormat, lengthInBytes, dataOutputStream);
         }
         return audioOutputStream;
     }
 
-    public static AudioOutputStream getAudioOutputStream(AudioFileFormat.Type type, AudioFormat audioFormat, long lLengthInBytes, File file)
+    public static AudioOutputStream getAudioOutputStream(AudioFileFormat.Type type, AudioFormat audioFormat, long lengthInBytes, File file)
             throws IOException {
         TDataOutputStream dataOutputStream = getDataOutputStream(file);
-        AudioOutputStream audioOutputStream = getAudioOutputStream(type, audioFormat, lLengthInBytes, dataOutputStream);
+        AudioOutputStream audioOutputStream = getAudioOutputStream(type, audioFormat, lengthInBytes, dataOutputStream);
         return audioOutputStream;
     }
 
-    public static AudioOutputStream getAudioOutputStream(AudioFileFormat.Type type, AudioFormat audioFormat, long lLengthInBytes, OutputStream outputStream)
+    public static AudioOutputStream getAudioOutputStream(AudioFileFormat.Type type, AudioFormat audioFormat, long lengthInBytes, OutputStream outputStream)
             throws IOException {
         TDataOutputStream dataOutputStream = getDataOutputStream(outputStream);
-        AudioOutputStream audioOutputStream = getAudioOutputStream(type, audioFormat, lLengthInBytes, dataOutputStream);
+        AudioOutputStream audioOutputStream = getAudioOutputStream(type, audioFormat, lengthInBytes, dataOutputStream);
         return audioOutputStream;
     }
 }
-
-

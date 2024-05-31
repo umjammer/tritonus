@@ -1,6 +1,5 @@
 package vavi.sound.sampled.jna.codec;
 
-import java.util.Arrays;
 import java.util.List;
 
 import com.sun.jna.NativeLong;
@@ -59,7 +58,7 @@ public class vorbis_block extends Structure {
 
     @Override
     protected List<String> getFieldOrder() {
-        return Arrays.asList("pcm", "opb", "lW", "W", "nW", "pcmend", "mode", "eofflag", "granulepos", "sequence", "vd", "localstore", "localtop", "localalloc", "totaluse", "reap", "glue_bits", "time_bits", "floor_bits", "res_bits", "internal");
+        return List.of("pcm", "opb", "lW", "W", "nW", "pcmend", "mode", "eofflag", "granulepos", "sequence", "vd", "localstore", "localtop", "localalloc", "totaluse", "reap", "glue_bits", "time_bits", "floor_bits", "res_bits", "internal");
     }
 
     public vorbis_block(Pointer peer) {

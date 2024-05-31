@@ -14,10 +14,6 @@
  *   limitations under the License.
  */
 
-/*
- |<---            this code is formatted to fit into 80 columns             --->|
- */
-
 package org.tritonus.lowlevel.dsp;
 
 /**
@@ -39,10 +35,8 @@ public interface Filter {
     /**
      * Process one sample through the filter.
      *
-     * @param fSample the input sample
+     * @param sample the input sample
      * @return the output sample
      */
-    float process(float fSample);
+    float process(float sample);
 }
-
-

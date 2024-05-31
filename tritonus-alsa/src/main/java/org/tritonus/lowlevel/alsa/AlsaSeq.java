@@ -347,6 +347,7 @@ public class AlsaSeq {
     public static final int SND_SEQ_PORT_TYPE_MIDI_MT32 = 1 << 5;
 
     // other standards...
+
     /** Synth device */
     public static final int SND_SEQ_PORT_TYPE_SYNTH = 1 << 10;
     /** Sampling device (support sample download) */
@@ -373,19 +374,23 @@ public class AlsaSeq {
     public static final int SND_SEQ_QUEUE_FLG_SYNC_LOST = 1;
 
     // synchronization types
+
     // mode
     public static final int SND_SEQ_SYNC_TICK = 0x80;
     public static final int SND_SEQ_SYNC_TIME = 0x40;
     public static final int SND_SEQ_SYNC_MODE = 0xc0; // mask
+
     // private format
     public static final int SND_SEQ_SYNC_FMT_PRIVATE_CLOCK = SND_SEQ_SYNC_TICK | 0;
     public static final int SND_SEQ_SYNC_FMT_PRIVATE_TIME = SND_SEQ_SYNC_TIME | 0;
+
     // pre-defined format
     public static final int SND_SEQ_SYNC_FMT_MIDI_CLOCK = SND_SEQ_SYNC_TICK | 1;
     public static final int SND_SEQ_SYNC_FMT_MTC = SND_SEQ_SYNC_TIME | 1;
     public static final int SND_SEQ_SYNC_FMT_DTL = SND_SEQ_SYNC_TIME | 2;
     public static final int SND_SEQ_SYNC_FMT_SMPTE = SND_SEQ_SYNC_TIME | 3;
     public static final int SND_SEQ_SYNC_FMT_MIDI_TICK = SND_SEQ_SYNC_TIME | 4;
+
     // time format
     public static final int SND_SEQ_SYNC_FPS_24 = 0;
     public static final int SND_SEQ_SYNC_FPS_25 = 1;
@@ -393,6 +398,7 @@ public class AlsaSeq {
     public static final int SND_SEQ_SYNC_FPS_30_NDP = 3;
 
     // sequencer timer sources
+
     /** ALSA timer */
     public static final int SND_SEQ_TIMER_ALSA = 0;
     /** Midi Clock (CLOCK event) */
@@ -405,6 +411,7 @@ public class AlsaSeq {
     public static final int SND_SEQ_QUERY_SUBS_WRITE = 1;
 
     // instrument types
+
     /** instrument data */
     public static final int SND_SEQ_INSTR_ATYPE_DATA = 0;
     /** instrument alias */
@@ -466,27 +473,27 @@ public class AlsaSeq {
      * This holds a pointer for the native code - do not touch!
      */
     @SuppressWarnings("unused")
-    private long m_lNativeHandle;
+    private long nativeHandle;
 
     public AlsaSeq() {
         super();
-        logger.log(Level.TRACE, "AlsaSeq.<init>(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        int nSuccess = open();
-        if (nSuccess < 0) {
+        int success = open();
+        if (success < 0) {
             throw new RuntimeException("open failed");
         }
 
-        logger.log(Level.TRACE, "AlsaSeq.<init>(): end");
+        logger.log(Level.TRACE, "end");
     }
 
-    public AlsaSeq(String strClientName) {
+    public AlsaSeq(String clientName) {
         this();
-        logger.log(Level.TRACE, "AlsaSeq.<init>(String): begin");
+        logger.log(Level.TRACE, "begin");
 
-        setClientName(strClientName);
+        setClientName(clientName);
 
-        logger.log(Level.TRACE, "AlsaSeq.<init>(String): end");
+        logger.log(Level.TRACE, "end");
     }
 
     /**
@@ -506,7 +513,7 @@ public class AlsaSeq {
 
     public native int getType();
 
-    public native int setNonblock(boolean bNonblock);
+    public native int setNonblock(boolean nonblock);
 
     public native int getClientId();
 
@@ -514,9 +521,9 @@ public class AlsaSeq {
 
     public native int getInputBufferSize();
 
-    public native int setOutputBufferSize(int nSize);
+    public native int setOutputBufferSize(int size);
 
-    public native int setInputBufferSize(int nSize);
+    public native int setInputBufferSize(int size);
 
     public native int getSystemInfo(AlsaSeqSystemInfo systemInfo);
 
@@ -524,7 +531,7 @@ public class AlsaSeq {
         return getClientInfo(-1, clientInfo);
     }
 
-    public native int getClientInfo(int nClient, AlsaSeqClientInfo clientInfo);
+    public native int getClientInfo(int client, AlsaSeqClientInfo clientInfo);
 
     public native int setClientInfo(AlsaSeqClientInfo clientInfo);
 
@@ -534,32 +541,32 @@ public class AlsaSeq {
      * and puts the returned values
      * into the passed arrays.
      * <p>
-     * nClient has to be -1 to start, or a client id returned by
+     * client has to be -1 to start, or a client id returned by
      * a previous call to this method.
      * <p>
-     * anValues[0] client id
+     * values[0] client id
      * <p>
      * Returns 0 if successful.
      */
-    public native int getNextClient(int nClient, int[] anValues);
+    public native int getNextClient(int client, int[] values);
 
-    public void setClientName(String strName) {
-        logger.log(Level.TRACE, "AlsaSeq.setClientName(): begin");
+    public void setClientName(String name) {
+        logger.log(Level.TRACE, "begin");
 
         AlsaSeqClientInfo clientInfo = new AlsaSeqClientInfo();
         // TODO error check
         getClientInfo(clientInfo);
-        clientInfo.setName(strName);
+        clientInfo.setName(name);
         setClientInfo(clientInfo);
 
-        logger.log(Level.TRACE, "AlsaSeq.setClientName(): end");
+        logger.log(Level.TRACE, "end");
     }
 
-    public int getPortInfo(int nPort, AlsaSeqPortInfo portInfo) {
-        return getPortInfo(-1, nPort, portInfo);
+    public int getPortInfo(int port, AlsaSeqPortInfo portInfo) {
+        return getPortInfo(-1, port, portInfo);
     }
 
-    public native int getPortInfo(int nClient, int nPort, AlsaSeqPortInfo portInfo);
+    public native int getPortInfo(int client, int port, AlsaSeqPortInfo portInfo);
 
     /**
      * Gets the next port.
@@ -567,19 +574,19 @@ public class AlsaSeq {
      * and put the returned values
      * into the passed arrays.
      * <p>
-     * nClient has to be a valid client.
-     * nPort has to be -1 to start, or a port returned by
+     * client has to be a valid client.
+     * port has to be -1 to start, or a port returned by
      * a previous call to this method.
      * <p>
-     * anValues[0] client
-     * anValues[1] port
+     * values[0] client
+     * values[1] port
      * <p>
      * Returns 0 if successful.
      */
-    public native int getNextPort(int nClient, int nPort, int[] anValues);
+    public native int getNextPort(int client, int port, int[] values);
 
     // TODO use structure
-    public native int createPort(String strName, int nCapabilities, int nGroupPermissions, int nType, int nMidiChannels, int nMidiVoices, int nSynthVoices);
+    public native int createPort(String name, int capabilities, int groupPermissions, int type, int midiChannels, int midiVoices, int synthVoices);
 
     /**
      * Allocates (reserves) a sequencing queue.
@@ -594,36 +601,36 @@ public class AlsaSeq {
      * Frees a sequencing queue.
      * Calls snd_seq_free_queue().
      *
-     * @param nQueue a queue number that has previously been
+     * @param queue a queue number that has previously been
      *               allocated with allocQueue().
      * @return 0 if successful. A negative
      * value otherwise.
      */
-    public native int freeQueue(int nQueue);
+    public native int freeQueue(int queue);
 
     /**
      * Get the queue usage flag.
      * Calls snd_seq_get_queue_usage().
      *
-     * @param nQueue a queue number that has previously been
+     * @param queue a queue number that has previously been
      *               allocated with allocQueue().
      * @return true if the client is allowed to access the queue.
      * false otherwise.
      */
-    public native boolean getQueueUsage(int nQueue);
+    public native boolean getQueueUsage(int queue);
 
     /**
      * Set the queue usage flag.
      * Calls snd_seq_set_queue_usage().
      *
-     * @param nQueue        a queue number that has previously been
+     * @param queue        a queue number that has previously been
      *                      allocated with allocQueue().
-     * @param bUsageAllowed true to allow the client access to this
+     * @param usageAllowed true to allow the client access to this
      *                      queue. false to deny it.
      * @return 0 if successful. A negative
      * value otherwise.
      */
-    public native int setQueueUsage(int nQueue, boolean bUsageAllowed);
+    public native int setQueueUsage(int queue, boolean usageAllowed);
 
     /**
      * Get the queue information.
@@ -633,7 +640,7 @@ public class AlsaSeq {
      *
      * @return returns 0 on success, otherwise a negative value.
      */
-    public native int getQueueInfo(int nQueue, AlsaSeqQueueInfo queueInfo);
+    public native int getQueueInfo(int queue, AlsaSeqQueueInfo queueInfo);
 
     /**
      * Set the queue information.
@@ -643,7 +650,7 @@ public class AlsaSeq {
      *
      * @return returns 0 on success, otherwise a negative value.
      */
-    public native int setQueueInfo(int nQueue, AlsaSeqQueueInfo queueInfo);
+    public native int setQueueInfo(int queue, AlsaSeqQueueInfo queueInfo);
 
     /**
      * Get the queue status.
@@ -653,7 +660,7 @@ public class AlsaSeq {
      *
      * @return returns 0 on success, otherwise a negative value.
      */
-    public native int getQueueStatus(int nQueue, AlsaSeqQueueStatus queueStatus);
+    public native int getQueueStatus(int queue, AlsaSeqQueueStatus queueStatus);
 
     /**
      * Get the queue tempo.
@@ -663,7 +670,7 @@ public class AlsaSeq {
      *
      * @return returns 0 on success, otherwise a negative value.
      */
-    public native int getQueueTempo(int nQueue, AlsaSeqQueueTempo queueTempo);
+    public native int getQueueTempo(int queue, AlsaSeqQueueTempo queueTempo);
 
     /**
      * Set the queue tempo.
@@ -673,7 +680,7 @@ public class AlsaSeq {
      *
      * @return returns 0 on success, otherwise a negative value.
      */
-    public native int setQueueTempo(int nQueue, AlsaSeqQueueTempo queueTempo);
+    public native int setQueueTempo(int queue, AlsaSeqQueueTempo queueTempo);
 
     /**
      * Get the queue timer.
@@ -683,7 +690,7 @@ public class AlsaSeq {
      *
      * @return returns 0 on success, otherwise a negative value.
      */
-    public native int getQueueTimer(int nQueue, AlsaSeqQueueTimer queueTimer);
+    public native int getQueueTimer(int queue, AlsaSeqQueueTimer queueTimer);
 
     /**
      * Set the queue timer.
@@ -693,7 +700,7 @@ public class AlsaSeq {
      *
      * @return returns 0 on success, otherwise a negative value.
      */
-    public native int setQueueTimer(int nQueue, AlsaSeqQueueTimer queueTimer);
+    public native int setQueueTimer(int queue, AlsaSeqQueueTimer queueTimer);
 
     public native int getPortSubscription(AlsaSeqPortSubscribe portSubscribe);
 
@@ -701,14 +708,14 @@ public class AlsaSeq {
 
     public native int unsubscribePort(AlsaSeqPortSubscribe portSubscribe);
 
-    private static native void setTrace(boolean bTrace);
+    private static native void setTrace(boolean trace);
 
     public Iterator<AlsaSeqClientInfo> getClientInfos() {
         return new ClientInfoIterator();
     }
 
-    public Iterator<AlsaSeqPortInfo> getPortInfos(int nClient) {
-        return new PortInfoIterator(nClient);
+    public Iterator<AlsaSeqPortInfo> getPortInfos(int client) {
+        return new PortInfoIterator(client);
     }
 
     //
@@ -723,7 +730,7 @@ public class AlsaSeq {
 
     public native int eventInput(AlsaSeqEvent event);
 
-    public native int eventInputPending(int nFetchSequencer);
+    public native int eventInputPending(int fetchSequencer);
 
     public native int drainOutput();
 
@@ -741,24 +748,24 @@ public class AlsaSeq {
 
     private class ClientInfoIterator implements Iterator<AlsaSeqClientInfo> {
 
-        private int m_nClient;
-        private AlsaSeqClientInfo m_clientInfo;
+        private int client;
+        private AlsaSeqClientInfo clientInfo;
 
         public ClientInfoIterator() {
-            m_nClient = -1;
-            m_clientInfo = createNextClientInfo();
+            client = -1;
+            clientInfo = createNextClientInfo();
         }
 
         @Override
         public boolean hasNext() {
-//            logger.log(Level.TRACE, "hasNext(): clientInfo: " + m_clientInfo);
-            return m_clientInfo != null;
+//logger.log(Level.TRACE, "clientInfo: " + clientInfo);
+            return clientInfo != null;
         }
 
         @Override
         public AlsaSeqClientInfo next() {
-            AlsaSeqClientInfo next = m_clientInfo;
-            m_clientInfo = createNextClientInfo();
+            AlsaSeqClientInfo next = clientInfo;
+            clientInfo = createNextClientInfo();
             return next;
         }
 
@@ -768,22 +775,22 @@ public class AlsaSeq {
         }
 
         private AlsaSeqClientInfo createNextClientInfo() {
-            logger.log(Level.TRACE, "AlsaSeq.createNextClientInfo(): begin");
+            logger.log(Level.TRACE, "begin");
 
             AlsaSeqClientInfo clientInfo = null;
-            int[] anValues = new int[1];
-            int nSuccess = getNextClient(m_nClient, anValues);
-            logger.log(Level.TRACE, "succ: " + nSuccess);
+            int[] values = new int[1];
+            int success = getNextClient(client, values);
+            logger.log(Level.TRACE, "succ: " + success);
 
-            if (nSuccess == 0) {
-//                logger.log(Level.TRACE, "AlsaSeq.createNextClientInfo(): getNextClientInfo successful");
-                m_nClient = anValues[0];
+            if (success == 0) {
+//logger.log(Level.TRACE, "getNextClientInfo successful");
+                client = values[0];
                 clientInfo = new AlsaSeqClientInfo();
                 // TODO error check
-                getClientInfo(m_nClient, clientInfo);
+                getClientInfo(client, clientInfo);
             }
 
-            logger.log(Level.TRACE, "AlsaSeq.createNextClientInfo(): end");
+            logger.log(Level.TRACE, "end");
 
             return clientInfo;
         }
@@ -791,29 +798,29 @@ public class AlsaSeq {
 
     private class PortInfoIterator implements Iterator<AlsaSeqPortInfo> {
 
-        private int m_nClient;
-        private int m_nPort;
-        private AlsaSeqPortInfo m_portInfo;
+        private final int client;
+        private int port;
+        private AlsaSeqPortInfo portInfo;
 
-        public PortInfoIterator(int nClient) {
-            logger.log(Level.TRACE, "AlsaSeq.PortInfoIterator.<init>(): begin");
+        public PortInfoIterator(int client) {
+            logger.log(Level.TRACE, "begin");
 
-            m_nClient = nClient;
-            m_nPort = -1;
-            m_portInfo = createNextPortInfo();
+            this.client = client;
+            port = -1;
+            portInfo = createNextPortInfo();
 
-            logger.log(Level.TRACE, "AlsaSeq.PortInfoIterator.<init>(): end");
+            logger.log(Level.TRACE, "end");
         }
 
         @Override
         public boolean hasNext() {
-            return m_portInfo != null;
+            return portInfo != null;
         }
 
         @Override
         public AlsaSeqPortInfo next() {
-            AlsaSeqPortInfo next = m_portInfo;
-            m_portInfo = createNextPortInfo();
+            AlsaSeqPortInfo next = portInfo;
+            portInfo = createNextPortInfo();
             return next;
         }
 
@@ -823,21 +830,21 @@ public class AlsaSeq {
         }
 
         private AlsaSeqPortInfo createNextPortInfo() {
-            logger.log(Level.TRACE, "AlsaSeq.PortInfoIterator.createNextPortInfo(): begin");
+            logger.log(Level.TRACE, "begin");
 
             AlsaSeqPortInfo portInfo = null;
-            int[] anValues = new int[2];
-            int nSuccess = getNextPort(m_nClient, m_nPort, anValues);
-            logger.log(Level.TRACE, "AlsaSeq.PortInfoIterator.createNextPortInfo(): getNextPort() returns: " + nSuccess);
+            int[] values = new int[2];
+            int success = getNextPort(client, port, values);
+            logger.log(Level.TRACE, "getNextPort() returns: " + success);
 
-            if (nSuccess == 0) {
-                m_nPort = anValues[1];
+            if (success == 0) {
+                port = values[1];
                 portInfo = new AlsaSeqPortInfo();
                 // TODO error check
-                getPortInfo(m_nClient, m_nPort, portInfo);
+                getPortInfo(client, port, portInfo);
             }
 
-            logger.log(Level.TRACE, "AlsaSeq.PortInfoIterator.createNextPortInfo(): end");
+            logger.log(Level.TRACE, "end");
 
             return portInfo;
         }

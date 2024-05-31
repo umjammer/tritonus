@@ -1,4 +1,3 @@
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.tritonus.sampled.cdda.CddaURLStreamHandlerFactory;
@@ -10,15 +9,9 @@ public class URLTest {
         URL.setURLStreamHandlerFactory(new CddaURLStreamHandlerFactory());
     }
 
-    public static void main(String[] args) {
-        String strURL = args[0];
-        URL url = null;
-        try {
-            url = new URL(strURL);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
+    public static void main(String[] args) throws Exception {
+        String _url = args[0];
+        URL url = new URL(_url);
         System.out.println("authority: " + url.getAuthority());
         System.out.println("file: " + url.getFile());
         System.out.println("host: " + url.getHost());

@@ -53,5 +53,3 @@ public interface SystemOutput
     void close()
             throws IOException;
 }
-
-

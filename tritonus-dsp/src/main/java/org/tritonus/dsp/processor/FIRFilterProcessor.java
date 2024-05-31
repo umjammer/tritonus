@@ -8,18 +8,16 @@ import org.tritonus.share.sampled.FloatSampleBuffer;
 
 public class FIRFilterProcessor implements FloatSampleProcessor {
 
-    private FIR[] filters;
+    private final FIR[] filters;
 
-    public FIRFilterProcessor(int nChannels,
-                              FIRDirectFormFilterDescription filterDescription) {
-        filters = new FIR[nChannels];
-        for (int channel = 0; channel < nChannels; channel++) {
+    public FIRFilterProcessor(int channels, FIRDirectFormFilterDescription filterDescription) {
+        filters = new FIR[channels];
+        for (int channel = 0; channel < channels; channel++) {
             filters[channel] = new FIR(filterDescription);
         }
     }
 
-    public void setFilterDescription(
-            FIRDirectFormFilterDescription filterDescription) {
+    public void setFilterDescription(FIRDirectFormFilterDescription filterDescription) {
         for (FIR filter : filters) {
             filter.setFilterDescription(filterDescription);
         }
@@ -29,18 +27,16 @@ public class FIRFilterProcessor implements FloatSampleProcessor {
         return filters.length;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void process(FloatSampleBuffer buffer) {
         if (getChannelCount() != buffer.getChannelCount()) {
             throw new IllegalArgumentException(
                     "number of channels of FloatSampleBuffer not equal to number of channels of this filter processor");
         }
-        for (int nChannel = 0; nChannel < buffer.getChannelCount(); nChannel++) {
-            float[] afBuffer = buffer.getChannel(nChannel);
-            for (int nSample = 0; nSample < buffer.getSampleCount(); nSample++) {
-                afBuffer[nSample] = filters[nChannel]
-                        .process(afBuffer[nSample]);
+        for (int channel = 0; channel < buffer.getChannelCount(); channel++) {
+            float[] b = buffer.getChannel(channel);
+            for (int sample = 0; sample < buffer.getSampleCount(); sample++) {
+                b[sample] = filters[channel].process(b[sample]);
             }
         }
     }

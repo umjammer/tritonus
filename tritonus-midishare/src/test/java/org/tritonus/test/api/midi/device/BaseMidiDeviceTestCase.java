@@ -1,8 +1,4 @@
 /*
- * BaseMidiDeviceTestCase.java
- */
-
-/*
  *  Copyright (c) 2003 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,8 +28,7 @@ public abstract class BaseMidiDeviceTestCase {
     /**
      * Iterate over all available MidiDevices.
      */
-    protected void checkMidiDevice(Check check)
-            throws Exception {
+    protected void checkMidiDevice(Check check) throws Exception {
         MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();
         for (MidiDevice.Info info : infos) {
             MidiDevice device = MidiSystem.getMidiDevice(info);
@@ -51,9 +46,6 @@ public abstract class BaseMidiDeviceTestCase {
 
     protected interface Check {
 
-        void check(MidiDevice device)
-                throws Exception;
+        void check(MidiDevice device) throws Exception;
     }
 }
-
-

@@ -32,54 +32,50 @@ public class TreeDivider extends DepthFirstAdapter {
 
     private static final Logger logger = getLogger(TreeDivider.class.getName());
     
-    private static final boolean DEBUG = true;
-
-    private InstrumentTable m_instrumentTable;
-    private UserOpcodeTable m_opcodeTable;
-    private TemplateTable m_templateTable;
-    private AGlobaldeclGlobaldecl m_globalNode;
+    private final InstrumentTable instrumentTable;
+    private final UserOpcodeTable opcodeTable;
+    private final TemplateTable templateTable;
+    private AGlobaldeclGlobaldecl globalNode;
 
     public TreeDivider(InstrumentTable instrumentTable,
                        UserOpcodeTable opcodeTable,
                        TemplateTable templateTable) {
-        m_instrumentTable = instrumentTable;
-        m_opcodeTable = opcodeTable;
-        m_templateTable = templateTable;
-        m_globalNode = null;
+        this.instrumentTable = instrumentTable;
+        this.opcodeTable = opcodeTable;
+        this.templateTable = templateTable;
+        globalNode = null;
     }
 
     public AGlobaldeclGlobaldecl getGlobalNode() {
-        return m_globalNode;
+        return globalNode;
     }
 
     @Override
     public void inAInstrdeclInstrdecl(AInstrdeclInstrdecl node) {
-        String strInstrumentName = node.getIdentifier().getText();
-        InstrumentEntry instrument = new InstrumentEntry(strInstrumentName, node);
-        m_instrumentTable.add(instrument);
+        String instrumentName = node.getIdentifier().getText();
+        InstrumentEntry instrument = new InstrumentEntry(instrumentName, node);
+        instrumentTable.add(instrument);
     }
 
     @Override
     public void inAOpcodedeclOpcodedecl(AOpcodedeclOpcodedecl node) {
-        String strOpcodeName = node.getIdentifier().getText();
-        UserOpcodeEntry opcode = new UserOpcodeEntry(strOpcodeName, node);
-        m_opcodeTable.add(opcode);
+        String opcodeName = node.getIdentifier().getText();
+        UserOpcodeEntry opcode = new UserOpcodeEntry(opcodeName, node);
+        opcodeTable.add(opcode);
     }
 
     @Override
     public void inAGlobaldeclGlobaldecl(AGlobaldeclGlobaldecl node) {
-        logger.log(Level.TRACE, "TreeDivider.inAGlobaldeclGlobaldecl()");
-        m_globalNode = node;
+        logger.log(Level.TRACE, "begin");
+        globalNode = node;
     }
 
     @Override
     public void inATemplatedeclTemplatedecl(ATemplatedeclTemplatedecl node) {
         // hack to make compile
-        String strTemplateName = "---";
-        // String strTemplateName = node.getIdentifier().getText();
-        TemplateEntry template = new TemplateEntry(strTemplateName, node);
-        m_templateTable.add(template);
+        String templateName = "---";
+//        String templateName = node.getIdentifier().getText();
+        TemplateEntry template = new TemplateEntry(templateName, node);
+        templateTable.add(template);
     }
 }
-
-

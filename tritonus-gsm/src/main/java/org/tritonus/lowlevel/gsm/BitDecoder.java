@@ -6,12 +6,12 @@ public class BitDecoder {
         MSBitFirst, LSBitFirst
     }
 
-    private AllocationMode allocationMode;
+    private final AllocationMode allocationMode;
 
-    private byte[] m_codedFrame;
-    private int m_codedFrameByteIndex;
-    private int m_sr;
-    private int m_currentBits;
+    private byte[] codedFrame;
+    private int codedFrameByteIndex;
+    private int sr;
+    private int currentBits;
 
     /**
      * Constructor.
@@ -19,41 +19,40 @@ public class BitDecoder {
      * @param codedBytes
      * @param allocationMode
      */
-    public BitDecoder(byte[] codedBytes, int bufferStartIndex,
-                      AllocationMode allocationMode) {
+    public BitDecoder(byte[] codedBytes, int bufferStartIndex, AllocationMode allocationMode) {
         super();
         this.allocationMode = allocationMode;
-        m_codedFrame = codedBytes;
-        m_codedFrameByteIndex = bufferStartIndex;
-        m_sr = 0;
-        m_currentBits = 0;
+        codedFrame = codedBytes;
+        codedFrameByteIndex = bufferStartIndex;
+        sr = 0;
+        currentBits = 0;
     }
 
     public void setCodedFrame(byte[] c, int bufferStartIndex) {
-        m_codedFrame = c;
-        m_codedFrameByteIndex = bufferStartIndex;
+        codedFrame = c;
+        codedFrameByteIndex = bufferStartIndex;
     }
 
     private void addNextCodedByteValue() {
-        m_sr |= getNextCodedByteValue() << m_currentBits;
-        m_currentBits += 8;
+        sr |= getNextCodedByteValue() << currentBits;
+        currentBits += 8;
     }
 
     private int getNextCodedByteValue() {
-        int value = m_codedFrame[m_codedFrameByteIndex];
-        m_codedFrameByteIndex++;
+        int value = codedFrame[codedFrameByteIndex];
+        codedFrameByteIndex++;
         return value & 0xFF;
     }
 
     public final int getNextBits(int bits) {
         switch (allocationMode) {
         case LSBitFirst:
-            while (m_currentBits < bits) {
+            while (currentBits < bits) {
                 addNextCodedByteValue();
             }
-            int value = m_sr & Gsm_Def.BITMASKS[bits];
-            m_sr >>>= bits;
-            m_currentBits -= bits;
+            int value = sr & GsmDef.BITMASKS[bits];
+            sr >>>= bits;
+            currentBits -= bits;
             return value;
         case MSBitFirst:
         default:

@@ -29,20 +29,15 @@ import javax.sound.sampled.Mixer;
 public class AudioUtils {
 
     public static long getLengthInBytes(AudioInputStream audioInputStream) {
-        return getLengthInBytes(audioInputStream.getFormat(),
-                audioInputStream.getFrameLength());
-/*
-  long lLengthInFrames = audioInputStream.getFrameLength();
-  int nFrameSize = audioInputStream.getFormat().getFrameSize();
-  if (lLengthInFrames >= 0 && nFrameSize >= 1)
-  {
-   return lLengthInFrames * nFrameSize;
-  }
-  else
-  {
-   return AudioSystem.NOT_SPECIFIED;
-  }
-*/
+        return getLengthInBytes(audioInputStream.getFormat(), audioInputStream.getFrameLength());
+
+//        long lengthInFrames = audioInputStream.getFrameLength();
+//        int frameSize = audioInputStream.getFormat().getFrameSize();
+//        if (lengthInFrames >= 0 && frameSize >= 1) {
+//            return lengthInFrames * frameSize;
+//        } else {
+//            return AudioSystem.NOT_SPECIFIED;
+//        }
     }
 
     /**
@@ -51,18 +46,16 @@ public class AudioUtils {
      * length), the length in bytes becomes
      * AudioSystem.NOT_SPECIFIED, too.
      */
-    public static long getLengthInBytes(AudioFormat audioFormat,
-                                        long lLengthInFrames) {
-        int nFrameSize = audioFormat.getFrameSize();
-        if (lLengthInFrames >= 0 && nFrameSize >= 1) {
-            return lLengthInFrames * nFrameSize;
+    public static long getLengthInBytes(AudioFormat audioFormat, long lengthInFrames) {
+        int frameSize = audioFormat.getFrameSize();
+        if (lengthInFrames >= 0 && frameSize >= 1) {
+            return lengthInFrames * frameSize;
         } else {
             return AudioSystem.NOT_SPECIFIED;
         }
     }
 
-    public static boolean containsFormat(AudioFormat sourceFormat,
-                                         Iterator<AudioFormat> possibleFormats) {
+    public static boolean containsFormat(AudioFormat sourceFormat, Iterator<AudioFormat> possibleFormats) {
         while (possibleFormats.hasNext()) {
             AudioFormat format = possibleFormats.next();
             if (AudioFormats.matches(format, sourceFormat)) {
@@ -330,8 +323,4 @@ public class AudioUtils {
         }
         return Math.pow(10.0, decibels * 0.05);
     }
-
-
 }
-
-

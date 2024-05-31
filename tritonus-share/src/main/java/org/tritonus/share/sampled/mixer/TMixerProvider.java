@@ -36,17 +36,16 @@ public abstract class TMixerProvider extends MixerProvider {
 
     private static final Mixer.Info[] EMPTY_MIXER_INFO_ARRAY = new Mixer.Info[0];
 
-    private static Map<Class<?>, MixerProviderStruct> sm_mixerProviderStructs = new HashMap<>();
+    private static final Map<Class<?>, MixerProviderStruct> mixerProviderStructs = new HashMap<>();
 
-    private boolean m_bDisabled = false;
+    private boolean disabled = false;
 
     public TMixerProvider() {
-        logger.log(Level.TRACE, "TMixerProvider.<init>(): begin");
+        logger.log(Level.TRACE, "begin");
 
         // currently does nothing
-        // TraceMixerProvider
 
-        logger.log(Level.TRACE, "TMixerProvider.<init>(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     /**
@@ -55,22 +54,22 @@ public abstract class TMixerProvider extends MixerProvider {
     protected abstract void staticInit();
 
     private MixerProviderStruct getMixerProviderStruct() {
-        logger.log(Level.TRACE, "TMixerProvider.getMixerProviderStruct(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        Class<?> cls = this.getClass();
-        logger.log(Level.TRACE, "TMixerProvider.getMixerProviderStruct(): called from " + cls);
+        Class<?> clazz = this.getClass();
+        logger.log(Level.TRACE, "called from " + clazz);
 
         // Thread.dumpStack();
         synchronized (TMixerProvider.class) {
-            MixerProviderStruct struct = sm_mixerProviderStructs.get(cls);
+            MixerProviderStruct struct = mixerProviderStructs.get(clazz);
             if (struct == null) {
-                logger.log(Level.TRACE, "TMixerProvider.getMixerProviderStruct(): creating new MixerProviderStruct for " + cls);
+                logger.log(Level.TRACE, "creating new MixerProviderStruct for " + clazz);
 
                 struct = new MixerProviderStruct();
-                sm_mixerProviderStructs.put(cls, struct);
+                mixerProviderStructs.put(clazz, struct);
             }
 
-            logger.log(Level.TRACE, "TMixerProvider.getMixerProviderStruct(): end");
+            logger.log(Level.TRACE, "end");
 
             return struct;
         }
@@ -79,73 +78,73 @@ public abstract class TMixerProvider extends MixerProvider {
     protected void disable() {
         logger.log(Level.TRACE, "disabling " + getClass().getName());
 
-        m_bDisabled = true;
+        disabled = true;
     }
 
     protected boolean isDisabled() {
-        return m_bDisabled;
+        return disabled;
     }
 
     protected void addMixer(Mixer mixer) {
-        logger.log(Level.TRACE, "TMixerProvider.addMixer(): begin");
+        logger.log(Level.TRACE, "begin");
 
         MixerProviderStruct struct = getMixerProviderStruct();
         synchronized (struct) {
-            struct.m_mixers.add(mixer);
-            if (struct.m_defaultMixer == null) {
-                struct.m_defaultMixer = mixer;
+            struct.mixers.add(mixer);
+            if (struct.defaultMixer == null) {
+                struct.defaultMixer = mixer;
             }
         }
 
-        logger.log(Level.TRACE, "TMixerProvider.addMixer(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     protected void removeMixer(Mixer mixer) {
-        logger.log(Level.TRACE, "TMixerProvider.removeMixer(): begin");
+        logger.log(Level.TRACE, "begin");
 
         MixerProviderStruct struct = getMixerProviderStruct();
         synchronized (struct) {
-            struct.m_mixers.remove(mixer);
+            struct.mixers.remove(mixer);
             // TODO should search for another mixer
-            if (struct.m_defaultMixer == mixer) {
-                struct.m_defaultMixer = null;
+            if (struct.defaultMixer == mixer) {
+                struct.defaultMixer = null;
             }
         }
 
-        logger.log(Level.TRACE, "TMixerProvider.removeMixer(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     // TODO $$mp 2003/01/11:this implementation may become obsolete once the overridden method
     //  in spi.MixerProvider is implemented in a way documented officially.
     @Override
     public boolean isMixerSupported(Mixer.Info info) {
-        logger.log(Level.TRACE, "TMixerProvider.isMixerSupported(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        boolean bIsSupported = false;
+        boolean isSupported = false;
         Mixer.Info[] infos = getMixerInfo();
         for (Mixer.Info value : infos) {
             if (value.equals(info)) {
-                bIsSupported = true;
+                isSupported = true;
                 break;
             }
         }
 
-        logger.log(Level.TRACE, "TMixerProvider.isMixerSupported(): end");
+        logger.log(Level.TRACE, "end");
 
-        return bIsSupported;
+        return isSupported;
     }
 
     @Override
     public Mixer getMixer(Mixer.Info info) {
-        logger.log(Level.TRACE, "TMixerProvider.getMixer(): begin");
+        logger.log(Level.TRACE, "begin");
 
         MixerProviderStruct struct = getMixerProviderStruct();
         Mixer mixerResult = null;
         synchronized (struct) {
             if (info == null) {
-                mixerResult = struct.m_defaultMixer;
+                mixerResult = struct.defaultMixer;
             } else {
-                for (Mixer mixer : struct.m_mixers) {
+                for (Mixer mixer : struct.mixers) {
                     if (mixer.getMixerInfo().equals(info)) {
                         mixerResult = mixer;
                         break;
@@ -157,38 +156,36 @@ public abstract class TMixerProvider extends MixerProvider {
             throw new IllegalArgumentException("no mixer available for " + info);
         }
 
-        logger.log(Level.TRACE, "TMixerProvider.getMixer(): end");
+        logger.log(Level.TRACE, "end");
 
         return mixerResult;
     }
 
     @Override
     public Mixer.Info[] getMixerInfo() {
-        logger.log(Level.TRACE, "TMixerProvider.getMixerInfo(): begin");
+        logger.log(Level.TRACE, "begin");
 
         Set<Mixer.Info> mixerInfos = new HashSet<>();
         MixerProviderStruct struct = getMixerProviderStruct();
         synchronized (struct) {
-            for (Mixer mixer : struct.m_mixers) {
+            for (Mixer mixer : struct.mixers) {
                 mixerInfos.add(mixer.getMixerInfo());
             }
         }
 
-        logger.log(Level.TRACE, "TMixerProvider.getMixerInfo(): end");
+        logger.log(Level.TRACE, "end");
 
         return mixerInfos.toArray(EMPTY_MIXER_INFO_ARRAY);
     }
 
     private static class MixerProviderStruct {
 
-        public List<Mixer> m_mixers;
-        public Mixer m_defaultMixer;
+        public List<Mixer> mixers;
+        public Mixer defaultMixer;
 
         public MixerProviderStruct() {
-            m_mixers = new ArrayList<>();
-            m_defaultMixer = null;
+            mixers = new ArrayList<>();
+            defaultMixer = null;
         }
     }
 }
-
-

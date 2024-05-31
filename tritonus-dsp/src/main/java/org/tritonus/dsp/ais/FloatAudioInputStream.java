@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 2000 by Florian Bomers
  *  Copyright (c) 2003 by Matthias Pfisterer
@@ -28,11 +27,10 @@ import org.tritonus.share.sampled.convert.TSynchronousFilteredAudioInputStream;
 /**
  * Base class for ... .
  */
-public abstract class FloatAudioInputStream
-        extends TSynchronousFilteredAudioInputStream {
+public abstract class FloatAudioInputStream extends TSynchronousFilteredAudioInputStream {
 
-    private AudioFormat intermediateFloatBufferFormat;
-    private FloatSampleBuffer m_floatBuffer = null;
+    private final AudioFormat intermediateFloatBufferFormat;
+    private FloatSampleBuffer floatBuffer = null;
 
     public FloatAudioInputStream(AudioInputStream sourceStream, AudioFormat targetFormat) {
         // transform the targetFormat so that
@@ -61,16 +59,14 @@ public abstract class FloatAudioInputStream
     protected int convert(byte[] inBuffer, byte[] outBuffer, int outByteOffset, int inFrameCount) {
         int sampleCount = inFrameCount * getOriginalStream().getFormat().getChannels();
         int byteCount = sampleCount * (getOriginalStream().getFormat().getSampleSizeInBits() / 8);
-        if (m_floatBuffer == null) {
-            m_floatBuffer = new FloatSampleBuffer();
+        if (floatBuffer == null) {
+            floatBuffer = new FloatSampleBuffer();
         }
-        m_floatBuffer.initFromByteArray(inBuffer, 0, byteCount, getOriginalStream().getFormat());
-        convert(m_floatBuffer);
-        m_floatBuffer.convertToByteArray(outBuffer, outByteOffset, intermediateFloatBufferFormat);
+        floatBuffer.initFromByteArray(inBuffer, 0, byteCount, getOriginalStream().getFormat());
+        convert(floatBuffer);
+        floatBuffer.convertToByteArray(outBuffer, outByteOffset, intermediateFloatBufferFormat);
         return inFrameCount;
     }
 
     protected abstract void convert(FloatSampleBuffer buffer);
 }
-
-

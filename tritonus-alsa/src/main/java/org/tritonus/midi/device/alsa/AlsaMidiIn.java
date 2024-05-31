@@ -44,32 +44,32 @@ public class AlsaMidiIn extends Thread {
     /**
      * ALSA client used to receive events.
      */
-    private AlsaSeq m_alsaSeq;
+    private AlsaSeq alsaSeq;
 
     /**
      * ALSA port number (belonging to the client represented be
-     * m_alsaSeq) used to receive events.
+     * alsaSeq) used to receive events.
      */
-    private int m_nDestPort;
+    private int destPort;
 
     /**
      * ALSA client number to subscribe to receive events.
      */
-    private int m_nSourceClient;
+    private int sourceClient;
 
     /**
-     * ALSA port number (belonging to m_nSourceClient) to
+     * ALSA port number (belonging to sourceClient) to
      * subscribe to receive events.
      */
-    private int m_nSourcePort;
+    private int sourcePort;
 
-    private AlsaMidiInListener m_listener;
+    private final AlsaMidiInListener listener;
 
-    private AlsaSeqEvent m_event = new AlsaSeqEvent();
+    private final AlsaSeqEvent event = new AlsaSeqEvent();
 
     // used to query event for detailed information
-    private int[] m_anValues = new int[5];
-    private long[] m_alValues = new long[1];
+    private final int[] values = new int[5];
+    private final long[] valuesL = new long[1];
 
     /**
      * Receives events without timestamping them.
@@ -78,27 +78,27 @@ public class AlsaMidiIn extends Thread {
      *
      * @param alsaSeq       The client that should be used to receive
      *                      events.
-     * @param nDestPort     The port number that should be used to receive
+     * @param destPort     The port number that should be used to receive
      *                      events. This port has to exist on the client represented by
      *                      alsaSeq.
-     * @param nSourceClient The client number that should be listened
-     *                      to. This and nSourcePort must exist prior to calling this
+     * @param sourceClient The client number that should be listened
+     *                      to. This and sourcePort must exist prior to calling this
      *                      constructor. The port has to allow read subscriptions.
-     * @param nSourcePort   The port number that should be listened
-     *                      to. This and nSourceClient must exist prior to calling this
+     * @param sourcePort   The port number that should be listened
+     *                      to. This and sourceClient must exist prior to calling this
      *                      constructor. The port has to allow read subscriptions.
      * @param listener      The listener that should receive the
      *                      MidiMessage objects created here from received events.
      */
     public AlsaMidiIn(AlsaSeq alsaSeq,
-                      int nDestPort,
-                      int nSourceClient,
-                      int nSourcePort,
+                      int destPort,
+                      int sourceClient,
+                      int sourcePort,
                       AlsaMidiInListener listener) {
         this(alsaSeq,
-                nDestPort,
-                nSourceClient,
-                nSourcePort,
+                destPort,
+                sourceClient,
+                sourcePort,
                 -1, false,  // signals: do not do timestamping
                 listener);
     }
@@ -108,31 +108,31 @@ public class AlsaMidiIn extends Thread {
      * a queue to get a timestamp.
      */
     public AlsaMidiIn(AlsaSeq alsaSeq,
-                      int nDestPort,
-                      int nSourceClient,
-                      int nSourcePort,
-                      int nTimestampingQueue,
-                      boolean bRealtime,
+                      int destPort,
+                      int sourceClient,
+                      int sourcePort,
+                      int timestampingQueue,
+                      boolean realtime,
                       AlsaMidiInListener listener) {
-        m_nSourceClient = nSourceClient;
-        m_nSourcePort = nSourcePort;
-        m_listener = listener;
-        m_alsaSeq = alsaSeq;
-        m_nDestPort = nDestPort;
-        if (nTimestampingQueue >= 0) {
+        this.sourceClient = sourceClient;
+        this.sourcePort = sourcePort;
+        this.listener = listener;
+        this.alsaSeq = alsaSeq;
+        this.destPort = destPort;
+        if (timestampingQueue >= 0) {
             AlsaSeqPortSubscribe portSubscribe = new AlsaSeqPortSubscribe();
-            portSubscribe.setSender(nSourceClient, nSourcePort);
-            portSubscribe.setDest(getAlsaSeq().getClientId(), nDestPort);
-            portSubscribe.setQueue(nTimestampingQueue);
+            portSubscribe.setSender(sourceClient, sourcePort);
+            portSubscribe.setDest(getAlsaSeq().getClientId(), destPort);
+            portSubscribe.setQueue(timestampingQueue);
             portSubscribe.setExclusive(false);
             portSubscribe.setTimeUpdate(true);
-            portSubscribe.setTimeReal(bRealtime);
+            portSubscribe.setTimeReal(realtime);
             getAlsaSeq().subscribePort(portSubscribe);
             portSubscribe.free();
         } else {
             AlsaSeqPortSubscribe portSubscribe = new AlsaSeqPortSubscribe();
-            portSubscribe.setSender(nSourceClient, nSourcePort);
-            portSubscribe.setDest(getAlsaSeq().getClientId(), nDestPort);
+            portSubscribe.setSender(sourceClient, sourcePort);
+            portSubscribe.setDest(getAlsaSeq().getClientId(), destPort);
             getAlsaSeq().subscribePort(portSubscribe);
             portSubscribe.free();
         }
@@ -140,7 +140,7 @@ public class AlsaMidiIn extends Thread {
     }
 
     private AlsaSeq getAlsaSeq() {
-        return m_alsaSeq;
+        return alsaSeq;
     }
 
     /**
@@ -154,35 +154,34 @@ public class AlsaMidiIn extends Thread {
         // TODO recheck interupt mechanism
         while (!interrupted()) {
             MidiEvent event = getEvent();
-            logger.log(Level.TRACE, "AlsaMidiIn.run(): got event: " + event);
+            logger.log(Level.TRACE, "got event: " + event);
 
             if (event != null) {
                 MidiMessage message = event.getMessage();
-                long lTimestamp = event.getTick();
-                if (message instanceof MetaMessage) {
-                    MetaMessage me = (MetaMessage) message;
-                    logger.log(Level.TRACE, "AlsaMidiIn.run(): MetaMessage.getData().length: " + me.getData().length);
+                long timestamp = event.getTick();
+                if (message instanceof MetaMessage me) {
+                    logger.log(Level.TRACE, "MetaMessage.getData().length: " + me.getData().length);
                 }
-                m_listener.dequeueEvent(message, lTimestamp);
+                listener.dequeueEvent(message, timestamp);
             } else {
-                logger.log(Level.TRACE, "AlsaMidiIn.run(): received null from getEvent()");
+                logger.log(Level.TRACE, "received null from getEvent()");
             }
         }
     }
 
     private MidiEvent getEvent() {
-        logger.log(Level.TRACE, "AlsaMidiIn.getEvent(): before eventInput()");
+        logger.log(Level.TRACE, "before eventInput()");
 
         while (true) {
-            int nReturn = getAlsaSeq().eventInput(m_event);
-            if (nReturn >= 0) {
+            int ret = getAlsaSeq().eventInput(event);
+            if (ret >= 0) {
                 break;
             }
 
             /*
              * Sleep for 1 ms to enable scheduling.
              */
-            logger.log(Level.TRACE, "AlsaMidiIn.getEvent(): sleeping because got no event");
+            logger.log(Level.TRACE, "sleeping because got no event");
             try {
                 Thread.sleep(1);
             } catch (InterruptedException e) {
@@ -190,26 +189,26 @@ public class AlsaMidiIn extends Thread {
             }
         }
         MidiMessage message = null;
-        int nType = m_event.getType();
-        switch (nType) {
+        int type = event.getType();
+        switch (type) {
         case AlsaSeq.SND_SEQ_EVENT_NOTEON:
         case AlsaSeq.SND_SEQ_EVENT_NOTEOFF:
         case AlsaSeq.SND_SEQ_EVENT_KEYPRESS: {
-            logger.log(Level.TRACE, "AlsaMidiIn.getEvent(): note/aftertouch event");
+            logger.log(Level.TRACE, "note/aftertouch event");
 
-            m_event.getNote(m_anValues);
+            event.getNote(values);
             ShortMessage shortMessage = new ShortMessage();
-            int nCommand = switch (nType) {
+            int command = switch (type) {
                 case AlsaSeq.SND_SEQ_EVENT_NOTEON -> ShortMessage.NOTE_ON;
                 case AlsaSeq.SND_SEQ_EVENT_NOTEOFF -> ShortMessage.NOTE_OFF;
                 case AlsaSeq.SND_SEQ_EVENT_KEYPRESS -> ShortMessage.POLY_PRESSURE;
                 default -> -1;
             };
-            int nChannel = m_anValues[0] & 0xF;
-            int nKey = m_anValues[1] & 0x7F;
-            int nVelocity = m_anValues[2] & 0x7F;
+            int channel = values[0] & 0xF;
+            int key = values[1] & 0x7F;
+            int velocity = values[2] & 0x7F;
             try {
-                shortMessage.setMessage(nCommand, nChannel, nKey, nVelocity);
+                shortMessage.setMessage(command, channel, key, velocity);
             } catch (InvalidMidiDataException e) {
                 logger.log(Level.ERROR, e.getMessage(), e);
             }
@@ -226,71 +225,71 @@ public class AlsaMidiIn extends Thread {
         case AlsaSeq.SND_SEQ_EVENT_QFRAME:
         case AlsaSeq.SND_SEQ_EVENT_SONGPOS:
         case AlsaSeq.SND_SEQ_EVENT_SONGSEL: {
-            m_event.getControl(m_anValues);
-            int nCommand = -1;
-            int nChannel = m_anValues[0] & 0xF;
-            int nData1 = -1;
-            int nData2 = -1;
-            switch (nType) {
+            event.getControl(values);
+            int command = -1;
+            int channel = values[0] & 0xF;
+            int data1 = -1;
+            int data2 = -1;
+            switch (type) {
             case AlsaSeq.SND_SEQ_EVENT_CONTROLLER:
-                logger.log(Level.TRACE, "AlsaMidiIn.getEvent(): controller event");
+                logger.log(Level.TRACE, "controller event");
 
-                nCommand = ShortMessage.CONTROL_CHANGE;
-                nData1 = m_anValues[1] & 0x7F;
-                nData2 = m_anValues[2] & 0x7F;
+                command = ShortMessage.CONTROL_CHANGE;
+                data1 = values[1] & 0x7F;
+                data2 = values[2] & 0x7F;
                 break;
 
             case AlsaSeq.SND_SEQ_EVENT_PGMCHANGE:
-                logger.log(Level.TRACE, "AlsaMidiIn.getEvent(): program change event");
+                logger.log(Level.TRACE, "program change event");
 
-                nCommand = ShortMessage.PROGRAM_CHANGE;
-                nData1 = m_anValues[2] & 0x7F;
-                nData2 = 0;
+                command = ShortMessage.PROGRAM_CHANGE;
+                data1 = values[2] & 0x7F;
+                data2 = 0;
                 break;
 
             case AlsaSeq.SND_SEQ_EVENT_CHANPRESS:
-                logger.log(Level.TRACE, "AlsaMidiIn.getEvent(): channel pressure event");
+                logger.log(Level.TRACE, "channel pressure event");
 
-                nCommand = ShortMessage.CHANNEL_PRESSURE;
-                nData1 = m_anValues[2] & 0x7F;
-                nData2 = 0;
+                command = ShortMessage.CHANNEL_PRESSURE;
+                data1 = values[2] & 0x7F;
+                data2 = 0;
                 break;
 
             case AlsaSeq.SND_SEQ_EVENT_PITCHBEND:
-                logger.log(Level.TRACE, "AlsaMidiIn.getEvent(): pitchbend event");
+                logger.log(Level.TRACE, "pitchbend event");
 
-                nCommand = ShortMessage.PITCH_BEND;
-                nData1 = m_anValues[2] & 0x7F;
-                nData2 = (m_anValues[2] >> 7) & 0x7F;
+                command = ShortMessage.PITCH_BEND;
+                data1 = values[2] & 0x7F;
+                data2 = (values[2] >> 7) & 0x7F;
                 break;
 
             case AlsaSeq.SND_SEQ_EVENT_QFRAME:
-                logger.log(Level.TRACE, "AlsaMidiIn.getEvent(): MTC event");
+                logger.log(Level.TRACE, "MTC event");
 
-                nCommand = ShortMessage.MIDI_TIME_CODE;
-                nData1 = m_anValues[2] & 0x7F;
-                nData2 = 0;
+                command = ShortMessage.MIDI_TIME_CODE;
+                data1 = values[2] & 0x7F;
+                data2 = 0;
                 break;
 
             case AlsaSeq.SND_SEQ_EVENT_SONGPOS:
-                logger.log(Level.TRACE, "AlsaMidiIn.getEvent(): song position event");
+                logger.log(Level.TRACE, "song position event");
 
-                nCommand = ShortMessage.SONG_POSITION_POINTER;
-                nData1 = m_anValues[2] & 0x7F;
-                nData2 = (m_anValues[2] >> 7) & 0x7F;
+                command = ShortMessage.SONG_POSITION_POINTER;
+                data1 = values[2] & 0x7F;
+                data2 = (values[2] >> 7) & 0x7F;
                 break;
 
             case AlsaSeq.SND_SEQ_EVENT_SONGSEL:
-                logger.log(Level.TRACE, "AlsaMidiIn.getEvent(): song select event");
+                logger.log(Level.TRACE, "song select event");
 
-                nCommand = ShortMessage.SONG_SELECT;
-                nData1 = m_anValues[2] & 0x7F;
-                nData2 = 0;
+                command = ShortMessage.SONG_SELECT;
+                data1 = values[2] & 0x7F;
+                data2 = 0;
                 break;
             }
             ShortMessage shortMessage = new ShortMessage();
             try {
-                shortMessage.setMessage(nCommand, nChannel, nData1, nData2);
+                shortMessage.setMessage(command, channel, data1, data2);
             } catch (InvalidMidiDataException e) {
                 logger.log(Level.ERROR, e.getMessage(), e);
             }
@@ -306,10 +305,10 @@ public class AlsaMidiIn extends Thread {
         case AlsaSeq.SND_SEQ_EVENT_STOP:
         case AlsaSeq.SND_SEQ_EVENT_SENSING:
         case AlsaSeq.SND_SEQ_EVENT_RESET: {
-            int nStatus = switch (nType) {
+            int status = switch (type) {
                 case AlsaSeq.SND_SEQ_EVENT_TUNE_REQUEST -> ShortMessage.TUNE_REQUEST;
                 case AlsaSeq.SND_SEQ_EVENT_CLOCK -> {
-                    logger.log(Level.TRACE, "AlsaMidiIn.getEvent(): clock event");
+                    logger.log(Level.TRACE, "clock event");
 
                     yield ShortMessage.TIMING_CLOCK;
                 }
@@ -322,7 +321,7 @@ public class AlsaMidiIn extends Thread {
             };
             ShortMessage shortMessage = new ShortMessage();
             try {
-                shortMessage.setMessage(nStatus);
+                shortMessage.setMessage(status);
             } catch (InvalidMidiDataException e) {
                 logger.log(Level.ERROR, e.getMessage(), e);
             }
@@ -331,15 +330,15 @@ public class AlsaMidiIn extends Thread {
         }
 
         case AlsaSeq.SND_SEQ_EVENT_USR_VAR4: {
-            logger.log(Level.TRACE, "AlsaMidiIn.getEvent(): meta event");
+            logger.log(Level.TRACE, "meta event");
 
             MetaMessage metaMessage = new MetaMessage();
-            byte[] abTransferData = m_event.getVar();
-            int nMetaType = abTransferData[0];
-            byte[] abData = new byte[abTransferData.length - 1];
-            System.arraycopy(abTransferData, 1, abData, 0, abTransferData.length - 1);
+            byte[] transferData = event.getVar();
+            int metaType = transferData[0];
+            byte[] data = new byte[transferData.length - 1];
+            System.arraycopy(transferData, 1, data, 0, transferData.length - 1);
             try {
-                metaMessage.setMessage(nMetaType, abData, abData.length);
+                metaMessage.setMessage(metaType, data, data.length);
             } catch (InvalidMidiDataException e) {
                 logger.log(Level.ERROR, e.getMessage(), e);
             }
@@ -348,12 +347,12 @@ public class AlsaMidiIn extends Thread {
         }
 
         case AlsaSeq.SND_SEQ_EVENT_SYSEX: {
-            logger.log(Level.TRACE, "AlsaMidiIn.getEvent(): sysex event");
+            logger.log(Level.TRACE, "sysex event");
 
             SysexMessage sysexMessage = new SysexMessage();
-            byte[] abData = m_event.getVar();
+            byte[] data = event.getVar();
             try {
-                sysexMessage.setMessage(abData, abData.length);
+                sysexMessage.setMessage(data, data.length);
             } catch (InvalidMidiDataException e) {
                 logger.log(Level.ERROR, e.getMessage(), e);
             }
@@ -362,19 +361,19 @@ public class AlsaMidiIn extends Thread {
         }
 
         default:
-            logger.log(Level.TRACE, "AlsaMidiIn.getEvent(): unknown event");
+            logger.log(Level.TRACE, "unknown event");
         }
         if (message != null) {
             // If the timestamp is in ticks, ticks in the MidiEvent
             // gets this value.
             // Otherwise, if the timestamp is in realtime (ns),
             // we put us in the tick value.
-            long lTimestamp = m_event.getTimestamp();
-            if ((m_event.getFlags() & AlsaSeq.SND_SEQ_TIME_STAMP_MASK) == AlsaSeq.SND_SEQ_TIME_STAMP_REAL) {
+            long timestamp = event.getTimestamp();
+            if ((event.getFlags() & AlsaSeq.SND_SEQ_TIME_STAMP_MASK) == AlsaSeq.SND_SEQ_TIME_STAMP_REAL) {
                 // ns -> us
-                lTimestamp /= 1000;
+                timestamp /= 1000;
             }
-            MidiEvent event = new MidiEvent(message, lTimestamp);
+            MidiEvent event = new MidiEvent(message, timestamp);
             return event;
         } else {
             return null;
@@ -386,6 +385,6 @@ public class AlsaMidiIn extends Thread {
      */
     public interface AlsaMidiInListener {
 
-        void dequeueEvent(MidiMessage message, long lTimestamp);
+        void dequeueEvent(MidiMessage message, long timestamp);
     }
 }

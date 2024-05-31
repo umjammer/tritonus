@@ -27,5 +27,3 @@ public class AiffAudioFileReaderTestCase
         setResourcePrefix("aiff");
     }
 }
-
-

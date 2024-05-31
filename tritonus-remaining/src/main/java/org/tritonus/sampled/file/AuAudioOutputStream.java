@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 2000,2001 by Florian Bomers
  *  Copyright (c) 1999 by Matthias Pfisterer
@@ -74,13 +73,13 @@ public class AuAudioOutputStream extends TAudioOutputStream {
     }
 
     public AuAudioOutputStream(AudioFormat audioFormat,
-                               long lLength,
+                               long length,
                                TDataOutputStream dataOutputStream) {
         // always do backpatching if the stream supports seeking, in case the
         // reported stream length is longer than the actual data
         // if length exceeds 2GB, set the length field to NOT_SPECIFIED
         super(audioFormat,
-                lLength > 0x7FFFFFFFL ? AudioSystem.NOT_SPECIFIED : lLength,
+                length > 0x7FFFFFFFL ? AudioSystem.NOT_SPECIFIED : length,
                 dataOutputStream,
                 dataOutputStream.supportsSeek());
         // double-check that we can write this audio format
@@ -101,14 +100,14 @@ public class AuAudioOutputStream extends TAudioOutputStream {
         logger.log(Level.TRACE, "AuAudioOutputStream.writeHeader(): called.");
 
         AudioFormat format = getFormat();
-        long lLength = getLength();
+        long length = getLength();
         TDataOutputStream dos = getDataOutputStream();
         logger.log(Level.TRACE, "AuAudioOutputStream.writeHeader(): AudioFormat: " + format);
-        logger.log(Level.TRACE, "AuAudioOutputStream.writeHeader(): length: " + lLength);
+        logger.log(Level.TRACE, "AuAudioOutputStream.writeHeader(): length: " + length);
 
         dos.writeInt(AuTool.AU_HEADER_MAGIC);
         dos.writeInt(AuTool.DATA_OFFSET + getTextLength(description));
-        dos.writeInt((lLength != AudioSystem.NOT_SPECIFIED) ? ((int) lLength) : AuTool.AUDIO_UNKNOWN_SIZE);
+        dos.writeInt((length != AudioSystem.NOT_SPECIFIED) ? ((int) length) : AuTool.AUDIO_UNKNOWN_SIZE);
         dos.writeInt(AuTool.getFormatCode(format));
         dos.writeInt((int) format.getSampleRate());
         dos.writeInt(format.getChannels());
@@ -123,5 +122,3 @@ public class AuAudioOutputStream extends TAudioOutputStream {
         writeHeader();
     }
 }
-
-

@@ -35,5 +35,3 @@ public interface MidiConstants {
     int TRACK_MAGIC = 0x4d54726b;
 }
 
-
-

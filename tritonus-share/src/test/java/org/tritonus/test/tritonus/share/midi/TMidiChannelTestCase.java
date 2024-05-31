@@ -1,8 +1,4 @@
 /*
- * TDirectSynthesizerTestCase.java
- */
-
-/*
  *  Copyright (c) 2003 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,6 +22,9 @@ import org.tritonus.share.midi.TMidiChannel;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
+/**
+ * TDirectSynthesizerTestCase.
+ */
 public class TMidiChannelTestCase {
 
     @Test
@@ -65,21 +64,20 @@ public class TMidiChannelTestCase {
         doTestProgramChange(channel, 127, 127, 127);
     }
 
-    private void doTestProgramChange(TestMidiChannel channel, int nBankHigh,
-                                     int nBankLow, int nProgram) {
+    private static void doTestProgramChange(TestMidiChannel channel, int bankHigh, int bankLow, int program) {
         channel.resetCachedValues();
-        int nBank = (nBankHigh << 7) | nBankLow;
-        channel.programChange(nBank, nProgram);
+        int bank = (bankHigh << 7) | bankLow;
+        channel.programChange(bank, program);
         System.out.println("(c)" + channel.getSetControllerNumber());
         System.out.println("(v)" + channel.getSetControllerValue());
         System.out.println("(c2)" + channel.getSetControllerNumber2());
         System.out.println("(v2)" + channel.getSetControllerValue2());
 
         assertEquals(0, channel.getSetControllerNumber(), "programChange() bank high (c)");
-        assertEquals(nBankHigh, channel.getSetControllerValue(), "programChange() bank high (v)");
+        assertEquals(bankHigh, channel.getSetControllerValue(), "programChange() bank high (v)");
         assertEquals(32, channel.getSetControllerNumber2(), "programChange() bank low (c)");
-        assertEquals(nBankLow, channel.getSetControllerValue2(), "programChange() bank low (v)");
-        assertEquals(nProgram, channel.getProgramChangeValue(), "programChange() program");
+        assertEquals(bankLow, channel.getSetControllerValue2(), "programChange() bank low (v)");
+        assertEquals(program, channel.getProgramChangeValue(), "programChange() program");
     }
 
     @Test
@@ -122,17 +120,17 @@ public class TMidiChannelTestCase {
     private static class TestMidiChannel
             extends TMidiChannel {
 
-        private int m_nNoteOffKey;
-        private int m_nNoteOffVelocity;
-        private int m_nSetControllerNumber;
-        private int m_nSetControllerValue;
-        private int m_nSetControllerNumber2;
-        private int m_nSetControllerValue2;
-        //  private int m_nGetControllerNumber;
-        private int m_nProgramChangeValue;
+        private int noteOffKey;
+        private int noteOffVelocity;
+        private int setControllerNumber;
+        private int setControllerValue;
+        private int setControllerNumber2;
+        private int setControllerValue2;
+//        private int getControllerNumber;
+        private int programChangeValue;
 
-        public TestMidiChannel(int nChannel) {
-            super(nChannel);
+        public TestMidiChannel(int channel) {
+            super(channel);
             resetCachedValues();
         }
 
@@ -146,56 +144,56 @@ public class TMidiChannelTestCase {
         }
 
         public void resetCachedValues() {
-            m_nNoteOffKey = -1;
-            m_nNoteOffVelocity = -1;
-            m_nSetControllerNumber = -1;
-            m_nSetControllerValue = -1;
-            m_nSetControllerNumber2 = -1;
-            m_nSetControllerValue2 = -1;
+            noteOffKey = -1;
+            noteOffVelocity = -1;
+            setControllerNumber = -1;
+            setControllerValue = -1;
+            setControllerNumber2 = -1;
+            setControllerValue2 = -1;
 //   m_nGetControllerNumber = -1;
-            m_nProgramChangeValue = -1;
+            programChangeValue = -1;
         }
 
         public int getNoteOffKey() {
-            return m_nNoteOffKey;
+            return noteOffKey;
         }
 
         public int getNoteOffVelocity() {
-            return m_nNoteOffVelocity;
+            return noteOffVelocity;
         }
 
         public int getSetControllerNumber() {
-            return m_nSetControllerNumber;
+            return setControllerNumber;
         }
 
         public int getSetControllerValue() {
-            return m_nSetControllerValue;
+            return setControllerValue;
         }
 
         public int getSetControllerNumber2() {
-            return m_nSetControllerNumber2;
+            return setControllerNumber2;
         }
 
         public int getSetControllerValue2() {
-            return m_nSetControllerValue2;
+            return setControllerValue2;
         }
 
         public int getProgramChangeValue() {
-            return m_nProgramChangeValue;
+            return programChangeValue;
         }
 
         /**
          * Records the passed values.
          */
         @Override
-        public void controlChange(int nController, int nValue) {
-            System.out.println("CC: " + nController + ": " + nValue);
-            if (m_nSetControllerNumber != -1) {
-                m_nSetControllerNumber2 = nController;
-                m_nSetControllerValue2 = nValue;
+        public void controlChange(int controller, int value) {
+            System.out.println("CC: " + controller + ": " + value);
+            if (setControllerNumber != -1) {
+                setControllerNumber2 = controller;
+                setControllerValue2 = value;
             } else {
-                m_nSetControllerNumber = nController;
-                m_nSetControllerValue = nValue;
+                setControllerNumber = controller;
+                setControllerValue = value;
             }
         }
 
@@ -205,7 +203,7 @@ public class TMidiChannelTestCase {
         }
 
         @Override
-        public int getController(int nController) {
+        public int getController(int controller) {
             return 0;
         }
 
@@ -220,7 +218,7 @@ public class TMidiChannelTestCase {
         }
 
         @Override
-        public int getPolyPressure(int nNoteNumber) {
+        public int getPolyPressure(int noteNumber) {
             return 0;
         }
 
@@ -235,40 +233,38 @@ public class TMidiChannelTestCase {
         }
 
         @Override
-        public void noteOff(int nNoteNumber, int nVelocity) {
-            m_nNoteOffKey = nNoteNumber;
-            m_nNoteOffVelocity = nVelocity;
+        public void noteOff(int noteNumber, int velocity) {
+            noteOffKey = noteNumber;
+            noteOffVelocity = velocity;
         }
 
         @Override
-        public void noteOn(int nNoteNumber, int nVelocity) {
+        public void noteOn(int noteNumber, int velocity) {
         }
 
         @Override
-        public void programChange(int nProgram) {
-            m_nProgramChangeValue = nProgram;
+        public void programChange(int program) {
+            programChangeValue = program;
         }
 
         @Override
-        public void setChannelPressure(int nPressure) {
+        public void setChannelPressure(int pressure) {
         }
 
         @Override
-        public void setMute(boolean bMute) {
+        public void setMute(boolean mute) {
         }
 
         @Override
-        public void setPitchBend(int nBend) {
+        public void setPitchBend(int bend) {
         }
 
         @Override
-        public void setPolyPressure(int nNoteNumber, int nPressure) {
+        public void setPolyPressure(int noteNumber, int pressure) {
         }
 
         @Override
-        public void setSolo(boolean bSolo) {
+        public void setSolo(boolean solo) {
         }
     }
 }
-
-

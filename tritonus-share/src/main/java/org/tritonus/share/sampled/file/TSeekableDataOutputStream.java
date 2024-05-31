@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 1999 by Florian Bomers
  *  Copyright (c) 2000 by Matthias Pfisterer
@@ -31,12 +30,9 @@ import java.io.RandomAccessFile;
  * @author Florian Bomers
  * @author Matthias Pfisterer
  */
-public class TSeekableDataOutputStream
-        extends RandomAccessFile
-        implements TDataOutputStream {
+public class TSeekableDataOutputStream extends RandomAccessFile implements TDataOutputStream {
 
-    public TSeekableDataOutputStream(File file)
-            throws IOException {
+    public TSeekableDataOutputStream(File file) throws IOException {
         super(file, "rw");
     }
 
@@ -46,20 +42,16 @@ public class TSeekableDataOutputStream
     }
 
     @Override
-    public void writeLittleEndian32(int value)
-            throws IOException {
-        writeByte(value & 0xFF);
-        writeByte((value >> 8) & 0xFF);
-        writeByte((value >> 16) & 0xFF);
-        writeByte((value >> 24) & 0xFF);
+    public void writeLittleEndian32(int value) throws IOException {
+        writeByte(value & 0xff);
+        writeByte((value >> 8) & 0xff);
+        writeByte((value >> 16) & 0xff);
+        writeByte((value >> 24) & 0xff);
     }
 
     @Override
-    public void writeLittleEndian16(short value)
-            throws IOException {
-        writeByte(value & 0xFF);
-        writeByte((value >> 8) & 0xFF);
+    public void writeLittleEndian16(short value) throws IOException {
+        writeByte(value & 0xff);
+        writeByte((value >> 8) & 0xff);
     }
 }
-
-

@@ -16,17 +16,11 @@
 
 package org.tritonus.saol.compiler;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-
 
 public class MemoryClassLoader extends ClassLoader {
 
-    public Class<?> findClass(String strName, byte[] classData) {
-        Class<?> cls = defineClass(strName, classData, 0, classData.length);
-        return cls;
+    public Class<?> findClass(String name, byte[] classData) {
+        Class<?> clazz = defineClass(name, classData, 0, classData.length);
+        return clazz;
     }
 }
-
-

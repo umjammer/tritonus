@@ -41,20 +41,20 @@ public class EsdTargetDataLine extends TBaseDataLine implements TargetDataLine {
 
 //    private static final Class[] CONTROL_CLASSES = {GainControl.class};
 
-    private EsdRecordingStream m_esdStream;
-    private boolean m_bSwapBytes;
-    private byte[] m_abSwapBuffer;
+    private EsdRecordingStream esdStream;
+    private boolean swapBytes;
+    private byte[] swapBuffer;
 
     /*
-     * Only used if m_bSwapBytes is true.
+     * Only used if swapBytes is true.
      */
-    private int m_nBytesPerSample;
+    private int bytesPerSample;
 
-    public EsdTargetDataLine(TMixer mixer, AudioFormat format, int nBufferSize) throws LineUnavailableException {
+    public EsdTargetDataLine(TMixer mixer, AudioFormat format, int bufferSize) throws LineUnavailableException {
         // TODO use an info object that represents the mixer's capabilities (all possible formats for the line)
-        super(mixer, new DataLine.Info(TargetDataLine.class, format, nBufferSize)
+        super(mixer, new DataLine.Info(TargetDataLine.class, format, bufferSize)
             // TODO has info object to change if format or buffer size are changed later?
-            /* format, nBufferSize */);
+            /* format, bufferSize */);
     }
 
     @Override
@@ -67,35 +67,35 @@ public class EsdTargetDataLine extends TBaseDataLine implements TargetDataLine {
         checkOpen();
         AudioFormat format = getFormat();
         AudioFormat.Encoding encoding = format.getEncoding();
-        boolean bBigEndian = format.isBigEndian();
-        m_bSwapBytes = false;
-        if (format.getSampleSizeInBits() == 16 && bBigEndian) {
-            m_bSwapBytes = true;
-            bBigEndian = false;
+        boolean bigEndian = format.isBigEndian();
+        swapBytes = false;
+        if (format.getSampleSizeInBits() == 16 && bigEndian) {
+            swapBytes = true;
+            bigEndian = false;
         } else if (format.getSampleSizeInBits() == 8 && encoding.equals(AudioFormat.Encoding.PCM_SIGNED)) {
-            m_bSwapBytes = true;
+            swapBytes = true;
             encoding = AudioFormat.Encoding.PCM_UNSIGNED;
         }
-        if (m_bSwapBytes) {
+        if (swapBytes) {
             format = new AudioFormat(encoding,
                     format.getSampleRate(),
                     format.getSampleSizeInBits(),
                     format.getChannels(),
                     format.getFrameSize(),
                     format.getFrameRate(),
-                    bBigEndian);
-            m_nBytesPerSample = format.getFrameSize() / format.getChannels();
+                    bigEndian);
+            bytesPerSample = format.getFrameSize() / format.getChannels();
         }
-        int nOutFormat = Esd.ESD_STREAM | Esd.ESD_PLAY | EsdUtils.getEsdFormat(format);
-        m_esdStream = new EsdRecordingStream();
-        m_esdStream.open(nOutFormat, (int) format.getSampleRate());
+        int outFormat = Esd.ESD_STREAM | Esd.ESD_PLAY | EsdUtils.getEsdFormat(format);
+        esdStream = new EsdRecordingStream();
+        esdStream.open(outFormat, (int) format.getSampleRate());
     }
 
 //    public void start() {
 //        setStarted(true);
 //        setActive(true);
 //        if (TDebug.TraceSourceDataLine) {
-//            logger.log(Level.TRACE, "EsdTargetDataLine.start(): channel started.");
+//logger.log(Level.TRACE, "channel started.");
 //        }
 //    }
 //
@@ -112,28 +112,28 @@ public class EsdTargetDataLine extends TBaseDataLine implements TargetDataLine {
 
     // TODO check if should block
     @Override
-    public int read(byte[] abData, int nOffset, int nLength) {
-        logger.log(Level.TRACE, "EsdTargetDataLine.read(): called.");
-        logger.log(Level.TRACE, "EsdTargetDataLine.read(): wanted length: " + nLength);
-        int nOriginalOffset = nOffset;
-        if (nLength > 0 && !isActive()) {
+    public int read(byte[] data, int offset, int length) {
+        logger.log(Level.TRACE, "called.");
+        logger.log(Level.TRACE, "wanted length: " + length);
+        int originalOffset = offset;
+        if (length > 0 && !isActive()) {
             start();
         }
         if (!isOpen()) {
-            logger.log(Level.TRACE, "EsdTargetDataLine.read(): stream closed");
+            logger.log(Level.TRACE, "stream closed");
         }
-        int nBytesRead = m_esdStream.read(abData, nOffset, nLength);
-        logger.log(Level.TRACE, "EsdTargetDataLine.read(): read (bytes): " + nBytesRead);
+        int bytesRead = esdStream.read(data, offset, length);
+        logger.log(Level.TRACE, "read (bytes): " + bytesRead);
 
-        if (m_bSwapBytes && nBytesRead > 0) {
-            TConversionTool.swapOrder16(abData, nOriginalOffset, nBytesRead / 2);
+        if (swapBytes && bytesRead > 0) {
+            TConversionTool.swapOrder16(data, originalOffset, bytesRead / 2);
         }
-        return nBytesRead;
+        return bytesRead;
     }
 
     @Override
     public void closeImpl() {
-        m_esdStream.close();
+        esdStream.close();
     }
 
     @Override
@@ -152,9 +152,9 @@ public class EsdTargetDataLine extends TBaseDataLine implements TargetDataLine {
     }
 
     /**
-     * fGain is logarithmic!!
+     * gain is logarithmic!!
      */
-    protected void setGain(float fGain) {
+    protected void setGain(float gain) {
     }
 
     public class EsdTargetDataLineGainControl extends FloatControl {
@@ -165,8 +165,8 @@ public class EsdTargetDataLine extends TBaseDataLine implements TargetDataLine {
         // TODO recheck this value
         private static final int GAIN_INCREMENTS = 1000;
 
-//        private float		m_fGain;
-//        private boolean		m_bMuted;
+//        private float	gain;
+//        private boolean muted;
 
         /* package */ EsdTargetDataLineGainControl() {
             super(FloatControl.Type.VOLUME, // or MASTER_GAIN ?
@@ -179,14 +179,14 @@ public class EsdTargetDataLine extends TBaseDataLine implements TargetDataLine {
                     "-96.0",
                     "",
                     "+24.0");
-//            m_bMuted = false;	// should be included in a compund control?
+//            muted = false; // should be included in a compund control?
         }
 
         @Override
-        public void setValue(float fGain) {
-            fGain = Math.max(Math.min(fGain, getMaximum()), getMinimum());
-            if (Math.abs(fGain - getValue()) > 1.0E9) {
-                super.setValue(fGain);
+        public void setValue(float gain) {
+            gain = Math.max(Math.min(gain, getMaximum()), getMinimum());
+            if (Math.abs(gain - getValue()) > 1.0E9) {
+                super.setValue(gain);
 //                if (!getMute()) {
                 EsdTargetDataLine.this.setGain(getValue());
 //                }
@@ -206,7 +206,7 @@ public class EsdTargetDataLine extends TBaseDataLine implements TargetDataLine {
 //            return GAIN_INCREMENTS;
 //        }
 //
-//        public void fade(float fInitialGain, float fFinalGain, int nFrames) {
+//        public void fade(float initialGain, float finalGain, int frames) {
 //            // TODO
 //        }
 //
@@ -216,12 +216,12 @@ public class EsdTargetDataLine extends TBaseDataLine implements TargetDataLine {
 //        }
 //
 //        public boolean getMute() {
-//            return m_bMuted;
+//            return muted;
 //        }
 //
-//        public void setMute(boolean bMuted) {
-//            if (bMuted != getMute()) {
-//                m_bMuted = bMuted;
+//        public void setMute(boolean muted) {
+//            if (muted != getMute()) {
+//                this.muted = muted;
 //                if (getMute()) {
 //                    EsdTargetDataLine.this.setGain(getMinimum());
 //                } else {
@@ -231,5 +231,3 @@ public class EsdTargetDataLine extends TBaseDataLine implements TargetDataLine {
 //        }
     }
 }
-
-

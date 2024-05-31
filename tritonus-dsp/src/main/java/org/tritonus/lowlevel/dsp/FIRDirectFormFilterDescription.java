@@ -17,10 +17,6 @@
  *   limitations under the License.
  */
 
-/*
- |<---            this code is formatted to fit into 80 columns             --->|
- */
-
 package org.tritonus.lowlevel.dsp;
 
 /**
@@ -31,21 +27,20 @@ public class FIRDirectFormFilterDescription implements FilterDescription {
     /**
      * The filter coefficients.
      */
-    private float[] m_afCoefficients;
+    private final float[] coefficients;
 
     /**
      * Constructor with filter coefficients.
      *
-     * @param afCoefficients The array of filter coefficients
+     * @param coefficients The array of filter coefficients
      */
-    public FIRDirectFormFilterDescription(float[] afCoefficients) {
-        m_afCoefficients = new float[afCoefficients.length];
-        System.arraycopy(afCoefficients, 0, m_afCoefficients, 0,
-                afCoefficients.length);
+    public FIRDirectFormFilterDescription(float[] coefficients) {
+        this.coefficients = new float[coefficients.length];
+        System.arraycopy(coefficients, 0, this.coefficients, 0, coefficients.length);
     }
 
     public float[] getCoefficients() {
-        return m_afCoefficients;
+        return coefficients;
     }
 
     /**
@@ -58,36 +53,30 @@ public class FIRDirectFormFilterDescription implements FilterDescription {
      * @return The length of the filter (the number of coefficients).
      */
     private int getLength() {
-        return m_afCoefficients.length;
+        return coefficients.length;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public double getFrequencyResponse(double dOmega) {
-        double dReal = 0.0;
-        double dImag = 0.0;
+    public double getFrequencyResponse(double omega) {
+        double real = 0.0;
+        double imag = 0.0;
         for (int i = 0; i < getLength(); i++) {
-            dReal += m_afCoefficients[i] * Math.cos(i * dOmega);
-            dImag += m_afCoefficients[i] * Math.sin(i * dOmega);
+            real += coefficients[i] * Math.cos(i * omega);
+            imag += coefficients[i] * Math.sin(i * omega);
         }
-        double dResult = Math.sqrt(dReal * dReal + dImag * dImag);
-        return dResult;
+        double result = Math.sqrt(real * real + imag * imag);
+        return result;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public double getPhaseResponse(double dOmega) {
-        double dReal = 0.0;
-        double dImag = 0.0;
+    public double getPhaseResponse(double omega) {
+        double real = 0.0;
+        double imag = 0.0;
         for (int i = 0; i < getLength(); i++) {
-            dReal += m_afCoefficients[i] * Math.cos(i * dOmega);
-            dImag += m_afCoefficients[i] * Math.sin(i * dOmega);
+            real += coefficients[i] * Math.cos(i * omega);
+            imag += coefficients[i] * Math.sin(i * omega);
         }
-        double dResult = Math.atan2(dImag, dReal);
-        return dResult;
+        double result = Math.atan2(imag, real);
+        return result;
     }
 }

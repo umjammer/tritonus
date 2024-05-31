@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 2000 by Florian Bomers
  *  Copyright (c) 2000 by Matthias Pfisterer
@@ -22,7 +21,7 @@ package org.tritonus.sampled.file.gsm;
 
 import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
-import java.util.Arrays;
+import java.util.List;
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioFormat;
 
@@ -51,9 +50,9 @@ public class GSMAudioFileWriter extends THeaderlessAudioFileWriter {
     };
 
     public GSMAudioFileWriter() {
-        super(Arrays.asList(FILE_TYPES), Arrays.asList(AUDIO_FORMATS));
-        logger.log(Level.TRACE, "GSMAudioFileWriter.<init>(): begin");
+        super(List.of(FILE_TYPES), List.of(AUDIO_FORMATS));
+        logger.log(Level.TRACE, "begin");
 
-        logger.log(Level.TRACE, "GSMAudioFileWriter.<init>(): end");
+        logger.log(Level.TRACE, "end");
     }
 }

@@ -34,12 +34,12 @@ import org.tritonus.share.ArraySet;
  */
 public class TAudioConfig {
 
-    private static Set<AudioFileWriter> sm_audioFileWriters = null;
-    private static Set<AudioFileReader> sm_audioFileReaders = null;
-    private static Set<FormatConversionProvider> sm_formatConversionProviders = null;
-    private static Set<MixerProvider> sm_mixerProviders = null;
+    private static Set<AudioFileWriter> audioFileWriters = null;
+    private static Set<AudioFileReader> audioFileReaders = null;
+    private static Set<FormatConversionProvider> formatConversionProviders = null;
+    private static Set<MixerProvider> mixerProviders = null;
 
-    private static Mixer.Info sm_defaultMixerInfo;
+    private static Mixer.Info defaultMixerInfo;
 
     /**
      * Constructor to prevent instantiation.
@@ -83,7 +83,7 @@ public class TAudioConfig {
         TInit.registerClasses(MixerProvider.class, action);
     }
 
-    ////////////////////////////////////////////////////////////////
+    // ----
 
     public static synchronized void addAudioFileReader(AudioFileReader provider) {
         getAudioFileReadersImpl().add(provider);
@@ -98,11 +98,11 @@ public class TAudioConfig {
     }
 
     private static synchronized Set<AudioFileReader> getAudioFileReadersImpl() {
-        if (sm_audioFileReaders == null) {
-            sm_audioFileReaders = new ArraySet<>();
+        if (audioFileReaders == null) {
+            audioFileReaders = new ArraySet<>();
             registerAudioFileReaders();
         }
-        return sm_audioFileReaders;
+        return audioFileReaders;
     }
 
     public static synchronized void addAudioFileWriter(AudioFileWriter provider) {
@@ -118,11 +118,11 @@ public class TAudioConfig {
     }
 
     private static synchronized Set<AudioFileWriter> getAudioFileWritersImpl() {
-        if (sm_audioFileWriters == null) {
-            sm_audioFileWriters = new ArraySet<>();
+        if (audioFileWriters == null) {
+            audioFileWriters = new ArraySet<>();
             registerAudioFileWriters();
         }
-        return sm_audioFileWriters;
+        return audioFileWriters;
     }
 
     public static synchronized void addFormatConversionProvider(FormatConversionProvider provider) {
@@ -138,11 +138,11 @@ public class TAudioConfig {
     }
 
     private static synchronized Set<FormatConversionProvider> getFormatConversionProvidersImpl() {
-        if (sm_formatConversionProviders == null) {
-            sm_formatConversionProviders = new ArraySet<>();
+        if (formatConversionProviders == null) {
+            formatConversionProviders = new ArraySet<>();
             registerFormatConversionProviders();
         }
-        return sm_formatConversionProviders;
+        return formatConversionProviders;
     }
 
     public static synchronized void addMixerProvider(MixerProvider provider) {
@@ -158,18 +158,15 @@ public class TAudioConfig {
     }
 
     private static synchronized Set<MixerProvider> getMixerProvidersImpl() {
-        if (sm_mixerProviders == null) {
-            sm_mixerProviders = new ArraySet<>();
+        if (mixerProviders == null) {
+            mixerProviders = new ArraySet<>();
             registerMixerProviders();
         }
-        return sm_mixerProviders;
+        return mixerProviders;
     }
 
     // TODO a way to set the default mixer
     public static Mixer.Info getDefaultMixerInfo() {
-        return sm_defaultMixerInfo;
+        return defaultMixerInfo;
     }
-
 }
-
-

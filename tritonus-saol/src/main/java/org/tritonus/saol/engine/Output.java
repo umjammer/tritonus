@@ -31,7 +31,7 @@ public interface Output {
     /**
      * Gives the width of this output.
      *
-     * @returns width of the output (number of channels)
+     * @return width of the output (number of channels)
      */
     int getWidth();
 
@@ -50,7 +50,7 @@ public interface Output {
      * calculated for this a-cycle.
      * The current hacky version allows only for mono samples.
      */
-    void output(float fSample);
+    void output(float sample);
 
     /**
      * Add sample values of one instrument.
@@ -59,7 +59,5 @@ public interface Output {
      * calculated for this a-cycle.
      * The current hacky version allows only for mono samples.
      */
-    void output(float[] afSamples);
+    void output(float[] samples);
 }
-
-

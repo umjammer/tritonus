@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 2000 by Florian Bomers
  *  Copyright (c) 2000 -2004 by Matthias Pfisterer
@@ -20,7 +19,7 @@ package org.tritonus.sampled.file.pvorbis;
 
 import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
-import java.util.Arrays;
+import java.util.List;
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioFormat;
 
@@ -49,8 +48,8 @@ public class VorbisAudioFileWriter extends THeaderlessAudioFileWriter {
     };
 
     public VorbisAudioFileWriter() {
-        super(Arrays.asList(FILE_TYPES), Arrays.asList(AUDIO_FORMATS));
-        logger.log(Level.TRACE, "VorbisAudioFileWriter.<init>(): begin");
-        logger.log(Level.TRACE, "VorbisAudioFileWriter.<init>(): end");
+        super(List.of(FILE_TYPES), List.of(AUDIO_FORMATS));
+        logger.log(Level.TRACE, "begin");
+        logger.log(Level.TRACE, "end");
     }
 }

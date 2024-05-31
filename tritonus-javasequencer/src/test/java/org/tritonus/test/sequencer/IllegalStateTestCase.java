@@ -1,8 +1,4 @@
 /*
- * IllegalStateTestCase.java
- */
-
-/*
  *  Copyright (c) 2003 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,12 +33,10 @@ import org.junit.jupiter.api.Assertions;
 /**
  * Tests for class javax.sound.midi.MidiMessage.
  */
-public class IllegalStateTestCase
-        extends BaseSequencerTestCase {
+public class IllegalStateTestCase extends BaseSequencerTestCase {
 
     @Override
-    protected void checkSequencer(Sequencer seq)
-            throws Exception {
+    protected void checkSequencer(Sequencer seq) throws Exception {
         // Sequencer is closed
         checkOpenRequired(seq, false);
         checkOpenNotRequired(seq, false);
@@ -57,154 +51,147 @@ public class IllegalStateTestCase
         seq.close();
     }
 
-    private void checkOpenRequired(Sequencer seq, boolean bOpen)
-            throws Exception {
-        boolean bExpectingException = !bOpen;
-        checkMethod(seq, "start()", bExpectingException, bOpen);
-        checkMethod(seq, "stop()", bExpectingException, bOpen);
-        checkMethod(seq, "startRecording()", bExpectingException, bOpen);
-        checkMethod(seq, "stopRecording()", bExpectingException, bOpen);
+    private static void checkOpenRequired(Sequencer seq, boolean open) throws Exception {
+        boolean expectingException = !open;
+        checkMethod(seq, "start()", expectingException, open);
+        checkMethod(seq, "stop()", expectingException, open);
+        checkMethod(seq, "startRecording()", expectingException, open);
+        checkMethod(seq, "stopRecording()", expectingException, open);
     }
 
-    private void checkOpenNotRequired(Sequencer seq, boolean bOpen)
-            throws Exception {
-        boolean bExpectingException = false;
-        checkMethod(seq, "setSequence(Sequence)", bExpectingException, bOpen);
-        checkMethod(seq, "setSequence(InputStream)", bExpectingException, bOpen);
-        checkMethod(seq, "getSequence()", bExpectingException, bOpen);
-        checkMethod(seq, "isRunning()", bExpectingException, bOpen);
-        checkMethod(seq, "isRecording()", bExpectingException, bOpen);
-        checkMethod(seq, "recordEnable()", bExpectingException, bOpen);
-        checkMethod(seq, "recordDisable()", bExpectingException, bOpen);
-        checkMethod(seq, "getTempoInBPM()", bExpectingException, bOpen);
-        checkMethod(seq, "setTempoInBPM()", bExpectingException, bOpen);
-        checkMethod(seq, "getTempoInMPQ()", bExpectingException, bOpen);
-        checkMethod(seq, "setTempoInMPQ()", bExpectingException, bOpen);
-        checkMethod(seq, "setTempoFactor()", bExpectingException, bOpen);
-        checkMethod(seq, "getTempoFactor()", bExpectingException, bOpen);
-        checkMethod(seq, "getTickLength()", bExpectingException, bOpen);
-        checkMethod(seq, "getTickPosition()", bExpectingException, bOpen);
-        checkMethod(seq, "setTickPosition()", bExpectingException, bOpen);
-        checkMethod(seq, "getMicrosecondLength()", bExpectingException, bOpen);
-        checkMethod(seq, "getMicrosecondPosition()", bExpectingException, bOpen);
-        checkMethod(seq, "setMicrosecondPosition()", bExpectingException, bOpen);
-        checkMethod(seq, "setMasterSyncMode()", bExpectingException, bOpen);
-        checkMethod(seq, "getMasterSyncMode()", bExpectingException, bOpen);
-        checkMethod(seq, "getMasterSyncModes()", bExpectingException, bOpen);
-        checkMethod(seq, "setSlaveSyncMode()", bExpectingException, bOpen);
-        checkMethod(seq, "getSlaveSyncMode()", bExpectingException, bOpen);
-        checkMethod(seq, "getSlaveSyncModes()", bExpectingException, bOpen);
-        checkMethod(seq, "setTrackMute()", bExpectingException, bOpen);
-        checkMethod(seq, "getTrackMute()", bExpectingException, bOpen);
-        checkMethod(seq, "setTrackSolo()", bExpectingException, bOpen);
-        checkMethod(seq, "getTrackSolo()", bExpectingException, bOpen);
-        checkMethod(seq, "addMetaEventListener()", bExpectingException, bOpen);
-        checkMethod(seq, "removeMetaEventListener()", bExpectingException, bOpen);
-        checkMethod(seq, "addControllerEventListener()", bExpectingException, bOpen);
-        checkMethod(seq, "removeControllerEventListener()", bExpectingException, bOpen);
+    private static void checkOpenNotRequired(Sequencer seq, boolean open) throws Exception {
+        boolean expectingException = false;
+        checkMethod(seq, "setSequence(Sequence)", expectingException, open);
+        checkMethod(seq, "setSequence(InputStream)", expectingException, open);
+        checkMethod(seq, "getSequence()", expectingException, open);
+        checkMethod(seq, "isRunning()", expectingException, open);
+        checkMethod(seq, "isRecording()", expectingException, open);
+        checkMethod(seq, "recordEnable()", expectingException, open);
+        checkMethod(seq, "recordDisable()", expectingException, open);
+        checkMethod(seq, "getTempoInBPM()", expectingException, open);
+        checkMethod(seq, "setTempoInBPM()", expectingException, open);
+        checkMethod(seq, "getTempoInMPQ()", expectingException, open);
+        checkMethod(seq, "setTempoInMPQ()", expectingException, open);
+        checkMethod(seq, "setTempoFactor()", expectingException, open);
+        checkMethod(seq, "getTempoFactor()", expectingException, open);
+        checkMethod(seq, "getTickLength()", expectingException, open);
+        checkMethod(seq, "getTickPosition()", expectingException, open);
+        checkMethod(seq, "setTickPosition()", expectingException, open);
+        checkMethod(seq, "getMicrosecondLength()", expectingException, open);
+        checkMethod(seq, "getMicrosecondPosition()", expectingException, open);
+        checkMethod(seq, "setMicrosecondPosition()", expectingException, open);
+        checkMethod(seq, "setMasterSyncMode()", expectingException, open);
+        checkMethod(seq, "getMasterSyncMode()", expectingException, open);
+        checkMethod(seq, "getMasterSyncModes()", expectingException, open);
+        checkMethod(seq, "setSlaveSyncMode()", expectingException, open);
+        checkMethod(seq, "getSlaveSyncMode()", expectingException, open);
+        checkMethod(seq, "getSlaveSyncModes()", expectingException, open);
+        checkMethod(seq, "setTrackMute()", expectingException, open);
+        checkMethod(seq, "getTrackMute()", expectingException, open);
+        checkMethod(seq, "setTrackSolo()", expectingException, open);
+        checkMethod(seq, "getTrackSolo()", expectingException, open);
+        checkMethod(seq, "addMetaEventListener()", expectingException, open);
+        checkMethod(seq, "removeMetaEventListener()", expectingException, open);
+        checkMethod(seq, "addControllerEventListener()", expectingException, open);
+        checkMethod(seq, "removeControllerEventListener()", expectingException, open);
     }
 
-    private void checkMethod(Sequencer seq, String strMethodName,
-                             boolean bExceptionExpected, boolean bOpen)
-            throws Exception {
+    private static void checkMethod(Sequencer seq, String methodName,
+                                    boolean exceptionExpected, boolean open) throws Exception {
         try {
-            if ("start()".equals(strMethodName))
+            if ("start()".equals(methodName))
                 seq.start();
-            else if ("stop()".equals(strMethodName))
+            else if ("stop()".equals(methodName))
                 seq.stop();
-            else if ("startRecording()".equals(strMethodName))
+            else if ("startRecording()".equals(methodName))
                 seq.startRecording();
-            else if ("stopRecording()".equals(strMethodName))
+            else if ("stopRecording()".equals(methodName))
                 seq.stopRecording();
-            else if ("setSequence(Sequence)".equals(strMethodName))
+            else if ("setSequence(Sequence)".equals(methodName))
                 seq.setSequence(createSequence());
-            else if ("setSequence(InputStream)".equals(strMethodName))
+            else if ("setSequence(InputStream)".equals(methodName))
                 seq.setSequence(createSequenceInputStream());
-            else if ("getSequence()".equals(strMethodName))
+            else if ("getSequence()".equals(methodName))
                 seq.getSequence();
-            else if ("isRunning()".equals(strMethodName))
+            else if ("isRunning()".equals(methodName))
                 seq.isRunning();
-            else if ("isRecording()".equals(strMethodName))
+            else if ("isRecording()".equals(methodName))
                 seq.isRecording();
-            else if ("recordEnable()".equals(strMethodName))
+            else if ("recordEnable()".equals(methodName))
                 seq.recordEnable(seq.getSequence().getTracks()[0], -1);
-            else if ("recordDisable()".equals(strMethodName))
+            else if ("recordDisable()".equals(methodName))
                 seq.recordDisable(seq.getSequence().getTracks()[0]);
-            else if ("getTempoInBPM()".equals(strMethodName))
+            else if ("getTempoInBPM()".equals(methodName))
                 seq.getTempoInBPM();
-            else if ("setTempoInBPM()".equals(strMethodName))
+            else if ("setTempoInBPM()".equals(methodName))
                 seq.setTempoInBPM(122);
-            else if ("getTempoInMPQ()".equals(strMethodName))
+            else if ("getTempoInMPQ()".equals(methodName))
                 seq.getTempoInMPQ();
-            else if ("setTempoInMPQ()".equals(strMethodName))
+            else if ("setTempoInMPQ()".equals(methodName))
                 seq.setTempoInMPQ(300000);
-            else if ("setTempoFactor()".equals(strMethodName))
+            else if ("setTempoFactor()".equals(methodName))
                 seq.setTempoFactor(2.0F);
-            else if ("getTempoFactor()".equals(strMethodName))
+            else if ("getTempoFactor()".equals(methodName))
                 seq.getTempoFactor();
-            else if ("getTickLength()".equals(strMethodName))
+            else if ("getTickLength()".equals(methodName))
                 seq.getTickLength();
-            else if ("getTickPosition()".equals(strMethodName))
+            else if ("getTickPosition()".equals(methodName))
                 seq.getTickPosition();
-            else if ("setTickPosition()".equals(strMethodName))
+            else if ("setTickPosition()".equals(methodName))
                 seq.setTickPosition(1);
-            else if ("getMicrosecondLength()".equals(strMethodName))
+            else if ("getMicrosecondLength()".equals(methodName))
                 seq.getMicrosecondLength();
-            else if ("getMicrosecondPosition()".equals(strMethodName))
+            else if ("getMicrosecondPosition()".equals(methodName))
                 seq.getMicrosecondPosition();
-            else if ("setMicrosecondPosition()".equals(strMethodName))
+            else if ("setMicrosecondPosition()".equals(methodName))
                 seq.setMicrosecondPosition(1);
-            else if ("setMasterSyncMode()".equals(strMethodName))
+            else if ("setMasterSyncMode()".equals(methodName))
                 seq.setMasterSyncMode(Sequencer.SyncMode.INTERNAL_CLOCK);
-            else if ("getMasterSyncMode()".equals(strMethodName))
+            else if ("getMasterSyncMode()".equals(methodName))
                 seq.getMasterSyncMode();
-            else if ("getMasterSyncModes()".equals(strMethodName))
+            else if ("getMasterSyncModes()".equals(methodName))
                 seq.getMasterSyncModes();
-            else if ("setSlaveSyncMode()".equals(strMethodName))
+            else if ("setSlaveSyncMode()".equals(methodName))
                 seq.setSlaveSyncMode(Sequencer.SyncMode.NO_SYNC);
-            else if ("getSlaveSyncMode()".equals(strMethodName))
+            else if ("getSlaveSyncMode()".equals(methodName))
                 seq.getSlaveSyncMode();
-            else if ("getSlaveSyncModes()".equals(strMethodName))
+            else if ("getSlaveSyncModes()".equals(methodName))
                 seq.getSlaveSyncModes();
-            else if ("setTrackMute()".equals(strMethodName))
+            else if ("setTrackMute()".equals(methodName))
                 seq.setTrackMute(0, true);
-            else if ("getTrackMute()".equals(strMethodName))
+            else if ("getTrackMute()".equals(methodName))
                 seq.getTrackMute(0);
-            else if ("setTrackSolo()".equals(strMethodName))
+            else if ("setTrackSolo()".equals(methodName))
                 seq.setTrackSolo(0, true);
-            else if ("getTrackSolo()".equals(strMethodName))
+            else if ("getTrackSolo()".equals(methodName))
                 seq.getTrackSolo(0);
-            else if ("addMetaEventListener()".equals(strMethodName))
+            else if ("addMetaEventListener()".equals(methodName))
                 seq.addMetaEventListener(new DummyMetaEventListener());
-            else if ("removeMetaEventListener()".equals(strMethodName))
+            else if ("removeMetaEventListener()".equals(methodName))
                 seq.removeMetaEventListener(new DummyMetaEventListener());
-            else if ("addControllerEventListener()".equals(strMethodName))
-                seq.addControllerEventListener(
-                        new DummyControllerEventListener(), new int[] {0});
-            else if ("removeControllerEventListener()".equals(strMethodName))
-                seq.removeControllerEventListener(
-                        new DummyControllerEventListener(), new int[] {0});
+            else if ("addControllerEventListener()".equals(methodName))
+                seq.addControllerEventListener(new DummyControllerEventListener(), new int[] {0});
+            else if ("removeControllerEventListener()".equals(methodName))
+                seq.removeControllerEventListener(new DummyControllerEventListener(), new int[] {0});
             else
                 throw new RuntimeException("unknown method name");
-            if (bExceptionExpected) {
-                Assertions.fail(constructErrorMessage(seq, strMethodName, bExceptionExpected, bOpen));
+            if (exceptionExpected) {
+                Assertions.fail(constructErrorMessage(seq, methodName, exceptionExpected, open));
             }
         } catch (IllegalStateException e) {
-            if (!bExceptionExpected) {
-                Assertions.fail(constructErrorMessage(seq, strMethodName, bExceptionExpected, bOpen));
+            if (!exceptionExpected) {
+                Assertions.fail(constructErrorMessage(seq, methodName, exceptionExpected, open));
             }
         }
     }
 
-    private static Sequence createSequence()
-            throws Exception {
+    private static Sequence createSequence() throws Exception {
         Sequence sequence = new Sequence(Sequence.PPQ, 480);
         sequence.createTrack();
         return sequence;
     }
 
-    private static InputStream createSequenceInputStream()
-            throws Exception {
+    private static InputStream createSequenceInputStream() throws Exception {
         Sequence sequence = createSequence();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         MidiSystem.write(sequence, 0, baos);
@@ -213,20 +200,17 @@ public class IllegalStateTestCase
         return inputStream;
     }
 
-    private static String constructErrorMessage(Sequencer seq,
-                                                String strMethodName,
-                                                boolean bExceptionExpected,
-                                                boolean bOpen) {
-        String strMessage = getMessagePrefix(seq) + ": IllegalStateException ";
-        strMessage += (bExceptionExpected ? "not thrown" : "thrown");
-        strMessage += " on " + strMethodName + " in ";
-        strMessage += (bOpen ? "open" : "closed");
-        strMessage += " state";
-        return strMessage;
+    private static String constructErrorMessage(
+            Sequencer seq, String methodName, boolean exceptionExpected, boolean open) {
+        String message = getMessagePrefix(seq) + ": IllegalStateException ";
+        message += (exceptionExpected ? "not thrown" : "thrown");
+        message += " on " + methodName + " in ";
+        message += (open ? "open" : "closed");
+        message += " state";
+        return message;
     }
 
-    private static class DummyMetaEventListener
-            implements MetaEventListener {
+    private static class DummyMetaEventListener implements MetaEventListener {
 
         @Override
         public void meta(MetaMessage meta) {
@@ -234,8 +218,7 @@ public class IllegalStateTestCase
         }
     }
 
-    private static class DummyControllerEventListener
-            implements ControllerEventListener {
+    private static class DummyControllerEventListener implements ControllerEventListener {
 
         @Override
         public void controlChange(ShortMessage event) {
@@ -243,5 +226,3 @@ public class IllegalStateTestCase
         }
     }
 }
-
-

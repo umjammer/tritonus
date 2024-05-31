@@ -168,15 +168,15 @@ public abstract class AJDebug extends Utils {
         if (getLogger("org.tritonus.TraceAudioConverter").isLoggable(Level.TRACE)) outLeavingJoinPoint(thisJoinPoint);
     }
 
-    @AfterReturning(pointcut = "call(* org.tritonus.share.sampled.convert.TAsynchronousFilteredAudioInputStream.read(byte[],int,int))", returning = "nBytes")
-    public void afterReturningTAsynchronousFilteredAudioInputStream_read_XBII(int nBytes) {
-        logger.log(Level.TRACE, "returning bytes: " + nBytes);
+    @AfterReturning(pointcut = "call(* org.tritonus.share.sampled.convert.TAsynchronousFilteredAudioInputStream.read(byte[],int,int))", returning = "bytes")
+    public void afterReturningTAsynchronousFilteredAudioInputStream_read_XBII(int bytes) {
+        logger.log(Level.TRACE, "returning bytes: " + bytes);
     }
 
-//    @Before("playerStates() && args(nState)")
-//    public void beforeX(int nState) {
+//    @Before("playerStates() && args(state)")
+//    public void beforeX(int state) {
 //        if (TDebug.TracePlayerStates) {
-//            logger.log(Level.TRACE, "TPlayer.setState(): " + nState);
+//            logger.log(Level.TRACE, "TPlayer.setState(): " + state);
 //        }
 //    }
 //

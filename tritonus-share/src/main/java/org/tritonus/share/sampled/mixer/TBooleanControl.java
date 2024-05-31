@@ -32,53 +32,53 @@ public class TBooleanControl extends BooleanControl implements TControllable {
 
     private static final Logger logger = getLogger(TBooleanControl.class.getName());
 
-    private final TControlController m_controller;
+    private final TControlController controller;
 
-    public TBooleanControl(BooleanControl.Type type, boolean bInitialValue) {
-        this(type, bInitialValue, null);
+    public TBooleanControl(BooleanControl.Type type, boolean initialValue) {
+        this(type, initialValue, null);
     }
 
-    public TBooleanControl(BooleanControl.Type type, boolean bInitialValue, TCompoundControl parentControl) {
-        super(type, bInitialValue);
-        logger.log(Level.TRACE, "TBooleanControl.<init>: begin");
+    public TBooleanControl(BooleanControl.Type type, boolean initialValue, TCompoundControl parentControl) {
+        super(type, initialValue);
+        logger.log(Level.TRACE, "begin");
 
-        m_controller = new TControlController();
+        controller = new TControlController();
 
-        logger.log(Level.TRACE, "TBooleanControl.<init>: end");
-    }
-
-    public TBooleanControl(BooleanControl.Type type,
-                           boolean bInitialValue,
-                           String strTrueStateLabel,
-                           String strFalseStateLabel) {
-        this(type, bInitialValue, strTrueStateLabel, strFalseStateLabel, null);
+        logger.log(Level.TRACE, "end");
     }
 
     public TBooleanControl(BooleanControl.Type type,
-                           boolean bInitialValue,
-                           String strTrueStateLabel,
-                           String strFalseStateLabel,
+                           boolean initialValue,
+                           String trueStateLabel,
+                           String falseStateLabel) {
+        this(type, initialValue, trueStateLabel, falseStateLabel, null);
+    }
+
+    public TBooleanControl(BooleanControl.Type type,
+                           boolean initialValue,
+                           String trueStateLabel,
+                           String falseStateLabel,
                            TCompoundControl parentControl) {
-        super(type, bInitialValue, strTrueStateLabel, strFalseStateLabel);
-        logger.log(Level.TRACE, "TBooleanControl.<init>: begin");
+        super(type, initialValue, trueStateLabel, falseStateLabel);
+        logger.log(Level.TRACE, "begin");
 
-        m_controller = new TControlController();
+        controller = new TControlController();
 
-        logger.log(Level.TRACE, "TBooleanControl.<init>: end");
+        logger.log(Level.TRACE, "end");
     }
 
     @Override
     public void setParentControl(TCompoundControl compoundControl) {
-        m_controller.setParentControl(compoundControl);
+        controller.setParentControl(compoundControl);
     }
 
     @Override
     public TCompoundControl getParentControl() {
-        return m_controller.getParentControl();
+        return controller.getParentControl();
     }
 
     @Override
     public void commit() {
-        m_controller.commit();
+        controller.commit();
     }
 }

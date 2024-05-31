@@ -39,9 +39,9 @@ class AudioSystemShadowTestCase {
         File file = new File("/tmp/dataoutputstream.tmp");
         TDataOutputStream dataOutputStream = AudioSystemShadow.getDataOutputStream(file);
         checkTDataOutputStream(dataOutputStream, true);
-        byte[] abResultingData = Util.getByteArrayFromFile(file);
-        // Util.dumpByteArray(abResultingData);
-        checkTDataOutputStream2(abResultingData);
+        byte[] resultingData = Util.getByteArrayFromFile(file);
+        // Util.dumpByteArray(resultingData);
+        checkTDataOutputStream2(resultingData);
     }
 
     @Test
@@ -49,24 +49,21 @@ class AudioSystemShadowTestCase {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         TDataOutputStream dataOutputStream = AudioSystemShadow.getDataOutputStream(baos);
         checkTDataOutputStream(dataOutputStream, false);
-        byte[] abResultingData = baos.toByteArray();
-        // Util.dumpByteArray(abResultingData);
-        checkTDataOutputStream2(abResultingData);
+        byte[] resultingData = baos.toByteArray();
+        // Util.dumpByteArray(resultingData);
+        checkTDataOutputStream2(resultingData);
     }
 
-    private void checkTDataOutputStream(TDataOutputStream dataOutputStream, boolean bSeekable)
-            throws Exception {
+    private static void checkTDataOutputStream(TDataOutputStream dataOutputStream, boolean seekable) throws Exception {
         assertNotNull(dataOutputStream);
-        assertEquals(bSeekable, dataOutputStream.supportsSeek(), "seekable");
+        assertEquals(seekable, dataOutputStream.supportsSeek(), "seekable");
         dataOutputStream.writeLittleEndian32(0x12345678);
         dataOutputStream.writeLittleEndian16((short) 0x2345);
         dataOutputStream.close();
     }
 
-    private void checkTDataOutputStream2(byte[] abResultingData) throws Exception {
-        byte[] abExpectedData = new byte[] {0x78, 0x56, 0x34, 0x12, 0x45, 0x23};
-        assertTrue(Util.compareByteArrays(abExpectedData, 0, abResultingData, 0, abExpectedData.length), "data ok");
+    private static void checkTDataOutputStream2(byte[] resultingData) throws Exception {
+        byte[] expectedData = new byte[] {0x78, 0x56, 0x34, 0x12, 0x45, 0x23};
+        assertTrue(Util.compareByteArrays(expectedData, 0, resultingData, 0, expectedData.length), "data ok");
     }
 }
-
-/* AudioSystemShadowTestCase.java ***/

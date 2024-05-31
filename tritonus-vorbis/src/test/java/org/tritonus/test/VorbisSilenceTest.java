@@ -1,8 +1,4 @@
 /*
- * VorbisSilenceTest.java
- */
-
-/*
  *  Copyright (c) 2003 by Dan Rollo
  *
  *  [license not updated to Apache 2.0]
@@ -207,5 +203,3 @@ public class VorbisSilenceTest {
         }
     }
 }
-
-

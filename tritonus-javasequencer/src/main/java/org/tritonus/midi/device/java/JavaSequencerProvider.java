@@ -33,14 +33,14 @@ public class JavaSequencerProvider extends MidiDeviceProvider {
 
     private static final Logger logger = getLogger("org.tritonus.TraceMidiDeviceProvider");
 
-    private static MidiDevice.Info sm_info;
+    private static MidiDevice.Info info;
 
     public JavaSequencerProvider() {
-        logger.log(Level.TRACE, "JavaSequencerProvider.<init>(): begin");
+        logger.log(Level.TRACE, "begin");
 
         synchronized (JavaSequencerProvider.class) {
-            if (sm_info == null) {
-                sm_info = new TMidiDevice.Info(
+            if (info == null) {
+                info = new TMidiDevice.Info(
                         "Tritonus Java Sequencer",
                         GlobalInfo.getVendor(),
                         "this is a pure-java sequencer",
@@ -48,37 +48,35 @@ public class JavaSequencerProvider extends MidiDeviceProvider {
             }
         }
 
-        logger.log(Level.TRACE, "JavaSequencerProvider.<init>(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     @Override
     public MidiDevice.Info[] getDeviceInfo() {
-        logger.log(Level.TRACE, "JavaSequencerProvider.getDeviceInfo(): begin");
+        logger.log(Level.TRACE, "begin");
 
         MidiDevice.Info[] infos = new MidiDevice.Info[1];
-        infos[0] = sm_info;
+        infos[0] = info;
 
-        logger.log(Level.TRACE, "JavaSequencerProvider.getDeviceInfo(): end");
+        logger.log(Level.TRACE, "end");
 
         return infos;
     }
 
     @Override
     public MidiDevice getDevice(MidiDevice.Info info) {
-        logger.log(Level.TRACE, "JavaSequencerProvider.getDevice(): begin");
+        logger.log(Level.TRACE, "begin");
 
         MidiDevice device = null;
-        if (info != null && info.equals(sm_info)) {
-            device = new JavaSequencer(sm_info);
+        if (info != null && info.equals(JavaSequencerProvider.info)) {
+            device = new JavaSequencer(JavaSequencerProvider.info);
         }
         if (device == null) {
             throw new IllegalArgumentException("no device for " + info);
         }
 
-        logger.log(Level.TRACE, "JavaSequencerProvider.getDevice(): end");
+        logger.log(Level.TRACE, "end");
 
         return device;
     }
 }
-
-

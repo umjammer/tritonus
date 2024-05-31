@@ -38,6 +38,7 @@ import javax.sound.midi.ShortMessage;
 import org.tritonus.share.ArraySet;
 
 import static java.lang.System.getLogger;
+import static javax.sound.midi.ShortMessage.CONTROL_CHANGE;
 
 
 public abstract class TSequencer extends TMidiDevice implements Sequencer {
@@ -48,17 +49,17 @@ public abstract class TSequencer extends TMidiDevice implements Sequencer {
     // This is for use in Collection.toArray(Object[]).
     private static final SyncMode[] EMPTY_SYNCMODE_ARRAY = new SyncMode[0];
 
-    private boolean m_bRunning;
+    private boolean running;
 
     /**
      * The Sequence to play or to record to.
      */
-    private Sequence m_sequence;
+    private Sequence sequence;
 
     /**
      * The listeners that want to be notified of MetaMessages.
      */
-    private final Set<MetaEventListener> m_metaListeners;
+    private final Set<MetaEventListener> metaListeners;
 
     /**
      * The listeners that want to be notified of control change events.
@@ -68,38 +69,38 @@ public abstract class TSequencer extends TMidiDevice implements Sequencer {
      * contains a reference to a Set containing the listeners.
      * These sets are allocated on demand.
      */
-    private final Set<ControllerEventListener>[] m_aControllerListeners;
+    private final Set<ControllerEventListener>[] controllerListeners;
 
-    private float m_fNominalTempoInMPQ;
-    private float m_fTempoFactor;
-    private Collection<SyncMode> m_masterSyncModes;
-    private Collection<SyncMode> m_slaveSyncModes;
-    private SyncMode m_masterSyncMode;
-    private SyncMode m_slaveSyncMode;
-    private BitSet m_muteBitSet;
-    private BitSet m_soloBitSet;
+    private float nominalTempoInMPQ;
+    private float tempoFactor;
+    private final Collection<SyncMode> masterSyncModes;
+    private final Collection<SyncMode> slaveSyncModes;
+    private SyncMode masterSyncMode;
+    private SyncMode slaveSyncMode;
+    private final BitSet muteBitSet;
+    private final BitSet soloBitSet;
 
     /**
      * Contains the enabled state of the tracks.
      * This BitSet holds the pre-calculated effect of mute and
      * solo status.
      */
-    private BitSet m_enabledBitSet;
+    private BitSet enabledBitSet;
 
     /**
      * Start of the loop in ticks.
      */
-    private long m_lLoopStartPoint;
+    private long loopStartPoint;
 
     /**
      * End of the loop in ticks.
      */
-    private long m_lLoopEndPoint;
+    private long loopEndPoint;
 
     /**
      * Loop count.
      */
-    private int m_nLoopCount;
+    private int loopCount;
 
     /**
      *
@@ -109,24 +110,24 @@ public abstract class TSequencer extends TMidiDevice implements Sequencer {
                          Collection<SyncMode> masterSyncModes,
                          Collection<SyncMode> slaveSyncModes) {
         super(info);
-        m_bRunning = false;
-        m_sequence = null;
-        m_metaListeners = new ArraySet<>();
-        m_aControllerListeners = (Set<ControllerEventListener>[]) new Set[128];
+        running = false;
+        sequence = null;
+        metaListeners = new ArraySet<>();
+        controllerListeners = (Set<ControllerEventListener>[]) new Set[128];
         setTempoFactor(1.0F);
         setTempoInMPQ(500000);
         // TODO make a copy
-        m_masterSyncModes = masterSyncModes;
-        m_slaveSyncModes = slaveSyncModes;
+        this.masterSyncModes = masterSyncModes;
+        this.slaveSyncModes = slaveSyncModes;
         if (getMasterSyncModes().length > 0) {
-            m_masterSyncMode = getMasterSyncModes()[0];
+            masterSyncMode = getMasterSyncModes()[0];
         }
         if (getSlaveSyncModes().length > 0) {
-            m_slaveSyncMode = getSlaveSyncModes()[0];
+            slaveSyncMode = getSlaveSyncModes()[0];
         }
-        m_muteBitSet = new BitSet();
-        m_soloBitSet = new BitSet();
-        m_enabledBitSet = new BitSet();
+        muteBitSet = new BitSet();
+        soloBitSet = new BitSet();
+        enabledBitSet = new BitSet();
         updateEnabled();
         setLoopStartPoint(0);
         setLoopEndPoint(-1);
@@ -137,7 +138,7 @@ public abstract class TSequencer extends TMidiDevice implements Sequencer {
     public void setSequence(Sequence sequence) throws InvalidMidiDataException {
         // TODO what if playing is in progress?
         if (getSequence() != sequence) {
-            m_sequence = sequence;
+            this.sequence = sequence;
             setSequenceImpl();
             // Yes, resetting the tempo factor is required by the specification.
             // TODO can't find this any more in the spec.
@@ -167,44 +168,44 @@ public abstract class TSequencer extends TMidiDevice implements Sequencer {
 
     @Override
     public Sequence getSequence() {
-        return m_sequence;
+        return sequence;
     }
 
     @Override
-    public void setLoopStartPoint(long lTick) {
-        m_lLoopStartPoint = lTick;
+    public void setLoopStartPoint(long tick) {
+        loopStartPoint = tick;
     }
 
     @Override
     public long getLoopStartPoint() {
-        return m_lLoopStartPoint;
+        return loopStartPoint;
     }
 
     @Override
-    public void setLoopEndPoint(long lTick) {
-        m_lLoopEndPoint = lTick;
+    public void setLoopEndPoint(long tick) {
+        loopEndPoint = tick;
     }
 
     @Override
     public long getLoopEndPoint() {
-        return m_lLoopEndPoint;
+        return loopEndPoint;
     }
 
     @Override
-    public void setLoopCount(int nLoopCount) {
-        m_nLoopCount = nLoopCount;
+    public void setLoopCount(int loopCount) {
+        this.loopCount = loopCount;
     }
 
     @Override
     public int getLoopCount() {
-        return m_nLoopCount;
+        return loopCount;
     }
 
     @Override
     public synchronized void start() {
         checkOpen();
         if (!isRunning()) {
-            m_bRunning = true;
+            running = true;
             // TODO perhaps check if sequence present
             startImpl();
         }
@@ -222,7 +223,7 @@ public abstract class TSequencer extends TMidiDevice implements Sequencer {
         checkOpen();
         if (isRunning()) {
             stopImpl();
-            m_bRunning = false;
+            running = false;
         }
     }
 
@@ -235,7 +236,7 @@ public abstract class TSequencer extends TMidiDevice implements Sequencer {
 
     @Override
     public synchronized boolean isRunning() {
-        return m_bRunning;
+        return running;
     }
 
     /**
@@ -260,42 +261,42 @@ public abstract class TSequencer extends TMidiDevice implements Sequencer {
      */
     protected int getResolution() {
         Sequence sequence = getSequence();
-        int nResolution;
+        int resolution;
         if (sequence != null) {
-            nResolution = sequence.getResolution();
+            resolution = sequence.getResolution();
         } else {
-            nResolution = 1;
+            resolution = 1;
         }
-        return nResolution;
+        return resolution;
     }
 
     protected void setRealTempo() {
-        float fTempoFactor = getTempoFactor();
-        if (fTempoFactor == 0.0F) {
-            fTempoFactor = 0.01F;
+        float tempoFactor = getTempoFactor();
+        if (tempoFactor == 0.0F) {
+            tempoFactor = 0.01F;
         }
-        float fRealTempo = getTempoInMPQ() / fTempoFactor;
+        float realTempo = getTempoInMPQ() / tempoFactor;
 
-        logger.log(Level.TRACE, "TSequencer.setRealTempo(): real tempo: " + fRealTempo);
+        logger.log(Level.TRACE, "real tempo: " + realTempo);
 
-        setTempoImpl(fRealTempo);
+        setTempoImpl(realTempo);
     }
 
     @Override
     public float getTempoInBPM() {
-        float fBPM = MPQ_BPM_FACTOR / getTempoInMPQ();
-        return fBPM;
+        float bpm = MPQ_BPM_FACTOR / getTempoInMPQ();
+        return bpm;
     }
 
     @Override
     public void setTempoInBPM(float fBPM) {
-        float fMPQ = MPQ_BPM_FACTOR / fBPM;
-        setTempoInMPQ(fMPQ);
+        float mpq = MPQ_BPM_FACTOR / fBPM;
+        setTempoInMPQ(mpq);
     }
 
     @Override
     public float getTempoInMPQ() {
-        return m_fNominalTempoInMPQ;
+        return nominalTempoInMPQ;
     }
 
     /**
@@ -304,20 +305,20 @@ public abstract class TSequencer extends TMidiDevice implements Sequencer {
      * the tempo in reaction to a tempo change event.
      */
     @Override
-    public void setTempoInMPQ(float fMPQ) {
-        m_fNominalTempoInMPQ = fMPQ;
+    public void setTempoInMPQ(float mpq) {
+        nominalTempoInMPQ = mpq;
         setRealTempo();
     }
 
     @Override
-    public void setTempoFactor(float fFactor) {
-        m_fTempoFactor = fFactor;
+    public void setTempoFactor(float factor) {
+        tempoFactor = factor;
         setRealTempo();
     }
 
     @Override
     public float getTempoFactor() {
-        return m_fTempoFactor;
+        return tempoFactor;
     }
 
     /**
@@ -327,45 +328,45 @@ public abstract class TSequencer extends TMidiDevice implements Sequencer {
      * The implementation should not take into account the
      * tempo factor. This is handled elsewhere.
      */
-    protected abstract void setTempoImpl(float fMPQ);
+    protected abstract void setTempoImpl(float mpq);
 
     // NOTE: has to be redefined if recording is done natively
     @Override
     public long getTickLength() {
-        long lLength = 0;
+        long length = 0;
         if (getSequence() != null) {
-            lLength = getSequence().getTickLength();
+            length = getSequence().getTickLength();
         }
-        return lLength;
+        return length;
     }
 
     // NOTE: has to be redefined if recording is done natively
     @Override
     public long getMicrosecondLength() {
-        long lLength = 0;
+        long length = 0;
         if (getSequence() != null) {
-            lLength = getSequence().getMicrosecondLength();
+            length = getSequence().getMicrosecondLength();
         }
-        return lLength;
+        return length;
     }
 
     @Override
     public boolean addMetaEventListener(MetaEventListener listener) {
-        synchronized (m_metaListeners) {
-            return m_metaListeners.add(listener);
+        synchronized (metaListeners) {
+            return metaListeners.add(listener);
         }
     }
 
     @Override
     public void removeMetaEventListener(MetaEventListener listener) {
-        synchronized (m_metaListeners) {
-            m_metaListeners.remove(listener);
+        synchronized (metaListeners) {
+            metaListeners.remove(listener);
         }
     }
 
     protected Iterator<MetaEventListener> getMetaEventListeners() {
-        synchronized (m_metaListeners) {
-            return m_metaListeners.iterator();
+        synchronized (metaListeners) {
+            return metaListeners.iterator();
         }
     }
 
@@ -379,9 +380,9 @@ public abstract class TSequencer extends TMidiDevice implements Sequencer {
     }
 
     @Override
-    public int[] addControllerEventListener(ControllerEventListener listener, int[] anControllers) {
-        synchronized (m_aControllerListeners) {
-            if (anControllers == null) {
+    public int[] addControllerEventListener(ControllerEventListener listener, int[] controllers) {
+        synchronized (controllerListeners) {
+            if (controllers == null) {
                 // Add to all controllers. NOTE: this
                 // is an implementation-specific
                 // semantic!
@@ -389,8 +390,8 @@ public abstract class TSequencer extends TMidiDevice implements Sequencer {
                     addControllerListener(i, listener);
                 }
             } else {
-                for (int anController : anControllers) {
-                    addControllerListener(anController, listener);
+                for (int controller : controllers) {
+                    addControllerListener(controller, listener);
                 }
             }
         }
@@ -398,24 +399,24 @@ public abstract class TSequencer extends TMidiDevice implements Sequencer {
     }
 
     private void addControllerListener(int i, ControllerEventListener listener) {
-        if (m_aControllerListeners[i] == null) {
-            m_aControllerListeners[i] = new ArraySet<>();
+        if (controllerListeners[i] == null) {
+            controllerListeners[i] = new ArraySet<>();
         }
-        m_aControllerListeners[i].add(listener);
+        controllerListeners[i].add(listener);
     }
 
     @Override
-    public int[] removeControllerEventListener(ControllerEventListener listener, int[] anControllers) {
-        synchronized (m_aControllerListeners) {
-            if (anControllers == null) {
+    public int[] removeControllerEventListener(ControllerEventListener listener, int[] controllers) {
+        synchronized (controllerListeners) {
+            if (controllers == null) {
                 // Remove from all controllers. Unlike
                 // above, this is specified semantics.
                 for (int i = 0; i < 128; i++) {
                     removeControllerListener(i, listener);
                 }
             } else {
-                for (int anController : anControllers) {
-                    removeControllerListener(anController, listener);
+                for (int controller : controllers) {
+                    removeControllerListener(controller, listener);
                 }
             }
         }
@@ -423,30 +424,29 @@ public abstract class TSequencer extends TMidiDevice implements Sequencer {
     }
 
     private void removeControllerListener(int i, ControllerEventListener listener) {
-        if (m_aControllerListeners[i] != null) {
-            m_aControllerListeners[i].add(listener);
+        if (controllerListeners[i] != null) {
+            controllerListeners[i].add(listener);
         }
     }
 
     private int[] getListenedControllers(ControllerEventListener listener) {
-        int[] anControllers = new int[128];
-        int nIndex = 0; // points to the next position to use.
-        for (int nController = 0; nController < 128; nController++) {
-            if (m_aControllerListeners[nController] != null &&
-                    m_aControllerListeners[nController].contains(listener)) {
-                anControllers[nIndex] = nController;
-                nIndex++;
+        int[] controllers = new int[128];
+        int index = 0; // points to the next position to use.
+        for (int controller = 0; controller < 128; controller++) {
+            if (controllerListeners[controller] != null && controllerListeners[controller].contains(listener)) {
+                controllers[index] = controller;
+                index++;
             }
         }
-        int[] anResultControllers = new int[nIndex];
-        System.arraycopy(anControllers, 0, anResultControllers, 0, nIndex);
-        return anResultControllers;
+        int[] resultControllers = new int[index];
+        System.arraycopy(controllers, 0, resultControllers, 0, index);
+        return resultControllers;
     }
 
     protected void sendControllerEvent(ShortMessage message) {
-        int nController = message.getData1();
-        if (m_aControllerListeners[nController] != null) {
-            for (ControllerEventListener controllerEventListener : m_aControllerListeners[nController]) {
+        int controller = message.getData1();
+        if (controllerListeners[controller] != null) {
+            for (ControllerEventListener controllerEventListener : controllerListeners[controller]) {
                 ShortMessage copiedMessage = (ShortMessage) message.clone();
                 controllerEventListener.controlChange(copiedMessage);
             }
@@ -457,21 +457,21 @@ public abstract class TSequencer extends TMidiDevice implements Sequencer {
         if (message instanceof MetaMessage) {
             // IDEA: use extra thread for event delivery
             sendMetaMessage((MetaMessage) message);
-        } else if (message instanceof ShortMessage && ((ShortMessage) message).getCommand() == ShortMessage.CONTROL_CHANGE) {
+        } else if (message instanceof ShortMessage && ((ShortMessage) message).getCommand() == CONTROL_CHANGE) {
             sendControllerEvent((ShortMessage) message);
         }
     }
 
     @Override
     public SyncMode getMasterSyncMode() {
-        return m_masterSyncMode;
+        return masterSyncMode;
     }
 
     @Override
     public void setMasterSyncMode(SyncMode syncMode) {
-        if (m_masterSyncModes.contains(syncMode)) {
+        if (masterSyncModes.contains(syncMode)) {
             if (!getMasterSyncMode().equals(syncMode)) {
-                m_masterSyncMode = syncMode;
+                masterSyncMode = syncMode;
                 setMasterSyncModeImpl(syncMode);
             }
         } else {
@@ -488,20 +488,20 @@ public abstract class TSequencer extends TMidiDevice implements Sequencer {
 
     @Override
     public SyncMode[] getMasterSyncModes() {
-        SyncMode[] syncModes = m_masterSyncModes.toArray(EMPTY_SYNCMODE_ARRAY);
+        SyncMode[] syncModes = masterSyncModes.toArray(EMPTY_SYNCMODE_ARRAY);
         return syncModes;
     }
 
     @Override
     public SyncMode getSlaveSyncMode() {
-        return m_slaveSyncMode;
+        return slaveSyncMode;
     }
 
     @Override
     public void setSlaveSyncMode(SyncMode syncMode) {
-        if (m_slaveSyncModes.contains(syncMode)) {
+        if (slaveSyncModes.contains(syncMode)) {
             if (!getSlaveSyncMode().equals(syncMode)) {
-                m_slaveSyncMode = syncMode;
+                slaveSyncMode = syncMode;
                 setSlaveSyncModeImpl(syncMode);
             }
         } else {
@@ -518,94 +518,94 @@ public abstract class TSequencer extends TMidiDevice implements Sequencer {
 
     @Override
     public SyncMode[] getSlaveSyncModes() {
-        SyncMode[] syncModes = m_slaveSyncModes.toArray(EMPTY_SYNCMODE_ARRAY);
+        SyncMode[] syncModes = slaveSyncModes.toArray(EMPTY_SYNCMODE_ARRAY);
         return syncModes;
     }
 
     @Override
-    public boolean getTrackSolo(int nTrack) {
-        boolean bSoloed = false;
+    public boolean getTrackSolo(int track) {
+        boolean soloed = false;
         if (getSequence() != null) {
-            if (nTrack < getSequence().getTracks().length) {
-                bSoloed = m_soloBitSet.get(nTrack);
+            if (track < getSequence().getTracks().length) {
+                soloed = soloBitSet.get(track);
             }
         }
-        return bSoloed;
+        return soloed;
     }
 
     @Override
-    public void setTrackSolo(int nTrack, boolean bSolo) {
+    public void setTrackSolo(int track, boolean solo) {
         if (getSequence() != null) {
-            if (nTrack < getSequence().getTracks().length) {
-                boolean bOldState = m_soloBitSet.get(nTrack);
-                if (bSolo != bOldState) {
-                    if (bSolo) {
-                        m_soloBitSet.set(nTrack);
+            if (track < getSequence().getTracks().length) {
+                boolean oldState = soloBitSet.get(track);
+                if (solo != oldState) {
+                    if (solo) {
+                        soloBitSet.set(track);
                     } else {
-                        m_soloBitSet.clear(nTrack);
+                        soloBitSet.clear(track);
                     }
                     updateEnabled();
-                    setTrackSoloImpl(nTrack, bSolo);
+                    setTrackSoloImpl(track, solo);
                 }
             }
         }
     }
 
-    protected void setTrackSoloImpl(int nTrack, boolean bSolo) {
+    protected void setTrackSoloImpl(int track, boolean solo) {
     }
 
     @Override
-    public boolean getTrackMute(int nTrack) {
-        boolean bMuted = false;
+    public boolean getTrackMute(int track) {
+        boolean muted = false;
         if (getSequence() != null) {
-            if (nTrack < getSequence().getTracks().length) {
-                bMuted = m_muteBitSet.get(nTrack);
+            if (track < getSequence().getTracks().length) {
+                muted = muteBitSet.get(track);
             }
         }
-        return bMuted;
+        return muted;
     }
 
     @Override
-    public void setTrackMute(int nTrack, boolean bMute) {
+    public void setTrackMute(int track, boolean mute) {
         if (getSequence() != null) {
-            if (nTrack < getSequence().getTracks().length) {
-                boolean bOldState = m_muteBitSet.get(nTrack);
-                if (bMute != bOldState) {
-                    if (bMute) {
-                        m_muteBitSet.set(nTrack);
+            if (track < getSequence().getTracks().length) {
+                boolean oldState = muteBitSet.get(track);
+                if (mute != oldState) {
+                    if (mute) {
+                        muteBitSet.set(track);
                     } else {
-                        m_muteBitSet.clear(nTrack);
+                        muteBitSet.clear(track);
                     }
                     updateEnabled();
-                    setTrackMuteImpl(nTrack, bMute);
+                    setTrackMuteImpl(track, mute);
                 }
             }
         }
     }
 
-    protected void setTrackMuteImpl(int nTrack, boolean bMute) {
+    protected void setTrackMuteImpl(int track, boolean mute) {
     }
 
     private void updateEnabled() {
-        BitSet oldEnabledBitSet = (BitSet) m_enabledBitSet.clone();
-        boolean bSoloExists = !m_soloBitSet.isEmpty();
-        if (bSoloExists) {
-            m_enabledBitSet = (BitSet) m_soloBitSet.clone();
+        BitSet oldEnabledBitSet = (BitSet) enabledBitSet.clone();
+        boolean soloExists = !soloBitSet.isEmpty();
+        if (soloExists) {
+            enabledBitSet = (BitSet) soloBitSet.clone();
         } else {
-            for (int i = 0; i < m_muteBitSet.size(); i++) {
-                if (m_muteBitSet.get(i)) {
-                    m_enabledBitSet.clear(i);
+            for (int i = 0; i < muteBitSet.size(); i++) {
+                if (muteBitSet.get(i)) {
+                    enabledBitSet.clear(i);
                 } else {
-                    m_enabledBitSet.set(i);
+                    enabledBitSet.set(i);
                 }
             }
         }
-        oldEnabledBitSet.xor(m_enabledBitSet);
+        oldEnabledBitSet.xor(enabledBitSet);
         // oldEnabledBitSet now has a bit set if the status for
         // this bit changed.
         for (int i = 0; i < oldEnabledBitSet.size(); i++) {
             if (oldEnabledBitSet.get(i)) {
-                setTrackEnabledImpl(i, m_enabledBitSet.get(i));
+                setTrackEnabledImpl(i, enabledBitSet.get(i));
             }
         }
     }
@@ -616,15 +616,14 @@ public abstract class TSequencer extends TMidiDevice implements Sequencer {
      * state (calculated from mute and solo) has changed.
      * The boolean value passed represents the new state.
      *
-     * @param nTrack   The track number for which the enabled status
-     *                 has changed.
-     * @param bEnabled The new enabled state for this track.
+     * @param track   The track number for which the enabled status has changed.
+     * @param enabled The new enabled state for this track.
      */
-    protected void setTrackEnabledImpl(int nTrack, boolean bEnabled) {
+    protected void setTrackEnabledImpl(int track, boolean enabled) {
     }
 
-    protected boolean isTrackEnabled(int nTrack) {
-        return m_enabledBitSet.get(nTrack);
+    protected boolean isTrackEnabled(int track) {
+        return enabledBitSet.get(track);
     }
 
     /**
@@ -633,7 +632,7 @@ public abstract class TSequencer extends TMidiDevice implements Sequencer {
      * queue and playing them. This intervall should be kept constant
      * by the implementation. However, this cannot be guaranteed.
      */
-    public void setLatency(int nMilliseconds) {
+    public void setLatency(int milliseconds) {
     }
 
     /**

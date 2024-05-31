@@ -14,10 +14,6 @@
  *   limitations under the License.
  */
 
-/*
- |<---            this code is formatted to fit into 80 columns             --->|
- */
-
 package org.tritonus.lowlevel.dsp;
 
 import java.util.Arrays;
@@ -28,13 +24,10 @@ import java.util.Arrays;
  */
 public class RectangularWindow implements FIRWindow {
 
-    /** {@inheritDoc} */
     @Override
-    public double[] getWindow(int nOrder) {
-        double[] adWindow = new double[nOrder];
-        Arrays.fill(adWindow, 1.0);
-        return adWindow;
+    public double[] getWindow(int order) {
+        double[] window = new double[order];
+        Arrays.fill(window, 1.0);
+        return window;
     }
 }
-
-

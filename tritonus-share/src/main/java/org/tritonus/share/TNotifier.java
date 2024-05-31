@@ -36,18 +36,18 @@ public class TNotifier extends Thread {
 
     public static class NotifyEntry {
 
-        private EventObject m_event;
-        private List<LineListener> m_listeners;
+        private final EventObject event;
+        private final List<LineListener> listeners;
 
         public NotifyEntry(EventObject event, Collection<LineListener> listeners) {
-            m_event = event;
-            m_listeners = new ArrayList<>(listeners);
+            this.event = event;
+            this.listeners = new ArrayList<>(listeners);
         }
 
         public void deliver() {
 //logger.log(Level.DEBUG, "%% TNotifier.NotifyEntry.deliver(): called.");
-            for (LineListener listener : m_listeners) {
-                listener.update((LineEvent) m_event);
+            for (LineListener listener : listeners) {
+                listener.update((LineEvent) event);
             }
         }
     }
@@ -64,39 +64,37 @@ public class TNotifier extends Thread {
      * The queue of events to deliver.
      * The entries are of class NotifyEntry.
      */
-    private final List<NotifyEntry> m_entries;
+    private final List<NotifyEntry> entries;
 
     public TNotifier() {
         super("Tritonus Notifier");
-        m_entries = new ArrayList<>();
+        entries = new ArrayList<>();
     }
 
     public void addEntry(EventObject event, Collection<LineListener> listeners) {
-//        logger.log(Level.TRACE, "%% TNotifier.addEntry(): called.");
-        synchronized (m_entries) {
-            m_entries.add(new NotifyEntry(event, listeners));
-            m_entries.notifyAll();
+//logger.log(Level.TRACE, "%% TNotifier.addEntry(): called.");
+        synchronized (entries) {
+            entries.add(new NotifyEntry(event, listeners));
+            entries.notifyAll();
         }
-//        logger.log(Level.TRACE, "%% TNotifier.addEntry(): completed.");
+//logger.log(Level.TRACE, "%% TNotifier.addEntry(): completed.");
     }
 
     @Override
     public void run() {
         while (true) {
             NotifyEntry entry;
-            synchronized (m_entries) {
-                while (m_entries.isEmpty()) {
+            synchronized (entries) {
+                while (entries.isEmpty()) {
                     try {
-                        m_entries.wait();
+                        entries.wait();
                     } catch (InterruptedException e) {
                         logger.log(Level.TRACE, e);
                     }
                 }
-                entry = m_entries.remove(0);
+                entry = entries.remove(0);
             }
             entry.deliver();
         }
     }
 }
-
-

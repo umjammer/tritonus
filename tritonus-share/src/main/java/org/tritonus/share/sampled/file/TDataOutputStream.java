@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 1999 by Florian Bomers
  *
@@ -30,28 +29,19 @@ import java.io.IOException;
  *
  * @author Florian Bomers
  */
-public interface TDataOutputStream
-        extends DataOutput {
+public interface TDataOutputStream extends DataOutput {
 
     boolean supportsSeek();
 
-    void seek(long position)
-            throws IOException;
+    void seek(long position) throws IOException;
 
-    long getFilePointer()
-            throws IOException;
+    long getFilePointer() throws IOException;
 
-    long length()
-            throws IOException;
+    long length() throws IOException;
 
-    void writeLittleEndian32(int value)
-            throws IOException;
+    void writeLittleEndian32(int value) throws IOException;
 
-    void writeLittleEndian16(short value)
-            throws IOException;
+    void writeLittleEndian16(short value) throws IOException;
 
-    void close()
-            throws IOException;
+    void close() throws IOException;
 }
-
-

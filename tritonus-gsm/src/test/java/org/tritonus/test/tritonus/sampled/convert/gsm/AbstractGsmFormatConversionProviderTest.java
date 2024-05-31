@@ -35,6 +35,4 @@ public abstract class AbstractGsmFormatConversionProviderTest extends
             FormatConversionProvider formatConversionProvider) {
         this.formatConversionProvider = formatConversionProvider;
     }
-
-
 }

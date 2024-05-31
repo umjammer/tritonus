@@ -1,8 +1,4 @@
 /*
- * GetDefaultSoundbankTestCase.java
- */
-
-/*
  *  Copyright (c) 2006 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,24 +25,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Test for javax.sound.midi.Synthesizer.getDefaultSoundbank().
  */
-public class GetDefaultSoundbankTestCase
-        extends BaseSynthesizerTestCase {
+public class GetDefaultSoundbankTestCase extends BaseSynthesizerTestCase {
 
     @Override
-    protected void checkSynthesizer(Synthesizer synth)
-            throws Exception {
+    protected void checkSynthesizer(Synthesizer synth) throws Exception {
         synth.open();
-        try {
+        try (synth) {
             Soundbank sb = synth.getDefaultSoundbank();
             if (sb != null) {
                 assertTrue(synth.isSoundbankSupported(sb),
-                        constructErrorMessage(synth, "default soundbank not supported by isSoundbankSupported()", true));
+                        errmsg(synth, "default soundbank not supported by isSoundbankSupported()", true));
             }
-        } finally {
-            synth.close();
         }
     }
 }
-
-
-/*** GetDefaultSoundbankTestCase ***/

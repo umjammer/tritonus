@@ -1,8 +1,4 @@
 /*
- * GetVoiceStatusTestCase.java
- */
-
-/*
  *  Copyright (c) 2006 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,25 +26,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Test for javax.sound.midi.Synthesizer.getLatency().
  */
-public class GetVoiceStatusTestCase
-        extends BaseSynthesizerTestCase {
+public class GetVoiceStatusTestCase extends BaseSynthesizerTestCase {
 
     @Override
-    protected void checkSynthesizer(Synthesizer synth)
-            throws Exception {
-        VoiceStatus[] status;
+    protected void checkSynthesizer(Synthesizer synth) throws Exception {
         synth.open();
-        try {
-            status = synth.getVoiceStatus();
-            assertNotNull(status,
-                    constructErrorMessage(synth, "getVoiceStatus() result null", true));
+        try (synth) {
+            VoiceStatus[] status = synth.getVoiceStatus();
+            assertNotNull(status, errmsg(synth, "getVoiceStatus() result null", true));
             int numVoices = status.length;
             assertTrue(numVoices == 0 || numVoices == synth.getMaxPolyphony(),
-                    constructErrorMessage(synth, "getVoiceStatus() result has wrong length", true));
-        } finally {
-            synth.close();
+                    errmsg(synth, "getVoiceStatus() result has wrong length", true));
         }
     }
 }
-
-

@@ -1,8 +1,4 @@
 /*
- * BaseMixerTestCase.java
- */
-
-/*
  *  Copyright (c) 2003 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -55,5 +51,3 @@ public abstract class BaseMixerTestCase {
                 throws Exception;
     }
 }
-
-

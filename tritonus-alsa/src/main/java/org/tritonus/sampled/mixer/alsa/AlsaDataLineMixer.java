@@ -56,7 +56,7 @@ public class AlsaDataLineMixer extends TMixer {
     private static final int DEFAULT_BUFFER_SIZE = 32768;
 
     /** The name of the sound card this mixer is representing. */
-    private String m_strPcmName;
+    private String pcmName;
 
     public static String getDeviceNamePrefix() {
         if (TSettings.AlsaUsePlughw) {
@@ -66,32 +66,32 @@ public class AlsaDataLineMixer extends TMixer {
         }
     }
 
-    public static String getPcmName(int nCard) {
-        String strPcmName = getDeviceNamePrefix() + ":" + nCard;
+    public static String getPcmName(int card) {
+        String pcmName = getDeviceNamePrefix() + ":" + card;
         if (TSettings.AlsaUsePlughw) {
-//            strPcmName += ",0";
+//            pcmName += ",0";
         }
-        return strPcmName;
+        return pcmName;
     }
 
     public AlsaDataLineMixer() {
         this(0);
     }
 
-    public AlsaDataLineMixer(int nCard) {
-        this(getPcmName(nCard));
+    public AlsaDataLineMixer(int card) {
+        this(getPcmName(card));
     }
 
-    public AlsaDataLineMixer(String strPcmName) {
+    public AlsaDataLineMixer(String pcmName) {
         super(new TMixerInfo(
-                        "Alsa DataLine Mixer (" + strPcmName + ")",
+                        "Alsa DataLine Mixer (" + pcmName + ")",
                         GlobalInfo.getVendor(),
-                        "Mixer for the Advanced Linux Sound Architecture (card " + strPcmName + ")",
+                        "Mixer for the Advanced Linux Sound Architecture (card " + pcmName + ")",
                         GlobalInfo.getVersion()),
                 new Line.Info(Mixer.class));
         logger.log(Level.TRACE, "AlsaDataLineMixer.<init>(String): begin.");
 
-        m_strPcmName = strPcmName;
+        this.pcmName = pcmName;
         List<AudioFormat> sourceFormats = getSupportedFormats(AlsaPcm.SND_PCM_STREAM_PLAYBACK);
         List<AudioFormat> targetFormats = getSupportedFormats(AlsaPcm.SND_PCM_STREAM_CAPTURE);
         List<Line.Info> sourceLineInfos = new ArrayList<>();
@@ -117,7 +117,7 @@ public class AlsaDataLineMixer extends TMixer {
     }
 
     public String getPcmName() {
-        return m_strPcmName;
+        return pcmName;
     }
 
     // Line ----
@@ -125,139 +125,135 @@ public class AlsaDataLineMixer extends TMixer {
     // TODO allow real close and reopen of mixer
     @Override
     public void open() {
-        logger.log(Level.TRACE, "AlsaDataLineMixer.open(): begin");
+        logger.log(Level.TRACE, "begin");
 
         // currently does nothing
 
-        logger.log(Level.TRACE, "AlsaDataLineMixer.open(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     @Override
     public void close() {
-        logger.log(Level.TRACE, "AlsaDataLineMixer.close(): begin");
+        logger.log(Level.TRACE, "begin");
 
         // currently does nothing
 
-        logger.log(Level.TRACE, "AlsaDataLineMixer.close(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     // Mixer ----
 
     @Override
     public int getMaxLines(Line.Info info) {
-        logger.log(Level.TRACE, "AlsaDataLineMixer.getMaxLines(): begin");
+        logger.log(Level.TRACE, "begin");
 
         // TODO
 
-        logger.log(Level.TRACE, "AlsaDataLineMixer.getMaxLines(): end");
+        logger.log(Level.TRACE, "end");
 
         return 0;
     }
 
     // private ----
 
-    // nBufferSize is in bytes!
+    // bufferSize is in bytes!
     @Override
-    protected SourceDataLine getSourceDataLine(AudioFormat format, int nBufferSize) throws LineUnavailableException {
-        logger.log(Level.TRACE, "AlsaDataLineMixer.getSourceDataLine(): begin");
+    protected SourceDataLine getSourceDataLine(AudioFormat format, int bufferSize) throws LineUnavailableException {
+        logger.log(Level.TRACE, "begin");
 
-        logger.log(Level.TRACE, "AlsaDataLineMixer.getSourceDataLine(): format: " + format);
-        logger.log(Level.TRACE, "AlsaDataLineMixer.getSourceDataLine(): buffer size: " + nBufferSize);
-        if (nBufferSize < 1) {
-            nBufferSize = DEFAULT_BUFFER_SIZE;
+        logger.log(Level.TRACE, "format: " + format);
+        logger.log(Level.TRACE, "buffer size: " + bufferSize);
+        if (bufferSize < 1) {
+            bufferSize = DEFAULT_BUFFER_SIZE;
         }
-        AlsaSourceDataLine sourceDataLine = new AlsaSourceDataLine(this, format, nBufferSize);
+        AlsaSourceDataLine sourceDataLine = new AlsaSourceDataLine(this, format, bufferSize);
 //        sourceDataLine.start();
-        logger.log(Level.TRACE, "AlsaDataLineMixer.getSourceDataLine(): returning: " + sourceDataLine);
+        logger.log(Level.TRACE, "returning: " + sourceDataLine);
 
-        logger.log(Level.TRACE, "AlsaDataLineMixer.getSourceDataLine(): end");
+        logger.log(Level.TRACE, "end");
 
         return sourceDataLine;
     }
 
-    // nBufferSize is in bytes!
+    // bufferSize is in bytes!
     @Override
-    protected TargetDataLine getTargetDataLine(AudioFormat format, int nBufferSize) throws LineUnavailableException {
-        logger.log(Level.TRACE, "AlsaDataLineMixer.getTargetDataLine(): begin");
+    protected TargetDataLine getTargetDataLine(AudioFormat format, int bufferSize) throws LineUnavailableException {
+        logger.log(Level.TRACE, "begin");
 
-        int nBufferSizeInBytes = nBufferSize * format.getFrameSize();
-        AlsaTargetDataLine targetDataLine = new AlsaTargetDataLine(this, format, nBufferSizeInBytes);
+        int bufferSizeInBytes = bufferSize * format.getFrameSize();
+        AlsaTargetDataLine targetDataLine = new AlsaTargetDataLine(this, format, bufferSizeInBytes);
 //        targetDataLine.start();
-        logger.log(Level.TRACE, "AlsaDataLineMixer.getTargetDataLine(): returning: " + targetDataLine);
+        logger.log(Level.TRACE, "returning: " + targetDataLine);
 
-        logger.log(Level.TRACE, "AlsaDataLineMixer.getTargetDataLine(): end");
+        logger.log(Level.TRACE, "end");
 
         return targetDataLine;
     }
 
     @Override
     protected Clip getClip(AudioFormat format) throws LineUnavailableException {
-        logger.log(Level.TRACE, "AlsaDataLineMixer.getClip(): begin");
+        logger.log(Level.TRACE, "begin");
 
         Clip clip = new TSoftClip(this, format);
 
-        logger.log(Level.TRACE, "AlsaDataLineMixer.getClip(): end");
+        logger.log(Level.TRACE, "end");
 
         return clip;
     }
 
     /**
-     * nDirection: should be AlsaPcm.SND_PCM_STREAM_PLAYBACK or
+     * direction: should be AlsaPcm.SND_PCM_STREAM_PLAYBACK or
      * AlsaPcm.SND_PCM_STREAM_CAPTURE.
      */
-    private List<AudioFormat> getSupportedFormats(int nDirection) {
-        logger.log(Level.TRACE, "AlsaDataLineMixer.getSupportedFormats(): begin");
+    private List<AudioFormat> getSupportedFormats(int direction) {
+        logger.log(Level.TRACE, "begin");
 
-        logger.log(Level.TRACE, "AlsaDataLineMixer.getSupportedFormats(): direction: " + nDirection);
+        logger.log(Level.TRACE, "direction: " + direction);
 
         List<AudioFormat> supportedFormats = new ArrayList<>();
         AlsaPcm alsaPcm;
         try {
-            alsaPcm = new AlsaPcm(
-                    getPcmName(),
-                    nDirection,
-                    0); // no special mode
+            alsaPcm = new AlsaPcm(getPcmName(), direction, 0); // no special mode
         } catch (Exception e) {
             logger.log(Level.ERROR, e.getMessage(), e);
 
             throw new RuntimeException("cannot open pcm");
         }
-        int nReturn;
         AlsaPcmHWParams hwParams = new AlsaPcmHWParams();
-        nReturn = alsaPcm.getAnyHWParams(hwParams);
-        if (nReturn != 0) {
-            logger.log(Level.TRACE, "AlsaDataLineMixer.getSupportedFormats(): getAnyHWParams(): " + Alsa.getStringError(nReturn));
-            throw new RuntimeException(Alsa.getStringError(nReturn));
+        int ret = alsaPcm.getAnyHWParams(hwParams);
+        if (ret != 0) {
+            logger.log(Level.TRACE, "getAnyHWParams(): " + Alsa.getStringError(ret));
+            throw new RuntimeException(Alsa.getStringError(ret));
         }
         AlsaPcmHWParamsFormatMask formatMask = new AlsaPcmHWParamsFormatMask();
-        int nMinChannels = hwParams.getChannelsMin();
-        logger.log(Level.TRACE, "AlsaDataLineMixer.getSupportedFormats(): min channels: " + nMinChannels);
+        int minChannels = hwParams.getChannelsMin();
+        logger.log(Level.TRACE, "min channels: " + minChannels);
 
-        int nMaxChannels = hwParams.getChannelsMax();
-        nMaxChannels = Math.min(nMaxChannels, CHANNELS_LIMIT);
-        logger.log(Level.TRACE, "AlsaDataLineMixer.getSupportedFormats(): max channels: " + nMaxChannels);
+        int maxChannels = hwParams.getChannelsMax();
+        maxChannels = Math.min(maxChannels, CHANNELS_LIMIT);
+        logger.log(Level.TRACE, "max channels: " + maxChannels);
 
         hwParams.getFormatMask(formatMask);
         for (int i = 0; i < 32; i++) {
-            logger.log(Level.TRACE, "AlsaDataLineMixer.getSupportedFormats(): checking ALSA format index: " + i);
+            logger.log(Level.TRACE, "checking ALSA format index: " + i);
 
             if (formatMask.test(i)) {
-                logger.log(Level.TRACE, "AlsaDataLineMixer.getSupportedFormats(): ...supported");
+                logger.log(Level.TRACE, "...supported");
 
                 AudioFormat audioFormat = AlsaUtils.getAlsaFormat(i);
 
-                logger.log(Level.TRACE, "AlsaDataLineMixer.getSupportedFormats(): adding AudioFormat: " + audioFormat);
+                logger.log(Level.TRACE, "adding AudioFormat: " + audioFormat);
 
-                addChanneledAudioFormats(supportedFormats, audioFormat, nMinChannels, nMaxChannels);
+                addChanneledAudioFormats(supportedFormats, audioFormat, minChannels, maxChannels);
 //                supportedFormats.add(audioFormat);
             } else {
-                logger.log(Level.TRACE, "AlsaDataLineMixer.getSupportedFormats(): ...not supported");
+                logger.log(Level.TRACE, "...not supported");
             }
         }
         // TODO close/free mask & hwParams?
         alsaPcm.close();
 
-        logger.log(Level.TRACE, "AlsaDataLineMixer.getSupportedFormats(): end");
+        logger.log(Level.TRACE, "end");
 
         return supportedFormats;
     }
@@ -265,29 +261,29 @@ public class AlsaDataLineMixer extends TMixer {
     private static void addChanneledAudioFormats(
             Collection<AudioFormat> collection,
             AudioFormat protoAudioFormat,
-            int nMinChannels,
-            int nMaxChannels) {
-        logger.log(Level.TRACE, "AlsaDataLineMixer.addChanneledAudioFormats(): begin");
+            int minChannels,
+            int maxChannels) {
+        logger.log(Level.TRACE, "begin");
 
-        for (int nChannels = nMinChannels; nChannels <= nMaxChannels; nChannels++) {
-            AudioFormat channeledAudioFormat = getChanneledAudioFormat(protoAudioFormat, nChannels);
-            logger.log(Level.TRACE, "AlsaDataLineMixer.addChanneledAudioFormats(): adding AudioFormat: " + channeledAudioFormat);
+        for (int channels = minChannels; channels <= maxChannels; channels++) {
+            AudioFormat channeledAudioFormat = getChanneledAudioFormat(protoAudioFormat, channels);
+            logger.log(Level.TRACE, "adding AudioFormat: " + channeledAudioFormat);
 
             collection.add(channeledAudioFormat);
         }
 
-        logger.log(Level.TRACE, "AlsaDataLineMixer.addChanneledAudioFormats(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     // TODO better name
     // TODO calculation of frame size is not perfect
-    private static AudioFormat getChanneledAudioFormat(AudioFormat audioFormat, int nChannels) {
+    private static AudioFormat getChanneledAudioFormat(AudioFormat audioFormat, int channels) {
         AudioFormat channeledAudioFormat = new AudioFormat(
                 audioFormat.getEncoding(),
                 audioFormat.getSampleRate(),
                 audioFormat.getSampleSizeInBits(),
-                nChannels,
-                (audioFormat.getSampleSizeInBits() / 8) * nChannels,
+                channels,
+                (audioFormat.getSampleSizeInBits() / 8) * channels,
                 audioFormat.getFrameRate(),
                 audioFormat.isBigEndian());
         return channeledAudioFormat;

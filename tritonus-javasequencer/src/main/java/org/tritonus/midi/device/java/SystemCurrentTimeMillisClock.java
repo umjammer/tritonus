@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 2003 by Matthias Pfisterer
  *
@@ -21,8 +20,7 @@ package org.tritonus.midi.device.java;
 /**
  * Sequencer clock based on System.currentTimeMillis().
  */
-public class SystemCurrentTimeMillisClock
-        implements JavaSequencer.Clock {
+public class SystemCurrentTimeMillisClock implements JavaSequencer.Clock {
 
     /**
      * Retrieve system time in microseconds.
@@ -36,5 +34,3 @@ public class SystemCurrentTimeMillisClock
         return System.currentTimeMillis() * 1000;
     }
 }
-
-

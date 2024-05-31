@@ -11,8 +11,7 @@ public class MapTest {
 }
 
 
-class MapTest2
-        extends MapTest {
+class MapTest2 extends MapTest {
 
     public Map properties() {
         return null;

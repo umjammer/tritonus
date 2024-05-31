@@ -44,26 +44,26 @@ public class AlsaSynthesizer extends AlsaMidiDevice implements Synthesizer {
     private static final MidiChannel[] EMPTY_MIDICHANNEL_ARRAY = new MidiChannel[0];
     private static final VoiceStatus[] EMPTY_VOICESTATUS_ARRAY = new VoiceStatus[0];
 
-    private List<MidiChannel> m_channels;
-    private int m_nVoices;
+    private final List<MidiChannel> channels;
+    private final int voices;
 
-    public AlsaSynthesizer(int nClient, int nPort, int nVoices) {
+    public AlsaSynthesizer(int client, int port, int voices) {
         super(new TMidiDevice.Info(
-                        "ALSA Synthesizer (" + nClient + ":" + nPort + ")",
+                        "ALSA Synthesizer (" + client + ":" + port + ")",
                         GlobalInfo.getVendor(),
                         "Synthesizer based on the ALSA sequencer",
                         GlobalInfo.getVersion()),
-                nClient, nPort, false, true);
-        m_nVoices = nVoices;
-        m_channels = new ArrayList<>();
+                client, port, false, true);
+        this.voices = voices;
+        channels = new ArrayList<>();
     }
 
     @Override
     protected void openImpl() {
         super.openImpl();
-//        logger.log(Level.DEBUG, "AlsaSynthesizer.openImpl(): called");
+//logger.log(Level.DEBUG, "AlsaSynthesizer.openImpl(): called");
         // necessary? thread-safe?
-        m_channels.clear();
+        channels.clear();
         Receiver receiver = null;
         try {
             receiver = this.getReceiver();
@@ -72,7 +72,7 @@ public class AlsaSynthesizer extends AlsaMidiDevice implements Synthesizer {
         }
         for (int i = 0; i < 16; i++) {
             MidiChannel channel = new AlsaMidiChannel(receiver, i);
-            m_channels.add(channel);
+            channels.add(channel);
         }
     }
 
@@ -83,7 +83,7 @@ public class AlsaSynthesizer extends AlsaMidiDevice implements Synthesizer {
 
     @Override
     public int getMaxPolyphony() {
-        return m_nVoices;
+        return voices;
     }
 
     @Override
@@ -93,7 +93,7 @@ public class AlsaSynthesizer extends AlsaMidiDevice implements Synthesizer {
 
     @Override
     public MidiChannel[] getChannels() {
-        return m_channels.toArray(EMPTY_MIDICHANNEL_ARRAY);
+        return channels.toArray(EMPTY_MIDICHANNEL_ARRAY);
     }
 
     @Override
@@ -145,14 +145,12 @@ public class AlsaSynthesizer extends AlsaMidiDevice implements Synthesizer {
     }
 
     @Override
-    public boolean loadInstruments(Soundbank soundbank, Patch[] aPatches) {
+    public boolean loadInstruments(Soundbank soundbank, Patch[] patches) {
         return false;
     }
 
     @Override
-    public void unloadInstruments(Soundbank soundbank, Patch[] aPatches) {
+    public void unloadInstruments(Soundbank soundbank, Patch[] patches) {
     }
 }
-
-
 

@@ -51,7 +51,7 @@ public class JorbisAudioFileReader extends TAudioFileReader {
     }
 
     @Override
-    protected AudioFileFormat getAudioFileFormat(InputStream inputStream, long lFileSizeInBytes)
+    protected AudioFileFormat getAudioFileFormat(InputStream inputStream, long fileLengthInBytes)
             throws UnsupportedAudioFileException, IOException {
         // sync and verify incoming physical bitstream
         SyncState oggSyncState = new SyncState();
@@ -74,7 +74,7 @@ public class JorbisAudioFileReader extends TAudioFileReader {
         // grab some data at the head of the stream.  We want the first page
         // (which is guaranteed to be small and only contain the Vorbis
         // stream initial header) We need the first page to get the stream
-        // serialno.
+        // serialNo.
 
         // submit a 4k block to libvorbis' Ogg layer
         int index = oggSyncState.buffer(INITAL_READ_LENGTH);
@@ -92,7 +92,7 @@ public class JorbisAudioFileReader extends TAudioFileReader {
         }
 
         // Get the serial number and set up the rest of decode.
-        // serialno first; use it to set up a logical stream
+        // serialNo first; use it to set up a logical stream
         oggStreamState.init(oggPage.serialno());
 
         // extract the initial header from the first page and verify that the
@@ -116,25 +116,24 @@ public class JorbisAudioFileReader extends TAudioFileReader {
         Buffer oggPacketBuffer = new Buffer();
         oggPacketBuffer.readinit(oggPacket.packet_base, oggPacket.packet, oggPacket.bytes);
 
-        int nPacketType = oggPacketBuffer.read(8);
+        int packetType = oggPacketBuffer.read(8);
         byte[] buf = new byte[6];
         oggPacketBuffer.read(buf, 6);
-        if (buf[0] != 'v' || buf[1] != 'o' || buf[2] != 'r' ||
-                buf[3] != 'b' || buf[4] != 'i' || buf[5] != 's') {
+        if (buf[0] != 'v' || buf[1] != 'o' || buf[2] != 'r' || buf[3] != 'b' || buf[4] != 'i' || buf[5] != 's') {
             throw new UnsupportedAudioFileException("not a Vorbis stream: not a vorbis header packet");
         }
-        if (nPacketType != 1) {
+        if (packetType != 1) {
             throw new UnsupportedAudioFileException("not a Vorbis stream: first packet is not the identification header");
         }
         if (oggPacket.b_o_s == 0) {
             throw new UnsupportedAudioFileException("not a Vorbis stream: initial packet not marked as beginning of stream");
         }
-        int nVersion = oggPacketBuffer.read(32);
-        if (nVersion != 0) {
+        int version = oggPacketBuffer.read(32);
+        if (version != 0) {
             throw new UnsupportedAudioFileException("not a Vorbis stream: wrong vorbis version");
         }
-        int nChannels = oggPacketBuffer.read(8);
-        float fSampleRate = oggPacketBuffer.read(32);
+        int vhannels = oggPacketBuffer.read(8);
+        float sampleRate = oggPacketBuffer.read(32);
 
         // These are only used for error checking.
         // int bitrate_upper =
@@ -144,21 +143,21 @@ public class JorbisAudioFileReader extends TAudioFileReader {
         // int bitrate_lower =
         oggPacketBuffer.read(32);
 
-        int[] blocksizes = new int[2];
-        blocksizes[0] = 1 << oggPacketBuffer.read(4);
-        blocksizes[1] = 1 << oggPacketBuffer.read(4);
+        int[] blockSizes = new int[2];
+        blockSizes[0] = 1 << oggPacketBuffer.read(4);
+        blockSizes[1] = 1 << oggPacketBuffer.read(4);
 
-        if (fSampleRate < 1.0F ||
-                nChannels < 1 ||
-                blocksizes[0] < 8 ||
-                blocksizes[1] < blocksizes[0] ||
+        if (sampleRate < 1.0F ||
+                vhannels < 1 ||
+                blockSizes[0] < 8 ||
+                blockSizes[1] < blockSizes[0] ||
                 oggPacketBuffer.read(1) != 1) {
             throw new UnsupportedAudioFileException("not a Vorbis stream: illegal values in initial header");
         }
 
-        logger.log(Level.TRACE, "JorbisAudioFileReader.getAudioFileFormat(): channels: " + nChannels);
+        logger.log(Level.TRACE, "channels: " + vhannels);
 
-        logger.log(Level.TRACE, "JorbisAudioFileReader.getAudioFileFormat(): rate: " + fSampleRate);
+        logger.log(Level.TRACE, "rate: " + sampleRate);
 
         // If the file size is known, we derive the number of frames
         // ('frame size') from it.
@@ -166,36 +165,31 @@ public class JorbisAudioFileReader extends TAudioFileReader {
         // NOT_SPECIFIED. 'Unknown' is considered less incorrect than
         // a wrong value.
         // [fb] not specifying it causes Sun's Wave file writer to write rubbish
-        int nByteSize = AudioSystem.NOT_SPECIFIED;
-        if (lFileSizeInBytes != AudioSystem.NOT_SPECIFIED && lFileSizeInBytes <= Integer.MAX_VALUE) {
-            nByteSize = (int) lFileSizeInBytes;
+        int byteSize = AudioSystem.NOT_SPECIFIED;
+        if (fileLengthInBytes != AudioSystem.NOT_SPECIFIED && fileLengthInBytes <= Integer.MAX_VALUE) {
+            byteSize = (int) fileLengthInBytes;
         }
-        int nFrameSize = AudioSystem.NOT_SPECIFIED;
+        int frameSize = AudioSystem.NOT_SPECIFIED;
         // Can we calculate a useful size?
         // Peeking into ogginfo gives the insight that the only
         // way seems to be reading through the file. This is
         // something we do not want, at least not by default.
-        // nFrameSize = (int) (lFileSizeInBytes / ...;
+        // frameSize = (int) (lFileSizeInBytes / ...;
 
         AudioFormat format = new AudioFormat(
                 new AudioFormat.Encoding("VORBIS"),
-                fSampleRate,
+                sampleRate,
                 AudioSystem.NOT_SPECIFIED,
-                nChannels,
+                vhannels,
                 AudioSystem.NOT_SPECIFIED,
                 AudioSystem.NOT_SPECIFIED,
                 true); // this value is chosen arbitrarily
-        logger.log(Level.TRACE, "JorbisAudioFileReader.getAudioFileFormat(): AudioFormat: " + format);
+        logger.log(Level.TRACE, "AudioFormat: " + format);
 
         AudioFileFormat.Type type = new AudioFileFormat.Type("Ogg", "ogg");
-        AudioFileFormat audioFileFormat =
-                new TAudioFileFormat(
-                        type,
-                        format,
-                        nFrameSize,
-                        nByteSize);
+        AudioFileFormat audioFileFormat = new TAudioFileFormat(type, format, frameSize, byteSize);
 
-        logger.log(Level.TRACE, "JorbisAudioFileReader.getAudioFileFormat(): AudioFileFormat: " + audioFileFormat);
+        logger.log(Level.TRACE, "AudioFileFormat: " + audioFileFormat);
 
         return audioFileFormat;
     }

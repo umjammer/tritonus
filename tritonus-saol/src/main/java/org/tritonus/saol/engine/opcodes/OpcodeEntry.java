@@ -23,47 +23,37 @@ package org.tritonus.saol.engine.opcodes;
  */
 public class OpcodeEntry {
 
-    private String m_strOpcodeName;
-    private OpcodeClass m_opcodeClass;
-    private String m_strMethodName;
-    private int m_nRate;
+    private final String opcodeName;
+    private final OpcodeClass opcodeClass;
+    private final String methodName;
+    private final int rate;
     // TODO parameter description, including dummy params
 
     // if opcode and method name are the same
-    public OpcodeEntry(String strOpcodeName,
-                       OpcodeClass opcodeClass,
-                       int nRate) {
-        this(strOpcodeName,
-                opcodeClass,
-                strOpcodeName,
-                nRate);
+    public OpcodeEntry(String opcodeName, OpcodeClass opcodeClass, int rate) {
+        this(opcodeName, opcodeClass, opcodeName, rate);
     }
 
-    public OpcodeEntry(String strOpcodeName,
-                       OpcodeClass opcodeClass,
-                       String strMethodName,
-                       int nRate) {
-        m_strOpcodeName = strOpcodeName;
-        m_opcodeClass = opcodeClass;
-        m_strMethodName = strMethodName;
-        m_nRate = nRate;
+    public OpcodeEntry(String opcodeName, OpcodeClass opcodeClass, String methodName, int rate) {
+        this.opcodeName = opcodeName;
+        this.opcodeClass = opcodeClass;
+        this.methodName = methodName;
+        this.rate = rate;
     }
 
     public String getOpcodeName() {
-        return m_strOpcodeName;
+        return opcodeName;
     }
 
     public OpcodeClass getOpcodeClass() {
-        return m_opcodeClass;
+        return opcodeClass;
     }
 
     public String getMethodName() {
-        return m_strMethodName;
+        return methodName;
     }
 
     public int getRate() {
-        return m_nRate;
+        return rate;
     }
 }
-
-

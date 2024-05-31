@@ -42,55 +42,55 @@ public class TSoftClip extends TClip implements Runnable {
     private static final int BUFFER_SIZE = 16384;
 
     // $$fb the following field is never used
-//    private Mixer m_mixer;
-    private SourceDataLine m_line;
-    private byte[] m_abClip;
-    private int m_nRepeatCount;
-    private Thread m_thread;
+//    private Mixer mixer;
+    private final SourceDataLine line;
+    private byte[] clip;
+    private int repeatCount;
+    private Thread thread;
 
     public TSoftClip(Mixer mixer, AudioFormat format) throws LineUnavailableException {
         // TODO info object
 //        DataLine.Info info = new DataLine.Info(Clip.class, audioFormat, -1);
         super(null);
-//        m_mixer = mixer;
+//        this.mixer = mixer;
         // TODO should pass a real AudioFormat object that isn't too restrictive
         DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
-        m_line = (SourceDataLine) AudioSystem.getLine(info);
+        line = (SourceDataLine) AudioSystem.getLine(info);
     }
 
     @Override
     public void open(AudioInputStream audioInputStream) throws LineUnavailableException, IOException {
         AudioFormat audioFormat = audioInputStream.getFormat();
         setFormat(audioFormat);
-        int nFrameSize = audioFormat.getFrameSize();
-        if (nFrameSize < 1) {
+        int frameSize = audioFormat.getFrameSize();
+        if (frameSize < 1) {
             throw new IllegalArgumentException("frame size must be positive");
         }
-        logger.log(Level.TRACE, "TSoftClip.open(): format: " + audioFormat);
-//        logger.log(Level.TRACE, "sample rate: " + audioFormat.getSampleRate());
-        byte[] abData = new byte[BUFFER_SIZE];
+        logger.log(Level.TRACE, "format: " + audioFormat);
+//logger.log(Level.TRACE, "sample rate: " + audioFormat.getSampleRate());
+        byte[] data = new byte[BUFFER_SIZE];
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        int nBytesRead = 0;
-        while (nBytesRead != -1) {
+        int bytesRead = 0;
+        while (bytesRead != -1) {
             try {
-                nBytesRead = audioInputStream.read(abData, 0, abData.length);
+                bytesRead = audioInputStream.read(data, 0, data.length);
             } catch (IOException e) {
                 logger.log(Level.ERROR, e.getMessage(), e);
             }
-            if (nBytesRead >= 0) {
-                logger.log(Level.TRACE, "TSoftClip.open(): Trying to write: " + nBytesRead);
+            if (bytesRead >= 0) {
+                logger.log(Level.TRACE, "Trying to write: " + bytesRead);
 
-                baos.write(abData, 0, nBytesRead);
+                baos.write(data, 0, bytesRead);
 
-                logger.log(Level.TRACE, "TSoftClip.open(): Written: " + nBytesRead);
+                logger.log(Level.TRACE, "Written: " + bytesRead);
             }
         }
-        m_abClip = baos.toByteArray();
-        setBufferSize(m_abClip.length);
+        clip = baos.toByteArray();
+        setBufferSize(clip.length);
         // open the line
-        m_line.open(getFormat());
+        line.open(getFormat());
         // to trigger the events
-        // open();
+//        open();
     }
 
     @Override
@@ -112,12 +112,12 @@ public class TSoftClip extends TClip implements Runnable {
     }
 
     @Override
-    public void setFramePosition(int nPosition) {
+    public void setFramePosition(int position) {
         // TODO
     }
 
     @Override
-    public void setMicrosecondPosition(long lPosition) {
+    public void setMicrosecondPosition(long position) {
         // TODO
     }
 
@@ -134,26 +134,26 @@ public class TSoftClip extends TClip implements Runnable {
     }
 
     @Override
-    public void setLoopPoints(int nStart, int nEnd) {
+    public void setLoopPoints(int start, int end) {
         // TODO
     }
 
     @Override
-    public void loop(int nCount) {
-        logger.log(Level.TRACE, "TSoftClip.loop(int): called; count = " + nCount);
+    public void loop(int count) {
+        logger.log(Level.TRACE, "called; count = " + count);
 
         if (false /* isStarted() */) {
             // only allow zero count to stop the looping
             // at the end of an iteration.
-            if (nCount == 0) {
-                logger.log(Level.TRACE, "TSoftClip.loop(int): stopping sample");
+            if (count == 0) {
+                logger.log(Level.TRACE, "stopping sample");
 
-//                m_esdSample.stop();
+//                esdSample.stop();
             }
         } else {
-            m_nRepeatCount = nCount;
-            m_thread = new Thread(this);
-            m_thread.start();
+            repeatCount = count;
+            thread = new Thread(this);
+            thread.start();
         }
         // TODO
     }
@@ -170,8 +170,8 @@ public class TSoftClip extends TClip implements Runnable {
 
     @Override
     public void close() {
-//        m_esdSample.free();
-//        m_esdSample.close();
+//        esdSample.free();
+//        esdSample.close();
         // TODO
     }
 
@@ -182,11 +182,11 @@ public class TSoftClip extends TClip implements Runnable {
 
     @Override
     public void start() {
-        logger.log(Level.TRACE, "TSoftClip.start(): called");
+        logger.log(Level.TRACE, "called");
 
         // This is a hack. What start() really should do is
         // start playing at the position playback was stopped.
-        logger.log(Level.TRACE, "TSoftClip.start(): calling 'loop(0)' [hack]");
+        logger.log(Level.TRACE, "calling 'loop(0)' [hack]");
 
         loop(0);
     }
@@ -194,7 +194,7 @@ public class TSoftClip extends TClip implements Runnable {
     @Override
     public void stop() {
         // TODO
-//        m_esdSample.kill();
+//        esdSample.kill();
     }
 
     /*
@@ -208,9 +208,9 @@ public class TSoftClip extends TClip implements Runnable {
 
     @Override
     public void run() {
-        while (m_nRepeatCount >= 0) {
-            m_line.write(m_abClip, 0, m_abClip.length);
-            m_nRepeatCount--;
+        while (repeatCount >= 0) {
+            line.write(clip, 0, clip.length);
+            repeatCount--;
         }
     }
 }

@@ -25,7 +25,6 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import javax.sound.sampled.AudioFormat;
@@ -36,6 +35,7 @@ import org.tritonus.lowlevel.cdda.CddaMidLevel;
 import org.tritonus.share.sampled.convert.TAsynchronousFilteredAudioInputStream;
 
 import static java.lang.System.getLogger;
+import static javax.sound.sampled.AudioFormat.Encoding.PCM_SIGNED;
 
 
 public class CdparanoiaMidLevel implements CddaMidLevel {
@@ -44,25 +44,24 @@ public class CdparanoiaMidLevel implements CddaMidLevel {
 
     private static final int PCM_FRAMES_PER_CDDA_FRAME = 588;
     private static final AudioFormat CDDA_FORMAT = new AudioFormat(
-            AudioFormat.Encoding.PCM_SIGNED,
-            44100.0F, 16, 2, 4, 44100.0F, false);
+            PCM_SIGNED, 44100.0F, 16, 2, 4, 44100.0F, false);
 
     public CdparanoiaMidLevel() {
-        logger.log(Level.TRACE, "CdparanoiaMidLevel.<init>(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        logger.log(Level.TRACE, "CdparanoiaMidLevel.<init>(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     @Override
     public Iterator<String> getDevices() {
-        logger.log(Level.TRACE, "CdparanoiaMidLevel.getDevices(): begin");
+        logger.log(Level.TRACE, "begin");
 
         // TODO hack!! should be replaced by a real search
-        String[] astrDevices = {"/dev/cdrom"};
+        String[] devices = {"/dev/cdrom"};
         // TODO should make list immutable
-        List<String> devicesList = Arrays.asList(astrDevices);
+        List<String> devicesList = List.of(devices);
         Iterator<String> iterator = devicesList.iterator();
-        logger.log(Level.TRACE, "CdparanoiaMidLevel.getDevices(): end");
+        logger.log(Level.TRACE, "end");
 
         return iterator;
     }
@@ -73,59 +72,59 @@ public class CdparanoiaMidLevel implements CddaMidLevel {
     }
 
     @Override
-    public InputStream getTocAsXml(String strDevice) throws IOException {
-        logger.log(Level.TRACE, "CdparanoiaMidLevel.getTocAsXML(): begin");
+    public InputStream getTocAsXml(String device) throws IOException {
+        logger.log(Level.TRACE, "begin");
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream out = new PrintStream(baos);
-        int[] anValues = new int[2];
-        int[] anStartFrame = new int[100];
-        int[] anLength = new int[100];
-        int[] anType = new int[100];
-        boolean[] abAudio = new boolean[100];
-        boolean[] abCopy = new boolean[100];
-        boolean[] abPre = new boolean[100];
-        int[] anChannels = new int[100];
-        Cdparanoia cdparanoia = new Cdparanoia(strDevice);
-        cdparanoia.readTOC(anValues,
-                anStartFrame,
-                anLength,
-                anType,
-                abAudio,
-                abCopy,
-                abPre,
-                anChannels);
+        int[] values = new int[2];
+        int[] startFrames = new int[100];
+        int[] lengths = new int[100];
+        int[] types = new int[100];
+        boolean[] audios = new boolean[100];
+        boolean[] copies = new boolean[100];
+        boolean[] pres = new boolean[100];
+        int[] channels = new int[100];
+        Cdparanoia cdparanoia = new Cdparanoia(device);
+        cdparanoia.readTOC(values,
+                startFrames,
+                lengths,
+                types,
+                audios,
+                copies,
+                pres,
+                channels);
 
-        int nTracks = anValues[1] - anValues[0] + 1;
+        int tracks = values[1] - values[0] + 1;
         out.println("<tracklist>");
-        for (int i = 0; i < nTracks; i++) {
+        for (int i = 0; i < tracks; i++) {
             out.print("<track");
-            out.print(" id=\"" + (i + anValues[0]) + "\"");
-            out.print(" start=\"" + anStartFrame[i] + "\"");
-            out.print(" length=\"" + anLength[i] + "\"");
-            out.print(" type=\"" + anType[i] + "\"");
-            out.print(" audio=\"" + abAudio[i] + "\"");
-            out.print(" copy=\"" + abCopy[i] + "\"");
-            out.print(" pre=\"" + abPre[i] + "\"");
-            out.print(" channels=\"" + anChannels[i] + "\" />\n");
+            out.print(" id=\"" + (i + values[0]) + "\"");
+            out.print(" start=\"" + startFrames[i] + "\"");
+            out.print(" lengths=\"" + lengths[i] + "\"");
+            out.print(" type=\"" + types[i] + "\"");
+            out.print(" audio=\"" + audios[i] + "\"");
+            out.print(" copy=\"" + copies[i] + "\"");
+            out.print(" pre=\"" + pres[i] + "\"");
+            out.print(" channels=\"" + channels[i] + "\" />\n");
         }
         out.println("</tracklist>");
-        byte[] abData = baos.toByteArray();
-        ByteArrayInputStream bais = new ByteArrayInputStream(abData);
+        byte[] data = baos.toByteArray();
+        ByteArrayInputStream bais = new ByteArrayInputStream(data);
         cdparanoia.close();
 
-        logger.log(Level.TRACE, "CdparanoiaMidLevel.getTocAsXML(): end");
+        logger.log(Level.TRACE, "end");
 
         return bais;
     }
 
     @Override
-    public AudioInputStream getTrack(String strDevice, int nTrack) throws IOException {
-        logger.log(Level.TRACE, "CdparanoiaMidLevel.getInputStream(): begin");
+    public AudioInputStream getTrack(String device, int track) throws IOException {
+        logger.log(Level.TRACE, "begin");
 
-        AudioInputStream audioInputStream = new CddaAudioInputStream(strDevice, nTrack);
+        AudioInputStream audioInputStream = new CddaAudioInputStream(device, track);
 
-        logger.log(Level.TRACE, "CdparanoiaMidLevel.getInputStream(): end");
+        logger.log(Level.TRACE, "end");
 
         return audioInputStream;
     }
@@ -135,148 +134,148 @@ public class CdparanoiaMidLevel implements CddaMidLevel {
         private static final int BUFFER_SIZE = CddaMidLevel.FRAME_SIZE;
 
         /** */
-        private Cdparanoia m_cdparanoia;
+        private final Cdparanoia cdParanoia;
 
         /**
          * This variable gets initialized to the total number of cdda
          * frames for the respective track. On reading of a frame, it
          * decremented untill zero.
          */
-        private int m_nCddaFrameCount;
+        private int cddaFrameCount;
 
         /**
          * This variable contains the number of the cdda
          * frame where the current track begins.
          */
-        private int m_nStartFrame;
+        private final int startFrame;
 
         /**
          * This variable contains the number of the cdda
          * frame where the current track begins.
          */
-        private int m_nEndFrame;
+        private int endFrame;
 
-        private int m_nLengthCount;
+        private int lengthCount;
 
         /**
          * Buffer for reading cdda frames.
          */
-        private byte[] m_abData;
+        private byte[] data;
 
         /**
          * Track number.
          */
-        private int m_nTrack;
+        private int track;
 
-        public CddaAudioInputStream(String strDevice, int nTrack) {
+        public CddaAudioInputStream(String device, int track) {
             super(CDDA_FORMAT, AudioSystem.NOT_SPECIFIED /* getTrackLengthInPcmFrames() */);
-            logger.log(Level.TRACE, "CddaAudioInputStream.<init>(): begin");
+            logger.log(Level.TRACE, "begin");
 
-            m_nTrack = nTrack;
-            int[] anValues = new int[2];
-            int[] anStartFrame = new int[100];
-            int[] anLength = new int[100];
-            int[] anType = new int[100];
-            boolean[] abAudio = new boolean[100];
-            boolean[] abCopy = new boolean[100];
-            boolean[] abPre = new boolean[100];
-            int[] anChannels = new int[100];
-            m_cdparanoia = new Cdparanoia(strDevice);
-            m_cdparanoia.readTOC(anValues,
-                    anStartFrame,
-                    anLength,
-                    anType,
-                    abAudio,
-                    abCopy,
-                    abPre,
-                    anChannels);
+            this.track = track;
+            int[] values = new int[2];
+            int[] startFrame = new int[100];
+            int[] length = new int[100];
+            int[] type = new int[100];
+            boolean[] audio = new boolean[100];
+            boolean[] copy = new boolean[100];
+            boolean[] pre = new boolean[100];
+            int[] channels = new int[100];
+            cdParanoia = new Cdparanoia(device);
+            cdParanoia.readTOC(values,
+                    startFrame,
+                    length,
+                    type,
+                    audio,
+                    copy,
+                    pre,
+                    channels);
 
-            m_nCddaFrameCount = 0;
-            int nTrackIndex = getTrack() - anValues[0];
-            m_nStartFrame = anStartFrame[nTrackIndex];
-            m_abData = new byte[BUFFER_SIZE];
-            m_nLengthCount = anLength[nTrackIndex];
+            cddaFrameCount = 0;
+            int trackIndex = getTrack() - values[0];
+            this.startFrame = startFrame[trackIndex];
+            data = new byte[BUFFER_SIZE];
+            lengthCount = length[trackIndex];
             // !!! writing to protected superclass variable !!!
-            frameLength = (long) m_nLengthCount * PCM_FRAMES_PER_CDDA_FRAME;
-            logger.log(Level.TRACE, "CddaAudioInputStream.<init>(): track length in cdda frames: " + m_nLengthCount);
+            frameLength = (long) lengthCount * PCM_FRAMES_PER_CDDA_FRAME;
+            logger.log(Level.TRACE, "track length in cdda frames: " + lengthCount);
 
-            m_cdparanoia.prepareTrack(getTrack());
+            cdParanoia.prepareTrack(getTrack());
 
-            logger.log(Level.TRACE, "CddaAudioInputStream.<init>(): end");
+            logger.log(Level.TRACE, "end");
         }
 
         private long getTrackLengthInPcmFrames() {
-            int nCddaFrames = getTrackLengthInCddaFrames();
-            long lLength = (long) nCddaFrames * PCM_FRAMES_PER_CDDA_FRAME;
-            return lLength;
+            int cddaFrames = getTrackLengthInCddaFrames();
+            long length = (long) cddaFrames * PCM_FRAMES_PER_CDDA_FRAME;
+            return length;
         }
 
         private int getTrackLengthInCddaFrames() {
-            int nLength = getEndFrame() - getStartFrame() + 1;
-            return nLength;
+            int length = getEndFrame() - getStartFrame() + 1;
+            return length;
         }
 
         private int getStartFrame() {
-            return m_nStartFrame;
+            return startFrame;
         }
 
         private int getEndFrame() {
-            return m_nEndFrame;
+            return endFrame;
         }
 
         private int getTrack() {
-            return m_nTrack;
+            return track;
         }
 
         private int getCurrentFrameNumber() {
-            return m_nCddaFrameCount + m_nStartFrame;
+            return cddaFrameCount + startFrame;
         }
 
         private void increaseCurrentFrameNumber() {
-            m_nCddaFrameCount++;
+            cddaFrameCount++;
         }
 
 //        private boolean isEndOfTrackReached() {
-//            return m_nCddaFrameCount >= getTrackLengthInCddaFrames();
+//            return cddaFrameCount >= getTrackLengthInCddaFrames();
 //        }
 
         private boolean isEndOfTrackReached() {
-            return m_nLengthCount == 0;
+            return lengthCount == 0;
         }
 
         @Override
         public void execute() {
-            logger.log(Level.TRACE, "CddaAudioInputStream.execute(): begin");
+            logger.log(Level.TRACE, "begin");
 
             if (!isEndOfTrackReached()) {
-                logger.log(Level.TRACE, "CddaAudioInputStream.execute(): begin");
+                logger.log(Level.TRACE, "begin");
 
                 while (getCircularBuffer().availableWrite() >= BUFFER_SIZE && !isEndOfTrackReached()) {
-                    logger.log(Level.TRACE, "CddaAudioInputStream.execute(): before readFrame()");
+                    logger.log(Level.TRACE, "before readFrame()");
 
-                    m_cdparanoia.readNextFrame(1, m_abData);
-                    m_nLengthCount--;
-                    logger.log(Level.TRACE, "CddaAudioInputStream.execute(): length count now: " + m_nLengthCount);
+                    cdParanoia.readNextFrame(1, data);
+                    lengthCount--;
+                    logger.log(Level.TRACE, "length count now: " + lengthCount);
 
-                    logger.log(Level.TRACE, "CddaAudioInputStream.execute(): after readFrame(), before cb.write()");
+                    logger.log(Level.TRACE, "after readFrame(), before cb.write()");
 
-                    getCircularBuffer().write(m_abData, 0, BUFFER_SIZE);
-                    logger.log(Level.TRACE, "CddaAudioInputStream.execute(): after cb.write()");
+                    getCircularBuffer().write(data, 0, BUFFER_SIZE);
+                    logger.log(Level.TRACE, "after cb.write()");
 
                     increaseCurrentFrameNumber();
                 }
             } else {
-                logger.log(Level.TRACE, "CddaAudioInputStream.execute(): end of cdda track");
+                logger.log(Level.TRACE, "end of cdda track");
 
                 getCircularBuffer().close();
             }
 
-            logger.log(Level.TRACE, "CddaAudioInputStream.execute(): end");
+            logger.log(Level.TRACE, "end");
         }
 
         @Override
         public void close() throws IOException {
-            m_cdparanoia.close();
+            cdParanoia.close();
             super.close();
             // TODO close cdda?
 //            m_encodedStream.close();

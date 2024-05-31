@@ -25,22 +25,19 @@ import org.tritonus.saol.sablecc.node.AOpcodedeclOpcodedecl;
  */
 public class UserOpcodeEntry {
 
-    private String m_strOpcodeName;
-    private AOpcodedeclOpcodedecl m_startNode;
+    private final String opcodeName;
+    private final AOpcodedeclOpcodedecl node;
 
-    public UserOpcodeEntry(String strOpcodeName,
-                           AOpcodedeclOpcodedecl startNode) {
-        m_strOpcodeName = strOpcodeName;
-        m_startNode = startNode;
+    public UserOpcodeEntry(String opcodeName, AOpcodedeclOpcodedecl node) {
+        this.opcodeName = opcodeName;
+        this.node = node;
     }
 
     public String getOpcodeName() {
-        return m_strOpcodeName;
+        return opcodeName;
     }
 
-    public AOpcodedeclOpcodedecl getStartNode() {
-        return m_startNode;
+    public AOpcodedeclOpcodedecl getNode() {
+        return node;
     }
 }
-
-

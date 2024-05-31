@@ -29,9 +29,7 @@ public class VariableTable extends HashMap<String, VariableEntry> {
         put(variableEntry.getVariableName(), variableEntry);
     }
 
-    public VariableEntry getEntry(String strVariableName) {
-        return get(strVariableName);
+    public VariableEntry getEntry(String variableName) {
+        return get(variableName);
     }
 }
-
-

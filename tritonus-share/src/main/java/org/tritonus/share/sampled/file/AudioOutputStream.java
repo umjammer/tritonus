@@ -79,7 +79,7 @@ public interface AudioOutputStream {
     /**
      * Writes a chunk of audio data to the destination (file or output stream).
      */
-    int write(byte[] abData, int nOffset, int nLength) throws IOException;
+    int write(byte[] data, int offset, int length) throws IOException;
 
     /**
      * Closes the stream.
@@ -88,5 +88,3 @@ public interface AudioOutputStream {
      */
     void close() throws IOException;
 }
-
-

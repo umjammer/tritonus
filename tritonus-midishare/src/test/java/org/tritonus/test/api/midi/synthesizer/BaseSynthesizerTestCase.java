@@ -1,8 +1,4 @@
 /*
- * BaseSynthesizerTestCase.java
- */
-
-/*
  *  Copyright (c) 2006 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -40,29 +36,24 @@ public abstract class BaseSynthesizerTestCase {
      * Iterate over all available Sequencers.
      */
     @Test
-    public void testSeqencer()
-            throws Exception {
+    public void testSequencer() throws Exception {
         MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();
         for (MidiDevice.Info info : infos) {
             MidiDevice device = MidiSystem.getMidiDevice(info);
             if (device instanceof Synthesizer &&
-                    !(IGNORE_SUN_SYNTHESIZER &&
-                            device.getDeviceInfo().getVendor().contains("Sun"))) {
+                    !(IGNORE_SUN_SYNTHESIZER && device.getDeviceInfo().getVendor().contains("Sun"))) {
                 System.out.println("testing synth: " + device);
                 checkSynthesizer((Synthesizer) device);
             }
         }
     }
 
-    protected abstract void checkSynthesizer(Synthesizer seq)
-            throws Exception;
+    protected abstract void checkSynthesizer(Synthesizer seq) throws Exception;
 
-    protected static String constructErrorMessage(Synthesizer synth,
-                                                  String strMessage,
-                                                  boolean bOpen) {
-        String strAll = getMessagePrefix(synth) + strMessage;
-        strAll += " in " + (bOpen ? "open" : "closed") + " state";
-        return strAll;
+    protected static String errmsg(Synthesizer synth, String message, boolean open) {
+        String all = getMessagePrefix(synth) + message;
+        all += " in " + (open ? "open" : "closed") + " state";
+        return all;
     }
 
     /**
@@ -72,5 +63,3 @@ public abstract class BaseSynthesizerTestCase {
         return seq.getDeviceInfo().getName() + ": ";
     }
 }
-
-

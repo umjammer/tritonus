@@ -22,47 +22,43 @@
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
-import java.io.IOException;
 
 
 public class BufferingTest {
 
-    public static void main(String[] args)
-            throws IOException {
-//   byte[] abData = new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-//   ByteArrayInputStream bais = new ByteArrayInputStream(abData);
-//   System.out.println(bais.markSupported());
-//   bais.mark(15);
-//   bais.reset();
+    public static void main(String[] args) throws Exception {
+//        byte[] data = new byte[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+//        ByteArrayInputStream bais = new ByteArrayInputStream(data);
+//        System.out.println(bais.markSupported());
+//        bais.mark(15);
+//        bais.reset();
 
         FileInputStream fis = new FileInputStream("BufferingTest.java");
         System.out.println("FileInputStream supports mark: " + fis.markSupported());
 
         BufferedInputStream bis = new BufferedInputStream(fis, 5);
-        byte[] abRead1 = new byte[9];
-        byte[] abRead2 = new byte[9];
-        byte[] abRead3 = new byte[9];
-        byte[] abRead4 = new byte[9];
+        byte[] read1 = new byte[9];
+        byte[] read2 = new byte[9];
+        byte[] read3 = new byte[9];
+        byte[] read4 = new byte[9];
         bis.mark(9);
-        bis.read(abRead1);
+        bis.read(read1);
         bis.mark(9);
-        bis.read(abRead2);
+        bis.read(read2);
         bis.reset();
-        bis.read(abRead3);
+        bis.read(read3);
         bis.reset();
-        bis.read(abRead4);
+        bis.read(read4);
 
-        for (int i = 0; i < abRead1.length; i++) {
-            if (abRead1[i] != abRead4[i]) {
+        for (int i = 0; i < read1.length; i++) {
+            if (read1[i] != read4[i]) {
                 System.out.println("1 difference!!");
             }
         }
-        for (int i = 0; i < abRead1.length; i++) {
-            if (abRead2[i] != abRead3[i]) {
+        for (int i = 0; i < read1.length; i++) {
+            if (read2[i] != read3[i]) {
                 System.out.println("2 difference!!");
             }
         }
     }
 }
-
-

@@ -43,120 +43,120 @@ public class SyncState {
     private ogg_sync_state handle;
 
     public SyncState() {
-        logger.log(Level.TRACE, "<init>: begin");
+        logger.log(Level.TRACE, "begin");
 
-        int nReturn = malloc();
-        if (nReturn < 0) {
+        int ret = malloc();
+        if (ret < 0) {
             throw new RuntimeException("malloc of ogg_sync_state failed");
         }
 
-        logger.log(Level.TRACE, "<init>: end");
+        logger.log(Level.TRACE, "end");
     }
 
     private int malloc() {
-        logger.log(Level.TRACE, "malloc: begin");
+        logger.log(Level.TRACE, "begin");
 
         handle = new ogg_sync_state();
-        logger.log(Level.TRACE, String.format("malloc: handle: %s", handle));
+        logger.log(Level.TRACE, "handle: %s".formatted(handle));
 
-        logger.log(Level.TRACE, "malloc: end");
+        logger.log(Level.TRACE, "end");
 
         return 0;
     }
 
     public void free() {
-        logger.log(Level.TRACE, "free: begin");
+        logger.log(Level.TRACE, "begin");
 
         handle = null;
 
-        logger.log(Level.TRACE, "free: end");
+        logger.log(Level.TRACE, "end");
     }
 
     /**
      * Calls ogg_sync_init().
      */
     public void init() {
-        logger.log(Level.TRACE, "init: begin");
+        logger.log(Level.TRACE, "begin");
 
         OggLibrary.INSTANCE.ogg_sync_init(handle);
 
-        logger.log(Level.TRACE, "init: end");
+        logger.log(Level.TRACE, "end");
     }
 
     /**
      * Calls ogg_sync_clear().
      */
     public void clear() {
-        logger.log(Level.TRACE, "clear: begin");
+        logger.log(Level.TRACE, "begin");
 
         OggLibrary.INSTANCE.ogg_sync_clear(handle);
 
-        logger.log(Level.TRACE, "clear: end");
+        logger.log(Level.TRACE, "end");
     }
 
     /**
      * Calls ogg_sync_reset().
      */
     public void reset() {
-        logger.log(Level.TRACE, "reset: begin");
+        logger.log(Level.TRACE, "begin");
 
         OggLibrary.INSTANCE.ogg_sync_reset(handle);
 
-        logger.log(Level.TRACE, "reset: end");
+        logger.log(Level.TRACE, "end");
     }
 
     /**
      * Calls ogg_sync_destroy().
      */
     public void destroy() {
-        logger.log(Level.TRACE, "destroy: begin");
+        logger.log(Level.TRACE, "begin");
 
         OggLibrary.INSTANCE.ogg_sync_destroy(handle);
 
-        logger.log(Level.TRACE, "destroy: end");
+        logger.log(Level.TRACE, "end");
     }
 
     /**
      * Calls ogg_sync_buffer()
      * and ogg_sync_wrote().
      */
-    public int write(byte[] abBuffer, int nBytes) {
-        logger.log(Level.TRACE, "write: begin");
+    public int write(byte[] _buffer, int bytes) {
+        logger.log(Level.TRACE, "begin");
 
-        Pointer buffer = OggLibrary.INSTANCE.ogg_sync_buffer(handle, new NativeLong(nBytes));
-        buffer.write(0, abBuffer, 0, nBytes);
-        int nReturn = OggLibrary.INSTANCE.ogg_sync_wrote(handle, new NativeLong(nBytes));
+        Pointer buffer = OggLibrary.INSTANCE.ogg_sync_buffer(handle, new NativeLong(bytes));
+        buffer.write(0, _buffer, 0, bytes);
+        int ret = OggLibrary.INSTANCE.ogg_sync_wrote(handle, new NativeLong(bytes));
 
-        logger.log(Level.TRACE, "write: end");
+        logger.log(Level.TRACE, "end");
 
-        return nReturn;
+        return ret;
     }
 
     /**
      * Calls ogg_sync_pageseek().
      */
     public int pageseek(Page page) {
-        logger.log(Level.TRACE, "pageseek: begin");
+        logger.log(Level.TRACE, "begin");
 
         ogg_page pageHandle = page.getHandle();
-        NativeLong nReturn = OggLibrary.INSTANCE.ogg_sync_pageseek(handle, pageHandle);
+        NativeLong ret = OggLibrary.INSTANCE.ogg_sync_pageseek(handle, pageHandle);
 
-        logger.log(Level.TRACE, "pageseek: end");
+        logger.log(Level.TRACE, "end");
 
-        return nReturn.intValue();
+        return ret.intValue();
     }
 
     /**
      * Calls ogg_sync_pageout().
      */
     public int pageOut(Page page) {
-        logger.log(Level.TRACE, "pageOut: begin");
+        logger.log(Level.TRACE, "begin");
 
         ogg_page pageHandle = page.getHandle();
-        int nReturn = OggLibrary.INSTANCE.ogg_sync_pageout(handle, pageHandle);
+        int ret = OggLibrary.INSTANCE.ogg_sync_pageout(handle, pageHandle);
 
-        logger.log(Level.TRACE, "pageOut: end");
+        logger.log(Level.TRACE, "end");
 
-        return nReturn;
+        return ret;
     }
 }

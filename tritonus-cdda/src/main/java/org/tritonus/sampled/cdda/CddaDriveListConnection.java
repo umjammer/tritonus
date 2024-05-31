@@ -37,45 +37,45 @@ public class CddaDriveListConnection extends URLConnection {
 
     private static final Logger logger = getLogger("org.tritonus.TraceCdda");
 
-    private CddaMidLevel m_cddaMidLevel;
+    private CddaMidLevel cddaMidLevel;
 
     // TODO m_cdda.close();
     public CddaDriveListConnection(URL url) {
         super(url);
-        logger.log(Level.TRACE, "CddaDriveListConnection.<init>(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        logger.log(Level.TRACE, "CddaDriveListConnection.<init>(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     @Override
     public void connect() {
-        logger.log(Level.TRACE, "CddaDriveListConnection.connect(): begin");
+        logger.log(Level.TRACE, "begin");
 
         if (!connected) {
-            m_cddaMidLevel = CddaUtils.getCddaMidLevel();
+            cddaMidLevel = CddaUtils.getCddaMidLevel();
             connected = true;
         }
 
-        logger.log(Level.TRACE, "CddaDriveListConnection.connect(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     @Override
     public InputStream getInputStream() throws IOException {
-        logger.log(Level.TRACE, "CddaDriveListConnection.getInputStream(): begin");
+        logger.log(Level.TRACE, "begin");
 
         connect();
-        Iterator<String> drivesIterator = m_cddaMidLevel.getDevices();
+        Iterator<String> drivesIterator = cddaMidLevel.getDevices();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream out = new PrintStream(baos);
         while (drivesIterator.hasNext()) {
-            String strDrive = drivesIterator.next();
-            out.print(strDrive + "\n");
+            String drive = drivesIterator.next();
+            out.print(drive + "\n");
         }
-        byte[] abData = baos.toByteArray();
+        byte[] data = baos.toByteArray();
         baos.close();
-        ByteArrayInputStream bais = new ByteArrayInputStream(abData);
+        ByteArrayInputStream bais = new ByteArrayInputStream(data);
 
-        logger.log(Level.TRACE, "CddaDriveListConnection.getInputStream(): end");
+        logger.log(Level.TRACE, "end");
 
         return bais;
     }

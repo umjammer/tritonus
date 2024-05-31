@@ -44,22 +44,22 @@ public class THeaderlessAudioFileWriter extends TAudioFileWriter {
     protected THeaderlessAudioFileWriter(Collection<AudioFileFormat.Type> fileTypes,
                                          Collection<AudioFormat> audioFormats) {
         super(fileTypes, audioFormats);
-        logger.log(Level.TRACE, "THeaderlessAudioFileWriter.<init>(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        logger.log(Level.TRACE, "THeaderlessAudioFileWriter.<init>(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     @Override
     protected AudioOutputStream getAudioOutputStream(
             AudioFormat audioFormat,
-            long lLengthInBytes,
+            long lengthInBytes,
             AudioFileFormat.Type fileType,
             TDataOutputStream dataOutputStream) throws IOException {
-        logger.log(Level.TRACE, "THeaderlessAudioFileWriter.getAudioOutputStream(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        AudioOutputStream aos = new HeaderlessAudioOutputStream(audioFormat, lLengthInBytes, dataOutputStream);
+        AudioOutputStream aos = new HeaderlessAudioOutputStream(audioFormat, lengthInBytes, dataOutputStream);
 
-        logger.log(Level.TRACE, "THeaderlessAudioFileWriter.getAudioOutputStream(): end");
+        logger.log(Level.TRACE, "end");
 
         return aos;
     }

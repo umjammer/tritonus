@@ -1,6 +1,5 @@
 package vavi.sound.sampled.jna.vorbisfile;
 
-import java.util.Arrays;
 import java.util.List;
 
 import com.sun.jna.Callback;
@@ -56,7 +55,7 @@ public class ov_callbacks extends Structure {
 
     @Override
     protected List<String> getFieldOrder() {
-        return Arrays.asList("read_func", "seek_func", "close_func", "tell_func");
+        return List.of("read_func", "seek_func", "close_func", "tell_func");
     }
 
     /**

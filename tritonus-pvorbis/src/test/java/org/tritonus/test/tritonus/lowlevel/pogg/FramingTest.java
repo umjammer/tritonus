@@ -16,6 +16,7 @@
 
 package org.tritonus.test.tritonus.lowlevel.pogg;
 
+import java.lang.System.Logger;
 import java.util.Arrays;
 
 import biniu.ogg.Packet;
@@ -25,6 +26,7 @@ import biniu.ogg.SyncState;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import static java.lang.System.getLogger;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -37,6 +39,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 @Disabled("wip")
 public class FramingTest {
+
+    private static final Logger logger = getLogger(FramingTest.class.getName());
 
     // 17 only
 
@@ -286,50 +290,50 @@ public class FramingTest {
         assertEquals(sequence, op.packetNo, "incorrect packet sequence");
 
         // Test data
-        byte[] abContent = op.packetByte;
-        for (int j = 0; j < abContent.length; j++) {
-            assertEquals((j + no) & 0xFF, abContent[j] & 0xFF, "body data mismatch (1) at pos " + j + ":");
+        byte[] content = op.packetByte;
+        for (int j = 0; j < content.length; j++) {
+            assertEquals((j + no) & 0xFF, content[j] & 0xFF, "body data mismatch (1) at pos " + j + ":");
         }
     }
 
-    void check_page(byte[] data, int nOffset, int[] header, Page og) {
-        byte[] abHeader = og.header_base;
-        byte[] abBody = og.body_base;
+    void check_page(byte[] data, int offset, int[] header, Page og) {
+        byte[] _header = og.header_base;
+        byte[] body = og.body_base;
 
         // Test data
         for (int j = 0; j < og.body_len; j++) {
-            assertEquals(data[j + nOffset], abBody[og.body + j], "body data mismatch (2) at pos %ld:");
+            assertEquals(data[j + offset], body[og.body + j], "body data mismatch (2) at pos %ld:");
         }
 
         // Test header
         for (int j = 0; j < og.header_len; j++) {
-            assertEquals(header[j], (abHeader[og.header + j] & 0xFF), "header content mismatch at pos " + j + ":");
+            assertEquals(header[j], (_header[og.header + j] & 0xFF), "header content mismatch at pos " + j + ":");
         }
         assertEquals(header[26] + 27, og.header_len, "header length incorrect! (%ld!=%d)");
     }
 
-    private void copy_page(Page og) {
+    private static void copyPage(Page og) {
         og.header_base = Arrays.copyOf(og.header_base, og.header_len);
         og.body_base = Arrays.copyOf(og.body_base, og.body_len);
     }
 
-    private void writePageToSyncState(Page page, SyncState sync) {
-        byte[] abPageHeader = page.header_base;
-        byte[] abPageBody = page.body_base;
-        sync.write(abPageHeader, page.header_len);
-        sync.write(abPageBody, page.body_len);
+    private static void writePageToSyncState(Page page, SyncState sync) {
+        byte[] pageHeader = page.header_base;
+        byte[] pageBody = page.body_base;
+        sync.write(pageHeader, page.header_len);
+        sync.write(pageBody, page.body_len);
     }
 
-    private void writeToSyncState(byte[] abData, int nOffset, int nLength, SyncState sync) {
-        if (nOffset > 0) {
-            byte[] abTmp = new byte[nLength];
-            System.arraycopy(abData, nOffset, abTmp, 0, abTmp.length);
-            abData = abTmp;
+    private static void writeToSyncState(byte[] data, int offset, int length, SyncState sync) {
+        if (offset > 0) {
+            byte[] tmp = new byte[length];
+            System.arraycopy(data, offset, tmp, 0, tmp.length);
+            data = tmp;
         }
-        sync.write(abData, nLength);
+        sync.write(data, length);
     }
 
-    private boolean equals(Packet p1, Packet p2) {
+    private static boolean equals(Packet p1, Packet p2) {
         return Arrays.equals(p1.packetByte, p2.packetByte) &&
                 p1.isBos() == p2.isBos() &&
                 p1.isEos() == p2.isEos() &&
@@ -337,19 +341,17 @@ public class FramingTest {
                 p1.packetNo == p2.packetNo;
     }
 
-    private boolean equals(byte[] b1, int nOffset1,
-                           byte[] b2, int nOffset2,
-                           int nLength) {
-        if (nOffset1 + nLength > b1.length || nOffset2 + nLength > b2.length)
+    private static boolean equals(byte[] b1, int offset1, byte[] b2, int offset2, int length) {
+        if (offset1 + length > b1.length || offset2 + length > b2.length)
             return false;
-        for (int i = 0; i < nLength; i++) {
-            if (b1[nOffset1 + i] != b2[nOffset2 + i])
+        for (int i = 0; i < length; i++) {
+            if (b1[offset1 + i] != b2[offset2 + i])
                 return false;
         }
         return true;
     }
 
-    private void test_pack(int[] pl, int[][] headers) {
+    private void testPack(int[] pl, int[][] headers) {
         StreamState os_en = new StreamState();
         StreamState os_de = new StreamState();
         SyncState oy = new SyncState();
@@ -373,18 +375,18 @@ public class FramingTest {
         oy.reset();
 
         packets = pl.length;
-        //System.out.println("packets: " + packets);
+//logger.log(Level.DEBUG, "packets: " + packets);
         for (i = 0; i < packets; i++) {
             // construct a test packet
             Packet op = new Packet();
             int len = pl[i];
 
-            byte[] abPacketData = new byte[len];
+            byte[] packetData = new byte[len];
             for (j = 0; j < len; j++)
-                abPacketData[j] = (byte) (i + j);
-            System.arraycopy(abPacketData, 0, data, inptr, len);
+                packetData[j] = (byte) (i + j);
+            System.arraycopy(packetData, 0, data, inptr, len);
             inptr += len;
-            op.packetByte = Arrays.copyOfRange(abPacketData, 0, len);
+            op.packetByte = Arrays.copyOfRange(packetData, 0, len);
             op.b_o_s = false;
             op.e_o_s = i + 1 == packets;
             op.granulePos = granule_pos;
@@ -401,7 +403,7 @@ public class FramingTest {
             while (os_en.pageOut(og)) {
                 // We have a page.  Check it carefully
 
-                //fprintf(stderr,"%ld, ",pageno);
+//logger.log(Level.DEBUG, String.format("%ld, ", pageno));
 
                 assertTrue(pageno < headers.length, "coded too many pages!");
 
@@ -435,8 +437,7 @@ public class FramingTest {
                         os_de.packetOut(op_de); // just catching them all
 
                         // verify peek and out match
-                        assertTrue(equals(op_de, op_de2),
-                                "packetout != packetpeek! pos=%ld");
+                        assertTrue(equals(op_de, op_de2), "packetout != packetpeek! pos=%ld");
 
                         // verify the packet!
                         // check data
@@ -478,40 +479,35 @@ public class FramingTest {
     public void testStreamEncoding0() throws Exception {
         // 17 only
         // fprintf(stderr,"testing single page encoding... ");
-        test_pack(new int[] {17},
-                new int[][] {head1_0});
+        testPack(new int[] {17}, new int[][] {head1_0});
     }
 
     @Test
     public void testStreamEncoding1() throws Exception {
         // 17, 254, 255, 256, 500, 510, 600 byte, pad
         // fprintf(stderr,"testing basic page encoding... ");
-        test_pack(new int[] {17, 254, 255, 256, 500, 510, 600},
-                new int[][] {head1_1, head2_1});
+        testPack(new int[] {17, 254, 255, 256, 500, 510, 600}, new int[][] {head1_1, head2_1});
     }
 
     @Test
     public void testStreamEncoding2() throws Exception {
         // nil packets; beginning,middle,end
         // fprintf(stderr,"testing basic nil packets... ");
-        test_pack(new int[] {0, 17, 254, 255, 0, 256, 0, 500, 510, 600, 0},
-                new int[][] {head1_2, head2_2});
+        testPack(new int[] {0, 17, 254, 255, 0, 256, 0, 500, 510, 600, 0}, new int[][] {head1_2, head2_2});
     }
 
     @Test
     public void testStreamEncoding3() throws Exception {
         // large initial packet
         // fprintf(stderr,"testing initial-packet lacing > 4k... ");
-        test_pack(new int[] {4345, 259, 255},
-                new int[][] {head1_3, head2_3});
+        testPack(new int[] {4345, 259, 255}, new int[][] {head1_3, head2_3});
     }
 
     @Test
     public void testStreamEncoding4() throws Exception {
         // continuing packet test
         // fprintf(stderr,"testing single packet page span... ");
-        test_pack(new int[] {0, 4345, 259, 255},
-                new int[][] {head1_4, head2_4, head3_4});
+        testPack(new int[] {0, 4345, 259, 255}, new int[][] {head1_4, head2_4, head3_4});
     }
 
     @Test
@@ -552,27 +548,27 @@ public class FramingTest {
                 10, 10, 10, 10, 10, 10, 10, 50
         };
         // testing max packet segments...
-        test_pack(packets, new int[][] {head1_5, head2_5, head3_5});
+        testPack(packets, new int[][] {head1_5, head2_5, head3_5});
     }
 
     @Test
     public void testStreamEncoding6() throws Exception {
         // packet that overspans over an entire page
         // testing very large packets...
-        test_pack(new int[] {0, 100, 9000, 259, 255}, new int[][] {head1_6, head2_6, head3_6, head4_6});
+        testPack(new int[] {0, 100, 9000, 259, 255}, new int[][] {head1_6, head2_6, head3_6, head4_6});
     }
 
     @Test
     public void testStreamEncoding7() throws Exception {
         // term only page.  why not?
         // testing zero data page (1 nil packet)...
-        test_pack(new int[] {0, 100, 4080}, new int[][] {head1_7, head2_7, head3_7});
+        testPack(new int[] {0, 100, 4080}, new int[][] {head1_7, head2_7, head3_7});
     }
 
     /**
      * Create six pages containing 12 packets for testing.
      */
-    private Page[] createPages() throws Exception {
+    private static Page[] createPages() throws Exception {
         StreamState os_en = new StreamState();
         os_en.init(0x04030201);
 
@@ -588,11 +584,11 @@ public class FramingTest {
             Packet op = new Packet();
             int len = pl[i];
 
-            byte[] abPacketData = new byte[len];
+            byte[] packetData = new byte[len];
             for (int j = 0; j < len; j++) {
-                abPacketData[j] = (byte) (i + j);
+                packetData[j] = (byte) (i + j);
             }
-            op.packetByte = Arrays.copyOf(abPacketData, len);
+            op.packetByte = Arrays.copyOf(packetData, len);
             op.b_o_s = false;
             op.e_o_s = i + 1 == pl.length;
             op.granulePos = (i + 1) * 1000;
@@ -604,7 +600,7 @@ public class FramingTest {
         // retrieve finished pages
         for (int i = 0; i < 5; i++) {
             assertTrue(os_en.pageOut(og[i]), "Too few pages output building sync tests");
-            copy_page(og[i]);
+            copyPage(og[i]);
         }
         return og;
     }
@@ -724,28 +720,28 @@ public class FramingTest {
         // Test fractional page inputs: incomplete capture
         // Testing sync on partial inputs...
         oy.reset();
-        byte[] abHeader = og[1].header_base;
-        oy.write(abHeader, 3);
+        byte[] header = og[1].header_base;
+        oy.write(header, 3);
         assertTrue(oy.pageOut(og_de) <= 0, "sync on incomplete capture");
 
         // Test fractional page inputs: incomplete fixed header
-        writeToSyncState(abHeader, 3, 20, oy);
+        writeToSyncState(header, 3, 20, oy);
         assertTrue(oy.pageOut(og_de) <= 0, "sync on incomplete fixed header");
 
         // Test fractional page inputs: incomplete header
-        writeToSyncState(abHeader, 23, 5, oy);
+        writeToSyncState(header, 23, 5, oy);
         assertTrue(oy.pageOut(og_de) <= 0, "sync on incomplete header");
 
         // Test fractional page inputs: incomplete body
 
-        writeToSyncState(abHeader, 28, abHeader.length - 28, oy);
+        writeToSyncState(header, 28, header.length - 28, oy);
         assertTrue(oy.pageOut(og_de) <= 0, "sync on incomplete body");
 
-        byte[] abBody = og[1].body_base;
-        oy.write(abBody, 1000);
+        byte[] body = og[1].body_base;
+        oy.write(body, 1000);
         assertTrue(oy.pageOut(og_de) <= 0, "sync on incomplete body");
 
-        writeToSyncState(abBody, 1000, abBody.length - 1000, oy);
+        writeToSyncState(body, 1000, body.length - 1000, oy);
         assertTrue(oy.pageOut(og_de) > 0, "sync on complete body");
     }
 
@@ -765,14 +761,14 @@ public class FramingTest {
 
         writePageToSyncState(og[1], oy);
 
-        byte[] abHeader = og[1].header_base;
-        oy.write(abHeader, og[1].header_len);
+        byte[] header = og[1].header_base;
+        oy.write(header, og[1].header_len);
         assertTrue(oy.pageOut(og_de) > 0);
         assertTrue(oy.pageOut(og_de) <= 0);
 
-        writeToSyncState(abHeader, 20, abHeader.length - 20, oy);
-        byte[] abBody = og[1].body_base;
-        oy.write(abBody, og[1].body_len);
+        writeToSyncState(header, 20, header.length - 20, oy);
+        byte[] body = og[1].body_base;
+        oy.write(body, og[1].body_len);
         assertTrue(oy.pageOut(og_de) > 0);
     }
 
@@ -791,21 +787,21 @@ public class FramingTest {
         oy.reset();
 
         // 'garbage'
-        byte[] abBody = og[1].body_base;
-        writeToSyncState(abBody, 0, og[1].body_len, oy);
+        byte[] body = og[1].body_base;
+        writeToSyncState(body, 0, og[1].body_len, oy);
 
         writePageToSyncState(og[1], oy);
 
-        byte[] abHeader = og[2].header_base;
-        writeToSyncState(abHeader, 0, 20, oy);
+        byte[] header = og[2].header_base;
+        writeToSyncState(header, 0, 20, oy);
 
         assertTrue(oy.pageOut(og_de) <= 0);
         assertTrue(oy.pageOut(og_de) > 0);
         assertTrue(oy.pageOut(og_de) <= 0);
 
-        writeToSyncState(abHeader, 20, abHeader.length - 20, oy);
-        abBody = og[2].body_base;
-        writeToSyncState(abBody, 0, og[2].body_len, oy);
+        writeToSyncState(header, 20, header.length - 20, oy);
+        body = og[2].body_base;
+        writeToSyncState(body, 0, og[2].body_len, oy);
         assertTrue(oy.pageOut(og_de) > 0);
     }
 
@@ -825,13 +821,13 @@ public class FramingTest {
 
         writePageToSyncState(og[1], oy);
 
-        byte[] abHeader = og[2].header_base;
-        writeToSyncState(abHeader, 0, og[2].header_len, oy);
+        byte[] header = og[2].header_base;
+        writeToSyncState(header, 0, og[2].header_len, oy);
 
         assertTrue(oy.pageOut(og_de) > 0);
 
-        byte[] abBody = og[2].body_base;
-        writeToSyncState(abBody, 0, og[2].body_len - 5, oy);
+        byte[] body = og[2].body_base;
+        writeToSyncState(body, 0, og[2].body_len - 5, oy);
 
         writePageToSyncState(og[3], oy);
 

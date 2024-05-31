@@ -25,7 +25,6 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import javax.sound.sampled.AudioFormat;
@@ -48,17 +47,17 @@ public class CookedIoctlMidLevel implements CddaMidLevel {
             44100.0F, 16, 2, 4, 44100.0F, false);
 
     public CookedIoctlMidLevel() {
-        logger.log(Level.TRACE, "CookedIoctlMidLevel.<init>(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        logger.log(Level.TRACE, "CookedIoctlMidLevel.<init>(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     @Override
     public Iterator<String> getDevices() {
         // TODO hack!! should be replaced by a real search
-        String[] astrDevices = {"/dev/cdrom"};
+        String[] devices = {"/dev/cdrom"};
         // TODO should make list immutable
-        List<String> devicesList = Arrays.asList(astrDevices);
+        List<String> devicesList = List.of(devices);
         Iterator<String> iterator = devicesList.iterator();
         return iterator;
     }
@@ -69,50 +68,50 @@ public class CookedIoctlMidLevel implements CddaMidLevel {
     }
 
     @Override
-    public InputStream getTocAsXml(String strDevice) throws IOException {
-        logger.log(Level.TRACE, "CookedIoctlMidLevel.getTocAsXML(): begin");
+    public InputStream getTocAsXml(String device) throws IOException {
+        logger.log(Level.TRACE, "begin");
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream out = new PrintStream(baos);
-        int[] anValues = new int[2];
-        int[] anStartFrame = new int[100];
-        int[] anLength = new int[100];
-        int[] anType = new int[100];
-        boolean[] abCopy = new boolean[100];
-        boolean[] abPre = new boolean[100];
-        int[] anChannels = new int[100];
-        CookedIoctl cookedIoctl = new CookedIoctl(strDevice);
-        cookedIoctl.readTOC(anValues,
-                anStartFrame,
-                anLength,
-                anType,
-                abCopy,
-                abPre,
-                anChannels);
+        int[] values = new int[2];
+        int[] startFrame = new int[100];
+        int[] length = new int[100];
+        int[] type = new int[100];
+        boolean[] copy = new boolean[100];
+        boolean[] pre = new boolean[100];
+        int[] channels = new int[100];
+        CookedIoctl cookedIoctl = new CookedIoctl(device);
+        cookedIoctl.readTOC(values,
+                startFrame,
+                length,
+                type,
+                copy,
+                pre,
+                channels);
 
-        int nTracks = anValues[1] - anValues[0] + 1;
-        for (int i = 0; i <= nTracks; i++) {
+        int tracks = values[1] - values[0] + 1;
+        for (int i = 0; i <= tracks; i++) {
             out.print("<track");
-            out.print(" id=\"" + (i + anValues[0]) + "\"");
-            out.print(" start=\"" + anStartFrame[i] + "\"");
-            out.print(" type=\"" + anType[i] + "\" />\n");
+            out.print(" id=\"" + (i + values[0]) + "\"");
+            out.print(" start=\"" + startFrame[i] + "\"");
+            out.print(" type=\"" + type[i] + "\" />\n");
         }
-        byte[] abData = baos.toByteArray();
-        ByteArrayInputStream bais = new ByteArrayInputStream(abData);
+        byte[] data = baos.toByteArray();
+        ByteArrayInputStream bais = new ByteArrayInputStream(data);
         cookedIoctl.close();
 
-        logger.log(Level.TRACE, "CookedIoctlMidLevel.getTocAsXML(): end");
+        logger.log(Level.TRACE, "end");
 
         return bais;
     }
 
     @Override
-    public AudioInputStream getTrack(String strDevice, int nTrack) throws IOException {
-        logger.log(Level.TRACE, "CookedIoctlMidLevel.getInputStream(): begin");
+    public AudioInputStream getTrack(String device, int track) throws IOException {
+        logger.log(Level.TRACE, "begin");
 
-        AudioInputStream audioInputStream = new CddaAudioInputStream(strDevice, nTrack);
+        AudioInputStream audioInputStream = new CddaAudioInputStream(device, track);
 
-        logger.log(Level.TRACE, "CookedIoctlMidLevel.getInputStream(): end");
+        logger.log(Level.TRACE, "end");
 
         return audioInputStream;
     }
@@ -122,135 +121,135 @@ public class CookedIoctlMidLevel implements CddaMidLevel {
         private static final int BUFFER_SIZE = CddaMidLevel.FRAME_SIZE;
 
         /** */
-        private CookedIoctl m_cookedIoctl;
+        private final CookedIoctl cookedIoctl;
 
         /**
          * This variable gets initialized to the total number of cdda
          * frames for the respective track. On reading of a frame, it
          * decremented untill zero.
          */
-        private int m_nCddaFrameCount;
+        private int cddaFrameCount;
 
         /**
          * This variable contains the number of the cdda
          * frame where the current track begins.
          */
-        private int m_nStartFrame;
+        private final int startFrame;
 
         /**
          * This variable contains the number of the cdda
          * frame where the current track begins.
          */
-        private int m_nEndFrame;
+        private int endFrame;
 
         /**
          * Buffer for reading cdda frames.
          */
-        private byte[] m_abData;
+        private final byte[] data;
 
         /**
          * Track number.
          */
-        private int m_nTrack;
+        private final int track;
 
-        public CddaAudioInputStream(String strDevice, int nTrack) {
+        public CddaAudioInputStream(String device, int track) {
             super(CDDA_FORMAT, AudioSystem.NOT_SPECIFIED /* getTrackLengthInPcmFrames() */);
-            logger.log(Level.TRACE, "CddaAudioInputStream.<init>(): begin");
+            logger.log(Level.TRACE, "begin");
 
-            m_nTrack = nTrack;
-            int[] anValues = new int[2];
-            int[] anStartFrame = new int[100];
-            int[] anLength = new int[100];
-            int[] anType = new int[100];
-            boolean[] abCopy = new boolean[100];
-            boolean[] abPre = new boolean[100];
-            int[] anChannels = new int[100];
-            m_cookedIoctl = new CookedIoctl(strDevice);
-            m_cookedIoctl.readTOC(anValues,
-                    anStartFrame,
-                    anLength,
-                    anType,
-                    abCopy,
-                    abPre,
-                    anChannels);
+            this.track = track;
+            int[] values = new int[2];
+            int[] startFrame = new int[100];
+            int[] length = new int[100];
+            int[] type = new int[100];
+            boolean[] copy = new boolean[100];
+            boolean[] pre = new boolean[100];
+            int[] channels = new int[100];
+            cookedIoctl = new CookedIoctl(device);
+            cookedIoctl.readTOC(values,
+                    startFrame,
+                    length,
+                    type,
+                    copy,
+                    pre,
+                    channels);
 
-            m_nCddaFrameCount = 0;
-            m_nStartFrame = anStartFrame[getTrack()];
+            cddaFrameCount = 0;
+            this.startFrame = startFrame[getTrack()];
             // !!! writing to protected superclass variable !!!
             frameLength = getTrackLengthInPcmFrames();
-            m_abData = new byte[BUFFER_SIZE];
+            data = new byte[BUFFER_SIZE];
 
-            logger.log(Level.TRACE, "CddaAudioInputStream.<init>(): end");
+            logger.log(Level.TRACE, "end");
         }
 
         private long getTrackLengthInPcmFrames() {
-            int nCddaFrames = getTrackLengthInCddaFrames();
-            long lLength = (long) nCddaFrames * PCM_FRAMES_PER_CDDA_FRAME;
-            return lLength;
+            int cddaFrames = getTrackLengthInCddaFrames();
+            long length = (long) cddaFrames * PCM_FRAMES_PER_CDDA_FRAME;
+            return length;
         }
 
         private int getTrackLengthInCddaFrames() {
-            int nLength = getEndFrame() - getStartFrame() + 1;
-            return nLength;
+            int length = getEndFrame() - getStartFrame() + 1;
+            return length;
         }
 
         private int getStartFrame() {
-            return m_nStartFrame;
+            return startFrame;
         }
 
         private int getEndFrame() {
-            return m_nEndFrame;
+            return endFrame;
         }
 
         private int getTrack() {
-            return m_nTrack;
+            return track;
         }
 
         private int getCurrentFrameNumber() {
-            return m_nCddaFrameCount + m_nStartFrame;
+            return cddaFrameCount + startFrame;
         }
 
         private void increaseCurrentFrameNumber() {
-            m_nCddaFrameCount++;
+            cddaFrameCount++;
         }
 
         private boolean isEndOfTrackReached() {
-            return m_nCddaFrameCount >= getTrackLengthInCddaFrames();
+            return cddaFrameCount >= getTrackLengthInCddaFrames();
         }
 
         @Override
         public void execute() {
-            logger.log(Level.TRACE, "CddaAudioInputStream.execute(): begin");
+            logger.log(Level.TRACE, "begin");
 
             if (!isEndOfTrackReached()) {
-                logger.log(Level.TRACE, "CddaAudioInputStream.execute(): begin");
+                logger.log(Level.TRACE, "begin");
 
                 while (getCircularBuffer().availableWrite() >= BUFFER_SIZE && !isEndOfTrackReached()) {
-                    logger.log(Level.TRACE, "CddaAudioInputStream.execute(): before readFrame()");
+                    logger.log(Level.TRACE, "before readFrame()");
 
-                    m_cookedIoctl.readFrame(getCurrentFrameNumber(), 1, m_abData);
-                    logger.log(Level.TRACE, "CddaAudioInputStream.execute(): after readFrame(), before cb.write()");
+                    cookedIoctl.readFrame(getCurrentFrameNumber(), 1, data);
+                    logger.log(Level.TRACE, "after readFrame(), before cb.write()");
 
-                    getCircularBuffer().write(m_abData, 0, BUFFER_SIZE);
-                    logger.log(Level.TRACE, "CddaAudioInputStream.execute(): after cb.write()");
+                    getCircularBuffer().write(data, 0, BUFFER_SIZE);
+                    logger.log(Level.TRACE, "after cb.write()");
 
                     increaseCurrentFrameNumber();
                 }
             } else {
-                logger.log(Level.TRACE, "CddaAudioInputStream.execute(): end of cdda track");
+                logger.log(Level.TRACE, "end of cdda track");
 
                 getCircularBuffer().close();
             }
 
-            logger.log(Level.TRACE, "CddaAudioInputStream.execute(): end");
+            logger.log(Level.TRACE, "end");
         }
 
         @Override
         public void close() throws IOException {
-            m_cookedIoctl.close();
+            cookedIoctl.close();
             super.close();
             // TODO close cdda?
-//            m_encodedStream.close();
+//            encodedStream.close();
         }
     }
 }

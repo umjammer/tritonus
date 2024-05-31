@@ -28,53 +28,51 @@ import org.tritonus.saol.sablecc.node.TInteger;
  */
 public class GlobalsSearcher extends DepthFirstAdapter {
 
-    private SAOLGlobals m_saolGlobals;
+    private final SAOLGlobals saolGlobals;
 
     public GlobalsSearcher(SAOLGlobals saolGlobals) {
-        m_saolGlobals = saolGlobals;
+        this.saolGlobals = saolGlobals;
     }
 
     public SAOLGlobals getSAOLGlobals() {
-        return m_saolGlobals;
+        return saolGlobals;
     }
 
     @Override
     public void outASrateRtparam(ASrateRtparam node) {
         TInteger integer = node.getInteger();
-        String strInt = integer.getText();
-        int nARate = Integer.parseInt(strInt);
-        getSAOLGlobals().setARate(nARate);
+        String text = integer.getText();
+        int rate = Integer.parseInt(text);
+        getSAOLGlobals().setARate(rate);
     }
 
-    // When we see a number, we print it.
-//  public void caseTNumber(TNumber node) {
-//   System.out.print(node);
-//  }
+//    /** When we see a number, we print it. */
+//    public void caseTNumber(TNumber node) {
+//        System.out.print(node);
+//    }
 
-    // out of alternative {plus} in Expr, we print the plus.
-//  public void outAPlusExpr(APlusExpr node) {
-//   System.out.print(node.getPlus());
-//  }
+//    /** out of alternative {plus} in Expr, we print the plus. */
+//    public void outAPlusExpr(APlusExpr node) {
+//        System.out.print(node.getPlus());
+//    }
 
-    // out of alternative {minus} in Expr, we print the minus.
-//  public void outAMinusExpr(AMinusExpr node) {
-//   System.out.print(node.getMinus());
-//  }
+//    /** out of alternative {minus} in Expr, we print the minus. */
+//    public void outAMinusExpr(AMinusExpr node) {
+//        System.out.print(node.getMinus());
+//    }
 
-    // out of alternative {mult} in Factor, we print the mult.
-//  public void outAMultFactor(AMultFactor node) {
-//   System.out.print(node.getMult());
-//  }
+//    /** out of alternative {mult} in Factor, we print the mult. */
+//    public void outAMultFactor(AMultFactor node) {
+//        System.out.print(node.getMult());
+//    }
 
-    // out of alternative {div} in Factor, we print the div.
-//  public void outADivFactor(ADivFactor node) {
-//   System.out.print(node.getDiv());
-//  }
+//    /** out of alternative {div} in Factor, we print the div. */
+//    public void outADivFactor(ADivFactor node) {
+//        System.out.print(node.getDiv());
+//    }
 
-    // out of alternative {mod} in Factor, we print the mod.
-//  public void outAModFactor(AModFactor node) {
-//   System.out.print(node.getMod());
-//  }
+//    /** out of alternative {mod} in Factor, we print the mod. */
+//    public void outAModFactor(AModFactor node) {
+//        System.out.print(node.getMod());
+//    }
 }
-
-

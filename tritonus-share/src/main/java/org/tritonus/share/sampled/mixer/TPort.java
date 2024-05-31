@@ -27,20 +27,13 @@ import javax.sound.sampled.Port;
 /**
  * Base class for Ports.
  */
-public class TPort
-        extends TLine
-        implements Port {
+public class TPort extends TLine implements Port {
 
-    public TPort(TMixer mixer,
-                 Line.Info info) {
+    public TPort(TMixer mixer, Line.Info info) {
         super(mixer, info);
     }
 
-    public TPort(TMixer mixer,
-                 Line.Info info,
-                 Collection<Control> controls) {
+    public TPort(TMixer mixer, Line.Info info, Collection<Control> controls) {
         super(mixer, info, controls);
     }
 }
-
-

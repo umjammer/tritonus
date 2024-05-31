@@ -1,6 +1,5 @@
 package vavi.sound.sampled.jna.vorbisenc;
 
-import java.util.Arrays;
 import java.util.List;
 
 import com.sun.jna.NativeLong;
@@ -51,7 +50,7 @@ public class ovectl_ratemanage2_arg extends Structure {
 
     @Override
     protected List<String> getFieldOrder() {
-        return Arrays.asList("management_active", "bitrate_limit_min_kbps", "bitrate_limit_max_kbps", "bitrate_limit_reservoir_bits", "bitrate_limit_reservoir_bias", "bitrate_average_kbps", "bitrate_average_damping");
+        return List.of("management_active", "bitrate_limit_min_kbps", "bitrate_limit_max_kbps", "bitrate_limit_reservoir_bits", "bitrate_limit_reservoir_bias", "bitrate_average_kbps", "bitrate_average_damping");
     }
 
     /**

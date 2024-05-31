@@ -1,7 +1,4 @@
 /*
- * Aiff12bitAudioFileReaderTestCase.java
- */
-/*
  *  Copyright (c) 2001 - 2002 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,12 +17,12 @@
 package org.tritonus.test;
 
 
-public class Aiff12bitAudioFileReaderTestCase
-        extends BaseAudioFileReaderTestCase {
+/**
+ * Aiff12bitAudioFileReaderTestCase
+ */
+public class Aiff12bitAudioFileReaderTestCase extends BaseAudioFileReaderTestCase {
 
     public Aiff12bitAudioFileReaderTestCase() {
         setResourcePrefix("aiff12bit");
     }
 }
-
-

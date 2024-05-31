@@ -1,8 +1,4 @@
 /*
- * BaseSequencerTestCase.java
- */
-
-/*
  *  Copyright (c) 2003 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -38,12 +34,11 @@ public abstract class BaseSequencerTestCase {
      * Iterate over all available Sequencers.
      */
     @Test
-    public void testSeqencer() throws Exception {
+    public void testSequencer() throws Exception {
         MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();
         for (MidiDevice.Info info : infos) {
             MidiDevice device = MidiSystem.getMidiDevice(info);
-            if (device instanceof Sequencer &&
-                    device.getClass().getPackage().getName().contains("tritonus")) {
+            if (device instanceof Sequencer && device.getClass().getPackage().getName().contains("tritonus")) {
                 System.out.println("testing seq: " + device);
                 checkSequencer((Sequencer) device);
             }
@@ -59,5 +54,3 @@ public abstract class BaseSequencerTestCase {
         return seq.getDeviceInfo().getName();
     }
 }
-
-

@@ -14,10 +14,6 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --.|
-*/
-
 package org.tritonus.lowlevel.ogg;
 
 import java.lang.System.Logger;
@@ -49,168 +45,168 @@ public class Page {
     }
 
     public Page() {
-        logger.log(Level.TRACE, "<init>: begin");
+        logger.log(Level.TRACE, "begin");
 
-        int nReturn = malloc();
-        if (nReturn < 0) {
+        int ret = malloc();
+        if (ret < 0) {
             throw new RuntimeException("malloc of ogg_page failed");
         }
 
-        logger.log(Level.TRACE, "<init>: end");
+        logger.log(Level.TRACE, "end");
     }
 
     private int malloc() {
-        logger.log(Level.TRACE, "malloc: begin");
+        logger.log(Level.TRACE, "begin");
 
         handle = new ogg_page();
-        logger.log(Level.TRACE, String.format("malloc: handle: %s", handle));
+        logger.log(Level.TRACE, "handle: %s".formatted(handle));
 
-        logger.log(Level.TRACE, "malloc: end");
+        logger.log(Level.TRACE, "end");
 
         return 0;
     }
 
     public void free() {
-        logger.log(Level.TRACE, "free: begin");
+        logger.log(Level.TRACE, "begin");
 
         handle = null;
 
-        logger.log(Level.TRACE, "free: end");
+        logger.log(Level.TRACE, "end");
     }
 
     /**
      * Calls ogg_page_version().
      */
     public int getVersion() {
-        logger.log(Level.TRACE, "getVersion: begin");
+        logger.log(Level.TRACE, "begin");
 
-        int nReturn = OggLibrary.INSTANCE.ogg_page_version(handle);
+        int ret = OggLibrary.INSTANCE.ogg_page_version(handle);
 
-        logger.log(Level.TRACE, "getVersion: end");
+        logger.log(Level.TRACE, "end");
 
-        return nReturn;
+        return ret;
     }
 
     /**
      * Calls ogg_page_continued().
      */
     public boolean isContinued() {
-        logger.log(Level.TRACE, "isContinued: begin");
+        logger.log(Level.TRACE, "begin");
 
-        int nReturn = OggLibrary.INSTANCE.ogg_page_continued(handle);
+        int ret = OggLibrary.INSTANCE.ogg_page_continued(handle);
 
-        logger.log(Level.TRACE, "isContinued: end");
+        logger.log(Level.TRACE, "end");
 
-        return nReturn != 0;
+        return ret != 0;
     }
 
     /**
      * Calls ogg_page_packets().
      */
     public int getPackets() {
-        logger.log(Level.TRACE, "getPackets: begin");
+        logger.log(Level.TRACE, "begin");
 
-        int nReturn = OggLibrary.INSTANCE.ogg_page_packets(handle);
+        int ret = OggLibrary.INSTANCE.ogg_page_packets(handle);
 
-        logger.log(Level.TRACE, "getPackets: end");
+        logger.log(Level.TRACE, "end");
 
-        return nReturn;
+        return ret;
     }
 
     /**
      * Calls ogg_page_bos().
      */
     public boolean isBos() {
-        logger.log(Level.TRACE, "isBos: begin");
+        logger.log(Level.TRACE, "begin");
 
-        int nReturn = OggLibrary.INSTANCE.ogg_page_bos(handle);
+        int ret = OggLibrary.INSTANCE.ogg_page_bos(handle);
 
-        logger.log(Level.TRACE, "isBos: end");
+        logger.log(Level.TRACE, "end");
 
-        return nReturn != 0;
+        return ret != 0;
     }
 
     /**
      * Calls ogg_page_eos().
      */
     public boolean isEos() {
-        logger.log(Level.TRACE, "isEos: begin");
+        logger.log(Level.TRACE, "begin");
 
-        int nReturn = OggLibrary.INSTANCE.ogg_page_eos(handle);
+        int ret = OggLibrary.INSTANCE.ogg_page_eos(handle);
 
-        logger.log(Level.TRACE, "isEos: end");
+        logger.log(Level.TRACE, "end");
 
-        return nReturn != 0;
+        return ret != 0;
     }
 
     /**
      * Calls ogg_page_granulepos().
      */
     public long getGranulePos() {
-        logger.log(Level.TRACE, "getGranulePos: begin");
+        logger.log(Level.TRACE, "begin");
 
-        long lReturn = OggLibrary.INSTANCE.ogg_page_granulepos(handle);
+        long ret = OggLibrary.INSTANCE.ogg_page_granulepos(handle);
 
-        logger.log(Level.TRACE, "getGranulePos: end");
+        logger.log(Level.TRACE, "end");
 
-        return lReturn;
+        return ret;
     }
 
     /**
      * Calls ogg_page_serialno().
      */
     public int getSerialNo() {
-        logger.log(Level.TRACE, "getSerialNo: begin");
+        logger.log(Level.TRACE, "begin");
 
-        int nReturn = OggLibrary.INSTANCE.ogg_page_serialno(handle);
+        int ret = OggLibrary.INSTANCE.ogg_page_serialno(handle);
 
-        logger.log(Level.TRACE, "getSerialNo: end");
+        logger.log(Level.TRACE, "end");
 
-        return nReturn;
+        return ret;
     }
 
     /**
      * Calls ogg_page_pageno().
      */
     public int getPageNo() {
-        logger.log(Level.TRACE, "getPageNo: begin");
+        logger.log(Level.TRACE, "begin");
 
-        NativeLong nReturn = OggLibrary.INSTANCE.ogg_page_pageno(handle);
+        NativeLong ret = OggLibrary.INSTANCE.ogg_page_pageno(handle);
 
-        logger.log(Level.TRACE, "getPageNo: end");
+        logger.log(Level.TRACE, "end");
 
-        return nReturn.intValue();
+        return ret.intValue();
     }
 
     /**
      * Calls ogg_page_checksum_set().
      */
     public void setChecksum() {
-        logger.log(Level.TRACE, "setChecksum: begin");
+        logger.log(Level.TRACE, "begin");
 
         OggLibrary.INSTANCE.ogg_page_checksum_set(handle);
 
-        logger.log(Level.TRACE, "setChecksum: end");
+        logger.log(Level.TRACE, "end");
     }
 
     public byte[] getHeader() {
-        logger.log(Level.TRACE, "getHeader: begin");
+        logger.log(Level.TRACE, "begin");
 
         byte[] byteArray = new byte[handle.header_len.intValue()];
         handle.header.read(0, byteArray, 0, handle.header_len.intValue());
 
-        logger.log(Level.TRACE, "getHeader: end");
+        logger.log(Level.TRACE, "end");
 
         return byteArray;
     }
 
     public byte[] getBody() {
-        logger.log(Level.TRACE, "getBody: begin");
+        logger.log(Level.TRACE, "begin");
 
         byte[] byteArray = new byte[handle.body_len.intValue()];
         handle.body.read(0, byteArray, 0, handle.body_len.intValue());
 
-        logger.log(Level.TRACE, "getBody: end");
+        logger.log(Level.TRACE, "end");
 
         return byteArray;
     }

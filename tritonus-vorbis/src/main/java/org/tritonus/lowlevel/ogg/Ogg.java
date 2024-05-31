@@ -24,5 +24,3 @@ package org.tritonus.lowlevel.ogg;
 public class Ogg {
 
 }
-
-

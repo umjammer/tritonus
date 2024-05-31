@@ -31,130 +31,121 @@ public class TCircularBufferTestCase {
 
     @Test
     public void testBufferSize() {
-        int nSize = 45678;
-        TCircularBuffer buffer = new TCircularBuffer(
-                nSize, false, false, null);
-        assertEquals(nSize, buffer.availableWrite(), "buffer size");
-        nSize = 0;
-        buffer = new TCircularBuffer(
-                nSize, false, false, null);
-        assertEquals(nSize, buffer.availableWrite(), "buffer size");
+        int size = 45678;
+        TCircularBuffer buffer = new TCircularBuffer(size, false, false, null);
+        assertEquals(size, buffer.availableWrite(), "buffer size");
+        size = 0;
+        buffer = new TCircularBuffer(size, false, false, null);
+        assertEquals(size, buffer.availableWrite(), "buffer size");
     }
 
     @Test
     public void testAvailable() {
-        int nBufferSize = 45678;
-        int nWriteSize1 = nBufferSize / 2;
-        int nWriteSize2 = nBufferSize / 5;
-        int nReadSize1 = nBufferSize / 10;
-        int nReadSize2 = nBufferSize / 3;
-        TCircularBuffer buffer = new TCircularBuffer(
-                nBufferSize, true, true, null);
-        assertEquals(nBufferSize, buffer.availableWrite(), "availableWrite()");
+        int bufferSize = 45678;
+        int writeSize1 = bufferSize / 2;
+        int writeSize2 = bufferSize / 5;
+        int readSize1 = bufferSize / 10;
+        int readSize2 = bufferSize / 3;
+        TCircularBuffer buffer = new TCircularBuffer(bufferSize, true, true, null);
+        assertEquals(bufferSize, buffer.availableWrite(), "availableWrite()");
         assertEquals(0, buffer.availableRead(), "availableRead()");
-        buffer.write(new byte[nBufferSize]);
+        buffer.write(new byte[bufferSize]);
         assertEquals(0, buffer.availableWrite(), "availableWrite()");
-        assertEquals(nBufferSize, buffer.availableRead(), "availableRead()");
-        buffer.read(new byte[nBufferSize]);
-        assertEquals(nBufferSize, buffer.availableWrite(), "availableWrite()");
+        assertEquals(bufferSize, buffer.availableRead(), "availableRead()");
+        buffer.read(new byte[bufferSize]);
+        assertEquals(bufferSize, buffer.availableWrite(), "availableWrite()");
         assertEquals(0, buffer.availableRead(), "availableRead()");
 
-        buffer.write(new byte[nWriteSize1]);
-        assertEquals(nBufferSize - nWriteSize1, buffer.availableWrite(), "availableWrite()");
-        assertEquals(nWriteSize1, buffer.availableRead(), "availableRead()");
-        buffer.write(new byte[nWriteSize2]);
-        assertEquals(nBufferSize - nWriteSize1 - nWriteSize2, buffer.availableWrite(), "availableWrite()");
-        assertEquals(nWriteSize1 + nWriteSize2, buffer.availableRead(), "availableRead()");
-        buffer.read(new byte[nReadSize1]);
-        assertEquals(nBufferSize - nWriteSize1 - nWriteSize2 + nReadSize1, buffer.availableWrite(), "availableWrite()");
-        assertEquals(nWriteSize1 + nWriteSize2 - nReadSize1, buffer.availableRead(), "availableRead()");
-        buffer.read(new byte[nReadSize2]);
-        assertEquals(nBufferSize - nWriteSize1 - nWriteSize2 + nReadSize1 + nReadSize2, buffer.availableWrite(), "availableWrite()");
-        assertEquals(nWriteSize1 + nWriteSize2 - nReadSize1 - nReadSize2, buffer.availableRead(), "availableRead()");
+        buffer.write(new byte[writeSize1]);
+        assertEquals(bufferSize - writeSize1, buffer.availableWrite(), "availableWrite()");
+        assertEquals(writeSize1, buffer.availableRead(), "availableRead()");
+        buffer.write(new byte[writeSize2]);
+        assertEquals(bufferSize - writeSize1 - writeSize2, buffer.availableWrite(), "availableWrite()");
+        assertEquals(writeSize1 + writeSize2, buffer.availableRead(), "availableRead()");
+        buffer.read(new byte[readSize1]);
+        assertEquals(bufferSize - writeSize1 - writeSize2 + readSize1, buffer.availableWrite(), "availableWrite()");
+        assertEquals(writeSize1 + writeSize2 - readSize1, buffer.availableRead(), "availableRead()");
+        buffer.read(new byte[readSize2]);
+        assertEquals(bufferSize - writeSize1 - writeSize2 + readSize1 + readSize2, buffer.availableWrite(), "availableWrite()");
+        assertEquals(writeSize1 + writeSize2 - readSize1 - readSize2, buffer.availableRead(), "availableRead()");
     }
 
     @Test
     public void testReadWrite() {
-        int nBufferSize = 8901 * 4;
-        int nResult;
-        byte[] abWriteArray = new byte[nBufferSize];
-        byte[] abReadArray = new byte[nBufferSize];
-        TCircularBuffer buffer = new TCircularBuffer(
-                nBufferSize, true, true, null);
-        for (int i = 0; i < abWriteArray.length; i++) {
-            abWriteArray[i] = (byte) (i % 256);
+        int bufferSize = 8901 * 4;
+        int result;
+        byte[] writeArray = new byte[bufferSize];
+        byte[] readArray = new byte[bufferSize];
+        TCircularBuffer buffer = new TCircularBuffer(bufferSize, true, true, null);
+        for (int i = 0; i < writeArray.length; i++) {
+            writeArray[i] = (byte) (i % 256);
         }
-        nResult = buffer.write(abWriteArray);
-        assertEquals(abWriteArray.length, nResult, "written length");
-        nResult = buffer.read(abReadArray);
-        assertEquals(abReadArray.length, nResult, "read length");
-        assertTrue(Util.compareByteArrays(abReadArray, 0, abWriteArray, 0, abReadArray.length), "data content");
+        result = buffer.write(writeArray);
+        assertEquals(writeArray.length, result, "written length");
+        result = buffer.read(readArray);
+        assertEquals(readArray.length, result, "read length");
+        assertTrue(Util.compareByteArrays(readArray, 0, writeArray, 0, readArray.length), "data content");
 
-        buffer.write(new byte[nBufferSize / 3]);
-        nResult = buffer.write(abWriteArray, nBufferSize / 4, nBufferSize / 2);
-        assertEquals(nBufferSize / 2, nResult, "written length");
-        buffer.read(new byte[nBufferSize / 3]);
-        nResult = buffer.read(abReadArray, 0, nBufferSize / 2);
-        assertEquals(nBufferSize / 2, nResult, "read length");
-        assertTrue(Util.compareByteArrays(abReadArray, 0, abWriteArray, nBufferSize / 4, nBufferSize / 2), "data content");
+        buffer.write(new byte[bufferSize / 3]);
+        result = buffer.write(writeArray, bufferSize / 4, bufferSize / 2);
+        assertEquals(bufferSize / 2, result, "written length");
+        buffer.read(new byte[bufferSize / 3]);
+        result = buffer.read(readArray, 0, bufferSize / 2);
+        assertEquals(bufferSize / 2, result, "read length");
+        assertTrue(Util.compareByteArrays(readArray, 0, writeArray, bufferSize / 4, bufferSize / 2), "data content");
     }
 
     @Test
     public void testTrigger() {
         TestTrigger trigger = new TestTrigger();
 
-        int nBufferSize = 45678;
-        TCircularBuffer buffer = new TCircularBuffer(
-                nBufferSize, false, true, trigger);
+        int bufferSize = 45678;
+        TCircularBuffer buffer = new TCircularBuffer(bufferSize, false, true, trigger);
         buffer.read(new byte[10]);
         assertTrue(trigger.isCalled(), "trigger called");
 
         trigger.reset();
-        buffer.write(new byte[nBufferSize / 3]);
-        buffer.read(new byte[nBufferSize / 2]);
+        buffer.write(new byte[bufferSize / 3]);
+        buffer.read(new byte[bufferSize / 2]);
         assertTrue(trigger.isCalled(), "trigger called");
     }
 
     @Test
     public void testClose() {
-        int nResult;
-        int nBufferSize = 45678;
+        int result;
+        int bufferSize = 45678;
         TestTrigger trigger = new TestTrigger();
-        TCircularBuffer buffer = new TCircularBuffer(
-                nBufferSize, true, true, trigger);
-        buffer.write(new byte[nBufferSize / 2]);
-        assertEquals(nBufferSize / 2, buffer.availableWrite(), "availableWrite()");
-        assertEquals(nBufferSize / 2, buffer.availableRead(), "availableRead()");
+        TCircularBuffer buffer = new TCircularBuffer(bufferSize, true, true, trigger);
+        buffer.write(new byte[bufferSize / 2]);
+        assertEquals(bufferSize / 2, buffer.availableWrite(), "availableWrite()");
+        assertEquals(bufferSize / 2, buffer.availableRead(), "availableRead()");
         buffer.close();
-        assertEquals(nBufferSize / 2, buffer.availableWrite(), "availableWrite()");
-        assertEquals(nBufferSize / 2, buffer.availableRead(), "availableRead()");
-        nResult = buffer.read(new byte[nBufferSize / 2]);
-        assertEquals(nBufferSize / 2, nResult, "read length");
-        assertEquals(nBufferSize, buffer.availableWrite(), "availableWrite()");
+        assertEquals(bufferSize / 2, buffer.availableWrite(), "availableWrite()");
+        assertEquals(bufferSize / 2, buffer.availableRead(), "availableRead()");
+        result = buffer.read(new byte[bufferSize / 2]);
+        assertEquals(bufferSize / 2, result, "read length");
+        assertEquals(bufferSize, buffer.availableWrite(), "availableWrite()");
         assertEquals(0, buffer.availableRead(), "availableRead()");
-        nResult = buffer.read(new byte[nBufferSize / 2]);
-        assertEquals(-1, nResult, "read length");
+        result = buffer.read(new byte[bufferSize / 2]);
+        assertEquals(-1, result, "read length");
         assertFalse(trigger.isCalled(), "trigger invocation");
     }
 
-    private static class TestTrigger
-            implements TCircularBuffer.Trigger {
+    private static class TestTrigger implements TCircularBuffer.Trigger {
 
-        private boolean m_bCalled = false;
+        private boolean called = false;
 
         @Override
         public void execute() {
-            m_bCalled = true;
+            called = true;
         }
 
         public boolean isCalled() {
-            return m_bCalled;
+            return called;
         }
 
         public void reset() {
-            m_bCalled = false;
+            called = false;
         }
     }
 }
-
-

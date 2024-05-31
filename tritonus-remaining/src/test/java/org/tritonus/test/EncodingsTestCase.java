@@ -35,11 +35,8 @@ public class EncodingsTestCase {
 
     @Test
     public void testGetEncodings() {
-        AudioFormat.Encoding[] aEncodings = Encodings.getEncodings();
-        assertNotNull(aEncodings);
-        assertTrue(aEncodings.length > 0);
+        AudioFormat.Encoding[] encodings = Encodings.getEncodings();
+        assertNotNull(encodings);
+        assertTrue(encodings.length > 0);
     }
-
 }
-
-

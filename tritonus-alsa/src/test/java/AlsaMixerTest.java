@@ -1,33 +1,28 @@
-/*
- * AlsaMixerTest.java
- */
-
 import org.tritonus.lowlevel.alsa.AlsaMixer;
 import org.tritonus.lowlevel.alsa.AlsaMixerElement;
 
 
 public class AlsaMixerTest {
 
-    private static boolean sm_bShowInactiveElements;
+    private static boolean showInactiveElements;
 
-    public static void main(String[] args)
-            throws Exception {
-        String strMixerName = "hw:0";
+    public static void main(String[] args) throws Exception {
+        String mixerName = "hw:0";
         if (args.length > 0) {
-            strMixerName = args[0];
+            mixerName = args[0];
         }
-        out("Mixer: " + strMixerName);
-        AlsaMixer mixer = new AlsaMixer(strMixerName);
-        int[] anIndices = new int[200];
-        String[] astrNames = new String[200];
-        int nReturn = mixer.readControlList(anIndices, astrNames);
-        out("readControlList() returns: " + nReturn);
-        if (nReturn > 0) {
+        out("Mixer: " + mixerName);
+        AlsaMixer mixer = new AlsaMixer(mixerName);
+        int[] indices = new int[200];
+        String[] names = new String[200];
+        int ret = mixer.readControlList(indices, names);
+        out("readControlList() returns: " + ret);
+        if (ret > 0) {
             out("Mixer controls:");
-            for (int i = 0; i < nReturn; i++) {
-                out(i + " " + anIndices[i] + " " + astrNames[i]);
-                AlsaMixerElement element = new AlsaMixerElement(mixer, anIndices[i], astrNames[i]);
-                if (element.isActive() || sm_bShowInactiveElements) {
+            for (int i = 0; i < ret; i++) {
+                out(i + " " + indices[i] + " " + names[i]);
+                AlsaMixerElement element = new AlsaMixerElement(mixer, indices[i], names[i]);
+                if (element.isActive() || showInactiveElements) {
                     out("--------------------------------------------------------------------------------");
                     output(element);
                 }
@@ -56,10 +51,10 @@ public class AlsaMixerTest {
 
     private static void outputPlayback(AlsaMixerElement element) {
         out("  playback mono: " + element.isPlaybackMono());
-        for (int nChannel = AlsaMixerElement.SND_MIXER_SCHN_FRONT_LEFT;
-             nChannel <= AlsaMixerElement.SND_MIXER_SCHN_WOOFER;
-             nChannel++) {
-            out("  playback channel (" + AlsaMixerElement.getChannelName(nChannel) + "): " + element.hasPlaybackChannel(nChannel));
+        for (int channel = AlsaMixerElement.SND_MIXER_SCHN_FRONT_LEFT;
+             channel <= AlsaMixerElement.SND_MIXER_SCHN_WOOFER;
+             channel++) {
+            out("  playback channel (" + AlsaMixerElement.getChannelName(channel) + "): " + element.hasPlaybackChannel(channel));
         }
         out("  common volume: " + element.hasCommonVolume());
         out("  playback volume: " + element.hasPlaybackVolume());
@@ -71,10 +66,10 @@ public class AlsaMixerTest {
 
     private static void outputCapture(AlsaMixerElement element) {
         out("  capture mono: " + element.isCaptureMono());
-        for (int nChannel = AlsaMixerElement.SND_MIXER_SCHN_FRONT_LEFT;
-             nChannel <= AlsaMixerElement.SND_MIXER_SCHN_WOOFER;
-             nChannel++) {
-            out("  capture channel (" + AlsaMixerElement.getChannelName(nChannel) + "): " + element.hasCaptureChannel(nChannel));
+        for (int channel = AlsaMixerElement.SND_MIXER_SCHN_FRONT_LEFT;
+             channel <= AlsaMixerElement.SND_MIXER_SCHN_WOOFER;
+             channel++) {
+            out("  capture channel (" + AlsaMixerElement.getChannelName(channel) + "): " + element.hasCaptureChannel(channel));
         }
         out("  common volume: " + element.hasCommonVolume());
         out("  capture volume: " + element.hasCaptureVolume());
@@ -89,28 +84,26 @@ public class AlsaMixerTest {
     }
 
     private static boolean hasPlaybackChannels(AlsaMixerElement element) {
-        boolean bHasChannels = false;
-        for (int nChannel = AlsaMixerElement.SND_MIXER_SCHN_FRONT_LEFT;
-             nChannel <= AlsaMixerElement.SND_MIXER_SCHN_WOOFER;
-             nChannel++) {
-            bHasChannels |= element.hasPlaybackChannel(nChannel);
+        boolean hasChannels = false;
+        for (int channel = AlsaMixerElement.SND_MIXER_SCHN_FRONT_LEFT;
+             channel <= AlsaMixerElement.SND_MIXER_SCHN_WOOFER;
+             channel++) {
+            hasChannels |= element.hasPlaybackChannel(channel);
         }
-        return bHasChannels;
+        return hasChannels;
     }
 
     private static boolean hasCaptureChannels(AlsaMixerElement element) {
-        boolean bHasChannels = false;
-        for (int nChannel = AlsaMixerElement.SND_MIXER_SCHN_FRONT_LEFT;
-             nChannel <= AlsaMixerElement.SND_MIXER_SCHN_WOOFER;
-             nChannel++) {
-            bHasChannels |= element.hasCaptureChannel(nChannel);
+        boolean hasChannels = false;
+        for (int channel = AlsaMixerElement.SND_MIXER_SCHN_FRONT_LEFT;
+             channel <= AlsaMixerElement.SND_MIXER_SCHN_WOOFER;
+             channel++) {
+            hasChannels |= element.hasCaptureChannel(channel);
         }
-        return bHasChannels;
+        return hasChannels;
     }
 
-    private static void out(String strMessage) {
-        System.out.println(strMessage);
+    private static void out(String message) {
+        System.out.println(message);
     }
 }
-
-

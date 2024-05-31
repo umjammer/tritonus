@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 2003 by Matthias Pfisterer
  *
@@ -32,16 +31,15 @@ public class AmplitudeAudioInputStream extends FloatAudioInputStream {
     /**
      * The processor that does the work.
      */
-    private AmplitudeProcessor m_processor;
+    private AmplitudeProcessor processor;
 
     public AmplitudeAudioInputStream(AudioInputStream sourceStream) {
         this(sourceStream, sourceStream.getFormat());
     }
 
-    public AmplitudeAudioInputStream(AudioInputStream sourceStream,
-                                     AudioFormat targetFormat) {
+    public AmplitudeAudioInputStream(AudioInputStream sourceStream, AudioFormat targetFormat) {
         super(sourceStream, targetFormat);
-        m_processor = new AmplitudeProcessor();
+        processor = new AmplitudeProcessor();
     }
 
     /**
@@ -52,8 +50,8 @@ public class AmplitudeAudioInputStream extends FloatAudioInputStream {
      * This is in contrast to {@link #setAmplitudeLog(float)} setAmplitudeLog},
      * where you can pass the amplitude change as dB values.
      */
-    public void setAmplitudeLinear(float fAmplitude) {
-        m_processor.setAmplitudeLinear(fAmplitude);
+    public void setAmplitudeLinear(float amplitude) {
+        processor.setAmplitudeLinear(amplitude);
     }
 
     /**
@@ -65,8 +63,8 @@ public class AmplitudeAudioInputStream extends FloatAudioInputStream {
      * {@link #setAmplitudeLinear setAmplitudeLinear()},
      * where you can pass the amplitude change linear values.
      */
-    public void setAmplitudeLog(float fAmplitude) {
-        m_processor.setAmplitudeLog(fAmplitude);
+    public void setAmplitudeLog(float amplitude) {
+        processor.setAmplitudeLog(amplitude);
     }
 
     /**
@@ -76,8 +74,6 @@ public class AmplitudeAudioInputStream extends FloatAudioInputStream {
      */
     @Override
     protected void convert(FloatSampleBuffer buffer) {
-        m_processor.process(buffer);
+        processor.process(buffer);
     }
 }
-
-

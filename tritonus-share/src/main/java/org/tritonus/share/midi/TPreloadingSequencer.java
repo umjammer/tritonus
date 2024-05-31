@@ -34,10 +34,10 @@ import static java.lang.System.getLogger;
  */
 public abstract class TPreloadingSequencer extends TSequencer {
 
-    private static final Logger logger= getLogger("org.tritonus.TraceSequencer");
+    private static final Logger logger = getLogger("org.tritonus.TraceSequencer");
 
     /**
-     * The default value for {@link #m_nLatency}.
+     * The default value for {@link #latency}.
      * This default value is set in the constructor.
      */
     private static final int DEFAULT_LATENCY = 100;
@@ -45,7 +45,7 @@ public abstract class TPreloadingSequencer extends TSequencer {
     /**
      *
      */
-    private int m_nLatency;
+    private int latency;
 
     @SuppressWarnings("unused")
     private Thread m_loaderThread;
@@ -57,11 +57,11 @@ public abstract class TPreloadingSequencer extends TSequencer {
                                    Collection<SyncMode> masterSyncModes,
                                    Collection<SyncMode> slaveSyncModes) {
         super(info, masterSyncModes, slaveSyncModes);
-        logger.log(Level.TRACE, "TPreloadingSequencer.<init>(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        m_nLatency = DEFAULT_LATENCY;
+        latency = DEFAULT_LATENCY;
 
-        logger.log(Level.TRACE, "TPreloadingSequencer.<init>(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     /**
@@ -71,29 +71,29 @@ public abstract class TPreloadingSequencer extends TSequencer {
      * by the implementation. However, this cannot be guaranteed.
      */
     @Override
-    public void setLatency(int nLatency) {
+    public void setLatency(int milliseconds) {
         // TODO preload if latency becomes shorter
-        m_nLatency = nLatency;
+        latency = milliseconds;
     }
 
     /**
      * Get the preloading intervall.
      *
      * @return the preloading intervall in milliseconds, or -1 if the sequencer
-     * doesn't repond to changes in the <code>Sequence</code> at all.
+     * doesn't respond to changes in the <code>Sequence</code> at all.
      */
     @Override
     public int getLatency() {
-        return m_nLatency;
+        return latency;
     }
 
     /** currently not called by subclasses. order has to be assured (subclass first) */
     @Override
     protected void openImpl() {
-        logger.log(Level.TRACE, "AlsaSequencer.openImpl(): begin");
+        logger.log(Level.TRACE, "begin");
 
-//        m_loaderThread = new LoaderThread();
-//        m_loaderThread.start();
+//        loaderThread = new LoaderThread();
+//        loaderThread.start();
     }
 
     /**
@@ -110,7 +110,7 @@ public abstract class TPreloadingSequencer extends TSequencer {
      * ignored.
      *
      * @param message the MidiMessage to put into the queue.
-     * @param lTick   the desired schedule time in ticks.
+     * @param tick    the desired schedule time in ticks.
      */
-    public abstract void sendMessageTick(MidiMessage message, long lTick);
+    public abstract void sendMessageTick(MidiMessage message, long tick);
 }

@@ -33,41 +33,39 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BaseProviderTestCase {
 
-    private static final boolean DEBUG = true;
-
     /**
      * Precision for float comparisons.
      */
     protected static final float DELTA = 0.1F;
 
-    private ResourceBundle m_resourceBundle;
-    private String m_strResourcePrefix;
-    private Object m_provider;
-    private boolean m_bCheckRealLengths;
+    private final ResourceBundle resourceBundle;
+    private String resourcePrefix;
+    private Object provider;
+    private boolean checkRealLengths;
 
-    public BaseProviderTestCase(String strResourceBasename) {
-        m_resourceBundle = loadResourceBundle(strResourceBasename);
+    public BaseProviderTestCase(String resourceBasename) {
+        resourceBundle = loadResourceBundle(resourceBasename);
     }
 
-    protected void setResourcePrefix(String strResourcePrefix) {
-        m_strResourcePrefix = strResourcePrefix;
+    protected void setResourcePrefix(String resourcePrefix) {
+        this.resourcePrefix = resourcePrefix;
     }
 
     protected String getResourcePrefix() {
-        return m_strResourcePrefix;
+        return resourcePrefix;
     }
 
     @BeforeEach
     protected void setUp() throws Exception {
         if (getTestProvider()) {
-            String strClassName = getClassName();
-            Class<?> cls = Class.forName(strClassName);
-            m_provider = cls.getDeclaredConstructor().newInstance();
+            String className = getClassName();
+            Class<?> cls = Class.forName(className);
+            provider = cls.getDeclaredConstructor().newInstance();
         }
     }
 
     protected Object getProvider() {
-        return m_provider;
+        return provider;
     }
 
     protected boolean getTestProvider() {
@@ -88,89 +86,87 @@ public class BaseProviderTestCase {
         assertEquals(getBigEndian(), audioFormat.isBigEndian(), "big endian");
     }
 
-    private ResourceBundle loadResourceBundle(String sResourceBasename) {
+    private ResourceBundle loadResourceBundle(String resourceBasename) {
         ResourceBundle resourceBundle = null;
         try {
-            resourceBundle = ResourceBundle.getBundle(sResourceBasename);
+            resourceBundle = ResourceBundle.getBundle(resourceBasename);
         } catch (MissingResourceException e) {
-            e.printStackTrace();
+            e.printStackTrace(System.err);
         }
         return resourceBundle;
     }
 
-    protected String getResourceString(String strKey) {
-        return m_resourceBundle.getString(strKey);
+    protected String getResourceString(String key) {
+        return resourceBundle.getString(key);
     }
 
     private String getClassName() {
-        String strClassName = getResourceString(getResourcePrefix() + ".class");
-        return strClassName;
+        String className = getResourceString(getResourcePrefix() + ".class");
+        return className;
     }
 
     private String getFilename() {
-        String strFileName = getResourceString(getResourcePrefix() + ".filename");
-        return strFileName;
+        String fileName = getResourceString(getResourcePrefix() + ".filename");
+        return fileName;
     }
 
     private AudioFileFormat.Type getType() {
-        String strTypeName = getResourceString(getResourcePrefix() + ".type");
-        AudioFileFormat.Type type = AudioFileTypes.getType(strTypeName);
+        String typeName = getResourceString(getResourcePrefix() + ".type");
+        AudioFileFormat.Type type = AudioFileTypes.getType(typeName);
         return type;
     }
 
     private long getByteLength() {
-        String strByteLength = getResourceString(getResourcePrefix() + ".byteLength");
-        long lByteLength = Long.parseLong(strByteLength);
-        return lByteLength;
+        String _byteLength = getResourceString(getResourcePrefix() + ".byteLength");
+        long byteLength = Long.parseLong(_byteLength);
+        return byteLength;
     }
 
     private AudioFormat.Encoding getEncoding() {
-        String strEncodingName = getResourceString(getResourcePrefix() + ".format.encoding");
-        AudioFormat.Encoding encoding = Encodings.getEncoding(strEncodingName);
+        String encodingName = getResourceString(getResourcePrefix() + ".format.encoding");
+        AudioFormat.Encoding encoding = Encodings.getEncoding(encodingName);
         return encoding;
     }
 
     private float getSampleRate() {
-        String strSampleRate = getResourceString(getResourcePrefix() + ".format.sampleRate");
-        float fSampleRate = Float.parseFloat(strSampleRate);
-        return fSampleRate;
+        String _sampleRate = getResourceString(getResourcePrefix() + ".format.sampleRate");
+        float sampleRate = Float.parseFloat(_sampleRate);
+        return sampleRate;
     }
 
     private int getSampleSizeInBits() {
-        String strSampleSizeInBits = getResourceString(getResourcePrefix() + ".format.sampleSizeInBits");
-        int nSampleSizeInBits = Integer.parseInt(strSampleSizeInBits);
-        return nSampleSizeInBits;
+        String _sampleSizeInBits = getResourceString(getResourcePrefix() + ".format.sampleSizeInBits");
+        int sampleSizeInBits = Integer.parseInt(_sampleSizeInBits);
+        return sampleSizeInBits;
     }
 
     private int getChannels() {
-        String strChannels = getResourceString(getResourcePrefix() + ".format.channels");
-        int nChannels = Integer.parseInt(strChannels);
-        return nChannels;
+        String _channels = getResourceString(getResourcePrefix() + ".format.channels");
+        int channels = Integer.parseInt(_channels);
+        return channels;
     }
 
     private int getFrameSize() {
-        String strFrameSize = getResourceString(getResourcePrefix() + ".format.frameSize");
-        int nFrameSize = Integer.parseInt(strFrameSize);
-        return nFrameSize;
+        String _frameSize = getResourceString(getResourcePrefix() + ".format.frameSize");
+        int frameSize = Integer.parseInt(_frameSize);
+        return frameSize;
     }
 
     private float getFrameRate() {
-        String strFrameRate = getResourceString(getResourcePrefix() + ".format.frameRate");
-        float fFrameRate = Float.parseFloat(strFrameRate);
-        return fFrameRate;
+        String _frameRate = getResourceString(getResourcePrefix() + ".format.frameRate");
+        float frameRate = Float.parseFloat(_frameRate);
+        return frameRate;
     }
 
     private boolean getBigEndian() {
-        String strBigEndian = getResourceString(getResourcePrefix() + ".format.bigEndian");
-        boolean bBigEndian = strBigEndian.equals("true");
-        return bBigEndian;
+        String _bigEndian = getResourceString(getResourcePrefix() + ".format.bigEndian");
+        boolean bigEndian = _bigEndian.equals("true");
+        return bigEndian;
     }
 
     private long getFrameLength() {
-        String strFrameLength = getResourceString(getResourcePrefix() + ".frameLength");
-        long lFrameLength = Long.parseLong(strFrameLength);
-        return lFrameLength;
+        String _frameLength = getResourceString(getResourcePrefix() + ".frameLength");
+        long frameLength = Long.parseLong(_frameLength);
+        return frameLength;
     }
 }
-
-

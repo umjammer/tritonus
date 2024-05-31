@@ -17,11 +17,11 @@
 package org.tritonus.test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioFormat.Encoding;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.spi.FormatConversionProvider;
@@ -30,6 +30,10 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.tritonus.share.sampled.Encodings;
 
+import static javax.sound.sampled.AudioFormat.Encoding.ALAW;
+import static javax.sound.sampled.AudioFormat.Encoding.PCM_SIGNED;
+import static javax.sound.sampled.AudioFormat.Encoding.PCM_UNSIGNED;
+import static javax.sound.sampled.AudioFormat.Encoding.ULAW;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -41,8 +45,23 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Disabled
 public class BaseFormatConversionProviderTestCase extends BaseProviderTestCase {
 
-    private static final AudioFormat.Encoding[] EMPTY_ENCODING_ARRAY = new AudioFormat.Encoding[0];
-    private static final AudioFormat.Encoding[] ALL_ENCODINGS = new AudioFormat.Encoding[] {AudioFormat.Encoding.PCM_SIGNED, AudioFormat.Encoding.PCM_UNSIGNED, AudioFormat.Encoding.ULAW, AudioFormat.Encoding.ALAW, Encodings.getEncoding("GSM0610"), Encodings.getEncoding("MPEG1L1"), Encodings.getEncoding("MPEG1L2"), Encodings.getEncoding("MPEG1L3"), Encodings.getEncoding("MPEG2L1"), Encodings.getEncoding("MPEG2L2"), Encodings.getEncoding("MPEG2L3"), Encodings.getEncoding("MPEG2DOT5L1"), Encodings.getEncoding("MPEG2DOT5L2"), Encodings.getEncoding("MPEG2DOT5L3"), Encodings.getEncoding("VORBIS"), Encodings.getEncoding("IMA_ADPCM"),};
+    private static final Encoding[] EMPTY_ENCODING_ARRAY = new Encoding[0];
+
+    private static final Encoding[] ALL_ENCODINGS = new Encoding[] {
+            PCM_SIGNED, PCM_UNSIGNED, ULAW, ALAW,
+            Encodings.getEncoding("GSM0610"),
+            Encodings.getEncoding("MPEG1L1"),
+            Encodings.getEncoding("MPEG1L2"),
+            Encodings.getEncoding("MPEG1L3"),
+            Encodings.getEncoding("MPEG2L1"),
+            Encodings.getEncoding("MPEG2L2"),
+            Encodings.getEncoding("MPEG2L3"),
+            Encodings.getEncoding("MPEG2DOT5L1"),
+            Encodings.getEncoding("MPEG2DOT5L2"),
+            Encodings.getEncoding("MPEG2DOT5L3"),
+            Encodings.getEncoding("VORBIS"),
+            Encodings.getEncoding("IMA_ADPCM")
+    };
 
     private static final boolean DEBUG = true;
     private static final String RESOURCE_BASENAME = "formatconversionprovider";
@@ -57,36 +76,36 @@ public class BaseFormatConversionProviderTestCase extends BaseProviderTestCase {
 
     @Test
     public void testGetSourceEncodings() {
-        AudioFormat.Encoding[] aEncodings;
+        AudioFormat.Encoding[] encodings;
         if (getTestProvider()) {
-            aEncodings = getFormatConversionProvider().getSourceEncodings();
-            checkEncodings(aEncodings, true);
+            encodings = getFormatConversionProvider().getSourceEncodings();
+            checkEncodings(encodings, true);
         }
     }
 
     @Test
     public void testGetTargetEncodings() {
-        AudioFormat.Encoding[] aEncodings;
+        AudioFormat.Encoding[] encodings;
         if (getTestProvider()) {
-            aEncodings = getFormatConversionProvider().getTargetEncodings();
-            checkEncodings(aEncodings, false);
+            encodings = getFormatConversionProvider().getTargetEncodings();
+            checkEncodings(encodings, false);
         }
     }
 
-    private void checkEncodings(AudioFormat.Encoding[] aEncodings, boolean bSource) {
-        AudioFormat.Encoding[] aExpectedEncodings = getEncodings(bSource);
+    private void checkEncodings(AudioFormat.Encoding[] encodings, boolean source) {
+        AudioFormat.Encoding[] _expectedEncodings = getEncodings(source);
         Iterator<AudioFormat.Encoding> iter;
-        List<AudioFormat.Encoding> encodings = Arrays.asList(aEncodings);
-        List<AudioFormat.Encoding> expectedEncodings = Arrays.asList(aExpectedEncodings);
-        iter = encodings.iterator();
+        List<AudioFormat.Encoding> encodingList = List.of(encodings);
+        List<AudioFormat.Encoding> expectedEncodings = List.of(_expectedEncodings);
+        iter = encodingList.iterator();
         while (iter.hasNext()) {
             Object encoding = iter.next();
-            assertTrue(expectedEncodings.contains(encoding), "returned encoding in expected encodings");
+            assertTrue(expectedEncodings.contains(encoding), "returned encoding in expected encodingList");
         }
         iter = expectedEncodings.iterator();
         while (iter.hasNext()) {
             Object encoding = iter.next();
-            assertTrue(encodings.contains(encoding), "expected encoding in returned encodings");
+            assertTrue(encodingList.contains(encoding), "expected encoding in returned encodingList");
         }
     }
 
@@ -100,45 +119,45 @@ public class BaseFormatConversionProviderTestCase extends BaseProviderTestCase {
         implTestIsEncodingSupported(false);
     }
 
-    private void implTestIsEncodingSupported(boolean bSource) {
+    private void implTestIsEncodingSupported(boolean source) {
         if (getTestProvider()) {
-            AudioFormat.Encoding[] aExpectedEncodings = getEncodings(bSource);
-            for (AudioFormat.Encoding aExpectedEncoding : aExpectedEncodings) {
-                boolean bSupported;
-                if (bSource) {
-                    bSupported = getFormatConversionProvider().isSourceEncodingSupported(aExpectedEncoding);
+            AudioFormat.Encoding[] expectedEncodings = getEncodings(source);
+            for (AudioFormat.Encoding expectedEncoding : expectedEncodings) {
+                boolean supported;
+                if (source) {
+                    supported = getFormatConversionProvider().isSourceEncodingSupported(expectedEncoding);
                 } else {
-                    bSupported = getFormatConversionProvider().isTargetEncodingSupported(aExpectedEncoding);
+                    supported = getFormatConversionProvider().isTargetEncodingSupported(expectedEncoding);
                 }
-                assertTrue(bSupported, "expected encoding supported");
+                assertTrue(supported, "expected encoding supported");
             }
-            AudioFormat.Encoding[] aUnexpectedEncodings = getUnexpectedEncodings(bSource);
-            for (AudioFormat.Encoding aUnexpectedEncoding : aUnexpectedEncodings) {
-                boolean bSupported;
-                if (bSource) {
-                    bSupported = getFormatConversionProvider().isSourceEncodingSupported(aUnexpectedEncoding);
+            AudioFormat.Encoding[] unexpectedEncodings = getUnexpectedEncodings(source);
+            for (AudioFormat.Encoding unexpectedEncoding : unexpectedEncodings) {
+                boolean supported;
+                if (source) {
+                    supported = getFormatConversionProvider().isSourceEncodingSupported(unexpectedEncoding);
                 } else {
-                    bSupported = getFormatConversionProvider().isTargetEncodingSupported(aUnexpectedEncoding);
+                    supported = getFormatConversionProvider().isTargetEncodingSupported(unexpectedEncoding);
                 }
-                assertFalse(bSupported, "unexpected encoding supported");
+                assertFalse(supported, "unexpected encoding supported");
             }
         }
     }
 
-    private void checkAudioInputStream(AudioInputStream audioInputStream, boolean bRealLengthExpected) throws Exception {
+    private void checkAudioInputStream(AudioInputStream audioInputStream, boolean realLengthExpected) throws Exception {
         checkAudioFormat(audioInputStream.getFormat());
-        long lExpectedFrameLength = AudioSystem.NOT_SPECIFIED;
-        if (/*getCheckRealLengths() ||*/ bRealLengthExpected) {
-            lExpectedFrameLength = getFrameLength();
+        long expectedFrameLength = AudioSystem.NOT_SPECIFIED;
+        if (/*getCheckRealLengths() ||*/ realLengthExpected) {
+            expectedFrameLength = getFrameLength();
         }
-        assertEquals(lExpectedFrameLength, audioInputStream.getFrameLength(), "frame length");
-        if (/*getCheckRealLengths() ||*/ bRealLengthExpected) {
-            int nExpectedDataLength = (int) (lExpectedFrameLength * getFrameSize());
-            byte[] abRetrievedData = new byte[nExpectedDataLength];
-            int nRead = audioInputStream.read(abRetrievedData);
-            assertEquals(nExpectedDataLength, nRead, "reading data");
-// 			for (int i = 0; i < nExpectedDataLength; i++) {
-// 				assertEquals("data content", 0, abRetrievedData[i]);
+        assertEquals(expectedFrameLength, audioInputStream.getFrameLength(), "frame length");
+        if (/*getCheckRealLengths() ||*/ realLengthExpected) {
+            int expectedDataLength = (int) (expectedFrameLength * getFrameSize());
+            byte[] retrievedData = new byte[expectedDataLength];
+            int read = audioInputStream.read(retrievedData);
+            assertEquals(expectedDataLength, read, "reading data");
+// 			for (int i = 0; i < expectedDataLength; i++) {
+// 				assertEquals("data content", 0, retrievedData[i]);
 // 			}
         } else {
             // TODO try to at least read some bytes?
@@ -156,103 +175,101 @@ public class BaseFormatConversionProviderTestCase extends BaseProviderTestCase {
     }
 
     private String getFilename() {
-        String strFileName = getResourceString(getResourcePrefix() + ".filename");
-        return strFileName;
+        String fileName = getResourceString(getResourcePrefix() + ".filename");
+        return fileName;
     }
 
     private long getByteLength() {
-        String strByteLength = getResourceString(getResourcePrefix() + ".byteLength");
-        long lByteLength = Long.parseLong(strByteLength);
-        return lByteLength;
+        String _byteLength = getResourceString(getResourcePrefix() + ".byteLength");
+        long byteLength = Long.parseLong(_byteLength);
+        return byteLength;
     }
 
-    private AudioFormat.Encoding getEncoding() {
-        String strEncodingName = getResourceString(getResourcePrefix() + ".format.encoding");
-        AudioFormat.Encoding encoding = Encodings.getEncoding(strEncodingName);
+    private Encoding getEncoding() {
+        String encodingName = getResourceString(getResourcePrefix() + ".format.encoding");
+        Encoding encoding = Encodings.getEncoding(encodingName);
         return encoding;
     }
 
     private float getSampleRate() {
-        String strSampleRate = getResourceString(getResourcePrefix() + ".format.sampleRate");
-        float fSampleRate = Float.parseFloat(strSampleRate);
-        return fSampleRate;
+        String _sampleRate = getResourceString(getResourcePrefix() + ".format.sampleRate");
+        float sampleRate = Float.parseFloat(_sampleRate);
+        return sampleRate;
     }
 
     private int getSampleSizeInBits() {
-        String strSampleSizeInBits = getResourceString(getResourcePrefix() + ".format.sampleSizeInBits");
-        int nSampleSizeInBits = Integer.parseInt(strSampleSizeInBits);
-        return nSampleSizeInBits;
+        String _sampleSizeInBits = getResourceString(getResourcePrefix() + ".format.sampleSizeInBits");
+        int sampleSizeInBits = Integer.parseInt(_sampleSizeInBits);
+        return sampleSizeInBits;
     }
 
     private int getChannels() {
-        String strChannels = getResourceString(getResourcePrefix() + ".format.channels");
-        int nChannels = Integer.parseInt(strChannels);
-        return nChannels;
+        String _channels = getResourceString(getResourcePrefix() + ".format.channels");
+        int channels = Integer.parseInt(_channels);
+        return channels;
     }
 
     private int getFrameSize() {
-        String strFrameSize = getResourceString(getResourcePrefix() + ".format.frameSize");
-        int nFrameSize = Integer.parseInt(strFrameSize);
-        return nFrameSize;
+        String _frameSize = getResourceString(getResourcePrefix() + ".format.frameSize");
+        int frameSize = Integer.parseInt(_frameSize);
+        return frameSize;
     }
 
     private float getFrameRate() {
-        String strFrameRate = getResourceString(getResourcePrefix() + ".format.frameRate");
-        float fFrameRate = Float.parseFloat(strFrameRate);
-        return fFrameRate;
+        String _frameRate = getResourceString(getResourcePrefix() + ".format.frameRate");
+        float frameRate = Float.parseFloat(_frameRate);
+        return frameRate;
     }
 
     private boolean getBigEndian() {
-        String strBigEndian = getResourceString(getResourcePrefix() + ".format.bigEndian");
-        boolean bBigEndian = strBigEndian.equals("true");
-        return bBigEndian;
+        String _bigEndian = getResourceString(getResourcePrefix() + ".format.bigEndian");
+        boolean bigEndian = _bigEndian.equals("true");
+        return bigEndian;
     }
 
     private long getFrameLength() {
-        String strFrameLength = getResourceString(getResourcePrefix() + ".frameLength");
-        long lFrameLength = Long.parseLong(strFrameLength);
-        return lFrameLength;
+        String _frameLength = getResourceString(getResourcePrefix() + ".frameLength");
+        long frameLength = Long.parseLong(_frameLength);
+        return frameLength;
     }
 
-    private AudioFormat.Encoding[] getEncodings(boolean bSource) {
-        if (bSource) {
+    private Encoding[] getEncodings(boolean source) {
+        if (source) {
             return getEncodings("sourceEncodings");
         } else {
             return getEncodings("targetEncodings");
         }
     }
 
-    private AudioFormat.Encoding[] getUnexpectedEncodings(boolean bSource) {
-        AudioFormat.Encoding[] aExpectedEncodings;
-        if (bSource) {
-            aExpectedEncodings = getEncodings("sourceEncodings");
+    private Encoding[] getUnexpectedEncodings(boolean source) {
+        Encoding[] _expectedEncodings;
+        if (source) {
+            _expectedEncodings = getEncodings("sourceEncodings");
         } else {
-            aExpectedEncodings = getEncodings("targetEncodings");
+            _expectedEncodings = getEncodings("targetEncodings");
         }
-        List<AudioFormat.Encoding> expectedEncodings = Arrays.asList(aExpectedEncodings);
-        AudioFormat.Encoding[] aAllEncodings = ALL_ENCODINGS;
-        AudioFormat.Encoding[] aUnexpectedEncodings = new AudioFormat.Encoding[aAllEncodings.length - aExpectedEncodings.length];
-        int nIndex = 0;
-        for (AudioFormat.Encoding aAllEncoding : aAllEncodings) {
-            if (!expectedEncodings.contains(aAllEncoding)) {
-                aUnexpectedEncodings[nIndex] = aAllEncoding;
-                nIndex++;
+        List<Encoding> expectedEncodings = List.of(_expectedEncodings);
+        Encoding[] allEncodings = ALL_ENCODINGS;
+        Encoding[] unexpectedEncodings = new Encoding[allEncodings.length - _expectedEncodings.length];
+        int index = 0;
+        for (Encoding allEncoding : allEncodings) {
+            if (!expectedEncodings.contains(allEncoding)) {
+                unexpectedEncodings[index] = allEncoding;
+                index++;
             }
         }
-        return aUnexpectedEncodings;
+        return unexpectedEncodings;
     }
 
-    private AudioFormat.Encoding[] getEncodings(String strKey) {
-        String strEncodings = getResourceString(getResourcePrefix() + "." + strKey);
-        List<AudioFormat.Encoding> encodingsList = new ArrayList<>();
-        StringTokenizer tokenizer = new StringTokenizer(strEncodings);
+    private Encoding[] getEncodings(String key) {
+        String _encodings = getResourceString(getResourcePrefix() + "." + key);
+        List<Encoding> encodingsList = new ArrayList<>();
+        StringTokenizer tokenizer = new StringTokenizer(_encodings);
         while (tokenizer.hasMoreTokens()) {
-            String strEncodingName = tokenizer.nextToken();
-            AudioFormat.Encoding encoding = Encodings.getEncoding(strEncodingName);
+            String encodingName = tokenizer.nextToken();
+            Encoding encoding = Encodings.getEncoding(encodingName);
             encodingsList.add(encoding);
         }
         return encodingsList.toArray(EMPTY_ENCODING_ARRAY);
     }
 }
-
-

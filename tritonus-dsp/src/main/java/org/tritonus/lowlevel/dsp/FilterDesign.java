@@ -14,10 +14,6 @@
  *   limitations under the License.
  */
 
-/*
- |<---            this code is formatted to fit into 80 columns             --->|
- */
-
 package org.tritonus.lowlevel.dsp;
 
 import java.lang.System.Logger;
@@ -43,40 +39,38 @@ public class FilterDesign {
      */
     public static final FIRWindow HAMMING_WINDOW = new HammingWindow();
 
-    public static FIRDirectFormFilterDescription getFirDirectFormFilterDescription(double[] adCoefficients) {
-        float[] afCoefficients = new float[adCoefficients.length];
-        for (int i = 0; i < adCoefficients.length; i++) {
-            afCoefficients[i] = (float) adCoefficients[i];
+    public static FIRDirectFormFilterDescription getFirDirectFormFilterDescription(double[] coefficients) {
+        float[] coefficientsF = new float[coefficients.length];
+        for (int i = 0; i < coefficients.length; i++) {
+            coefficientsF[i] = (float) coefficients[i];
         }
-        return new FIRDirectFormFilterDescription(afCoefficients);
+        return new FIRDirectFormFilterDescription(coefficientsF);
     }
 
     /**
      * Filter design by frequency sampling. This is a design method for FIR
      * filters. It allows to design filters with arbitrary frequency response.
      */
-    public static double[] designFrequencySampling(double[] adFrequencyResponse) {
-        int nHalfLength = adFrequencyResponse.length;
-        int nFullLength = nHalfLength * 2;
-        Complex[] aFrequencyResponse = new Complex[nFullLength];
-        // double dScaleFactor = (double) (nFullLength - 1) / (double)
-        // nFullLength;
-        for (int k = 0; k < nHalfLength; k++) {
-            // double dPhase = -Math.PI * k * dScaleFactor;
+    public static double[] designFrequencySampling(double[] frequencyResponse) {
+        int halfLength = frequencyResponse.length;
+        int fullLength = halfLength * 2;
+        Complex[] _frequencyResponse = new Complex[fullLength];
+        // double scaleFactor = (double) (fullLength - 1) / (double) fullLength;
+        for (int k = 0; k < halfLength; k++) {
+            // double phase = -Math.PI * k * scaleFactor;
         }
         // TODO middle point has to be 0
         // TODO check loop bounds
-        for (int k = nHalfLength; k < nFullLength; k++) {
-            // double dPhase = Math.PI - Math.PI * k * dScaleFactor;
+        for (int k = halfLength; k < fullLength; k++) {
+            // double phase = Math.PI - Math.PI * k * scaleFactor;
         }
-        Complex[] aComplexCoefficients = Util.IDFT(aFrequencyResponse);
-        double[] aRealCoefficients = new double[nFullLength];
-        for (int i = 0; i < nFullLength; i++) {
-            aRealCoefficients[i] = aComplexCoefficients[i].real();
-            logger.log(Level.DEBUG, "FilterDesign.designFrequencySampling(): coefficient, imaginary part: "
-                                + aComplexCoefficients[i].imag());
+        Complex[] complexCoefficients = Util.IDFT(_frequencyResponse);
+        double[] realCoefficients = new double[fullLength];
+        for (int i = 0; i < fullLength; i++) {
+            realCoefficients[i] = complexCoefficients[i].real();
+            logger.log(Level.DEBUG, "coefficient, imaginary part: " + complexCoefficients[i].imag());
         }
-        return aRealCoefficients;
+        return realCoefficients;
     }
 
     //
@@ -84,89 +78,89 @@ public class FilterDesign {
     //
 
     /**
-     * nOrder should be odd.
+     * order should be odd.
      */
-    public static double[] designRectangularLowPass(int nOrder, double dCornerOmega) {
-        double[] adH = new double[nOrder];
-        int nMiddle = nOrder / 2;
-        for (int n = 0; n < nOrder; n++) {
-            int k = (n - nMiddle);
+    public static double[] designRectangularLowPass(int order, double cornerOmega) {
+        double[] h = new double[order];
+        int middle = order / 2;
+        for (int n = 0; n < order; n++) {
+            int k = (n - middle);
             if (k == 0) {
-                adH[n] = dCornerOmega / Math.PI;
+                h[n] = cornerOmega / Math.PI;
             } else {
-                double a = dCornerOmega * k;
+                double a = cornerOmega * k;
                 double sin = Math.sin(a);
-                adH[n] = sin / (Math.PI * k);
+                h[n] = sin / (Math.PI * k);
             }
         }
-        return adH;
+        return h;
     }
 
     /**
-     * nOrder should be odd.
+     * order should be odd.
      */
-    public static double[] designRectangularHighPass(int nOrder, double dCornerOmega) {
-        double[] adH = new double[nOrder];
-        int nMiddle = nOrder / 2;
-        for (int n = 0; n < nOrder; n++) {
-            adH[n] = 1.0 - Math.sin(dCornerOmega * (n - nMiddle)) / (Math.PI * (n - nMiddle));
+    public static double[] designRectangularHighPass(int order, double cornerOmega) {
+        double[] h = new double[order];
+        int middle = order / 2;
+        for (int n = 0; n < order; n++) {
+            h[n] = 1.0 - Math.sin(cornerOmega * (n - middle)) / (Math.PI * (n - middle));
         }
-        return adH;
+        return h;
     }
 
     /**
-     * nOrder should be odd. o1 < o2 required
+     * order should be odd. o1 < o2 required
      */
-    public static double[] designRectangularBandPass(int nOrder, double dCornerOmega1, double dCornerOmega2) {
-        double[] adH = new double[nOrder];
-        int nMiddle = nOrder / 2;
-        for (int n = 0; n < nOrder; n++) {
-            adH[n] = (Math.sin(dCornerOmega2 * (n - nMiddle)) -
-                    Math.sin(dCornerOmega1 * (n - nMiddle))) / (Math.PI * (n - nMiddle));
+    public static double[] designRectangularBandPass(int order, double cornerOmega1, double cornerOmega2) {
+        double[] h = new double[order];
+        int middle = order / 2;
+        for (int n = 0; n < order; n++) {
+            h[n] = (Math.sin(cornerOmega2 * (n - middle)) -
+                    Math.sin(cornerOmega1 * (n - middle))) / (Math.PI * (n - middle));
         }
-        return adH;
+        return h;
     }
 
     /**
-     * nOrder should be odd.
+     * order should be odd.
      */
-    public static double[] designRectangularBandStop(int nOrder, double dCornerOmega1, double dCornerOmega2) {
-        double[] adH = new double[nOrder];
-        int nMiddle = nOrder / 2;
-        for (int n = 0; n < nOrder; n++) {
-            adH[n] = 1.0 - (Math.sin(dCornerOmega2 * (n - nMiddle)) -
-                    Math.sin(dCornerOmega1 * (n - nMiddle))) / (Math.PI * (n - nMiddle));
+    public static double[] designRectangularBandStop(int order, double cornerOmega1, double cornerOmega2) {
+        double[] h = new double[order];
+        int middle = order / 2;
+        for (int n = 0; n < order; n++) {
+            h[n] = 1.0 - (Math.sin(cornerOmega2 * (n - middle)) -
+                    Math.sin(cornerOmega1 * (n - middle))) / (Math.PI * (n - middle));
         }
-        return adH;
+        return h;
     }
 
     //
     // Window methods
     //
 
-    public static double[] designWindowLowPass(int nOrder, double dCornerOmega, FIRWindow window) {
-        double[] adRectangular = designRectangularLowPass(nOrder, dCornerOmega);
-        return applyWindow(adRectangular, window);
+    public static double[] designWindowLowPass(int order, double cornerOmega, FIRWindow window) {
+        double[] rectangular = designRectangularLowPass(order, cornerOmega);
+        return applyWindow(rectangular, window);
     }
 
-    public static double[] designWindowHighPass(int nOrder, double dCornerOmega, FIRWindow window) {
-        double[] adRectangular = designRectangularHighPass(nOrder, dCornerOmega);
-        return applyWindow(adRectangular, window);
+    public static double[] designWindowHighPass(int order, double cornerOmega, FIRWindow window) {
+        double[] rectangular = designRectangularHighPass(order, cornerOmega);
+        return applyWindow(rectangular, window);
     }
 
-    public static double[] designWindowBandPass(int nOrder, double dCornerOmega1, double dCornerOmega2, FIRWindow window) {
-        double[] adRectangular = designRectangularBandPass(nOrder, dCornerOmega1, dCornerOmega2);
-        return applyWindow(adRectangular, window);
+    public static double[] designWindowBandPass(int order, double cornerOmega1, double cornerOmega2, FIRWindow window) {
+        double[] rectangular = designRectangularBandPass(order, cornerOmega1, cornerOmega2);
+        return applyWindow(rectangular, window);
     }
 
-    public static double[] designWindowBandStop(int nOrder, double dCornerOmega1, double dCornerOmega2, FIRWindow window) {
-        double[] adRectangular = designRectangularBandStop(nOrder, dCornerOmega1, dCornerOmega2);
-        return applyWindow(adRectangular, window);
+    public static double[] designWindowBandStop(int order, double cornerOmega1, double cornerOmega2, FIRWindow window) {
+        double[] rectangular = designRectangularBandStop(order, cornerOmega1, cornerOmega2);
+        return applyWindow(rectangular, window);
     }
 
-    private static double[] applyWindow(double[] adRectangular, FIRWindow window) {
-        double[] adWindow = window.getWindow(adRectangular.length);
-        double[] adH = Util.multiply(adRectangular, adWindow);
-        return adH;
+    private static double[] applyWindow(double[] rectangular, FIRWindow window) {
+        double[] windows = window.getWindow(rectangular.length);
+        double[] h = Util.multiply(rectangular, windows);
+        return h;
     }
 }

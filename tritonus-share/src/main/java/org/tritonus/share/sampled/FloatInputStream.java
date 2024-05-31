@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 2006 by Florian Bomers
  *  All rights reserved.
@@ -27,10 +26,6 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/*
- |<---            this code is formatted to fit into 80 columns             --->|
- */
-
 package org.tritonus.share.sampled;
 
 import java.io.ByteArrayInputStream;
@@ -48,17 +43,16 @@ import javax.sound.sampled.AudioSystem;
  * existing FloatSampleInput class compatible with AudioInputStream.
  * <p>
  * All calls to FloatSampleInput.read() will cause implicit conversion to
- * FloatSampleBuffer. If the underlying stream implementes FloatSampleInput, the
+ * FloatSampleBuffer. If the underlying stream implements FloatSampleInput, the
  * FloatSampleInput.read method is used for reading.
  *
  * @author florian
  */
-public class FloatInputStream extends AudioInputStream implements
-        FloatSampleInput {
+public class FloatInputStream extends AudioInputStream implements FloatSampleInput {
 
-    // set this if we can read from an AudioInputStream
-    private InputStream sourceStream;
-    // set this if we can read from an FloatSampleInput
+    /** set this if we can read from an AudioInputStream */
+    private final InputStream sourceStream;
+    /** set this if we can read from an FloatSampleInput */
     private FloatSampleInput sourceInput;
 
     /**
@@ -74,12 +68,11 @@ public class FloatInputStream extends AudioInputStream implements
     /**
      * Create a new FloatInputStream that shadows the sourceStream.
      *
-     * @param sourceStream
+     * @param sourceStream the source
      * @throws IllegalArgumentException if the stream's format is not compatible
      */
     public FloatInputStream(AudioInputStream sourceStream) {
-        super(sourceStream, sourceStream.getFormat(),
-                sourceStream.getFrameLength());
+        super(sourceStream, sourceStream.getFormat(), sourceStream.getFrameLength());
         this.sourceStream = sourceStream;
         init();
     }
@@ -87,14 +80,13 @@ public class FloatInputStream extends AudioInputStream implements
     /**
      * Create a new FloatInputStream that shadows the sourceStream.
      *
-     * @param sourceStream
+     * @param sourceStream the source
      * @param format       the native format of sourceStream
      * @param frameLength  the length in frames of the streams, or
      *                     AudioSystem.NOT_SPECIFIED if not known or unlimited.
      * @throws IllegalArgumentException if the stream's format is not compatible
      */
-    public FloatInputStream(InputStream sourceStream, AudioFormat format,
-                            long frameLength) {
+    public FloatInputStream(InputStream sourceStream, AudioFormat format, long frameLength) {
         super(sourceStream, format, frameLength);
         this.sourceStream = sourceStream;
         init();
@@ -104,14 +96,13 @@ public class FloatInputStream extends AudioInputStream implements
      * Create a new FloatInputStream that will make the specified
      * FloatSampleInput a complete AudioInputStream.
      *
-     * @param sourceInput
+     * @param sourceInput the source
      * @param format      the native format for the read(byte[]) method
      * @param frameLength the length in frames of the stream, or
      *                    AudioSystem.NOT_SPECIFIED if not known or unlimited.
      * @throws IllegalArgumentException if the format is not compatible
      */
-    public FloatInputStream(FloatSampleInput sourceInput, AudioFormat format,
-                            long frameLength) {
+    public FloatInputStream(FloatSampleInput sourceInput, AudioFormat format, long frameLength) {
         super(new ByteArrayInputStream(new byte[0]), format, frameLength);
         this.sourceStream = null;
         this.sourceInput = sourceInput;
@@ -119,6 +110,7 @@ public class FloatInputStream extends AudioInputStream implements
     }
 
     // interface FloatSampleInput
+
     @Override
     public void read(FloatSampleBuffer outBuffer) {
         read(outBuffer, 0, outBuffer.getSampleCount());
@@ -139,15 +131,13 @@ public class FloatInputStream extends AudioInputStream implements
             return;
         }
         if (buffer.getChannelCount() != getChannels()) {
-            throw new IllegalArgumentException(
-                    "read: passed buffer has different channel count");
+            throw new IllegalArgumentException("read: passed buffer has different channel count");
         }
         if (sourceInput != null) {
             sourceInput.read(buffer, offset, sampleCount);
         } else {
             // read into temporary byte buffer
-            int byteBufferSize = buffer.getSampleCount()
-                    * getFormat().getFrameSize();
+            int byteBufferSize = buffer.getSampleCount() * getFormat().getFrameSize();
             byte[] lTempBuffer = tempBuffer;
             if (lTempBuffer == null || byteBufferSize > lTempBuffer.length) {
                 lTempBuffer = new byte[byteBufferSize];
@@ -158,8 +148,7 @@ public class FloatInputStream extends AudioInputStream implements
             while (readSamples < sampleCount) {
                 int readBytes;
                 try {
-                    readBytes = sourceStream.read(lTempBuffer, byteOffset,
-                            byteBufferSize);
+                    readBytes = sourceStream.read(lTempBuffer, byteOffset, byteBufferSize);
                 } catch (IOException ioe) {
                     readBytes = -1;
                 }
@@ -178,37 +167,21 @@ public class FloatInputStream extends AudioInputStream implements
             buffer.setSampleCount(offset + readSamples, (offset > 0));
             if (readSamples > 0) {
                 // convert
-                buffer.setSamplesFromBytes(lTempBuffer, 0, getFormat(), offset,
-                        readSamples);
+                buffer.setSamplesFromBytes(lTempBuffer, 0, getFormat(), offset, readSamples);
             }
         }
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.tritonus.share.sampled.FloatSampleInput#getChannels()
-     */
     @Override
     public int getChannels() {
         return getFormat().getChannels();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.tritonus.share.sampled.FloatSampleInput#getSampleRate()
-     */
     @Override
     public float getSampleRate() {
         return getFormat().getSampleRate();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.tritonus.share.sampled.FloatSampleInput#isDone()
-     */
     @Override
     public boolean isDone() {
         if (!eofReached && sourceInput != null) {
@@ -237,8 +210,8 @@ public class FloatInputStream extends AudioInputStream implements
      * @see #read(byte[], int, int)
      */
     @Override
-    public int read(byte[] abData) throws IOException {
-        return read(abData, 0, abData.length);
+    public int read(byte[] data) throws IOException {
+        return read(data, 0, data.length);
     }
 
     private FloatSampleBuffer tempFloatBuffer = null;
@@ -248,25 +221,24 @@ public class FloatInputStream extends AudioInputStream implements
      * from an underlying FloatSampleInput stream and convert to a byte array.
      */
     @Override
-    public int read(byte[] abData, int nOffset, int nLength) throws IOException {
+    public int read(byte[] data, int offset, int length) throws IOException {
         if (isDone()) {
             return -1;
         }
         // read from sourceStream, if available
         if (sourceStream != null) {
-            return readBytesFromInputStream(abData, nOffset, nLength);
+            return readBytesFromInputStream(data, offset, length);
         }
         // otherwise read from sourceInput
-        return readBytesFromFloatInput(abData, nOffset, nLength);
+        return readBytesFromFloatInput(data, offset, length);
     }
 
     /**
      * internal method to read from the underlying InputStream.<br>
      * Precondition: sourceStream!=null
      */
-    protected int readBytesFromInputStream(byte[] abData, int nOffset,
-                                           int nLength) throws IOException {
-        int readBytes = sourceStream.read(abData, nOffset, nLength);
+    protected int readBytesFromInputStream(byte[] data, int offset, int length) throws IOException {
+        int readBytes = sourceStream.read(data, offset, length);
         if (readBytes < 0) {
             eofReached = true;
         }
@@ -277,40 +249,37 @@ public class FloatInputStream extends AudioInputStream implements
      * internal method to read from the underlying InputStream.<br>
      * Precondition: sourceInput!=null
      *
-     * @param abData the byte array to fill, or null if just skipping
+     * @param data the byte array to fill, or null if just skipping
      */
-    protected int readBytesFromFloatInput(byte[] abData, int nOffset,
-                                          int nLength) throws IOException {
-        FloatSampleInput lInput = sourceInput;
-        if (lInput.isDone()) {
+    protected int readBytesFromFloatInput(byte[] data, int offset, int length) throws IOException {
+        FloatSampleInput input = sourceInput;
+        if (input.isDone()) {
             return -1;
         }
-        int frameCount = nLength / getFormat().getFrameSize();
-        FloatSampleBuffer lTempBuffer = tempFloatBuffer;
-        if (lTempBuffer == null) {
-            lTempBuffer = new FloatSampleBuffer(getFormat().getChannels(),
-                    frameCount, getFormat().getSampleRate());
-            tempFloatBuffer = lTempBuffer;
+        int frameCount = length / getFormat().getFrameSize();
+        FloatSampleBuffer tempBuffer = tempFloatBuffer;
+        if (tempBuffer == null) {
+            tempBuffer = new FloatSampleBuffer(getFormat().getChannels(), frameCount, getFormat().getSampleRate());
+            tempFloatBuffer = tempBuffer;
         } else {
-            lTempBuffer.setSampleCount(frameCount, false);
+            tempBuffer.setSampleCount(frameCount, false);
         }
-        lInput.read(lTempBuffer);
-        if (lInput.isDone()) {
+        input.read(tempBuffer);
+        if (input.isDone()) {
             return -1;
         }
-        if (abData != null) {
-            int writtenBytes = tempFloatBuffer.convertToByteArray(abData,
-                    nOffset, getFormat());
+        if (data != null) {
+            int writtenBytes = tempFloatBuffer.convertToByteArray(data, offset, getFormat());
             return writtenBytes;
         }
-        // special mode: allow abData to be null for skip()
+        // special mode: allow data to be null for skip()
         return frameCount * getFormat().getFrameSize();
     }
 
     @Override
-    public synchronized long skip(long nSkip) throws IOException {
+    public synchronized long skip(long skip) throws IOException {
         // only returns integral frames
-        long skipFrames = nSkip / getFormat().getFrameSize();
+        long skipFrames = skip / getFormat().getFrameSize();
         if (sourceStream != null) {
             return sourceStream.skip(skipFrames * getFormat().getFrameSize());
         }
@@ -320,8 +289,7 @@ public class FloatInputStream extends AudioInputStream implements
             // cannot skip backwards
             return 0;
         }
-        return readBytesFromFloatInput(null, 0,
-                (int) (skipFrames * getFormat().getFrameSize()));
+        return readBytesFromFloatInput(null, 0, (int) (skipFrames * getFormat().getFrameSize()));
     }
 
     @Override
@@ -333,9 +301,9 @@ public class FloatInputStream extends AudioInputStream implements
     }
 
     @Override
-    public void mark(int readlimit) {
+    public void mark(int readLimit) {
         if (sourceStream != null) {
-            sourceStream.mark(readlimit);
+            sourceStream.mark(readLimit);
         } else {
             // what to do?
         }
@@ -372,5 +340,4 @@ public class FloatInputStream extends AudioInputStream implements
         tempBuffer = null;
         tempFloatBuffer = null;
     }
-
 }

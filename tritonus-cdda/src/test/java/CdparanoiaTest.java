@@ -1,73 +1,63 @@
-/*
- * CdparanoiaTest.java
- */
-
-
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.Line;
-import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 
 import org.tritonus.lowlevel.cdda.cdparanoia.Cdparanoia;
 
 
+/**
+ * CdparanoiaTest
+ */
 public class CdparanoiaTest {
 
-    public static void main(String[] args) {
-        String strDevice = "/dev/cdrom";
-        boolean bTocOnly = true;
-        int nTrack = 0;
+    public static void main(String[] args) throws Exception {
+        String device = "/dev/cdrom";
+        boolean tocOnly = true;
+        int track = 0;
         if (args.length < 1) {
-            bTocOnly = true;
+            tocOnly = true;
         } else if (args.length == 1) {
-            nTrack = Integer.parseInt(args[0]);
-            bTocOnly = false;
+            track = Integer.parseInt(args[0]);
+            tocOnly = false;
         }
-        Cdparanoia cdparanoia = new Cdparanoia(strDevice);
-        int[] anValues = new int[2];
-        int[] anStartFrame = new int[100];
-        int[] anLength = new int[100];
-        int[] anType = new int[100];
-        boolean[] abAudio = new boolean[100];
-        boolean[] abCopy = new boolean[100];
-        boolean[] abPre = new boolean[100];
-        int[] anChannels = new int[100];
-        cdparanoia.readTOC(anValues, anStartFrame, anLength, anType, abAudio, abCopy, abPre, anChannels);
-        System.out.println("First track: " + anValues[0]);
-        System.out.println("last track: " + anValues[1]);
-        int nTracks = anValues[1] - anValues[0] + 1;
-        for (int i = 0; i < nTracks; i++) {
-            System.out.println("Track " + (i + anValues[0]) + " start frame: " + anStartFrame[i]);
-            System.out.println("Track " + (i + anValues[0]) + " length: " + anLength[i]);
-            System.out.println("Track " + (i + anValues[0]) + " type: " + anType[i]);
-            System.out.println("Track " + (i + anValues[0]) + " copy: " + abCopy[i]);
-            System.out.println("Track " + (i + anValues[0]) + " pre: " + abPre[i]);
-            System.out.println("Track " + (i + anValues[0]) + " channels: " + anChannels[i]);
+        Cdparanoia cdparanoia = new Cdparanoia(device);
+        int[] values = new int[2];
+        int[] startFrame = new int[100];
+        int[] length = new int[100];
+        int[] type = new int[100];
+        boolean[] audio = new boolean[100];
+        boolean[] copy = new boolean[100];
+        boolean[] pre = new boolean[100];
+        int[] channels = new int[100];
+        cdparanoia.readTOC(values, startFrame, length, type, audio, copy, pre, channels);
+        System.out.println("First track: " + values[0]);
+        System.out.println("last track: " + values[1]);
+        int tracks = values[1] - values[0] + 1;
+        for (int i = 0; i < tracks; i++) {
+            System.out.println("Track " + (i + values[0]) + " start frame: " + startFrame[i]);
+            System.out.println("Track " + (i + values[0]) + " length: " + length[i]);
+            System.out.println("Track " + (i + values[0]) + " type: " + type[i]);
+            System.out.println("Track " + (i + values[0]) + " copy: " + copy[i]);
+            System.out.println("Track " + (i + values[0]) + " pre: " + pre[i]);
+            System.out.println("Track " + (i + values[0]) + " channels: " + channels[i]);
         }
-        if (!bTocOnly) {
+        if (!tocOnly) {
             SourceDataLine line = null;
             AudioFormat audioFormat = new AudioFormat(
                     AudioFormat.Encoding.PCM_SIGNED,
                     44100.0F, 16, 2, 4, 44100.0F, false);
             Line.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
-            byte[] abData = new byte[2352 * 8];
-            try {
-                line = (SourceDataLine) AudioSystem.getLine(info);
-                line.open();
-                line.start();
-            } catch (LineUnavailableException e) {
-                e.printStackTrace();
-            }
-            for (int i = anStartFrame[nTrack - 1]; i < anStartFrame[nTrack]; i++) {
-                cdparanoia.readNextFrame(1, abData);
-                line.write(abData, 0, 2352);
+            byte[] data = new byte[2352 * 8];
+            line = (SourceDataLine) AudioSystem.getLine(info);
+            line.open();
+            line.start();
+            for (int i = startFrame[track - 1]; i < startFrame[track]; i++) {
+                cdparanoia.readNextFrame(1, data);
+                line.write(data, 0, 2352);
             }
         }
         cdparanoia.close();
     }
 }
-
-
-/*** CdparanoiaTest.java ****/

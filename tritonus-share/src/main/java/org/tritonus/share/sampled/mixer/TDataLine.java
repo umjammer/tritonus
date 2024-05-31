@@ -39,10 +39,10 @@ public abstract class TDataLine extends TLine implements DataLine {
 
     private static final int DEFAULT_BUFFER_SIZE = 128000;
 
-    private AudioFormat m_format;
-    private int m_nBufferSize;
-    private boolean m_bRunning;
-    // private boolean   m_bActive;
+    private AudioFormat format;
+    private int bufferSize;
+    private boolean running;
+//    private boolean active;
 
     public TDataLine(TMixer mixer, DataLine.Info info) {
         super(mixer, info);
@@ -54,10 +54,10 @@ public abstract class TDataLine extends TLine implements DataLine {
         init(info);
     }
 
-    // IDEA: extract format and bufsize from info?
+    // IDEA: extract format and bufSize from info?
     private void init(DataLine.Info info) {
-        m_format = null;
-        m_nBufferSize = AudioSystem.NOT_SPECIFIED;
+        format = null;
+        bufferSize = AudioSystem.NOT_SPECIFIED;
         setRunning(false);
 //        setActive(false);
     }
@@ -68,28 +68,28 @@ public abstract class TDataLine extends TLine implements DataLine {
 
     @Override
     public void start() {
-        logger.log(Level.TRACE, "TDataLine.start(): called");
+        logger.log(Level.TRACE, "called");
 
         setRunning(true);
     }
 
     @Override
     public void stop() {
-        logger.log(Level.TRACE, "TDataLine.stop(): called");
+        logger.log(Level.TRACE, "called");
 
         setRunning(false);
     }
 
     @Override
     public boolean isRunning() {
-        return m_bRunning;
+        return running;
     }
 
     // TODO recheck
-    protected void setRunning(boolean bRunning) {
-        boolean bOldValue = isRunning();
-        m_bRunning = bRunning;
-        if (bOldValue != isRunning()) {
+    protected void setRunning(boolean running) {
+        boolean oldValue = isRunning();
+        this.running = running;
+        if (oldValue != isRunning()) {
             if (isRunning()) {
                 startImpl();
                 notifyLineEvent(LineEvent.Type.START);
@@ -117,13 +117,13 @@ public abstract class TDataLine extends TLine implements DataLine {
     }
 
 //    public boolean isStarted() {
-//        return m_bStarted;
+//        return started;
 //    }
 
     // TODO should only ALLOW engaging in data I/O.
     // actual START event should only be sent when line really becomes active
-//    protected void setStarted(boolean bStarted) {
-//        m_bStarted = bStarted;
+//    protected void setStarted(boolean started) {
+//        this.started = started;
 //        if (!isRunning()) {
 //            setActive(false);
 //        }
@@ -131,24 +131,24 @@ public abstract class TDataLine extends TLine implements DataLine {
 
     @Override
     public AudioFormat getFormat() {
-        return m_format;
+        return format;
     }
 
     protected void setFormat(AudioFormat format) {
-        logger.log(Level.TRACE, "TDataLine.setFormat(): setting: " + format);
+        logger.log(Level.TRACE, "setting: " + format);
 
-        m_format = format;
+        this.format = format;
     }
 
     @Override
     public int getBufferSize() {
-        return m_nBufferSize;
+        return bufferSize;
     }
 
-    protected void setBufferSize(int nBufferSize) {
-        logger.log(Level.TRACE, "TDataLine.setBufferSize(): setting: " + nBufferSize);
+    protected void setBufferSize(int bufferSize) {
+        logger.log(Level.TRACE, "setting: " + bufferSize);
 
-        m_nBufferSize = nBufferSize;
+        this.bufferSize = bufferSize;
     }
 
     // not defined here:
@@ -168,7 +168,7 @@ public abstract class TDataLine extends TLine implements DataLine {
 
     @Override
     public long getMicrosecondPosition() {
-        return (long) (getFramePosition() * getFormat().getFrameRate() * 1000000);
+        return (long) (getFramePosition() * getFormat().getFrameRate() * 1_000_000);
     }
 
     /*

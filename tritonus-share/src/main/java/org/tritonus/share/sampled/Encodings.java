@@ -83,25 +83,27 @@ public class Encodings extends AudioFormat.Encoding {
      * Every file reader, file writer, and format converter
      * provider should exclusively use this method for
      * retrieving instances of <code>AudioFormat.Encoding</code>.
+     * </p>
+     * MP2000/09/11:
+     * <p>
+     * perhaps it is not a good idea to allow user programs the creation of new
+     * encodings. The problem with it is that a plain typo will produce an encoding
+     * object that is not supported. Instead, some indication of an error should be
+     * signaled to the user program. And, there should be a second interface for
+     * service providers allowing them to register encodings supported by themselves.
+     * </p>
+     * $$fb2000/09/26:
+     * <p>
+     * The problem is what you see as second issue: it can never be assured
+     * that this class knows all available encodings. So at the moment, there
+     * is no choice than to allow users to create any Encoding they wish.
+     * The encodings database will simplify things.
+     * A problem with an interface to retrieve supported encodings (or API
+     * function in spi.FormatConversionProvider) is that this requires
+     * loading of all providers very early. Hmmm, maybe this is necessary in any
+     * case when the user issues something like AudioSystem.isConversionSupported.
+     * </p>
      */
- /*
-   MP2000/09/11:
-   perhaps it is not a good idea to allow user programs the creation of new
-   encodings. The problem with it is that a plain typo will produce an encoding
-   object that is not supported. Instead, some indication of an error should be
-   signaled to the user program. And, there should be a second interface for
-   service providers allowing them to register encodings supported by themselves.
-
-   $$fb2000/09/26:
-   The problem is what you see as second issue: it can never be assured
-   that this class knows all available encodings. So at the moment, there
-   is no choice than to allow users to create any Encoding they wish.
-   The encodings database will simplify things.
-   A problem with an interface to retrieve supported encodings (or API
-   function in spi.FormatConversionProvider) is that this requires
-   loading of all providers very early. Hmmm, maybe this is necessary in any
-   case when the user issues something like AudioSystem.isConversionSupported.
-  */
     public static AudioFormat.Encoding getEncoding(String name) {
         AudioFormat.Encoding res = encodings.get(name);
         if (res == null) {
@@ -117,11 +119,12 @@ public class Encodings extends AudioFormat.Encoding {
      * Tests for equality of 2 encodings. They are equal when their strings match.
      * <p>
      * This function should be AudioFormat.Encoding.equals and must
-     * be considered as a temporary work around until it flows into the
+     * be considered as a temporary workaround until it flows into the
      * JavaSound API.
+     * <p>
+     * IDEA: create a special "NOT_SPECIFIED" encoding
+     * and a AudioFormat.Encoding.matches method.
      */
-    // IDEA: create a special "NOT_SPECIFIED" encoding
-    // and a AudioFormat.Encoding.matches method.
     public static boolean equals(AudioFormat.Encoding e1, AudioFormat.Encoding e2) {
         return e2.toString().equals(e1.toString());
     }
@@ -145,8 +148,7 @@ public class Encodings extends AudioFormat.Encoding {
         for (AudioFormat.Encoding source : encodings) {
             iterateEncodings(source, iteratedSources, retrievedTargets);
         }
-        return retrievedTargets.toArray(
-                new AudioFormat.Encoding[0]);
+        return retrievedTargets.toArray(new AudioFormat.Encoding[0]);
     }
 
     private static void iterateEncodings(AudioFormat.Encoding source,
@@ -163,6 +165,3 @@ public class Encodings extends AudioFormat.Encoding {
         }
     }
 }
-
-
-

@@ -16,17 +16,13 @@
  *
  */
 
-/*
- |<---            this code is formatted to fit into 80 columns             --->|
- */
-
 package org.tritonus.sampled.convert;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
-import java.util.Arrays;
+import java.util.List;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -90,7 +86,7 @@ public class SampleRateConversionProvider extends TSimpleFormatConversionProvide
      * Constructor.
      */
     public SampleRateConversionProvider() {
-        super(Arrays.asList(OUTPUT_FORMATS), Arrays.asList(OUTPUT_FORMATS));
+        super(List.of(OUTPUT_FORMATS), List.of(OUTPUT_FORMATS));
     }
 
     @Override
@@ -134,7 +130,7 @@ public class SampleRateConversionProvider extends TSimpleFormatConversionProvide
 
     @Override
     public AudioFormat[] getTargetFormats(AudioFormat.Encoding targetEncoding, AudioFormat sourceFormat) {
-        logger.log(Level.TRACE, ">SampleRateConversionProvider.getTargetFormats(AudioFormat.Encoding, AudioFormat):");
+        logger.log(Level.TRACE, "begin");
         logger.log(Level.TRACE, "checking out possible target formats");
         logger.log(Level.TRACE, "from: " + sourceFormat);
         logger.log(Level.TRACE, "to  : " + targetEncoding);
@@ -175,8 +171,7 @@ public class SampleRateConversionProvider extends TSimpleFormatConversionProvide
     }
 
     @Override
-    public boolean isConversionSupported(AudioFormat targetFormat,
-                                         AudioFormat sourceFormat) {
+    public boolean isConversionSupported(AudioFormat targetFormat, AudioFormat sourceFormat) {
         // do not match when targetSampleRate set and sourceSamplerate set and
         // NOT both the same
         boolean result = (targetFormat.getSampleRate() == AudioSystem.NOT_SPECIFIED
@@ -185,7 +180,7 @@ public class SampleRateConversionProvider extends TSimpleFormatConversionProvide
                 && doMatch(targetFormat.getChannels(), sourceFormat.getChannels()))
                 && AudioUtils.containsFormat(sourceFormat, getCollectionSourceFormats().iterator())
                 && AudioUtils.containsFormat(targetFormat, getCollectionTargetFormats().iterator());
-        logger.log(Level.TRACE, ">SampleRateConverter: isConversionSupported(AudioFormat, AudioFormat):");
+        logger.log(Level.TRACE, "begin");
         logger.log(Level.TRACE, "checking if conversion possible");
         logger.log(Level.TRACE, "from: " + sourceFormat);
         logger.log(Level.TRACE, "to  : " + targetFormat);
@@ -234,13 +229,13 @@ public class SampleRateConversionProvider extends TSimpleFormatConversionProvide
         /** used when read(byte[],int,int) is called */
         private FloatSampleBuffer writeBuffer = null;
         private byte[] byteBuffer; // used for reading samples of sourceStream
-        private AudioInputStream sourceStream;
-        private FloatSampleInput sourceInput;
-        private float sourceSampleRate;
+        private final AudioInputStream sourceStream;
+        private final FloatSampleInput sourceInput;
+        private final float sourceSampleRate;
         private float targetSampleRate;
-        private long sourceFrameLength;
+        private final long sourceFrameLength;
         /** index in thisBuffer */
-        private double dPos;
+        private double pos;
         /** Conversion algorithm */
         public static final int SAMPLE_AND_HOLD = 1;
         /** Conversion algorithm */
@@ -251,14 +246,14 @@ public class SampleRateConversionProvider extends TSimpleFormatConversionProvide
         private boolean eofReached = false;
 
         /** source stream is read in buffers of this size - in milliseconds */
-        private int sourceBufferTime;
+        private final int sourceBufferTime;
 
         /** source stream is read in buffers of this size - in samples */
         private int sourceBufferSizeSamples;
 
         /** the current conversion algorithm */
         private int conversionAlgorithm = LINEAR_INTERPOLATION;
-        // private int conversionAlgorithm=SAMPLE_AND_HOLD;
+//        private int conversionAlgorithm = SAMPLE_AND_HOLD;
 
         // History support
 
@@ -290,7 +285,7 @@ public class SampleRateConversionProvider extends TSimpleFormatConversionProvide
             sourceSampleRate = sourceStream.getFormat().getSampleRate();
             targetSampleRate = targetFormat.getSampleRate();
             sourceFrameLength = sourceStream.getFrameLength();
-            dPos = 0;
+            pos = 0;
             // use a buffer size of 100ms
             sourceBufferTime = 100;
             resizeBuffers();
@@ -301,17 +296,16 @@ public class SampleRateConversionProvider extends TSimpleFormatConversionProvide
             // clean up targetFormat:
             // - ignore frame rate totally
             // - recalculate frame size
-            super(new ByteArrayInputStream(new byte[0]), new SRCAudioFormat(
-                    targetFormat), convertLength(sourceInput.getSampleRate(),
-                    targetFormat.getSampleRate(), frameLength));
-            logger.log(Level.TRACE, "SampleRateConverterStream: <init>");
+            super(new ByteArrayInputStream(new byte[0]), new SRCAudioFormat(targetFormat),
+                    convertLength(sourceInput.getSampleRate(), targetFormat.getSampleRate(), frameLength));
+            logger.log(Level.TRACE, "begin");
 
             this.sourceStream = null;
             this.sourceInput = sourceInput;
             sourceSampleRate = sourceInput.getSampleRate();
             targetSampleRate = targetFormat.getSampleRate();
             sourceFrameLength = frameLength;
-            dPos = 0;
+            pos = 0;
             // use a buffer size of 100ms
             sourceBufferTime = 100;
             resizeBuffers();
@@ -348,7 +342,7 @@ public class SampleRateConversionProvider extends TSimpleFormatConversionProvide
             if (thisBuffer == null) {
                 thisBuffer = new FloatSampleBuffer(getFormat().getChannels(), sourceBufferSizeSamples, sourceSampleRate);
             }
-            // TODO retain last samples and adjust dPos
+            // TODO retain last samples and adjust pos
             thisBuffer.changeSampleCount(sourceBufferSizeSamples, true);
             if (DEBUG_STREAM) {
                 logger.log(Level.TRACE, "Initialized thisBuffer and historyBuffer with " +
@@ -380,8 +374,7 @@ public class SampleRateConversionProvider extends TSimpleFormatConversionProvide
             }
             if (DEBUG_STREAM) {
                 logger.log(Level.TRACE, "in readFromByteSourceStream: trying to read " +
-                        byteCount + " bytes = " +
-                        (byteCount / sourceStream.getFormat().getFrameSize()) +
+                        byteCount + " bytes = " + (byteCount / sourceStream.getFormat().getFrameSize()) +
                         " samples from source stream");
             }
             // finally read it
@@ -434,33 +427,31 @@ public class SampleRateConversionProvider extends TSimpleFormatConversionProvide
                 return;
             }
             // reuse history buffer
-            FloatSampleBuffer lBuffer = historyBuffer;
+            FloatSampleBuffer buffer = historyBuffer;
             historyBuffer = thisBuffer;
-            thisBuffer = lBuffer;
+            thisBuffer = buffer;
             beforeReadFromSourceStream();
             int oldSampleCount = thisBuffer.getSampleCount();
 
             // ensure that we don't read more than the source stream claimed to
             // have
             if (sourceFrameLength != AudioSystem.NOT_SPECIFIED
-                    && lBuffer.getSampleCount() + testInFramesRead > sourceFrameLength) {
+                    && buffer.getSampleCount() + testInFramesRead > sourceFrameLength) {
                 long remaining = sourceFrameLength - testInFramesRead;
                 if (remaining <= 0) {
                     if (DEBUG_STREAM) {
                         logger.log(Level.TRACE, "Read more than allowed from source stream:"
                                 + " sourceFrameLength=" + sourceFrameLength
-                                + " samples, inFramesRead=" + testInFramesRead
-                                + " samples.");
+                                + " samples, inFramesRead=" + testInFramesRead + " samples.");
                     }
                     close();
                     return;
                 }
                 if (DEBUG_STREAM) {
                     logger.log(Level.TRACE, "Reading from source stream: change from "
-                            + lBuffer.getSampleCount() + " samples to"
-                            + remaining + " samples");
+                            + buffer.getSampleCount() + " samples to" + remaining + " samples");
                 }
-                lBuffer.changeSampleCount((int) remaining, false);
+                buffer.changeSampleCount((int) remaining, false);
             }
 
             if (sourceInput != null) {
@@ -469,31 +460,30 @@ public class SampleRateConversionProvider extends TSimpleFormatConversionProvide
                 readFromByteSourceStream();
             }
 
-            int sampleCount = (lBuffer == null) ? 0 : lBuffer.getSampleCount();
+            int sampleCount = (buffer == null) ? 0 : buffer.getSampleCount();
             testInFramesRead += sampleCount;
 
             if (DEBUG_STREAM) {
                 String src = (sourceInput != null) ? "source input" : "source byte stream";
                 logger.log(Level.TRACE, "Read " + sampleCount + " frames from " + src
-                        + " (requested=" + oldSampleCount + "). Total="
-                        + testInFramesRead);
+                        + " (requested=" + oldSampleCount + "). Total=" + testInFramesRead);
             }
             double inc = outSamples2inSamples(1.0);
             if (!thisBufferValid) {
                 thisBufferValid = true;
-                dPos = 0.0;
+                pos = 0.0;
             } else {
-                double temp = dPos;
-                dPos -= oldSampleCount;
+                double temp = pos;
+                pos -= oldSampleCount;
                 if (DEBUG_STREAM) {
-                    logger.log(Level.TRACE, "new dPos: " + temp + " - " + oldSampleCount + " = " + dPos);
+                    logger.log(Level.TRACE, "new pos: " + temp + " - " + oldSampleCount + " = " + pos);
                 }
-                if ((dPos > inc || dPos < -inc) && ((int) dPos) != 0) {
-                    // hard-reset dPos if - why ever - it got out of bounds
+                if ((pos > inc || pos < -inc) && ((int) pos) != 0) {
+                    // hard-reset pos if - why ever - it got out of bounds
                     if (DEBUG_STREAM_PROBLEMS) {
-                        logger.log(Level.TRACE, "Need to hard reset dPos=" + dPos + " !");
+                        logger.log(Level.TRACE, "Need to hard reset pos=" + pos + " !");
                     }
-                    dPos = 0.0;
+                    pos = 0.0;
                 }
             }
         }
@@ -515,25 +505,25 @@ public class SampleRateConversionProvider extends TSimpleFormatConversionProvide
                 System.out.flush();
             }
             for (int i = 0; i < outSampleCount; i++) {
-                int iInIndex = (int) (inSampleOffset + increment * i);
-                if (iInIndex < 0) {
-                    outSamples[i + outSampleOffset] = history[iInIndex
+                int inIndex = (int) (inSampleOffset + increment * i);
+                if (inIndex < 0) {
+                    outSamples[i + outSampleOffset] = history[inIndex
                             + historyLength];
                     if (DEBUG_STREAM) {
                         logger.log(Level.TRACE, "convertSampleAndHold: using history["
-                                + (iInIndex + historyLength)
-                                + " because inIndex=" + iInIndex);
+                                + (inIndex + historyLength)
+                                + " because inIndex=" + inIndex);
                     }
-                } else if (iInIndex >= inSampleCount) {
+                } else if (inIndex >= inSampleCount) {
                     if (DEBUG_STREAM_PROBLEMS) {
                         logger.log(Level.TRACE, "convertSampleAndHold: INDEX OUT OF BOUNDS outSamples["
                                 + i
                                 + "]=inSamples[roundDown("
                                 + inSampleOffset
-                                + ")=" + iInIndex + "];");
+                                + ")=" + inIndex + "];");
                     }
                 } else {
-                    outSamples[i + outSampleOffset] = inSamples[iInIndex];
+                    outSamples[i + outSampleOffset] = inSamples[inIndex];
 //                    outSamples[i] = inSamples[roundDown(inSampleOffset)];
                 }
 //                inSampleOffset+=increment; <- this produces too much rounding
@@ -543,21 +533,11 @@ public class SampleRateConversionProvider extends TSimpleFormatConversionProvide
 
         /**
          * optimized version
-         *
-         * @param inSamples
-         * @param inSampleOffset
-         * @param inSampleCount
-         * @param increment
-         * @param outSamples
-         * @param outSampleOffset
-         * @param outSampleCount
-         * @param history
-         * @param historyLength
          */
-        private void convertSampleAndHold2(float[] inSamples,
-                                           double inSampleOffset, int inSampleCount, double increment,
-                                           float[] outSamples, int outSampleOffset, int outSampleCount,
-                                           float[] history, int historyLength) {
+        private static void convertSampleAndHold2(float[] inSamples,
+                                                  double inSampleOffset, int inSampleCount, double increment,
+                                                  float[] outSamples, int outSampleOffset, int outSampleCount,
+                                                  float[] history, int historyLength) {
             if (DEBUG_STREAM) {
                 logger.log(Level.TRACE, "convertSampleAndHold2(inSamples["
                         + inSamples.length
@@ -607,38 +587,36 @@ public class SampleRateConversionProvider extends TSimpleFormatConversionProvide
             }
             for (int i = 0; i < outSampleCount; i++) {
                 try {
-                    double dInIndex = inSampleOffset + increment * i - 1;
-                    int iInIndex = (int) Math.floor(dInIndex);
-                    double factor = 1.0d - (dInIndex - iInIndex);
+                    double _inIndex = inSampleOffset + increment * i - 1;
+                    int inIndex = (int) Math.floor(_inIndex);
+                    double factor = 1.0d - (_inIndex - inIndex);
                     float value = 0;
                     for (int x = 0; x < 2; x++) {
-                        if (iInIndex >= inSampleCount) {
+                        if (inIndex >= inSampleCount) {
                             // we clearly need more samples !
                             if (DEBUG_STREAM_PROBLEMS) {
-                                logger.log(Level.TRACE, "linear interpolation: INDEX OUT OF BOUNDS iInIndex="
-                                        + iInIndex
-                                        + " inSampleCount="
-                                        + inSampleCount);
+                                logger.log(Level.TRACE, "linear interpolation: INDEX OUT OF BOUNDS inIndex="
+                                        + inIndex + " inSampleCount=" + inSampleCount);
                             }
-                        } else if (iInIndex < 0) {
-                            int histIndex = iInIndex + historyLength;
+                        } else if (inIndex < 0) {
+                            int histIndex = inIndex + historyLength;
                             if (histIndex >= 0) {
                                 value += (float) (history[histIndex] * factor);
                                 if (DEBUG_STREAM) {
-                                    logger.log(Level.TRACE, "linear interpolation: using history[" + iInIndex + "]");
+                                    logger.log(Level.TRACE, "linear interpolation: using history[" + inIndex + "]");
                                 }
                             } else if (DEBUG_STREAM_PROBLEMS) {
-                                logger.log(Level.TRACE, "linear interpolation: history INDEX OUT OF BOUNDS iInIndex="
-                                        + iInIndex
+                                logger.log(Level.TRACE, "linear interpolation: history INDEX OUT OF BOUNDS inIndex="
+                                        + inIndex
                                         + " histIndex="
                                         + histIndex
                                         + " history length=" + historyLength);
                             }
                         } else {
-                            value += (float) (inSamples[iInIndex] * factor);
+                            value += (float) (inSamples[inIndex] * factor);
                         }
                         factor = 1 - factor;
-                        iInIndex++;
+                        inIndex++;
                     }
                     outSamples[i + outSampleOffset] = value;
                     // outSamples[i]=inSamples[roundDown(inSampleOffset)];
@@ -659,21 +637,11 @@ public class SampleRateConversionProvider extends TSimpleFormatConversionProvide
 
         /**
          * optimized version of the linear interpolator
-         *
-         * @param inSamples
-         * @param inSampleOffset
-         * @param inSampleCount
-         * @param increment
-         * @param outSamples
-         * @param outSampleOffset
-         * @param outSampleCount
-         * @param history
-         * @param historyLength
          */
-        private void convertLinearInterpolation2(float[] inSamples,
-                                                 double inSampleOffset, int inSampleCount, double increment,
-                                                 float[] outSamples, int outSampleOffset, int outSampleCount,
-                                                 float[] history, int historyLength) {
+        private static void convertLinearInterpolation2(float[] inSamples,
+                                                        double inSampleOffset, int inSampleCount, double increment,
+                                                        float[] outSamples, int outSampleOffset, int outSampleCount,
+                                                        float[] history, int historyLength) {
             // cast results:
             // (int) -1.7d=-1 (int) -1.5d=-1 (int) -1.2d=-1 (int) -1.0d=-1 (int)
             // -0.7d=0 (int) -0.5d=0 (int) -0.2d=0
@@ -694,11 +662,11 @@ public class SampleRateConversionProvider extends TSimpleFormatConversionProvide
                 int endSampleOffset = outSampleOffset + outSampleCount;
 
                 // first go through the history
-                double dHistoryLength = historyLength;
+                double _historyLength = historyLength;
                 while (inSampleOffset < 0.0d && outSampleOffset < endSampleOffset) {
-                    double dInIndex = (inSampleOffset + dHistoryLength);
-                    int histIndex = (int) dInIndex;
-                    float factor = (float) (dInIndex - histIndex);
+                    double inIndex = (inSampleOffset + _historyLength);
+                    int histIndex = (int) inIndex;
+                    float factor = (float) (inIndex - histIndex);
 
                     outSamples[outSampleOffset] = (history[histIndex - 1] * (1.0f - factor))
                             + (history[histIndex] * factor);
@@ -720,11 +688,11 @@ public class SampleRateConversionProvider extends TSimpleFormatConversionProvide
 
                 // then go through the remaining new samples
                 while (outSampleOffset < endSampleOffset) {
-                    int iInIndex = (int) inSampleOffset;
-                    float factor = (float) (inSampleOffset - iInIndex);
+                    int inIndex = (int) inSampleOffset;
+                    float factor = (float) (inSampleOffset - inIndex);
 
-                    outSamples[outSampleOffset] = (inSamples[iInIndex - 1] * (1.0f - factor))
-                            + (inSamples[iInIndex] * factor);
+                    outSamples[outSampleOffset] = (inSamples[inIndex - 1] * (1.0f - factor))
+                            + (inSamples[inIndex] * factor);
 
                     inSampleOffset += increment;
                     outSampleOffset++;
@@ -785,10 +753,8 @@ public class SampleRateConversionProvider extends TSimpleFormatConversionProvide
          * outBuffer.getSampleCount()) is less after processing this function,
          * then it is an indicator that it was the last block to be processed.
          *
-         * @param outBuffer the buffer that the converted samples will be
-         *                  written to.
-         * @throws IllegalArgumentException when outBuffer's channel count does
-         *                                  not match
+         * @param outBuffer the buffer that the converted samples will be written to.
+         * @throws IllegalArgumentException when outBuffer's channel count does not match
          * @see #setConversionAlgorithm(int)
          */
         @Override
@@ -813,7 +779,7 @@ public class SampleRateConversionProvider extends TSimpleFormatConversionProvide
             do {
                 // check thisBuffer with samples of source stream
                 int inSampleCount = lSourceBuffer.getSampleCount();
-                if (((int) dPos) >= inSampleCount || !thisBufferValid) {
+                if (((int) pos) >= inSampleCount || !thisBufferValid) {
                     // need to load new data of sourceStream
                     readFromSourceStream();
                     if (isClosed()) {
@@ -829,15 +795,15 @@ public class SampleRateConversionProvider extends TSimpleFormatConversionProvide
                 // calculate number of samples to write
                 int writeCount = count - writtenSamples;
                 // check whether this exceeds the current in-buffer
-                if (((int) (outSamples2inSamples(writeCount) + dPos)) >= inSampleCount) {
-                    int lastOutIndex = ((int) (inSamples2outSamples(((double) inSampleCount) - dPos))) + 1;
+                if (((int) (outSamples2inSamples(writeCount) + pos)) >= inSampleCount) {
+                    int lastOutIndex = ((int) (inSamples2outSamples(((double) inSampleCount) - pos))) + 1;
                     // normally, the above formula gives the exact writeCount.
                     // but due to rounding issues, sometimes it has to be
                     // decremented once.
                     // so we need to iterate to get the last index and then
                     // increment it once to make
                     // it the writeCount (=the number of samples to write)
-                    while ((int) (outSamples2inSamples(lastOutIndex) + dPos) >= inSampleCount) {
+                    while ((int) (outSamples2inSamples(lastOutIndex) + pos) >= inSampleCount) {
                         lastOutIndex--;
                         if (DEBUG_STREAM) {
                             logger.log(Level.TRACE, "--------- Decremented lastOutIndex=" + lastOutIndex);
@@ -846,7 +812,7 @@ public class SampleRateConversionProvider extends TSimpleFormatConversionProvide
                     if (DEBUG_STREAM_PROBLEMS) {
                         int testLastOutIndex = writeCount - 1;
                         if (DEBUG_STREAM_PROBLEMS) {
-                            while ((int) (outSamples2inSamples(testLastOutIndex) + dPos) >= inSampleCount) {
+                            while ((int) (outSamples2inSamples(testLastOutIndex) + pos) >= inSampleCount) {
                                 testLastOutIndex--;
                             }
                         }
@@ -867,13 +833,13 @@ public class SampleRateConversionProvider extends TSimpleFormatConversionProvide
                     history = historyBuffer.getChannel(channel);
                     switch (conversionAlgorithm) {
                     case SAMPLE_AND_HOLD:
-                        convertSampleAndHold2(inSamples, dPos, inSampleCount,
+                        convertSampleAndHold2(inSamples, pos, inSampleCount,
                                 increment, outSamples, writtenSamples + offset,
                                 writeCount, history,
                                 historyBuffer.getSampleCount());
                         break;
                     case LINEAR_INTERPOLATION:
-                        convertLinearInterpolation2(inSamples, dPos,
+                        convertLinearInterpolation2(inSamples, pos,
                                 inSampleCount, increment, outSamples,
                                 writtenSamples + offset, writeCount, history,
                                 historyBuffer.getSampleCount());
@@ -882,7 +848,7 @@ public class SampleRateConversionProvider extends TSimpleFormatConversionProvide
                 }
                 writtenSamples += writeCount;
                 // adjust new position
-                dPos += outSamples2inSamples(writeCount);
+                pos += outSamples2inSamples(writeCount);
             } while (!isClosed() && writtenSamples < outBuffer.getSampleCount());
 
             if (writtenSamples < count) {
@@ -891,8 +857,7 @@ public class SampleRateConversionProvider extends TSimpleFormatConversionProvide
             if (DEBUG_STREAM) {
                 testOutFramesReturned += outBuffer.getSampleCount();
                 logger.log(Level.TRACE, "< return " + outBuffer.getSampleCount()
-                        + "frames. Total=" + testOutFramesReturned
-                        + " frames. Read total " + testInFramesRead
+                        + "frames. Total=" + testOutFramesReturned + " frames. Read total " + testInFramesRead
                         + " frames from source stream");
             }
         }
@@ -940,28 +905,28 @@ public class SampleRateConversionProvider extends TSimpleFormatConversionProvide
             if (result <= 0) {
                 return -1;
             }
-            return temp[0] & 0xFF;
+            return temp[0] & 0xff;
         }
 
         /**
          * @see #read(byte[], int, int)
          */
         @Override
-        public int read(byte[] abData) throws IOException {
-            return read(abData, 0, abData.length);
+        public int read(byte[] data) throws IOException {
+            return read(data, 0, data.length);
         }
 
         /**
-         * Read nLength bytes that will be the converted samples of the original
-         * inputStream. When nLength is not an integral number of frames, this
-         * method may read less than nLength bytes.
+         * Read length bytes that will be the converted samples of the original
+         * inputStream. When length is not an integral number of frames, this
+         * method may read less than length bytes.
          */
         @Override
-        public int read(byte[] abData, int nOffset, int nLength) throws IOException {
+        public int read(byte[] data, int offset, int length) throws IOException {
             if (isClosed()) {
                 return -1;
             }
-            int frameCount = nLength / getFrameSize();
+            int frameCount = length / getFrameSize();
             if (writeBuffer == null) {
                 writeBuffer = new FloatSampleBuffer(getFormat().getChannels(), frameCount, getFormat().getSampleRate());
             } else {
@@ -973,7 +938,7 @@ public class SampleRateConversionProvider extends TSimpleFormatConversionProvide
                 return -1;
             }
 
-            int written = writeBuffer.convertToByteArray(abData, nOffset, getFormat());
+            int written = writeBuffer.convertToByteArray(data, offset, getFormat());
             return written;
         }
 
@@ -1025,7 +990,7 @@ public class SampleRateConversionProvider extends TSimpleFormatConversionProvide
             if (sourceStream != null) {
                 try {
                     sourceStream.close();
-                } catch (IOException ioe) {
+                } catch (IOException ignored) {
                 }
             }
             eofReached = true;
@@ -1088,12 +1053,13 @@ public class SampleRateConversionProvider extends TSimpleFormatConversionProvide
         private float sampleRate;
 
         public SRCAudioFormat(AudioFormat targetFormat) {
-            super(targetFormat.getEncoding(), targetFormat.getSampleRate(),
+            super(targetFormat.getEncoding(),
+                    targetFormat.getSampleRate(),
                     targetFormat.getSampleSizeInBits(),
-                    targetFormat.getChannels(), AudioUtils.getFrameSize(
-                            targetFormat.getChannels(),
-                            targetFormat.getSampleSizeInBits()),
-                    targetFormat.getSampleRate(), targetFormat.isBigEndian(),
+                    targetFormat.getChannels(),
+                    AudioUtils.getFrameSize(targetFormat.getChannels(), targetFormat.getSampleSizeInBits()),
+                    targetFormat.getSampleRate(),
+                    targetFormat.isBigEndian(),
                     targetFormat.properties());
             this.sampleRate = targetFormat.getSampleRate();
         }

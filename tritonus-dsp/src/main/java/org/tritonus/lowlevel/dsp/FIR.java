@@ -14,10 +14,6 @@
  *   limitations under the License.
  */
 
-/*
- |<---            this code is formatted to fit into 80 columns             --->|
- */
-
 package org.tritonus.lowlevel.dsp;
 
 /**
@@ -28,24 +24,24 @@ public class FIR implements Filter {
     /**
      * The length of the filter (number of coefficients).
      */
-    private int m_nLength;
+    private int length;
 
     /**
      * The filter coefficients.
      */
-    private float[] m_afCoefficients;
+    private float[] coefficients;
 
     /**
      * The buffer for past input values. This stores the input values needed for
      * convolution. The buffer is used as a circular buffer.
      */
-    private float[] m_afBuffer;
+    private float[] buffer;
 
     /**
-     * The index into m_afBuffer. Since m_afBuffer is used as a circular buffer,
+     * The index into buffer. Since buffer is used as a circular buffer,
      * a buffer pointer is needed.
      */
-    private int m_nBufferIndex;
+    private int bufferIndex;
 
     /**
      * Constructor with filter coefficients.
@@ -53,12 +49,12 @@ public class FIR implements Filter {
      * @param filterDescription filter description containing the new coefficients
      */
     public FIR(FIRDirectFormFilterDescription filterDescription) {
-        float[] afCoefficients = filterDescription.getCoefficients();
-        m_nLength = afCoefficients.length;
-        m_afCoefficients = new float[m_nLength];
-        System.arraycopy(afCoefficients, 0, m_afCoefficients, 0, m_nLength);
-        m_afBuffer = new float[m_nLength];
-        m_nBufferIndex = 0;
+        float[] coefficients = filterDescription.getCoefficients();
+        length = coefficients.length;
+        this.coefficients = new float[length];
+        System.arraycopy(coefficients, 0, this.coefficients, 0, length);
+        buffer = new float[length];
+        bufferIndex = 0;
     }
 
     /**
@@ -74,32 +70,28 @@ public class FIR implements Filter {
      * @throws IllegalArgumentException if the number of coefficients is different from the current
      *                                  number of coefficients
      */
-    public void setFilterDescription(
-            FIRDirectFormFilterDescription filterDescription) {
-        float[] afCoefficients = filterDescription.getCoefficients();
-        if (afCoefficients.length != m_nLength) {
+    public void setFilterDescription(FIRDirectFormFilterDescription filterDescription) {
+        float[] coefficients = filterDescription.getCoefficients();
+        if (coefficients.length != length) {
             throw new IllegalArgumentException("cannot change length of filter");
         }
-        System.arraycopy(afCoefficients, 0, m_afCoefficients, 0, m_nLength);
+        System.arraycopy(coefficients, 0, this.coefficients, 0, length);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public float process(float fInput) {
-        m_afBuffer[m_nBufferIndex] = fInput;
-        int nBufferIndex = m_nBufferIndex;
-        float fOutput = 0.0F;
-        for (int i = 0; i < m_nLength; i++) {
-            fOutput += m_afCoefficients[i] * m_afBuffer[nBufferIndex];
-            nBufferIndex--;
-            if (nBufferIndex < 0) {
-                nBufferIndex += m_nLength;
+    public float process(float sample) {
+        buffer[bufferIndex] = sample;
+        int bi = bufferIndex;
+        float output = 0.0F;
+        for (int i = 0; i < length; i++) {
+            output += coefficients[i] * buffer[bi];
+            bi--;
+            if (bi < 0) {
+                bi += length;
             }
         }
-        m_nBufferIndex = (m_nBufferIndex + 1) % m_nLength;
-        return fOutput;
+        bufferIndex = (bufferIndex + 1) % length;
+        return output;
     }
 
     /**
@@ -112,8 +104,6 @@ public class FIR implements Filter {
      * @return The length of the filter (the number of coefficients).
      */
     public int getLength() {
-        return m_nLength;
+        return length;
     }
 }
-
-

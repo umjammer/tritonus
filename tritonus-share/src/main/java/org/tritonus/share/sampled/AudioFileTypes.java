@@ -135,14 +135,11 @@ public class AudioFileTypes extends AudioFileFormat.Type {
      * This function should be AudioFileFormat.Type.equals and must
      * be considered as a temporary workaround until it flows into the
      * JavaSound API.
+     * <p>
+     * IDEA: create a special "NOT_SPECIFIED" file type
+     * and a AudioFileFormat.Type.matches method.
      */
-    // IDEA: create a special "NOT_SPECIFIED" file type
-    // and a AudioFileFormat.Type.matches method.
     public static boolean equals(AudioFileFormat.Type t1, AudioFileFormat.Type t2) {
         return t2.toString().equals(t1.toString());
     }
-
 }
-
-
-

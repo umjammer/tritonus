@@ -49,13 +49,12 @@ public class MidiMessageTestCase {
      * </ol>
      */
     @Test
-    public void testConstructor()
-            throws Exception {
-        byte[] abData = new byte[] {(byte) 144, 127, 0};
-        TestMidiMessage message = new TestMidiMessage(abData);
-        assertTrue(Util.compareByteArrays(abData, 0, message.getDataField(), 0, abData.length), "data content");
-        assertEquals(abData.length, message.getLengthField(), "length field");
-        assertSame(abData, message.getDataField(), "array copying"); // not copied!
+    public void testConstructor() throws Exception {
+        byte[] data = new byte[] {(byte) 144, 127, 0};
+        TestMidiMessage message = new TestMidiMessage(data);
+        assertTrue(Util.compareByteArrays(data, 0, message.getDataField(), 0, data.length), "data content");
+        assertEquals(data.length, message.getLengthField(), "length field");
+        assertSame(data, message.getDataField(), "array copying"); // not copied!
         assertFalse(message.getSetMessageUsed(), "setMessage() usage");
     }
 
@@ -70,20 +69,19 @@ public class MidiMessageTestCase {
      * </ol>
      */
     @Test
-    public void testSetMessage()
-            throws Exception {
-        byte[] abData = new byte[] {(byte) 144, 127, 0};
-        TestMidiMessage message = new TestMidiMessage(abData);
-        byte[] abData2 = new byte[] {(byte) 128, 31, 1};
-        message.setMessage(abData2, abData2.length);
-        assertTrue(Util.compareByteArrays(abData2, 0, message.getDataField(), 0, abData.length), "data content");
-        assertEquals(abData2.length, message.getLengthField(), "length field");
-        assertNotSame(abData2, message.getDataField(), "array copying");
-        byte[] abData3 = new byte[] {(byte) 128, 31, 1, 55, 55, 55};
-        int nDesiredLength = 3;
-        message.setMessage(abData3, nDesiredLength);
-        assertTrue(Util.compareByteArrays(abData3, 0, message.getDataField(), 0, nDesiredLength), "data content");
-        assertEquals(nDesiredLength, message.getLengthField(), "length field");
+    public void testSetMessage() throws Exception {
+        byte[] data = new byte[] {(byte) 144, 127, 0};
+        TestMidiMessage message = new TestMidiMessage(data);
+        byte[] data2 = new byte[] {(byte) 128, 31, 1};
+        message.setMessage(data2, data2.length);
+        assertTrue(Util.compareByteArrays(data2, 0, message.getDataField(), 0, data.length), "data content");
+        assertEquals(data2.length, message.getLengthField(), "length field");
+        assertNotSame(data2, message.getDataField(), "array copying");
+        byte[] data3 = new byte[] {(byte) 128, 31, 1, 55, 55, 55};
+        int desiredLength = 3;
+        message.setMessage(data3, desiredLength);
+        assertTrue(Util.compareByteArrays(data3, 0, message.getDataField(), 0, desiredLength), "data content");
+        assertEquals(desiredLength, message.getLengthField(), "length field");
     }
 
     /**
@@ -97,14 +95,13 @@ public class MidiMessageTestCase {
      * </ol>
      */
     @Test
-    public void testGetMessage()
-            throws Exception {
-        byte[] abData = new byte[] {(byte) 144, 127, 0};
-        TestMidiMessage message = new TestMidiMessage(abData);
-        byte[] abReturned = message.getMessage();
-        assertEquals(abData.length, abReturned.length, "length");
-        assertTrue(Util.compareByteArrays(abData, 0, abReturned, 0, abData.length), "data content");
-        assertNotSame(abReturned, message.getDataField(), "array copying");
+    public void testGetMessage() throws Exception {
+        byte[] data = new byte[] {(byte) 144, 127, 0};
+        TestMidiMessage message = new TestMidiMessage(data);
+        byte[] returned = message.getMessage();
+        assertEquals(data.length, returned.length, "length");
+        assertTrue(Util.compareByteArrays(data, 0, returned, 0, data.length), "data content");
+        assertNotSame(returned, message.getDataField(), "array copying");
     }
 
     /**
@@ -112,13 +109,12 @@ public class MidiMessageTestCase {
      * The test checks if the returned status byte is correct.
      */
     @Test
-    public void testGetStatus()
-            throws Exception {
-        int nStatus = 144;
-        byte[] abData = new byte[] {(byte) nStatus, 127, 0};
-        TestMidiMessage message = new TestMidiMessage(abData);
-        int nReturnedStatus = message.getStatus();
-        assertEquals(nStatus, nReturnedStatus, "status byte");
+    public void testGetStatus() throws Exception {
+        int status = 144;
+        byte[] data = new byte[] {(byte) status, 127, 0};
+        TestMidiMessage message = new TestMidiMessage(data);
+        int returnedStatus = message.getStatus();
+        assertEquals(status, returnedStatus, "status byte");
     }
 
     /**
@@ -126,24 +122,22 @@ public class MidiMessageTestCase {
      * The test checks if the returned length is correct.
      */
     @Test
-    public void testGetLength()
-            throws Exception {
-        byte[] abData = new byte[] {(byte) 144, 127, 0};
-        TestMidiMessage message = new TestMidiMessage(abData);
-        int nReturnedLength = message.getLength();
-        assertEquals(abData.length, nReturnedLength, "length");
+    public void testGetLength() throws Exception {
+        byte[] data = new byte[] {(byte) 144, 127, 0};
+        TestMidiMessage message = new TestMidiMessage(data);
+        int returnedLength = message.getLength();
+        assertEquals(data.length, returnedLength, "length");
     }
 
     /**
      * Inner class used to access protected fields of MidiMessage.
      */
-    private static class TestMidiMessage
-            extends MidiMessage {
+    private static class TestMidiMessage extends MidiMessage {
 
-        private boolean m_bSetMessageUsed;
+        private boolean setMessageUsed;
 
-        public TestMidiMessage(byte[] abData) {
-            super(abData);
+        public TestMidiMessage(byte[] data) {
+            super(data);
         }
 
         public byte[] getDataField() {
@@ -155,14 +149,13 @@ public class MidiMessageTestCase {
         }
 
         public boolean getSetMessageUsed() {
-            return m_bSetMessageUsed;
+            return setMessageUsed;
         }
 
         @Override
-        protected void setMessage(byte[] abData, int nLength)
-                throws InvalidMidiDataException {
-            super.setMessage(abData, nLength);
-            m_bSetMessageUsed = true;
+        protected void setMessage(byte[] data, int length) throws InvalidMidiDataException {
+            super.setMessage(data, length);
+            setMessageUsed = true;
         }
 
         /**
@@ -174,5 +167,3 @@ public class MidiMessageTestCase {
         }
     }
 }
-
-

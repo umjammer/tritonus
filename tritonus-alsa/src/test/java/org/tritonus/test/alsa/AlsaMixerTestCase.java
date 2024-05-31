@@ -24,17 +24,17 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.tritonus.lowlevel.alsa.AlsaMixer;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 public class AlsaMixerTestCase {
 
     @Test
     public void testOpenClose() throws Exception {
-        int nDefaultMixerCard = 0;
-        String strMixerName = "hw:" + nDefaultMixerCard;
-        AlsaMixer mixer = new AlsaMixer(strMixerName);
+        int defaultMixerCard = 0;
+        String mixerName = "hw:" + defaultMixerCard;
+        AlsaMixer mixer = new AlsaMixer(mixerName);
         assertNotNull(mixer);
         mixer.close();
         // Intentionally a second time to test idempotence of close().
@@ -43,14 +43,12 @@ public class AlsaMixerTestCase {
 
     @Test
     public void testControls() throws Exception {
-        int nDefaultMixerCard = 0;
-        String strMixerName = "hw:" + nDefaultMixerCard;
-        AlsaMixer mixer = new AlsaMixer(strMixerName);
+        int defaultMixerCard = 0;
+        String mixerName = "hw:" + defaultMixerCard;
+        AlsaMixer mixer = new AlsaMixer(mixerName);
         List<?> controlsList = null; // mixer.getControls();
         assertNotNull(controlsList);
-        assertTrue(!controlsList.isEmpty());
+        assertFalse(controlsList.isEmpty());
         mixer.close();
     }
 }
-
-

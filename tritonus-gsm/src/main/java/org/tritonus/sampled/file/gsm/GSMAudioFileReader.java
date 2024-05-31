@@ -54,9 +54,9 @@ public class GSMAudioFileReader extends TAudioFileReader {
     }
 
     @Override
-    protected AudioFileFormat getAudioFileFormat(InputStream inputStream, long lFileSizeInBytes)
+    protected AudioFileFormat getAudioFileFormat(InputStream inputStream, long fileLengthInBytes)
             throws UnsupportedAudioFileException, IOException {
-        logger.log(Level.TRACE, "GSMAudioFileReader.getAudioFileFormat(): begin");
+        logger.log(Level.TRACE, "begin");
 
         int b0 = inputStream.read();
         if (b0 < 0) {
@@ -74,23 +74,23 @@ public class GSMAudioFileReader extends TAudioFileReader {
         // NOT_SPECIFIED. 'Unknown' is considered less incorrect than
         // a wrong value.
         // [fb] not specifying it causes Sun's Wave file writer to write rubbish
-        int nByteSize = AudioSystem.NOT_SPECIFIED;
-        int nFrameSize = AudioSystem.NOT_SPECIFIED;
+        int byteSize = AudioSystem.NOT_SPECIFIED;
+        int frameSize = AudioSystem.NOT_SPECIFIED;
         Map<String, Object> properties = new HashMap<>();
-        if (lFileSizeInBytes != AudioSystem.NOT_SPECIFIED) {
+        if (fileLengthInBytes != AudioSystem.NOT_SPECIFIED) {
             // the number of GSM frames
-            long lFrameSize = lFileSizeInBytes / 33;
+            long _frameSize = fileLengthInBytes / 33;
             // duration in microseconds
-            long lDuration = lFrameSize * 20000;
-            properties.put("duration", lDuration);
-            if (lFileSizeInBytes <= Integer.MAX_VALUE) {
-                nByteSize = (int) lFileSizeInBytes;
-                nFrameSize = (int) (lFileSizeInBytes / 33);
+            long duration = _frameSize * 20000;
+            properties.put("duration", duration);
+            if (fileLengthInBytes <= Integer.MAX_VALUE) {
+                byteSize = (int) fileLengthInBytes;
+                frameSize = (int) (fileLengthInBytes / 33);
             }
         }
 
-        Map<String, Object> afProperties = new HashMap<>();
-        afProperties.put("bitrate", 13200L);
+        Map<String, Object> _properties = new HashMap<>();
+        _properties.put("bitrate", 13200L);
         AudioFormat format = new AudioFormat(
                 new AudioFormat.Encoding("GSM0610"),
                 8000.0F,
@@ -99,16 +99,15 @@ public class GSMAudioFileReader extends TAudioFileReader {
                 33,
                 50.0F,
                 true, // this value is chosen arbitrarily
-                afProperties);
-        AudioFileFormat audioFileFormat =
-                new TAudioFileFormat(
-                        new AudioFileFormat.Type("GSM", "gsm"),
-                        format,
-                        nFrameSize,
-                        nByteSize,
-                        properties);
+                _properties);
+        AudioFileFormat audioFileFormat = new TAudioFileFormat(
+                new AudioFileFormat.Type("GSM", "gsm"),
+                format,
+                frameSize,
+                byteSize,
+                properties);
 
-        logger.log(Level.TRACE, "GSMAudioFileReader.getAudioFileFormat(): end");
+        logger.log(Level.TRACE, "end");
 
         return audioFileFormat;
     }

@@ -1,6 +1,5 @@
 package vavi.sound.sampled.jna.codec;
 
-import java.util.Arrays;
 import java.util.List;
 
 import com.sun.jna.Pointer;
@@ -31,7 +30,7 @@ public class vorbis_comment extends Structure {
 
     @Override
     protected List<String> getFieldOrder() {
-        return Arrays.asList("user_comments", "comment_lengths", "comments", "vendor");
+        return List.of("user_comments", "comment_lengths", "comments", "vendor");
     }
 
     /**

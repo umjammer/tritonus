@@ -1,8 +1,4 @@
 /*
- * WrongSoundbankTestCase.java
- */
-
-/*
  *  Copyright (c) 2006 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,95 +23,54 @@ import javax.sound.midi.SoundbankResource;
 import javax.sound.midi.Synthesizer;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 /**
  * Test for javax.sound.midi.Synthesizer.getLatency().
  */
-public class WrongSoundbankTestCase
-        extends BaseSynthesizerTestCase {
+public class WrongSoundbankTestCase extends BaseSynthesizerTestCase {
 
     @Override
-    protected void checkSynthesizer(Synthesizer synth)
-            throws Exception {
+    protected void checkSynthesizer(Synthesizer synth) throws Exception {
         WrongSoundbank sb = new WrongSoundbank();
         Instrument instr = sb.new WrongInstrument();
-        Patch[] patchlist = new Patch[1];
-        patchlist[0] = new Patch(0, 0);
+        Patch[] patchList = new Patch[1];
+        patchList[0] = new Patch(0, 0);
 
         synth.open();
-        boolean bOpen = true;
-        try {
-            assertFalse(synth.isSoundbankSupported(sb), constructErrorMessage(synth, "isSoundbankSupported() result wrong", true));
+        try (synth) {
+            boolean open = true;
+            assertFalse(synth.isSoundbankSupported(sb),
+                    errmsg(synth, "isSoundbankSupported() result wrong", true));
 
-            try {
-                synth.loadInstrument(instr);
-                fail(constructErrorMessage(synth, "loadInstrument()",
-                        bOpen));
-            } catch (IllegalArgumentException e) {
-                // We expect this exception.
-            }
+            assertThrows(IllegalArgumentException.class, () -> synth.loadInstrument(instr),
+                    errmsg(synth, "loadInstrument()", open));
 
-            try {
-                synth.unloadInstrument(instr);
-                fail(constructErrorMessage(synth, "unloadInstrument()",
-                        bOpen));
-            } catch (IllegalArgumentException e) {
-                // We expect this exception.
-            }
+            assertThrows(IllegalArgumentException.class, () -> synth.unloadInstrument(instr),
+                    errmsg(synth, "unloadInstrument()", open));
 
-            try {
-                synth.remapInstrument(instr, instr);
-                fail(constructErrorMessage(synth, "remapInstrument()",
-                        bOpen));
-            } catch (IllegalArgumentException e) {
-                // We expect this exception.
-            }
+            assertThrows(IllegalArgumentException.class, () -> synth.remapInstrument(instr, instr),
+                    errmsg(synth, "remapInstrument()", open));
 
-            try {
-                synth.loadAllInstruments(sb);
-                fail(constructErrorMessage(synth, "loadAllInstruments()",
-                        bOpen));
-            } catch (IllegalArgumentException e) {
-                // We expect this exception.
-            }
+            assertThrows(IllegalArgumentException.class, () -> synth.loadAllInstruments(sb),
+                    errmsg(synth, "loadAllInstruments()", open));
 
-            try {
-                synth.unloadAllInstruments(sb);
-                fail(constructErrorMessage(synth, "unloadAllInstruments()",
-                        bOpen));
-            } catch (IllegalArgumentException e) {
-                // We expect this exception.
-            }
+            assertThrows(IllegalArgumentException.class, () -> synth.unloadAllInstruments(sb),
+                    errmsg(synth, "unloadAllInstruments()", open));
 
-            try {
-                synth.loadInstruments(sb, patchlist);
-                fail(constructErrorMessage(synth, "loadInstruments()",
-                        bOpen));
-            } catch (IllegalArgumentException e) {
-                // We expect this exception.
-            }
+            assertThrows(IllegalArgumentException.class, () -> synth.loadInstruments(sb, patchList),
+                    errmsg(synth, "loadInstruments()", open));
 
-            try {
-                synth.unloadInstruments(sb, patchlist);
-                fail(constructErrorMessage(synth, "unloadInstruments()",
-                        bOpen));
-            } catch (IllegalArgumentException e) {
-                // We expect this exception.
-            }
-        } finally {
-            synth.close();
+            assertThrows(IllegalArgumentException.class, () -> synth.unloadInstruments(sb, patchList),
+                    errmsg(synth, "unloadInstruments()", open));
         }
     }
 
-    protected static String constructErrorMessage(Synthesizer synth,
-                                                  String strMethodName,
-                                                  boolean bOpen) {
-        String strMessage = ": " + "IllegalArgumentException not thrown";
-        strMessage += " on " + strMethodName;
-        return BaseSynthesizerTestCase.constructErrorMessage(synth,
-                strMessage, bOpen);
+    protected static String errmsg(Synthesizer synth, String methodName, boolean open) {
+        String message = ": " + "IllegalArgumentException not thrown";
+        message += " on " + methodName;
+        return BaseSynthesizerTestCase.errmsg(synth, message, open);
     }
 
     private static class WrongSoundbank implements Soundbank {
@@ -170,5 +125,3 @@ public class WrongSoundbankTestCase
         }
     }
 }
-
-

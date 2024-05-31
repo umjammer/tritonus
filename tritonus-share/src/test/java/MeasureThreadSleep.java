@@ -1,10 +1,7 @@
-/*
+/**
  * MeasureThreadSleep.java
+ * Sun JDK 1.4.2 or later is required to compile and run this program.
  */
-
-/* Sun JDK 1.4.2 or later is required to compile and run this program. */
-
-
 public class MeasureThreadSleep {
 
     public static void main(String[] args) {
@@ -43,11 +40,7 @@ public class MeasureThreadSleep {
         System.exit(1);
     }
 
-    private static void out(String strMessage) {
-        System.out.println(strMessage);
+    private static void out(String message) {
+        System.out.println(message);
     }
-
-
 }
-
-

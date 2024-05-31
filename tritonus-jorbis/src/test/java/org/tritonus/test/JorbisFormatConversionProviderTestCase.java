@@ -26,5 +26,3 @@ public class JorbisFormatConversionProviderTestCase extends BaseFormatConversion
         setResourcePrefix("jorbis");
     }
 }
-
-

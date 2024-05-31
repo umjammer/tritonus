@@ -19,9 +19,13 @@
 
 package org.tritonus.test.alsa;
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
+
 import org.junit.jupiter.api.Test;
 import org.tritonus.lowlevel.alsa.AlsaCtl;
 
+import static java.lang.System.getLogger;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -30,53 +34,46 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AlsaCtlTestCase {
 
-    private static final boolean DEBUG = false;
+    private static final Logger logger = getLogger(AlsaCtlTestCase.class.getName());
+
     private static final String CARD_NAME_FOR_INDEX_TEST = "LIFE";
 
     @Test
     public void testGetCards() {
-        int[] anCards = AlsaCtl.getCards();
-        assertNotNull(anCards);
-        assertEquals(1, anCards.length);
-        assertTrue(anCards[0] >= 0);
+        int[] cards = AlsaCtl.getCards();
+        assertNotNull(cards);
+        assertEquals(1, cards.length);
+        assertTrue(cards[0] >= 0);
     }
 
     @Test
     public void testLoadCards() {
-        int[] anCards = AlsaCtl.getCards();
-        for (int anCard : anCards) {
-            int nError = AlsaCtl.loadCard(anCard);
-            assertTrue(nError >= 0);
+        int[] cards = AlsaCtl.getCards();
+        for (int anCard : cards) {
+            int error = AlsaCtl.loadCard(anCard);
+            assertTrue(error >= 0);
         }
     }
 
     @Test
     public void testGetIndex() {
-        int nIndex = AlsaCtl.getCardIndex(CARD_NAME_FOR_INDEX_TEST);
-        if (DEBUG) {
-            System.out.println("card index: " + nIndex);
-        }
-        assertTrue(nIndex >= 0);
-        int[] anCards = AlsaCtl.getCards();
-        if (DEBUG) {
-            System.out.println("card index: " + anCards[0]);
-        }
-        assertEquals(nIndex, anCards[0]);
+        int index = AlsaCtl.getCardIndex(CARD_NAME_FOR_INDEX_TEST);
+        logger.log(Level.DEBUG, "card index: " + index);
+        assertTrue(index >= 0);
+        int[] cards = AlsaCtl.getCards();
+        logger.log(Level.DEBUG, "card index: " + cards[0]);
+        assertEquals(index, cards[0]);
     }
 
     @Test
     public void testGetNames() {
-        int[] anCards = AlsaCtl.getCards();
-        String strName = AlsaCtl.getCardName(anCards[0]);
-        assertTrue(strName != null && !strName.isEmpty());
-        String strLongName = AlsaCtl.getCardLongName(anCards[0]);
-        assertTrue(strLongName != null && !strLongName.isEmpty());
-        assertNotEquals(strName, strLongName);
-        if (DEBUG) {
-            System.out.println("card name: " + strName);
-            System.out.println("card long name: " + strLongName);
-        }
+        int[] cards = AlsaCtl.getCards();
+        String name = AlsaCtl.getCardName(cards[0]);
+        assertTrue(name != null && !name.isEmpty());
+        String longName = AlsaCtl.getCardLongName(cards[0]);
+        assertTrue(longName != null && !longName.isEmpty());
+        assertNotEquals(name, longName);
+        logger.log(Level.DEBUG, "card name: " + name);
+        logger.log(Level.DEBUG, "card long name: " + longName);
     }
 }
-
-

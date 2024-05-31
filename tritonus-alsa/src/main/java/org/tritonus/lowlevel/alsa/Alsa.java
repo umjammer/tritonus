@@ -35,20 +35,20 @@ public class Alsa {
 
     private static final Logger logger = getLogger("org.tritonus.TraceAlsaNative");
 
-    private static boolean sm_bIsLibraryAvailable = false;
+    private static boolean isLibraryAvailable = false;
 
     static {
         Alsa.loadNativeLibrary();
     }
 
     public static void loadNativeLibrary() {
-        logger.log(Level.TRACE, "Alsa.loadNativeLibrary(): begin");
+        logger.log(Level.TRACE, "begin");
 
         if (!isLibraryAvailable()) {
             loadNativeLibraryImpl();
         }
 
-        logger.log(Level.TRACE, "Alsa.loadNativeLibrary(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     /**
@@ -59,27 +59,25 @@ public class Alsa {
      * check if the library is already loaded.
      */
     private static void loadNativeLibraryImpl() {
-        logger.log(Level.TRACE, "Alsa.loadNativeLibraryImpl(): loading native library tritonusalsa");
+        logger.log(Level.TRACE, "loading native library tritonusalsa");
 
         try {
             System.loadLibrary("tritonusalsa");
             // only reached if no exception occures
-            sm_bIsLibraryAvailable = true;
+            isLibraryAvailable = true;
         } catch (Error e) {
             logger.log(Level.ERROR, e.getMessage(), e);
         }
 
-        logger.log(Level.TRACE, "Alsa.loadNativeLibraryImpl(): loaded");
+        logger.log(Level.TRACE, "loaded");
     }
 
     /**
      * Returns whether the libraries are installed correctly.
      */
     public static boolean isLibraryAvailable() {
-        return sm_bIsLibraryAvailable;
+        return isLibraryAvailable;
     }
 
-    public static native String getStringError(int nErrnum);
+    public static native String getStringError(int errNum);
 }
-
-

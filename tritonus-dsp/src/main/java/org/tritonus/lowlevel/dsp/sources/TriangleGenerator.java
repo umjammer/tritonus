@@ -14,17 +14,16 @@ public class TriangleGenerator extends AbstractPeriodicGenerator {
         super(sampleRate, channelCount);
     }
 
-    /** {@inheritDoc} */
     @Override
-    protected float generateSample(float fPeriodPosition) {
-        float fValue;
-        if (fPeriodPosition < 0.25F) {
-            fValue = 4.0F * fPeriodPosition;
-        } else if (fPeriodPosition < 0.75F) {
-            fValue = -4.0F * (fPeriodPosition - 0.5F);
+    protected float generateSample(float periodPosition) {
+        float value;
+        if (periodPosition < 0.25f) {
+            value = 4.0f * periodPosition;
+        } else if (periodPosition < 0.75f) {
+            value = -4.0f * (periodPosition - 0.5f);
         } else {
-            fValue = 4.0F * (fPeriodPosition - 1.0F);
+            value = 4.0f * (periodPosition - 1.0f);
         }
-        return fValue;
+        return value;
     }
 }

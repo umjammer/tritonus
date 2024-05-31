@@ -41,27 +41,27 @@ public abstract class AlsaBaseDataLine extends TBaseDataLine {
 
 //    private static final Class[] CONTROL_CLASSES = {GainControl.class};
 
-    private AlsaPcm m_alsaPcm;
-    private boolean m_bSwapBytes;
+    private AlsaPcm alsaPcm;
+    private boolean swapBytes;
 
     /**
-     * Only used if m_bSwapBytes is true.
+     * Only used if swapBytes is true.
      */
-    private int m_nBytesPerSample;
+    private int bytesPerSample;
 
     public AlsaBaseDataLine(AlsaDataLineMixer mixer, DataLine.Info info) throws LineUnavailableException {
         super(mixer, info);
-        logger.log(Level.TRACE, "AlsaBaseDataLine.<init>(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        logger.log(Level.TRACE, "AlsaBaseDataLine.<init>(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     public AlsaBaseDataLine(AlsaDataLineMixer mixer, DataLine.Info info, Collection<?> controls)
             throws LineUnavailableException {
         super(mixer, info);
-        logger.log(Level.TRACE, "AlsaBaseDataLine.<init>(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        logger.log(Level.TRACE, "AlsaBaseDataLine.<init>(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     protected AlsaDataLineMixer getAlsaDataLineMixer() {
@@ -69,7 +69,7 @@ public abstract class AlsaBaseDataLine extends TBaseDataLine {
     }
 
     protected AlsaPcm getAlsaPcm() {
-        return m_alsaPcm;
+        return alsaPcm;
     }
 
     /**
@@ -84,35 +84,35 @@ public abstract class AlsaBaseDataLine extends TBaseDataLine {
     protected abstract int getAlsaStreamType();
 
     protected boolean getSwapBytes() {
-        return m_bSwapBytes;
+        return swapBytes;
     }
 
     protected int getBytesPerSample() {
-        return m_nBytesPerSample;
+        return bytesPerSample;
     }
 
     @Override
     protected void openImpl() throws LineUnavailableException {
-        logger.log(Level.TRACE, "AlsaBaseDataLine.openImpl(): begin");
+        logger.log(Level.TRACE, "begin");
 
         // Checks that a format is set.
         // Sets the buffer size to a default value if not
         // already set.
         checkOpen();
         AudioFormat format = getFormat();
-        logger.log(Level.TRACE, "AlsaBaseDataLine.openImpl(): input format: " + format);
+        logger.log(Level.TRACE, "input format: " + format);
 
         // hack, only true for pmac
-        boolean bHWBigEndian = false;
+        boolean hwBigEndian = false;
 
         AudioFormat.Encoding encoding = format.getEncoding();
-        boolean bBigEndian = format.isBigEndian();
-        m_bSwapBytes = false;
-        if (format.getSampleSizeInBits() == 16 && bBigEndian != bHWBigEndian) {
-            m_bSwapBytes = true;
-            bBigEndian = bHWBigEndian;
+        boolean bigEndian = format.isBigEndian();
+        swapBytes = false;
+        if (format.getSampleSizeInBits() == 16 && bigEndian != hwBigEndian) {
+            swapBytes = true;
+            bigEndian = hwBigEndian;
         } else if (format.getSampleSizeInBits() == 8 && encoding.equals(AudioFormat.Encoding.PCM_SIGNED)) {
-            m_bSwapBytes = true;
+            swapBytes = true;
             encoding = AudioFormat.Encoding.PCM_UNSIGNED;
         }
         if (getSwapBytes()) {
@@ -122,143 +122,142 @@ public abstract class AlsaBaseDataLine extends TBaseDataLine {
                     format.getChannels(),
                     format.getFrameSize(),
                     format.getFrameRate(),
-                    bBigEndian);
-            logger.log(Level.TRACE, "AlsaBaseDataLine.openImpl(): output format: " + format);
+                    bigEndian);
+            logger.log(Level.TRACE, "output format: " + format);
 
-            m_nBytesPerSample = format.getFrameSize() / format.getChannels();
+            bytesPerSample = format.getFrameSize() / format.getChannels();
         }
-        int nAlsaOutFormat = AlsaUtils.getAlsaFormat(format);
-        logger.log(Level.TRACE, "AlsaBaseDataLine.openImpl(): ALSA output format: " + nAlsaOutFormat);
+        int alsaOutFormat = AlsaUtils.getAlsaFormat(format);
+        logger.log(Level.TRACE, "ALSA output format: " + alsaOutFormat);
 
-        if (nAlsaOutFormat == AlsaPcm.SND_PCM_FORMAT_UNKNOWN) {
+        if (alsaOutFormat == AlsaPcm.SND_PCM_FORMAT_UNKNOWN) {
             throw new IllegalArgumentException("unsupported format");
         }
 
         try {
-            m_alsaPcm = new AlsaPcm(getAlsaDataLineMixer().getPcmName(), getAlsaStreamType(), 0); // no special mode
+            alsaPcm = new AlsaPcm(getAlsaDataLineMixer().getPcmName(), getAlsaStreamType(), 0); // no special mode
         } catch (Exception e) {
             logger.log(Level.ERROR, e.getMessage(), e);
 
             throw new LineUnavailableException();
         }
-        int nReturn;
         AlsaPcmHWParams hwParams = new AlsaPcmHWParams();
-        nReturn = m_alsaPcm.getAnyHWParams(hwParams);
-        if (nReturn != 0) {
-            logger.log(Level.TRACE, "AlsaBaseDataLine.openImpl(): getAnyHWParams(): " + Alsa.getStringError(nReturn));
-            throw new LineUnavailableException(Alsa.getStringError(nReturn));
+        int ret = alsaPcm.getAnyHWParams(hwParams);
+        if (ret != 0) {
+            logger.log(Level.TRACE, "getAnyHWParams(): " + Alsa.getStringError(ret));
+            throw new LineUnavailableException(Alsa.getStringError(ret));
         }
-        nReturn = m_alsaPcm.setHWParamsAccess(hwParams, AlsaPcm.SND_PCM_ACCESS_RW_INTERLEAVED);
-        if (nReturn != 0) {
-            logger.log(Level.TRACE, "AlsaBaseDataLine.openImpl(): setHWParamsFormat(): " + Alsa.getStringError(nReturn));
-            throw new LineUnavailableException(Alsa.getStringError(nReturn));
+        ret = alsaPcm.setHWParamsAccess(hwParams, AlsaPcm.SND_PCM_ACCESS_RW_INTERLEAVED);
+        if (ret != 0) {
+            logger.log(Level.TRACE, "setHWParamsFormat(): " + Alsa.getStringError(ret));
+            throw new LineUnavailableException(Alsa.getStringError(ret));
         }
-        nReturn = m_alsaPcm.setHWParamsFormat(hwParams, nAlsaOutFormat);
-        if (nReturn != 0) {
-            logger.log(Level.TRACE, "AlsaBaseDataLine.openImpl(): setHWParamsFormat(): " + Alsa.getStringError(nReturn));
-            throw new LineUnavailableException(Alsa.getStringError(nReturn));
+        ret = alsaPcm.setHWParamsFormat(hwParams, alsaOutFormat);
+        if (ret != 0) {
+            logger.log(Level.TRACE, "setHWParamsFormat(): " + Alsa.getStringError(ret));
+            throw new LineUnavailableException(Alsa.getStringError(ret));
         }
-        nReturn = m_alsaPcm.setHWParamsChannels(hwParams, format.getChannels());
-        if (nReturn != 0) {
-            logger.log(Level.TRACE, "AlsaBaseDataLine.openImpl(): setHWParamsChannels(): " + Alsa.getStringError(nReturn));
-            throw new LineUnavailableException(Alsa.getStringError(nReturn));
+        ret = alsaPcm.setHWParamsChannels(hwParams, format.getChannels());
+        if (ret != 0) {
+            logger.log(Level.TRACE, "setHWParamsChannels(): " + Alsa.getStringError(ret));
+            throw new LineUnavailableException(Alsa.getStringError(ret));
         }
-        nReturn = m_alsaPcm.setHWParamsRateNear(hwParams, (int) format.getSampleRate());
-//        int nRate = nReturn;
-        if (nReturn < 0) {
-            logger.log(Level.TRACE, "AlsaBaseDataLine.openImpl(): setHWParamsRateNear(): " + Alsa.getStringError(nReturn));
-            throw new LineUnavailableException(Alsa.getStringError(nReturn));
+        ret = alsaPcm.setHWParamsRateNear(hwParams, (int) format.getSampleRate());
+//        int rate = ret;
+        if (ret < 0) {
+            logger.log(Level.TRACE, "setHWParamsRateNear(): " + Alsa.getStringError(ret));
+            throw new LineUnavailableException(Alsa.getStringError(ret));
         }
-        nReturn = m_alsaPcm.setHWParamsBufferTimeNear(hwParams, 500000);
-        int nBufferTime = nReturn;
-        if (nReturn < 0) {
-            logger.log(Level.TRACE, "AlsaBaseDataLine.openImpl(): setHWParamsBufferTimeNear(): " + Alsa.getStringError(nReturn));
-            throw new LineUnavailableException(Alsa.getStringError(nReturn));
+        ret = alsaPcm.setHWParamsBufferTimeNear(hwParams, 500000);
+        int bufferTime = ret;
+        if (ret < 0) {
+            logger.log(Level.TRACE, "setHWParamsBufferTimeNear(): " + Alsa.getStringError(ret));
+            throw new LineUnavailableException(Alsa.getStringError(ret));
         }
-        nReturn = m_alsaPcm.setHWParamsPeriodTimeNear(hwParams, nBufferTime / 4);
-//        int nPeriodTime = nReturn;
-        if (nReturn < 0) {
-            logger.log(Level.TRACE, "AlsaBaseDataLine.openImpl(): setHWParamsPeriodTimeNear(): " + Alsa.getStringError(nReturn));
-            throw new LineUnavailableException(Alsa.getStringError(nReturn));
+        ret = alsaPcm.setHWParamsPeriodTimeNear(hwParams, bufferTime / 4);
+//        int periodTime = ret;
+        if (ret < 0) {
+            logger.log(Level.TRACE, "setHWParamsPeriodTimeNear(): " + Alsa.getStringError(ret));
+            throw new LineUnavailableException(Alsa.getStringError(ret));
         }
-        nReturn = m_alsaPcm.setHWParams(hwParams);
-        if (nReturn < 0) {
-            logger.log(Level.TRACE, "AlsaBaseDataLine.openImpl(): setHWParams(): " + Alsa.getStringError(nReturn));
-            throw new LineUnavailableException(Alsa.getStringError(nReturn));
+        ret = alsaPcm.setHWParams(hwParams);
+        if (ret < 0) {
+            logger.log(Level.TRACE, "setHWParams(): " + Alsa.getStringError(ret));
+            throw new LineUnavailableException(Alsa.getStringError(ret));
         }
-        int nChunkSize = hwParams.getPeriodSize(null);
-        int nBufferSize = hwParams.getBufferSize();
-        if (nChunkSize == nBufferSize) {
+        int chunkSize = hwParams.getPeriodSize(null);
+        int bufferSize = hwParams.getBufferSize();
+        if (chunkSize == bufferSize) {
             throw new LineUnavailableException("period size is equal to buffer size");
         }
 
         AlsaPcmSWParams swParams = new AlsaPcmSWParams();
-        nReturn = m_alsaPcm.getSWParams(swParams);
-        if (nReturn != 0) {
-            logger.log(Level.TRACE, "AlsaBaseDataLine.openImpl(): getSWParams(): " + Alsa.getStringError(nReturn));
-            throw new LineUnavailableException(Alsa.getStringError(nReturn));
+        ret = alsaPcm.getSWParams(swParams);
+        if (ret != 0) {
+            logger.log(Level.TRACE, "getSWParams(): " + Alsa.getStringError(ret));
+            throw new LineUnavailableException(Alsa.getStringError(ret));
         }
-        nReturn = m_alsaPcm.setSWParamsSleepMin(swParams, 0);
-        if (nReturn != 0) {
-            logger.log(Level.TRACE, "AlsaBaseDataLine.openImpl(): setSWParamsSleepMin(): " + Alsa.getStringError(nReturn));
-            throw new LineUnavailableException(Alsa.getStringError(nReturn));
+        ret = alsaPcm.setSWParamsSleepMin(swParams, 0);
+        if (ret != 0) {
+            logger.log(Level.TRACE, "setSWParamsSleepMin(): " + Alsa.getStringError(ret));
+            throw new LineUnavailableException(Alsa.getStringError(ret));
         }
-        nReturn = m_alsaPcm.setSWParamsXrunMode(swParams, AlsaPcm.SND_PCM_XRUN_NONE);
-        if (nReturn != 0) {
-            logger.log(Level.TRACE, "AlsaBaseDataLine.openImpl(): setSWParamsXrunMode(): " + Alsa.getStringError(nReturn));
-            throw new LineUnavailableException(Alsa.getStringError(nReturn));
+        ret = alsaPcm.setSWParamsXrunMode(swParams, AlsaPcm.SND_PCM_XRUN_NONE);
+        if (ret != 0) {
+            logger.log(Level.TRACE, "setSWParamsXrunMode(): " + Alsa.getStringError(ret));
+            throw new LineUnavailableException(Alsa.getStringError(ret));
         }
-        nReturn = m_alsaPcm.setSWParamsAvailMin(swParams, nChunkSize);
-        if (nReturn != 0) {
-            logger.log(Level.TRACE, "AlsaBaseDataLine.openImpl(): setSWParamsAvailMin(): " + Alsa.getStringError(nReturn));
-            throw new LineUnavailableException(Alsa.getStringError(nReturn));
+        ret = alsaPcm.setSWParamsAvailMin(swParams, chunkSize);
+        if (ret != 0) {
+            logger.log(Level.TRACE, "setSWParamsAvailMin(): " + Alsa.getStringError(ret));
+            throw new LineUnavailableException(Alsa.getStringError(ret));
         }
-        long lStartThreshold = (long) ((double) format.getFrameRate() * 1 / 1000000);
-        nReturn = m_alsaPcm.setSWParamsStartThreshold(swParams, (int) lStartThreshold);
-        if (nReturn != 0) {
-            logger.log(Level.TRACE, "AlsaBaseDataLine.openImpl(): setSWParamsStartThreshold(): " + Alsa.getStringError(nReturn));
-            throw new LineUnavailableException(Alsa.getStringError(nReturn));
+        long startThreshold = (long) ((double) format.getFrameRate() * 1 / 1000000);
+        ret = alsaPcm.setSWParamsStartThreshold(swParams, (int) startThreshold);
+        if (ret != 0) {
+            logger.log(Level.TRACE, "setSWParamsStartThreshold(): " + Alsa.getStringError(ret));
+            throw new LineUnavailableException(Alsa.getStringError(ret));
         }
-        long lStopThreshold = (long) (nBufferSize + (double) format.getFrameRate() * 0 / 1000000);
-        nReturn = m_alsaPcm.setSWParamsStopThreshold(swParams, (int) lStopThreshold);
-        if (nReturn != 0) {
-            logger.log(Level.TRACE, "AlsaBaseDataLine.openImpl(): setSWParamsStopThreshold(): " + Alsa.getStringError(nReturn));
-            throw new LineUnavailableException(Alsa.getStringError(nReturn));
+        long stopThreshold = (long) (bufferSize + (double) format.getFrameRate() * 0 / 1000000);
+        ret = alsaPcm.setSWParamsStopThreshold(swParams, (int) stopThreshold);
+        if (ret != 0) {
+            logger.log(Level.TRACE, "setSWParamsStopThreshold(): " + Alsa.getStringError(ret));
+            throw new LineUnavailableException(Alsa.getStringError(ret));
         }
         // omitted: xfer_align
-        nReturn = m_alsaPcm.setSWParams(swParams);
-        if (nReturn != 0) {
-            logger.log(Level.TRACE, "AlsaBaseDataLine.openImpl(): setSWParams(): " + Alsa.getStringError(nReturn));
-            throw new LineUnavailableException(Alsa.getStringError(nReturn));
+        ret = alsaPcm.setSWParams(swParams);
+        if (ret != 0) {
+            logger.log(Level.TRACE, "setSWParams(): " + Alsa.getStringError(ret));
+            throw new LineUnavailableException(Alsa.getStringError(ret));
         }
-        logger.log(Level.TRACE, "AlsaBaseDataLine.openImpl(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     @Override
     protected void closeImpl() {
-        logger.log(Level.TRACE, "AlsaBaseDataLine.closeImpl(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        m_alsaPcm.close();
+        alsaPcm.close();
 
-        logger.log(Level.TRACE, "AlsaBaseDataLine.closeImpl(): end");
+        logger.log(Level.TRACE, "end");
     }
 
 //    public void start() {
 //        setStarted(true);
 //        setActive(true);
 //        if (TDebug.TraceSourceDataLine) {
-//            logger.log(Level.TRACE, "AlsaBaseDataLine.start(): channel started.");
+//logger.log(Level.TRACE, "AlsaBaseDataLine.start(): channel started.");
 //        }
 //    }
 
     @Override
     protected void stopImpl() {
-        logger.log(Level.TRACE, "AlsaBaseDataLine.stopImpl(): called");
+        logger.log(Level.TRACE, "called");
 
-        int nReturn = 0;
-//        int nReturn = m_alsaPcm.flushChannel(AlsaPcm.SND_PCM_CHANNEL_PLAYBACK);
-        if (nReturn != 0) {
-            logger.log(Level.TRACE, "flushChannel: " + Alsa.getStringError(nReturn));
+        int ret = 0;
+//        int ret = alsaPcm.flushChannel(AlsaPcm.SND_PCM_CHANNEL_PLAYBACK);
+        if (ret != 0) {
+            logger.log(Level.TRACE, "flushChannel: " + Alsa.getStringError(ret));
         }
 //        setStarted(false);
     }
@@ -280,9 +279,9 @@ public abstract class AlsaBaseDataLine extends TBaseDataLine {
     }
 
     /**
-     * dGain is logarithmic!!
+     * gain is logarithmic!!
      */
-    protected void setGain(float dGain) {
+    protected void setGain(float gain) {
     }
 
     // IDEA: move inner classes to TBaseDataLine
@@ -294,8 +293,8 @@ public abstract class AlsaBaseDataLine extends TBaseDataLine {
         // TODO recheck this value
         private static final int GAIN_INCREMENTS = 1000;
 
-//        private float  m_fGain;
-//        private boolean  m_bMuted;
+//        private float gain;
+//        private boolean muted;
 
         /* package */ AlsaBaseDataLineGainControl() {
             super(FloatControl.Type.VOLUME, // or MASTER_GAIN ?
@@ -308,14 +307,14 @@ public abstract class AlsaBaseDataLine extends TBaseDataLine {
                     "-96.0",
                     "",
                     "+24.0");
-//            m_bMuted = false; // should be included in a compund control?
+//            muted = false; // should be included in a compund control?
         }
 
         @Override
-        public void setValue(float fGain) {
-            fGain = Math.max(Math.min(fGain, getMaximum()), getMinimum());
-            if (Math.abs(fGain - getValue()) > 1.0E9) {
-                super.setValue(fGain);
+        public void setValue(float gain) {
+            gain = Math.max(Math.min(gain, getMaximum()), getMinimum());
+            if (Math.abs(gain - getValue()) > 1.0E9) {
+                super.setValue(gain);
 //                if (!getMute()) {
                 AlsaBaseDataLine.this.setGain(getValue());
 //                }
@@ -335,7 +334,7 @@ public abstract class AlsaBaseDataLine extends TBaseDataLine {
 //            return GAIN_INCREMENTS;
 //        }
 //
-//        public void fade(float fInitialGain, float fFinalGain, int nFrames) {
+//        public void fade(float initialGain, float finalGain, int frames) {
 //            // TODO
 //        }
 //
@@ -345,12 +344,12 @@ public abstract class AlsaBaseDataLine extends TBaseDataLine {
 //        }
 //
 //        public boolean getMute() {
-//            return m_bMuted;
+//            return muted;
 //        }
 //
-//        public void setMute(boolean bMuted) {
-//            if (bMuted != getMute()) {
-//                m_bMuted = bMuted;
+//        public void setMute(boolean muted) {
+//            if (muted != getMute()) {
+//                this.muted = muted;
 //                if (getMute()) {
 //                    AlsaBaseDataLine.this.setGain(getMinimum());
 //                } else {
@@ -360,5 +359,3 @@ public abstract class AlsaBaseDataLine extends TBaseDataLine {
 //        }
     }
 }
-
-

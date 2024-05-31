@@ -17,33 +17,32 @@
 package org.tritonus.saol.engine;
 
 
-public abstract class AbstractInstrument
-        implements Output {
+public abstract class AbstractInstrument implements Output {
 
-    private Output m_outputPort;
-    private int m_nStartTime;
-    private int m_nEndTime;
+    private Output outputPort;
+    private int startTime;
+    private int endTime;
 
     protected AbstractInstrument() {
     }
 
     // should be a constructor argument, but is not to simplify instantiation and inheritance
     public void setOutput(Output output) {
-        m_outputPort = output;
+        outputPort = output;
     }
 
     // should be a constructor argument, but is not to simplify instantiation and inheritance
-    public void setStartAndEndTime(int nStartTime, int nEndTime) {
-        m_nStartTime = nStartTime;
-        m_nEndTime = nEndTime;
+    public void setStartAndEndTime(int startTime, int endTime) {
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 
     public int getStartTime() {
-        return m_nStartTime;
+        return startTime;
     }
 
     public int getEndTime() {
-        return m_nEndTime;
+        return endTime;
     }
 
     public void doIPass(RTSystem rtSystem) {
@@ -58,12 +57,12 @@ public abstract class AbstractInstrument
     /**
      * Gives the width of the output port.
      *
-     * @returns width of the output port
+     * @return width of the output port
      * (number of channels)
      */
     @Override
     public int getWidth() {
-        return m_outputPort.getWidth();
+        return outputPort.getWidth();
     }
 
     /**
@@ -74,7 +73,7 @@ public abstract class AbstractInstrument
      */
     @Override
     public void clear() {
-        m_outputPort.clear();
+        outputPort.clear();
     }
 
     /**
@@ -84,8 +83,8 @@ public abstract class AbstractInstrument
      * calculated for this a-cycle.
      */
     @Override
-    public void output(float fSample) {
-        m_outputPort.output(fSample);
+    public void output(float sample) {
+        outputPort.output(sample);
     }
 
     /**
@@ -96,9 +95,7 @@ public abstract class AbstractInstrument
      * The current hacky version allows only for mono samples.
      */
     @Override
-    public void output(float[] afSamples) {
-        m_outputPort.output(afSamples);
+    public void output(float[] samples) {
+        outputPort.output(samples);
     }
 }
-
-

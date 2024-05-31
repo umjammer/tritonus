@@ -31,19 +31,17 @@ public class TemplateTable {
      * Key: the name of the template.
      * Value: a TemplateEntry instance.
      */
-    private Map<String, TemplateEntry> m_templateMap;
+    private final Map<String, TemplateEntry> templateMap;
 
     public TemplateTable() {
-        m_templateMap = new HashMap<>();
+        templateMap = new HashMap<>();
     }
 
     public void add(TemplateEntry templateEntry) {
-        m_templateMap.put(templateEntry.getTemplateName(), templateEntry);
+        templateMap.put(templateEntry.getTemplateName(), templateEntry);
     }
 
-    public TemplateEntry get(String strTemplateName) {
-        return m_templateMap.get(strTemplateName);
+    public TemplateEntry get(String templateName) {
+        return templateMap.get(templateName);
     }
 }
-
-

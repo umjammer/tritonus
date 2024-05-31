@@ -20,7 +20,7 @@ package org.tritonus.sampled.mixer.esd;
 
 import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
-import java.util.Arrays;
+import java.util.List;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -86,13 +86,13 @@ public class EsdMixer extends TMixer {
                         "Mixer for the Enlightened Sound Daemon (esd) running on the local machine",
                         GlobalInfo.getVersion()),
                 new Line.Info(Mixer.class),
-                Arrays.asList(FORMATS),
-                Arrays.asList(FORMATS),
-                Arrays.asList(SOURCE_LINE_INFOS),
-                Arrays.asList(TARGET_LINE_INFOS));
-        logger.log(Level.TRACE, "EsdMixer.<init>: begin");
+                List.of(FORMATS),
+                List.of(FORMATS),
+                List.of(SOURCE_LINE_INFOS),
+                List.of(TARGET_LINE_INFOS));
+        logger.log(Level.TRACE, "begin");
 
-        logger.log(Level.TRACE, "EsdMixer.<init>: end");
+        logger.log(Level.TRACE, "end");
     }
 
     // Line ----
@@ -100,36 +100,36 @@ public class EsdMixer extends TMixer {
     // TODO allow real close and reopen of mixer
     @Override
     public void open() {
-        logger.log(Level.TRACE, "EsdMixer.open(): begin");
+        logger.log(Level.TRACE, "begin");
 
         // currently does nothing
 
-        logger.log(Level.TRACE, "EsdMixer.open(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     @Override
     public void close() {
-        logger.log(Level.TRACE, "EsdMixer.close(): begin");
+        logger.log(Level.TRACE, "begin");
 
         // currently does nothing
 
-        logger.log(Level.TRACE, "EsdMixer.close(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     // Mixer ----
 
     @Override
     public int getMaxLines(Line.Info info) {
-        logger.log(Level.TRACE, "EsdMixer.getMaxLines(): begin");
+        logger.log(Level.TRACE, "begin");
 
 
-        int nMaxLines = 0;
+        int maxLines = 0;
         if (info instanceof DataLine.Info) {
             Class<?> lineClass = info.getLineClass();
             if (lineClass == SourceDataLine.class) {
-                nMaxLines = 32;
+                maxLines = 32;
             } else if (lineClass == TargetDataLine.class) {
-                nMaxLines = 1;
+                maxLines = 1;
             } else {
                 // DO NOTHING; only source and target lines are supported.
             }
@@ -137,56 +137,56 @@ public class EsdMixer extends TMixer {
             // DO NOTHING; only data lines are supported.
         }
 
-        logger.log(Level.TRACE, "EsdMixer.getMaxLines(): end");
+        logger.log(Level.TRACE, "end");
 
-        return nMaxLines;
+        return maxLines;
     }
 
     // private ----
 
-    /** @param nBufferSize is in bytes! */
+    /** @param bufferSize is in bytes! */
     @Override
-    protected SourceDataLine getSourceDataLine(AudioFormat format, int nBufferSize) throws LineUnavailableException {
-        logger.log(Level.TRACE, "EsdMixer.getSourceDataLine(): begin");
+    protected SourceDataLine getSourceDataLine(AudioFormat format, int bufferSize) throws LineUnavailableException {
+        logger.log(Level.TRACE, "begin");
 
-        logger.log(Level.TRACE, "EsdMixer.getSourceDataLine(): format: " + format);
-        logger.log(Level.TRACE, "EsdMixer.getSourceDataLine(): buffer size: " + nBufferSize);
-        if (nBufferSize < 1) {
-            nBufferSize = DEFAULT_BUFFER_SIZE;
+        logger.log(Level.TRACE, "format: " + format);
+        logger.log(Level.TRACE, "buffer size: " + bufferSize);
+        if (bufferSize < 1) {
+            bufferSize = DEFAULT_BUFFER_SIZE;
         }
-//        int nBufferSizeInBytes = nBufferSize * format.getFrameSize();
-        EsdSourceDataLine sourceDataLine = new EsdSourceDataLine(this, format, nBufferSize);
+//        int bufferSizeInBytes = bufferSize * format.getFrameSize();
+        EsdSourceDataLine sourceDataLine = new EsdSourceDataLine(this, format, bufferSize);
         sourceDataLine.start();
-        logger.log(Level.TRACE, "EsdMixer.getSourceDataLine(): returning: " + sourceDataLine);
+        logger.log(Level.TRACE, "returning: " + sourceDataLine);
 
-        logger.log(Level.TRACE, "EsdMixer.getSourceDataLine(): end");
+        logger.log(Level.TRACE, "end");
 
         return sourceDataLine;
     }
 
-    /** @param nBufferSize is in bytes! */
+    /** @param bufferSize is in bytes! */
     @Override
-    protected TargetDataLine getTargetDataLine(AudioFormat format, int nBufferSize) throws LineUnavailableException {
-        logger.log(Level.TRACE, "EsdMixer.getTargetDataLine(): begin");
+    protected TargetDataLine getTargetDataLine(AudioFormat format, int bufferSize) throws LineUnavailableException {
+        logger.log(Level.TRACE, "begin");
 
-        int nBufferSizeInBytes = nBufferSize * format.getFrameSize();
-        EsdTargetDataLine targetDataLine = new EsdTargetDataLine(this, format, nBufferSizeInBytes);
+        int bufferSizeInBytes = bufferSize * format.getFrameSize();
+        EsdTargetDataLine targetDataLine = new EsdTargetDataLine(this, format, bufferSizeInBytes);
 //        registerChannel(sourceDataLine);
         targetDataLine.start();
-        logger.log(Level.TRACE, "EsdMixer.getTargetDataLine(): returning: " + targetDataLine);
+        logger.log(Level.TRACE, "returning: " + targetDataLine);
 
-        logger.log(Level.TRACE, "EsdMixer.getTargetDataLine(): end");
+        logger.log(Level.TRACE, "end");
 
         return targetDataLine;
     }
 
     @Override
     protected Clip getClip(AudioFormat format) throws LineUnavailableException {
-        logger.log(Level.TRACE, "EsdMixer.getClip(): begin");
+        logger.log(Level.TRACE, "begin");
 
         Clip clip = new TSoftClip(this, format);
 
-        logger.log(Level.TRACE, "EsdMixer.getClip(): end");
+        logger.log(Level.TRACE, "end");
 
         return clip;
     }

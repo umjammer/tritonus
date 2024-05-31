@@ -6,49 +6,41 @@
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import javax.sound.sampled.SourceDataLine;
 
+import static java.lang.System.getLogger;
 
-public class SourceDataLineOutputStream
-        extends OutputStream {
 
-    private static final boolean DEBUG = true;
+public class SourceDataLineOutputStream extends OutputStream {
 
-    private SourceDataLine m_line;
+    private static final Logger logger = getLogger(SourceDataLineOutputStream.class.getName());
+
+    private final SourceDataLine line;
 
     public SourceDataLineOutputStream(SourceDataLine line) {
-        m_line = line;
+        this.line = line;
     }
 
     @Override
-    public void write(int nByte) {
-        if (DEBUG) {
-            System.err.println("SourceDataLineOutputStream.write(int): called");
-        }
-        byte[] abOneByte = new byte[1];
-        abOneByte[0] = (byte) nByte;
-        m_line.write(abOneByte, 0, 1);
+    public void write(int _byte) {
+        logger.log(Level.TRACE, "called");
+        byte[] oneByte = new byte[1];
+        oneByte[0] = (byte) _byte;
+        line.write(oneByte, 0, 1);
     }
 
     @Override
-    public void write(byte[] abBuffer, int nOffset, int nLength)
-            throws IOException {
-        if (DEBUG) {
-            System.err.println("SourceDataLineOutputStream.write(byte[], int, int): called");
-        }
-        int nWritten = m_line.write(abBuffer, nOffset, nLength);
-        if (DEBUG) {
-            System.err.println("SourceDataLineOutputStream.write(byte[], int, int): written: " + nWritten);
-        }
+    public void write(byte[] buffer, int offset, int length) throws IOException {
+        logger.log(Level.TRACE, "called");
+        int written = line.write(buffer, offset, length);
+        logger.log(Level.TRACE, "written: " + written);
     }
 
     @Override
     public void flush() {
-        if (DEBUG) {
-            System.err.println("SourceDataLineOutputStream.flush(): called");
-        }
-        // m_line.drain();
+        logger.log(Level.TRACE, "called");
+//        line.drain();
     }
 }
-
-

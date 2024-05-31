@@ -32,10 +32,10 @@ public class CookedIoctl {
     private static final Logger logger = getLogger("org.tritonus.TraceCdda");
 
     static {
-        logger.log(Level.TRACE, "CookedIoctl.<clinit>(): loading native library tritonuscooked_ioctl");
+        logger.log(Level.TRACE, "loading native library tritonuscooked_ioctl");
 
         System.loadLibrary("tritonuscooked_ioctl");
-        logger.log(Level.TRACE, "CookedIoctl.<clinit>(): loaded");
+        logger.log(Level.TRACE, "loaded");
     }
 
     /**
@@ -43,22 +43,22 @@ public class CookedIoctl {
      * do not touch!
      */
     @SuppressWarnings("unused")
-    private long m_lNativeHandle;
+    private long nativeHandle;
 
-    // TODO parameter strDevicename (or something else sensible)
-    public CookedIoctl(String strDevice) {
-        logger.log(Level.TRACE, "CookedIoctl.<init>: begin");
-        int nResult = open(strDevice);
-        if (nResult < 0) {
-            throw new RuntimeException("cannot open" + strDevice);
+    // TODO parameter devicename (or something else sensible)
+    public CookedIoctl(String device) {
+        logger.log(Level.TRACE, "begin");
+        int result = open(device);
+        if (result < 0) {
+            throw new RuntimeException("cannot open" + device);
         }
-        logger.log(Level.TRACE, "CookedIoctl.<init>: end");
+        logger.log(Level.TRACE, "end");
     }
 
     /**
      * Opens the device.
      */
-    private native int open(String strDevice);
+    private native int open(String device);
 
     /**
      * Closes the device.
@@ -66,28 +66,28 @@ public class CookedIoctl {
     public native void close();
 
     /**
-     * anValues[0] first track
-     * anValues[1] last track
+     * values[0] first track
+     * values[1] last track
      *
      * anStartTrack[x] start sector of the track x.
-     * anType[x] type of track x.
+     * type[x] type of track x.
      */
-    public native int readTOC(int[] anValues,
-                              int[] anStartFrame,
-                              int[] anLength,
-                              int[] anType,
-                              boolean[] abCopy,
-                              boolean[] abPre,
-                              int[] anChannels);
+    public native int readTOC(int[] values,
+                              int[] startFrame,
+                              int[] length,
+                              int[] type,
+                              boolean[] copy,
+                              boolean[] pre,
+                              int[] channels);
 
     /**
      * Reads one or more raw frames from the CD.
-     * This call reads <CODE>nCount</CODE> frames starting at
-     * lba position <CODE>nFrame</CODE>.
-     * <CODE>abData</CODE>  has to be big enough to hold the
-     * amount of data requested (<CODE>2352 * nCount</CODE> bytes).
+     * This call reads <CODE>count</CODE> frames starting at
+     * lba position <CODE>frame</CODE>.
+     * <CODE>data</CODE>  has to be big enough to hold the
+     * amount of data requested (<CODE>2352 * count</CODE> bytes).
      */
-    public native int readFrame(int nFrame, int nCount, byte[] abData);
+    public native int readFrame(int frame, int count, byte[] data);
 
-    private static native void setTrace(boolean bTrace);
+    private static native void setTrace(boolean trace);
 }

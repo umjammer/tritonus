@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 1999 by Florian Bomers
  *  Copyright (c) 2000 by Matthias Pfisterer
@@ -31,9 +30,7 @@ import java.io.OutputStream;
  * @author Florian Bomers
  * @author Matthias Pfisterer
  */
-public class TNonSeekableDataOutputStream
-        extends DataOutputStream
-        implements TDataOutputStream {
+public class TNonSeekableDataOutputStream extends DataOutputStream implements TDataOutputStream {
 
     public TNonSeekableDataOutputStream(OutputStream outputStream) {
         super(outputStream);
@@ -45,26 +42,22 @@ public class TNonSeekableDataOutputStream
     }
 
     @Override
-    public void seek(long position)
-            throws IOException {
-        throw new IllegalArgumentException("TNonSeekableDataOutputStream: Call to seek not allowed.");
+    public void seek(long position) throws IOException {
+        throw new IllegalArgumentException("Call to seek not allowed.");
     }
 
     @Override
-    public long getFilePointer()
-            throws IOException {
-        throw new IllegalArgumentException("TNonSeekableDataOutputStream: Call to getFilePointer not allowed.");
+    public long getFilePointer() throws IOException {
+        throw new IllegalArgumentException("Call to getFilePointer not allowed.");
     }
 
     @Override
-    public long length()
-            throws IOException {
-        throw new IllegalArgumentException("TNonSeekableDataOutputStream: Call to length not allowed.");
+    public long length() throws IOException {
+        throw new IllegalArgumentException("Call to length not allowed.");
     }
 
     @Override
-    public void writeLittleEndian32(int value)
-            throws IOException {
+    public void writeLittleEndian32(int value) throws IOException {
         writeByte(value & 0xFF);
         writeByte((value >> 8) & 0xFF);
         writeByte((value >> 16) & 0xFF);
@@ -72,11 +65,8 @@ public class TNonSeekableDataOutputStream
     }
 
     @Override
-    public void writeLittleEndian16(short value)
-            throws IOException {
+    public void writeLittleEndian16(short value) throws IOException {
         writeByte(value & 0xFF);
         writeByte((value >> 8) & 0xFF);
     }
 }
-
-

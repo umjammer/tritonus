@@ -101,5 +101,3 @@ public class AudioFormatTestCase {
         assertEquals("Matthias Pfisterer", propReturn.get("author"));
     }
 }
-
-

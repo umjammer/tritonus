@@ -1,8 +1,4 @@
 /*
- * MixerTestCase.java
- */
-
-/*
  *  Copyright (c) 2004 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -61,8 +57,4 @@ public class MixerTestCase
         };
         checkMixer(check);
     }
-
-
 }
-
-

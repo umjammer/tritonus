@@ -20,6 +20,7 @@ package org.tritonus.sampled.convert;
 import java.util.HashSet;
 import java.util.Set;
 import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioFormat.Encoding;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 
@@ -34,27 +35,27 @@ import org.tritonus.share.sampled.convert.TFormatConversionProvider;
  * format conversion given to this provider.
  * <p>
  * Name suggested by Florian: MetaFormatConversionProvider
- * Additinal explanation:
- * > Ich hab mal kurz in den SmartConverter reingeguckt, warum machst Du das mit den
- * > Threads ? In Rekursion wird doch nicht ein neuer Thread benutzt ? Und sonst
- * > koennte man das doch mit synchronized bzw. einem echten lock machen ?
+ * Additional explanation:
+ * > I took a quick look at the SmartConverter, why are you doing
+ * > that with the threads? A new thread isn't used in recursion?
+ * > And otherwise you could do this with synchronized or a real lock?
  * <p>
- * Bei der Rekursion bezu"glich der selben Konvertersuche befindet man sich
- * im gleichen Thread; diese Eigenschaft nutze ich ja gerade aus. Es kann
- * aber das Anwendungsprogramm von mehreren Threads aus gleichzeitig einen
- * Konverter anfordern. Diese Aufrufe gehen alle in das gleiche SmartF.C.P.
- * Objekt (es gibt nur eins). Die Methoden des Konverters (das gilt fu"r
- * alle) mu"ssen also reentrant sein. Die Alternative wa"re ein globaler
- * Lock. Das halte ich aber fu"r nicht akzeptabel. Bei meiner Soundmachine
- * zum Beispiel wu"rde das zu Problemen fu"hren: da ist es no"tig, da? beim
- * Abspielen mehrere Kana"le on the fly konvertiert wird. Ein globaler Lock
- * wu"rde zu Verzo"gerungen im Abspielen fu"hren. Die "einfache" Variante der
- * Rekursionserkennung (ohne Beru"cksichtigung von Threads) braucht nur ein
- * einfaches Flag, das gesetzt wird, wenn keine Rekursion mehr stattfinden
- * soll. Dieses Flag wird bei meiner Implementierung mit der Hashtabelle
- * realisiert; sie simuliert ein thread-lokales Verhalten dieses Flags.
- * Alles klar? Ich seh' ein, man braucht zwei Knoten im Hirn, um das zu
- * verstehen...
+ * You are in recursion regarding the same converter search
+ * in the same thread; I'm currently taking advantage of this feature. It can
+ * but the application program from several threads at the same time
+ * Request converter. These calls all go into the same SmartF.C.P.
+ * Object (there is only one). The methods of the converter (this applies to
+ * All of them must therefore be reentrant. The alternative would be a global one
+ * Lock. But I don't think that's acceptable. With my sound machine
+ * for example, that would lead to problems: it is necessary that?
+ * Playing multiple channels on the fly is converted. A global lock
+ * would lead to delays in playback. The "simple" version of the
+ * Recursion detection (without taking threads into account) only needs one
+ * simple flag that is set when no more recursion takes place
+ * should. This flag is used in my implementation with the hash table
+ * realized; it simulates a thread-local behavior of this flag.
+ * Understood? I realize you need two knots in your brain to do that
+ * understand...
  *
  * @author Matthias Pfisterer
  */
@@ -70,10 +71,10 @@ public class SmartFormatConversionProvider extends TFormatConversionProvider {
      * exit of this method, it is removed from this data structure to indicate it is
      * "free".
      */
-    private Set<Thread> m_blockedThreads;
+    private final Set<Thread> blockedThreads;
 
     public SmartFormatConversionProvider() {
-        m_blockedThreads = new HashSet<>();
+        blockedThreads = new HashSet<>();
     }
 
     // TODO can use AudioSystem to return all source encodings? (don't forget to block!)
@@ -108,8 +109,8 @@ public class SmartFormatConversionProvider extends TFormatConversionProvider {
         if (isCurrentThreadBlocked()) {
             return false;
         }
-        AudioFormat[] aIntermediateFormats = getIntermediateFormats(sourceFormat, targetFormat);
-        return aIntermediateFormats != null;
+        AudioFormat[] intermediateFormats = getIntermediateFormats(sourceFormat, targetFormat);
+        return intermediateFormats != null;
     }
 
     @Override
@@ -133,9 +134,9 @@ public class SmartFormatConversionProvider extends TFormatConversionProvider {
         AudioFormat.Encoding sourceEncoding = sourceFormat.getEncoding();
         AudioFormat.Encoding targetEncoding = targetFormat.getEncoding();
         blockCurrentThread();
-        boolean bDirectConversionPossible = AudioSystem.isConversionSupported(targetFormat, sourceFormat);
+        boolean directConversionPossible = AudioSystem.isConversionSupported(targetFormat, sourceFormat);
         unblockCurrentThread();
-        if (bDirectConversionPossible) {
+        if (directConversionPossible) {
             return EMPTY_FORMAT_ARRAY;
         } else if (isPCM(sourceEncoding) && isPCM(targetEncoding)) {
             // The SR converter is not yet implemented. The PCM2PCM converter
@@ -152,15 +153,15 @@ public class SmartFormatConversionProvider extends TFormatConversionProvider {
                     sourceFormat.getSampleRate(),
                     true);
             blockCurrentThread();
-            AudioFormat[] aPreIntermediateFormats = getIntermediateFormats(sourceFormat, intermediateFormat);
+            AudioFormat[] preIntermediateFormats = getIntermediateFormats(sourceFormat, intermediateFormat);
             unblockCurrentThread();
-            AudioFormat[] aPostIntermediateFormats = getIntermediateFormats(intermediateFormat, targetFormat);
-            if (aPreIntermediateFormats != null && aPostIntermediateFormats != null) {
-                AudioFormat[] aIntermediateFormats = new AudioFormat[aPreIntermediateFormats.length + 1 + aPostIntermediateFormats.length];
-                System.arraycopy(aPreIntermediateFormats, 0, aIntermediateFormats, 0, aPreIntermediateFormats.length);
-                aIntermediateFormats[aPreIntermediateFormats.length] = intermediateFormat;
-                System.arraycopy(aPostIntermediateFormats, 0, aIntermediateFormats, aPreIntermediateFormats.length, aPostIntermediateFormats.length);
-                return aIntermediateFormats;
+            AudioFormat[] postIntermediateFormats = getIntermediateFormats(intermediateFormat, targetFormat);
+            if (preIntermediateFormats != null && postIntermediateFormats != null) {
+                AudioFormat[] intermediateFormats = new AudioFormat[preIntermediateFormats.length + 1 + postIntermediateFormats.length];
+                System.arraycopy(preIntermediateFormats, 0, intermediateFormats, 0, preIntermediateFormats.length);
+                intermediateFormats[preIntermediateFormats.length] = intermediateFormat;
+                System.arraycopy(postIntermediateFormats, 0, intermediateFormats, preIntermediateFormats.length, postIntermediateFormats.length);
+                return intermediateFormats;
             } else {
                 return null;
             }
@@ -173,16 +174,16 @@ public class SmartFormatConversionProvider extends TFormatConversionProvider {
                     AudioSystem.NOT_SPECIFIED,
                     targetFormat.getSampleRate(),
                     true);
-            AudioFormat[] aPreIntermediateFormats = getIntermediateFormats(sourceFormat, intermediateFormat);
+            AudioFormat[] preIntermediateFormats = getIntermediateFormats(sourceFormat, intermediateFormat);
             blockCurrentThread();
-            AudioFormat[] aPostIntermediateFormats = getIntermediateFormats(intermediateFormat, targetFormat);
+            AudioFormat[] postIntermediateFormats = getIntermediateFormats(intermediateFormat, targetFormat);
             unblockCurrentThread();
-            if (aPreIntermediateFormats != null && aPostIntermediateFormats != null) {
-                AudioFormat[] aIntermediateFormats = new AudioFormat[aPreIntermediateFormats.length + 1 + aPostIntermediateFormats.length];
-                System.arraycopy(aPreIntermediateFormats, 0, aIntermediateFormats, 0, aPreIntermediateFormats.length);
-                aIntermediateFormats[aPreIntermediateFormats.length] = intermediateFormat;
-                System.arraycopy(aPostIntermediateFormats, 0, aIntermediateFormats, aPreIntermediateFormats.length, aPostIntermediateFormats.length);
-                return aIntermediateFormats;
+            if (preIntermediateFormats != null && postIntermediateFormats != null) {
+                AudioFormat[] intermediateFormats = new AudioFormat[preIntermediateFormats.length + 1 + postIntermediateFormats.length];
+                System.arraycopy(preIntermediateFormats, 0, intermediateFormats, 0, preIntermediateFormats.length);
+                intermediateFormats[preIntermediateFormats.length] = intermediateFormat;
+                System.arraycopy(postIntermediateFormats, 0, intermediateFormats, preIntermediateFormats.length, postIntermediateFormats.length);
+                return intermediateFormats;
             } else {
                 return null;
             }
@@ -194,8 +195,7 @@ public class SmartFormatConversionProvider extends TFormatConversionProvider {
     // General helper methods.
 
     private static boolean isPCM(AudioFormat.Encoding encoding) {
-        return encoding.equals(AudioFormat.Encoding.PCM_SIGNED)
-                || encoding.equals(AudioFormat.Encoding.PCM_SIGNED);
+        return encoding.equals(AudioFormat.Encoding.PCM_SIGNED) || encoding.equals(Encoding.PCM_UNSIGNED);
     }
 
     protected static boolean isSignedPCM(AudioFormat.Encoding encoding) {
@@ -205,16 +205,14 @@ public class SmartFormatConversionProvider extends TFormatConversionProvider {
     // Methods for recursion detection/blocking.
 
     private boolean isCurrentThreadBlocked() {
-        return m_blockedThreads.contains(Thread.currentThread());
+        return blockedThreads.contains(Thread.currentThread());
     }
 
     private void blockCurrentThread() {
-        m_blockedThreads.add(Thread.currentThread());
+        blockedThreads.add(Thread.currentThread());
     }
 
     private void unblockCurrentThread() {
-        m_blockedThreads.remove(Thread.currentThread());
+        blockedThreads.remove(Thread.currentThread());
     }
 }
-
-

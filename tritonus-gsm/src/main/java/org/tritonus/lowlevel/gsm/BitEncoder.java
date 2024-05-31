@@ -11,8 +11,8 @@ public class BitEncoder {
 
     private int byteIndex;
     private int remainingBitsInCurrentByte;
-    private byte[] codedBytes;
-    private AllocationMode allocationMode;
+    private final byte[] codedBytes;
+    private final AllocationMode allocationMode;
 
     /**
      * Constructor.
@@ -25,7 +25,6 @@ public class BitEncoder {
      * @param allocationMode
      */
     public BitEncoder(byte[] codedBytes, AllocationMode allocationMode) {
-        super();
         byteIndex = 0;
         remainingBitsInCurrentByte = 8;
         this.codedBytes = codedBytes;
@@ -53,12 +52,12 @@ public class BitEncoder {
             int x;
             switch (allocationMode) {
             case LSBitFirst:
-                x = (((value) & Gsm_Def.BITMASKS[bits]) << (8 - remainingBitsInCurrentByte));
+                x = (((value) & GsmDef.BITMASKS[bits]) << (8 - remainingBitsInCurrentByte));
                 codedBytes[byteIndex] = (byte) (codedBytes[byteIndex] | x);
                 value >>>= bits;
                 break;
             case MSBitFirst:
-                x = (((value >>> nextNumBits) & Gsm_Def.BITMASKS[bits]) << nextRemainingBits);
+                x = (((value >>> nextNumBits) & GsmDef.BITMASKS[bits]) << nextRemainingBits);
                 codedBytes[byteIndex] = (byte) (codedBytes[byteIndex] | x);
                 break;
             }

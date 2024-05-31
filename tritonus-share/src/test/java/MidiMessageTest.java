@@ -1,7 +1,3 @@
-/*
- * MidiMessageTest.java
- */
-
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MetaMessage;
 import javax.sound.midi.MidiMessage;
@@ -9,11 +5,14 @@ import javax.sound.midi.ShortMessage;
 import javax.sound.midi.SysexMessage;
 
 
+/**
+ * MidiMessageTest.
+ */
 public class MidiMessageTest {
 
     public static void main(String[] args) {
-        String strType = args[0];
-        switch (strType) {
+        String type = args[0];
+        switch (type) {
         case "base":
             baseMessage();
             break;
@@ -155,13 +154,13 @@ public class MidiMessageTest {
         out("MetaMessage().getLength(): " + l1);
         out("----------------------------------------");
         mm = new MetaMessage();
-        String strTitle = "no name";
-        while (strTitle.length() < 200) {
-            strTitle += strTitle;
+        String title = "no name";
+        while (title.length() < 200) {
+            title += title;
         }
         // setting sequence/track name
         try {
-            mm.setMessage(3, strTitle.getBytes(), strTitle.length() - 1);
+            mm.setMessage(3, title.getBytes(), title.length() - 1);
         } catch (InvalidMidiDataException e) {
             e.printStackTrace();
         }
@@ -176,31 +175,30 @@ public class MidiMessageTest {
         out("----------------------------------------");
     }
 
-    public static class TestMessage
-            extends MidiMessage {
+    public static class TestMessage extends MidiMessage {
 
-        /*
-          This constructor passes null to the superclass constructor.
-          This can be used to test the behaviour if the message
-          content is not set correctely.
-        */
+        /**
+         * This constructor passes null to the superclass constructor.
+         * This can be used to test the behaviour if the message
+         * content is not set correctely.
+         */
         public TestMessage() {
             super(null);
         }
 
-        /*
-          This constructor passes the passed byte array reference
-          straight ahead to the superclass constructor. This can be
-          used to test if the MidiMessage constructor copies the
-          passed array.
-        */
-        public TestMessage(byte[] abData) {
-            super(abData);
+        /**
+         * This constructor passes the passed byte array reference
+         * straight ahead to the superclass constructor. This can be
+         * used to test if the MidiMessage constructor copies the
+         * passed array.
+         */
+        public TestMessage(byte[] data) {
+            super(data);
         }
 
-        /*
-          not implemented for now.
-        */
+        /**
+         * not implemented for now.
+         */
         @Override
         public Object clone() {
             return null;
@@ -210,16 +208,14 @@ public class MidiMessageTest {
     /*
       only for lazy people.
     */
-    private static void out(String strMessage) {
-        System.out.println(strMessage);
+    private static void out(String message) {
+        System.out.println(message);
     }
 
-    private static void out(byte[] abArray) {
-        out("data length: " + abArray.length);
-        for (byte b : abArray) {
+    private static void out(byte[] array) {
+        out("data length: " + array.length);
+        for (byte b : array) {
             out("" + b);
         }
     }
 }
-
-

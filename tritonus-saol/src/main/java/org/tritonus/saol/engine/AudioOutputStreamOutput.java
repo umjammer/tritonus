@@ -23,40 +23,34 @@ import org.tritonus.share.sampled.TConversionTool;
 import org.tritonus.share.sampled.file.AudioOutputStream;
 
 
-public class AudioOutputStreamOutput
-        extends Bus
-        implements SystemOutput {
+public class AudioOutputStreamOutput extends Bus implements SystemOutput {
 
-    private AudioOutputStream m_audioOutputStream;
-    private byte[] m_abBuffer;
+    private final AudioOutputStream audioOutputStream;
+    private final byte[] buffer;
 
     public AudioOutputStreamOutput(AudioOutputStream audioOutputStream) {
         super(audioOutputStream.getFormat().getChannels());
-        m_audioOutputStream = audioOutputStream;
-        m_abBuffer = new byte[audioOutputStream.getFormat().getFrameSize()];
+        this.audioOutputStream = audioOutputStream;
+        buffer = new byte[audioOutputStream.getFormat().getFrameSize()];
     }
 
     @Override
-    public void emit()
-            throws IOException {
-        float[] afValues = getValues();
-        boolean bBigEndian = m_audioOutputStream.getFormat().isBigEndian();
-        int nOffset = 0;
-        for (float afValue : afValues) {
-            float fOutput = Math.max(Math.min(afValue, 1.0F), -1.0F);
+    public void emit() throws IOException {
+        float[] values = getValues();
+        boolean bigEndian = audioOutputStream.getFormat().isBigEndian();
+        int offset = 0;
+        for (float value : values) {
+            float _output = Math.max(Math.min(value, 1.0F), -1.0F);
             // assumes 16 bit linear
-            int nOutput = (int) (fOutput * 32767.0F);
-            TConversionTool.shortToBytes16((short) nOutput, m_abBuffer, nOffset, bBigEndian);
-            nOffset += 2;
+            int output = (int) (_output * 32767.0F);
+            TConversionTool.shortToBytes16((short) output, buffer, offset, bigEndian);
+            offset += 2;
         }
-        m_audioOutputStream.write(m_abBuffer, 0, m_abBuffer.length);
+        audioOutputStream.write(buffer, 0, buffer.length);
     }
 
     @Override
-    public void close()
-            throws IOException {
-        m_audioOutputStream.close();
+    public void close() throws IOException {
+        audioOutputStream.close();
     }
 }
-
-

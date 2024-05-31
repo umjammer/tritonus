@@ -36,27 +36,27 @@ public class AlsaMidiChannel implements MidiChannel {
 
     private static final Logger logger = getLogger("org.tritonus.TraceAlsaMidiChannel");
 
-    private Receiver m_receiver;
-    private int m_nChannel;
+    private final Receiver receiver;
+    private final int channel;
 
-    public AlsaMidiChannel(Receiver receiver, int nChannel) {
-        m_receiver = receiver;
-        m_nChannel = nChannel;
+    public AlsaMidiChannel(Receiver receiver, int channel) {
+        this.receiver = receiver;
+        this.channel = channel;
     }
 
     protected int getChannel() {
-        return m_nChannel;
+        return channel;
     }
 
     protected void sendMessage(MidiMessage message) {
-        m_receiver.send(message, -1);
+        receiver.send(message, -1);
     }
 
     @Override
-    public void noteOn(int nNoteNumber, int nVelocity) {
+    public void noteOn(int noteNumber, int velocity) {
         ShortMessage message = new ShortMessage();
         try {
-            message.setMessage(ShortMessage.NOTE_ON, getChannel(), nNoteNumber, nVelocity);
+            message.setMessage(ShortMessage.NOTE_ON, getChannel(), noteNumber, velocity);
         } catch (InvalidMidiDataException e) {
             logger.log(Level.ERROR, e.getMessage(), e);
         }
@@ -64,10 +64,10 @@ public class AlsaMidiChannel implements MidiChannel {
     }
 
     @Override
-    public void noteOff(int nNoteNumber, int nVelocity) {
+    public void noteOff(int noteNumber, int velocity) {
         ShortMessage message = new ShortMessage();
         try {
-            message.setMessage(ShortMessage.NOTE_OFF, getChannel(), nNoteNumber, nVelocity);
+            message.setMessage(ShortMessage.NOTE_OFF, getChannel(), noteNumber, velocity);
         } catch (InvalidMidiDataException e) {
             logger.log(Level.ERROR, e.getMessage(), e);
         }
@@ -75,10 +75,10 @@ public class AlsaMidiChannel implements MidiChannel {
     }
 
     @Override
-    public void noteOff(int nNoteNumber) {
+    public void noteOff(int noteNumber) {
         ShortMessage message = new ShortMessage();
         try {
-            message.setMessage(ShortMessage.NOTE_OFF, getChannel(), nNoteNumber, 0);
+            message.setMessage(ShortMessage.NOTE_OFF, getChannel(), noteNumber, 0);
         } catch (InvalidMidiDataException e) {
             logger.log(Level.ERROR, e.getMessage(), e);
         }
@@ -86,10 +86,10 @@ public class AlsaMidiChannel implements MidiChannel {
     }
 
     @Override
-    public void setPolyPressure(int nNoteNumber, int nPressure) {
+    public void setPolyPressure(int noteNumber, int pressure) {
         ShortMessage message = new ShortMessage();
         try {
-            message.setMessage(ShortMessage.POLY_PRESSURE, nPressure, 0);
+            message.setMessage(ShortMessage.POLY_PRESSURE, pressure, 0);
         } catch (InvalidMidiDataException e) {
             logger.log(Level.ERROR, e.getMessage(), e);
         }
@@ -97,15 +97,15 @@ public class AlsaMidiChannel implements MidiChannel {
     }
 
     @Override
-    public int getPolyPressure(int nNoteNumber) {
+    public int getPolyPressure(int noteNumber) {
         return -1;
     }
 
     @Override
-    public void setChannelPressure(int nPressure) {
+    public void setChannelPressure(int pressure) {
         ShortMessage message = new ShortMessage();
         try {
-            message.setMessage(ShortMessage.CHANNEL_PRESSURE, getChannel(), nPressure, 0);
+            message.setMessage(ShortMessage.CHANNEL_PRESSURE, getChannel(), pressure, 0);
         } catch (InvalidMidiDataException e) {
             logger.log(Level.ERROR, e.getMessage(), e);
         }
@@ -118,10 +118,10 @@ public class AlsaMidiChannel implements MidiChannel {
     }
 
     @Override
-    public void controlChange(int nController, int nValue) {
+    public void controlChange(int controller, int value) {
         ShortMessage message = new ShortMessage();
         try {
-            message.setMessage(ShortMessage.CONTROL_CHANGE, getChannel(), nController, nValue);
+            message.setMessage(ShortMessage.CONTROL_CHANGE, getChannel(), controller, value);
         } catch (InvalidMidiDataException e) {
             logger.log(Level.ERROR, e.getMessage(), e);
         }
@@ -129,15 +129,15 @@ public class AlsaMidiChannel implements MidiChannel {
     }
 
     @Override
-    public int getController(int nController) {
+    public int getController(int controller) {
         return -1;
     }
 
     @Override
-    public void programChange(int nProgram) {
+    public void programChange(int program) {
         ShortMessage message = new ShortMessage();
         try {
-            message.setMessage(ShortMessage.PROGRAM_CHANGE, getChannel(), nProgram, 0);
+            message.setMessage(ShortMessage.PROGRAM_CHANGE, getChannel(), program, 0);
         } catch (InvalidMidiDataException e) {
             logger.log(Level.ERROR, e.getMessage(), e);
         }
@@ -145,11 +145,11 @@ public class AlsaMidiChannel implements MidiChannel {
     }
 
     @Override
-    public void programChange(int nBank, int nProgram) {
+    public void programChange(int bank, int program) {
         ShortMessage message = new ShortMessage();
         try {
             // TODO what about the bank?
-            message.setMessage(ShortMessage.PROGRAM_CHANGE, getChannel(), nProgram, 0);
+            message.setMessage(ShortMessage.PROGRAM_CHANGE, getChannel(), program, 0);
         } catch (InvalidMidiDataException e) {
             logger.log(Level.ERROR, e.getMessage(), e);
         }
@@ -162,10 +162,10 @@ public class AlsaMidiChannel implements MidiChannel {
     }
 
     @Override
-    public void setPitchBend(int nBend) {
+    public void setPitchBend(int bend) {
         ShortMessage message = new ShortMessage();
         try {
-            message.setMessage(ShortMessage.PITCH_BEND, MidiUtils.get14bitLSB(nBend), MidiUtils.get14bitMSB(nBend));
+            message.setMessage(ShortMessage.PITCH_BEND, MidiUtils.get14bitLSB(bend), MidiUtils.get14bitMSB(bend));
         } catch (InvalidMidiDataException e) {
             logger.log(Level.ERROR, e.getMessage(), e);
         }
@@ -190,12 +190,12 @@ public class AlsaMidiChannel implements MidiChannel {
     }
 
     @Override
-    public boolean localControl(boolean bOn) {
+    public boolean localControl(boolean on) {
         return false;
     }
 
     @Override
-    public void setMono(boolean bMono) {
+    public void setMono(boolean mono) {
     }
 
     @Override
@@ -204,7 +204,7 @@ public class AlsaMidiChannel implements MidiChannel {
     }
 
     @Override
-    public void setOmni(boolean bOmni) {
+    public void setOmni(boolean omni) {
     }
 
     @Override
@@ -213,7 +213,7 @@ public class AlsaMidiChannel implements MidiChannel {
     }
 
     @Override
-    public void setMute(boolean bMute) {
+    public void setMute(boolean mute) {
     }
 
     @Override
@@ -222,7 +222,7 @@ public class AlsaMidiChannel implements MidiChannel {
     }
 
     @Override
-    public void setSolo(boolean bSolo) {
+    public void setSolo(boolean solo) {
     }
 
     @Override

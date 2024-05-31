@@ -39,21 +39,21 @@ public class AlsaSeqRemoveEvents {
      * for the native code.
      * This must be long to be 64bit-clean.
      */
-    /* private */ long m_lNativeHandle;
+    /* private */ long nativeHandle;
 
     static {
         Alsa.loadNativeLibrary();
     }
 
     public AlsaSeqRemoveEvents() {
-        logger.log(Level.TRACE, "AlsaSeqRemoveEvents.<init>(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        int nReturn = malloc();
-        if (nReturn < 0) {
+        int ret = malloc();
+        if (ret < 0) {
             throw new RuntimeException("malloc of port_info failed");
         }
 
-        logger.log(Level.TRACE, "AlsaSeqRemoveEvents.<init>(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     private native int malloc();
@@ -76,19 +76,19 @@ public class AlsaSeqRemoveEvents {
 
     public native int getTag();
 
-    public native void setCondition(int nCondition);
+    public native void setCondition(int condition);
 
-    public native void setQueue(int nQueue);
+    public native void setQueue(int queue);
 
-    public native void setTime(long lTime);
+    public native void setTime(long time);
 
-    public native void setDest(int nClient, int nPort);
+    public native void setDest(int client, int port);
 
-    public native void setChannel(int nChannel);
+    public native void setChannel(int channel);
 
-    public native void setEventType(int nEventType);
+    public native void setEventType(int eventType);
 
-    public native void setTag(int nTag);
+    public native void setTag(int tag);
 
-    private static native void setTrace(boolean bTrace);
+    private static native void setTrace(boolean trace);
 }

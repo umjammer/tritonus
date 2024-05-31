@@ -36,17 +36,17 @@ public class AlsaSeqPortSubscribe {
      * for the native code.
      * This must be long to be 64bit-clean.
      */
-    /* private */ long m_lNativeHandle;
+    /* private */ long nativeHandle;
 
     public AlsaSeqPortSubscribe() {
-        logger.log(Level.TRACE, "AlsaSeq.PortSubscribe.<init>(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        int nReturn = malloc();
-        if (nReturn < 0) {
+        int ret = malloc();
+        if (ret < 0) {
             throw new RuntimeException("malloc of port_info failed");
         }
 
-        logger.log(Level.TRACE, "AlsaSeq.PortSubscribe.<init>(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     private native int malloc();
@@ -69,17 +69,17 @@ public class AlsaSeqPortSubscribe {
 
     public native boolean getTimeReal();
 
-    public native void setSender(int nClient, int nPort);
+    public native void setSender(int client, int port);
 
-    public native void setDest(int nClient, int nPort);
+    public native void setDest(int client, int port);
 
-    public native void setQueue(int nQueue);
+    public native void setQueue(int queue);
 
-    public native void setExclusive(boolean bExclusive);
+    public native void setExclusive(boolean exclusive);
 
-    public native void setTimeUpdate(boolean bUpdate);
+    public native void setTimeUpdate(boolean update);
 
-    public native void setTimeReal(boolean bReal);
+    public native void setTimeReal(boolean real);
 
-    private static native void setTrace(boolean bTrace);
+    private static native void setTrace(boolean trace);
 }

@@ -33,14 +33,14 @@ public class AlsaSequencerProvider extends MidiDeviceProvider {
 
     private static final Logger logger = getLogger("org.tritonus.TraceMidiDeviceProvider");
 
-    private static MidiDevice.Info sm_info;
+    private static MidiDevice.Info info;
 
     public AlsaSequencerProvider() {
-        logger.log(Level.TRACE, "AlsaSequencerProvider.<init>(): begin");
+        logger.log(Level.TRACE, "begin");
 
         synchronized (AlsaSequencerProvider.class) {
-            if (sm_info == null) {
-                sm_info = new TMidiDevice.Info(
+            if (info == null) {
+                info = new TMidiDevice.Info(
                         "Tritonus ALSA Sequencer",
                         GlobalInfo.getVendor(),
                         "this sequencer uses the ALSA sequencer",
@@ -48,37 +48,35 @@ public class AlsaSequencerProvider extends MidiDeviceProvider {
             }
         }
 
-        logger.log(Level.TRACE, "AlsaSequencerProvider.<init>(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     @Override
     public MidiDevice.Info[] getDeviceInfo() {
-        logger.log(Level.TRACE, "AlsaSequencerProvider.getDeviceInfo(): begin");
+        logger.log(Level.TRACE, "begin");
 
         MidiDevice.Info[] infos = new MidiDevice.Info[1];
-        infos[0] = sm_info;
+        infos[0] = info;
 
-        logger.log(Level.TRACE, "AlsaSequencerProvider.getDeviceInfo(): end");
+        logger.log(Level.TRACE, "end");
 
         return infos;
     }
 
     @Override
     public MidiDevice getDevice(MidiDevice.Info info) {
-        logger.log(Level.TRACE, "AlsaSequencerProvider.getDevice(): begin");
+        logger.log(Level.TRACE, "begin");
 
         MidiDevice device = null;
-        if (info != null && info.equals(sm_info)) {
-            device = new AlsaSequencer(sm_info);
+        if (info != null && info.equals(AlsaSequencerProvider.info)) {
+            device = new AlsaSequencer(AlsaSequencerProvider.info);
         }
         if (device == null) {
             throw new IllegalArgumentException("no device for " + info);
         }
 
-        logger.log(Level.TRACE, "AlsaSequencerProvider.getDevice(): end");
+        logger.log(Level.TRACE, "end");
 
         return device;
     }
 }
-
-
