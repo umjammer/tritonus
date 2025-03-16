@@ -102,4 +102,6 @@ Version 2.0. See the file [LICENSE](LICENSE) for details.
 * timidity (lost by disk crash)
 * ~~use jna instead of jni~~
   * sub modules for linux only 
-* make logging use lazy evaluation 
+* make logging use lazy evaluation
+* check midi reader is buggy
+  * adhoc fix (remove from spi) 
