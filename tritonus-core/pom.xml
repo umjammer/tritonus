@@ -14,7 +14,7 @@
   <name>Tritonus CORE Module</name>
 
   <properties>
-    <aspectj.version>1.9.7</aspectj.version>
+    <aspectj.version>1.9.22</aspectj.version>
   </properties>
 
   <build>

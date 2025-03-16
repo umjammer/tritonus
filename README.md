@@ -6,7 +6,7 @@
 
 # tritonus
 
-<img alt="tritone logo" src="https://github.com/umjammer/tritonus/assets/493908/11bc60d6-643f-47ba-a8b1-d451056ed247" width="320" />
+<img alt="tritone logo" src="https://github.com/umjammer/tritonus/assets/493908/11bc60d6-643f-47ba-a8b1-d451056ed247" width="160" />
 
 ♪ This is mavenized Tritonus.
 
@@ -18,7 +18,7 @@ All modules are implemented in jna or pure Java.
 | module        |      status      | spi <sup>[1]</sup> | comment                 | library                                                 |
 |---------------|:----------------:|:------------------:|-------------------------|---------------------------------------------------------|
 | share         |        ✅         |                    |                         |                                                         |
-| remaining     |        ✅         |     `RWC--IO-`     |                         |                                                         |
+| remaining     |        ✅         |     `RWC-----`     |                         |                                                         |
 | dsp           |        ✅         |                    |                         |                                                         |
 | core          |        ✅         |                    |                         |                                                         |
 | gsm           |        ✅         |     `RWC-----`     |                         |                                                         |
