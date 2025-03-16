@@ -35,17 +35,17 @@ public class AlsaPcmSWParams {
      * This must be long to be 64bit-clean.
      */
     @SuppressWarnings("unused")
-    private long m_lNativeHandle;
+    private long nativeHandle;
 
     public AlsaPcmSWParams() {
-        logger.log(Level.TRACE, "AlsaPcmSWParams.<init>(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        int nReturn = malloc();
-        if (nReturn < 0) {
+        int ret = malloc();
+        if (ret < 0) {
             throw new RuntimeException("malloc of hw_params failed");
         }
 
-        logger.log(Level.TRACE, "AlsaPcmSWParams.<init>(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     private native int malloc();

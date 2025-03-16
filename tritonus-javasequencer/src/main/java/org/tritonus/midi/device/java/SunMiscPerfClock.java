@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 2003 by Matthias Pfisterer
  *
@@ -21,13 +20,12 @@ package org.tritonus.midi.device.java;
  * Sequencer clock based on sun.misc.Perf.
  * Sun JDK 1.4.2 or later is required to compile this class.
  */
-public class SunMiscPerfClock
-        implements JavaSequencer.Clock {
+public class SunMiscPerfClock implements JavaSequencer.Clock {
 
-    private long m_nanos;
+    private final long nanos;
 
     public SunMiscPerfClock() {
-        m_nanos = System.nanoTime();
+        nanos = System.nanoTime();
     }
 
     /**
@@ -38,8 +36,6 @@ public class SunMiscPerfClock
      */
     @Override
     public long getMicroseconds() {
-        return (System.nanoTime() - m_nanos) / 1000;
+        return (System.nanoTime() - nanos) / 1000;
     }
 }
-
-

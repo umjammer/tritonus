@@ -35,13 +35,13 @@ public class AlsaPcmHWParams {
      * This must be long to be 64bit-clean.
      */
     @SuppressWarnings("unused")
-    private long m_lNativeHandle;
+    private long nativeHandle;
 
     public AlsaPcmHWParams() {
         logger.log(Level.TRACE, "AlsaPcmHWParams.<init>(): begin");
 
-        int nReturn = malloc();
-        if (nReturn < 0) {
+        int ret = malloc();
+        if (ret < 0) {
             throw new RuntimeException("malloc of hw_params failed");
         }
 
@@ -55,19 +55,18 @@ public class AlsaPcmHWParams {
     /**
      * Calls snd_pcm_hw_params_get_rate_numden().
      * <p>
-     * alValues[0]: numerator
-     * alValues[1]: denominator
+     * values[0]: numerator
+     * values[1]: denominator
      */
-    public native int getRate(long[] alValues);
+    public native int getRate(long[] values);
 
     public double getRate() {
-        long[] alValues = new long[2];
-        int nReturn;
+        long[] values = new long[2];
 
-        nReturn = getRate(alValues);
+        int ret = getRate(values);
         double dRate = -1;
-        if (nReturn >= 0) {
-            dRate = (double) alValues[0] / (double) alValues[1];
+        if (ret >= 0) {
+            dRate = (double) values[0] / (double) values[1];
         }
         return dRate;
     }
@@ -93,107 +92,107 @@ public class AlsaPcmHWParams {
     /**
      * Gets approximate rate.
      * Calls snd_pcm_hw_params_get_rate().
-     * anValues[0]: -1, 0 or +1, depending on the direction the exact rate differs from the returned value.
+     * values[0]: -1, 0 or +1, depending on the direction the exact rate differs from the returned value.
      */
-    public native int getRate(int[] anValues);
+    public native int getRate(int[] values);
 
     /**
      * Gets approximate minimum rate.
      * Calls snd_pcm_hw_params_get_rate_min().
-     * anValues[0]: -1, 0 or +1, depending on the direction the exact rate differs from the returned value.
+     * values[0]: -1, 0 or +1, depending on the direction the exact rate differs from the returned value.
      */
-    public native int getRateMin(int[] anValues);
+    public native int getRateMin(int[] values);
 
     /**
      * Gets approximate maximum rate.
      * Calls snd_pcm_hw_params_get_rate_max().
-     * anValues[0]: -1, 0 or +1, depending on the direction the exact rate differs from the returned value.
+     * values[0]: -1, 0 or +1, depending on the direction the exact rate differs from the returned value.
      */
-    public native int getRateMax(int[] anValues);
+    public native int getRateMax(int[] values);
 
     /**
      * Gets approximate period time.
      * Calls snd_pcm_hw_params_get_period_time().
-     * anValues[0]: -1, 0 or +1, depending on the direction the exact rate differs from the returned value.
+     * values[0]: -1, 0 or +1, depending on the direction the exact rate differs from the returned value.
      */
-    public native int getPeriodTime(int[] anValues);
+    public native int getPeriodTime(int[] values);
 
     /**
      * Gets approximate minimum period time.
      * Calls snd_pcm_hw_params_get_period_time_min().
-     * anValues[0]: -1, 0 or +1, depending on the direction the exact rate differs from the returned value.
+     * values[0]: -1, 0 or +1, depending on the direction the exact rate differs from the returned value.
      */
-    public native int getPeriodTimeMin(int[] anValues);
+    public native int getPeriodTimeMin(int[] values);
 
     /**
      * Gets approximate maximum period time.
      * Calls snd_pcm_hw_params_get_period_time_max().
-     * anValues[0]: -1, 0 or +1, depending on the direction the exact rate differs from the returned value.
+     * values[0]: -1, 0 or +1, depending on the direction the exact rate differs from the returned value.
      */
-    public native int getPeriodTimeMax(int[] anValues);
+    public native int getPeriodTimeMax(int[] values);
 
     /**
      * Gets approximate period size.
      * Calls snd_pcm_hw_params_get_period_size().
-     * anValues[0]: -1, 0 or +1, depending on the direction the exact rate differs from the returned value.
+     * values[0]: -1, 0 or +1, depending on the direction the exact rate differs from the returned value.
      */
-    public native int getPeriodSize(int[] anValues);
+    public native int getPeriodSize(int[] values);
 
     /**
      * Gets approximate minimum period size.
      * Calls snd_pcm_hw_params_get_period_size_min().
-     * anValues[0]: -1, 0 or +1, depending on the direction the exact rate differs from the returned value.
+     * values[0]: -1, 0 or +1, depending on the direction the exact rate differs from the returned value.
      */
-    public native int getPeriodSizeMin(int[] anValues);
+    public native int getPeriodSizeMin(int[] values);
 
     /**
      * Gets approximate maximum period size.
      * Calls snd_pcm_hw_params_get_period_size_max().
-     * anValues[0]: -1, 0 or +1, depending on the direction the exact rate differs from the returned value.
+     * values[0]: -1, 0 or +1, depending on the direction the exact rate differs from the returned value.
      */
-    public native int getPeriodSizeMax(int[] anValues);
+    public native int getPeriodSizeMax(int[] values);
 
     /**
      * Gets approximate periods.
      * Calls snd_pcm_hw_params_get_periods().
-     * anValues[0]: -1, 0 or +1, depending on the direction the exact rate differs from the returned value.
+     * values[0]: -1, 0 or +1, depending on the direction the exact rate differs from the returned value.
      */
-    public native int getPeriods(int[] anValues);
+    public native int getPeriods(int[] values);
 
     /**
      * Gets approximate minimum periods.
      * Calls snd_pcm_hw_params_get_periods_min().
-     * anValues[0]: -1, 0 or +1, depending on the direction the exact rate differs from the returned value.
+     * values[0]: -1, 0 or +1, depending on the direction the exact rate differs from the returned value.
      */
-    public native int getPeriodsMin(int[] anValues);
+    public native int getPeriodsMin(int[] values);
 
     /**
      * Gets approximate maximum periods.
      * Calls snd_pcm_hw_params_get_periods_max().
-     * anValues[0]: -1, 0 or +1, depending on the direction the exact rate differs from the returned value.
+     * values[0]: -1, 0 or +1, depending on the direction the exact rate differs from the returned value.
      */
-    public native int getPeriodsMax(int[] anValues);
+    public native int getPeriodsMax(int[] values);
 
     /**
      * Gets approximate buffer time.
      * Calls snd_pcm_hw_params_get_buffer_time().
-     * anValues[0]: -1, 0 or +1, depending on the direction the exact rate differs from the returned value.
+     * values[0]: -1, 0 or +1, depending on the direction the exact rate differs from the returned value.
      */
-    public native int getBufferTime(int[] anValues);
+    public native int getBufferTime(int[] values);
 
     /**
      * Gets approximate minimum buffer time.
      * Calls snd_pcm_hw_params_get_buffer_time_min().
-     * anValues[0]: -1, 0 or +1, depending on the direction the exact rate differs from the returned value.
+     * values[0]: -1, 0 or +1, depending on the direction the exact rate differs from the returned value.
      */
-    public native int getBufferTimeMin(int[] anValues);
+    public native int getBufferTimeMin(int[] values);
 
     /**
      * Gets approximate maximum buffer time.
      * Calls snd_pcm_hw_params_get_buffer_time_max().
-     * anValues[0]: -1, 0 or +1, depending on the direction the exact rate differs from the returned value.
+     * values[0]: -1, 0 or +1, depending on the direction the exact rate differs from the returned value.
      */
-    public native int getBufferTimeMax(int[] anValues);
+    public native int getBufferTimeMax(int[] values);
 
     /**
      * Gets approximate buffer size.
@@ -216,21 +215,21 @@ public class AlsaPcmHWParams {
     /**
      * Gets approximate tick time.
      * Calls snd_pcm_hw_params_get_tick_time().
-     * anValues[0]: -1, 0 or +1, depending on the direction the exact rate differs from the returned value.
+     * values[0]: -1, 0 or +1, depending on the direction the exact rate differs from the returned value.
      */
-    public native int getTickTime(int[] anValues);
+    public native int getTickTime(int[] values);
 
     /**
      * Gets approximate minimum tick time.
      * Calls snd_pcm_hw_params_get_tick_time_min().
-     * anValues[0]: -1, 0 or +1, depending on the direction the exact rate differs from the returned value.
+     * values[0]: -1, 0 or +1, depending on the direction the exact rate differs from the returned value.
      */
-    public native int getTickTimeMin(int[] anValues);
+    public native int getTickTimeMin(int[] values);
 
     /**
      * Gets approximate maximum tick time.
      * Calls snd_pcm_hw_params_get_tick_time_max().
-     * anValues[0]: -1, 0 or +1, depending on the direction the exact rate differs from the returned value.
+     * values[0]: -1, 0 or +1, depending on the direction the exact rate differs from the returned value.
      */
-    public native int getTickTimeMax(int[] anValues);
+    public native int getTickTimeMax(int[] values);
 }

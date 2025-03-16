@@ -19,7 +19,7 @@ package org.tritonus.sampled.file.vorbis;
 
 import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
-import java.util.Arrays;
+import java.util.List;
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioFormat;
 
@@ -53,9 +53,9 @@ public class VorbisAudioFileWriter extends THeaderlessAudioFileWriter {
     };
 
     public VorbisAudioFileWriter() {
-        super(Arrays.asList(FILE_TYPES), Arrays.asList(AUDIO_FORMATS));
-        logger.log(Level.TRACE, "VorbisAudioFileWriter.<init>(): begin");
+        super(List.of(FILE_TYPES), List.of(AUDIO_FORMATS));
+        logger.log(Level.TRACE, "begin");
 
-        logger.log(Level.TRACE, "VorbisAudioFileWriter.<init>(): end");
+        logger.log(Level.TRACE, "end");
     }
 }

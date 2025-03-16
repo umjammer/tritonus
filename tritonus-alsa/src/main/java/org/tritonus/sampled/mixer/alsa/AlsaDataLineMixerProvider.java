@@ -31,70 +31,70 @@ public class AlsaDataLineMixerProvider extends TMixerProvider {
 
     private static final Logger logger = getLogger("org.tritonus.TraceMixerProvider");
 
-    private static boolean sm_bInitialized = false;
+    private static boolean initialized = false;
 
     public AlsaDataLineMixerProvider() {
         super();
-        logger.log(Level.TRACE, "AlsaDataLineMixerProvider.<init>(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        if (!sm_bInitialized && !isDisabled()) {
+        if (!initialized && !isDisabled()) {
             if (!Alsa.isLibraryAvailable()) {
                 disable();
             } else {
                 staticInit();
-                sm_bInitialized = true;
+                initialized = true;
             }
         } else {
-            logger.log(Level.TRACE, "AlsaDataLineMixerProvider.<init>(): already initialized or disabled");
+            logger.log(Level.TRACE, "already initialized or disabled");
         }
 
-        logger.log(Level.TRACE, "AlsaDataLineMixerProvider.<init>(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     @Override
     protected void staticInit() {
-        logger.log(Level.TRACE, "AlsaDataLineMixerProvider.staticInit(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        int[] anCards = AlsaCtl.getCards();
-        logger.log(Level.TRACE, "AlsaDataLineMixerProvider.staticInit(): num cards: " + anCards.length);
+        int[] cards = AlsaCtl.getCards();
+        logger.log(Level.TRACE, "num cards: " + cards.length);
 
-        for (int i = 0; i < anCards.length; i++) {
-            logger.log(Level.TRACE, "AlsaDataLineMixerProvider.staticInit():card #" + i + ": " + anCards[i]);
+        for (int i = 0; i < cards.length; i++) {
+            logger.log(Level.TRACE, "AlsaDataLineMixerProvider.staticInit():card #" + i + ": " + cards[i]);
 
-            logger.log(Level.TRACE, "AlsaDataLineMixerProvider.staticInit(): creating Ctl object...");
+            logger.log(Level.TRACE, "creating Ctl object...");
 
-            String strPcmName = "hw:" + anCards[i];
-//            String strPcmName = AlsaDataLineMixer.getPcmName(anCards[i]);
+            String pcmName = "hw:" + cards[i];
+//            String pcmName = AlsaDataLineMixer.getPcmName(cards[i]);
             AlsaCtl ctl;
             try {
-                ctl = new AlsaCtl(strPcmName, 0);
+                ctl = new AlsaCtl(pcmName, 0);
             } catch (Exception e) {
                 logger.log(Level.TRACE, e);
                 continue;
             }
-            logger.log(Level.TRACE, "AlsaDataLineMixerProvider.staticInit(): calling getCardInfo()...");
+            logger.log(Level.TRACE, "calling getCardInfo()...");
 
             AlsaCtlCardInfo cardInfo = new AlsaCtlCardInfo();
             ctl.getCardInfo(cardInfo);
-            logger.log(Level.TRACE, "AlsaDataLineMixerProvider.staticInit(): ALSA sound card:");
-            logger.log(Level.TRACE, "AlsaDataLineMixerProvider.staticInit(): card: " + cardInfo.getCard());
-            logger.log(Level.TRACE, "AlsaDataLineMixerProvider.staticInit(): id: " + cardInfo.getId());
-            int[] anDevices = ctl.getPcmDevices();
-            logger.log(Level.TRACE, "AlsaDataLineMixerProvider.staticInit(): num devices: " + anDevices.length);
+            logger.log(Level.TRACE, "ALSA sound card:");
+            logger.log(Level.TRACE, "card: " + cardInfo.getCard());
+            logger.log(Level.TRACE, "id: " + cardInfo.getId());
+            int[] devices = ctl.getPcmDevices();
+            logger.log(Level.TRACE, "num devices: " + devices.length);
 
             // TODO combine devices into one AlsaDataLineMixer?
             // pass device number to AlsaDataLineMixer constructor?
-            for (int nDevice = 0; nDevice < anDevices.length; nDevice++) {
-                logger.log(Level.TRACE, "AlsaDataLineMixerProvider.staticInit(): device #" + nDevice + ": " + anDevices[nDevice]);
+            for (int device = 0; device < devices.length; device++) {
+                logger.log(Level.TRACE, "device #" + device + ": " + devices[device]);
             }
 //            ctl.close();
 
-            // We do not use strPcmName because the mixer may choose to open as 'plughw',
+            // We do not use pcmName because the mixer may choose to open as 'plughw',
             // while for ctl, the device name always has to be 'hw'.
-            AlsaDataLineMixer mixer = new AlsaDataLineMixer(anCards[i]);
+            AlsaDataLineMixer mixer = new AlsaDataLineMixer(cards[i]);
             super.addMixer(mixer);
         }
 
-        logger.log(Level.TRACE, "AlsaDataLineMixerProvider.staticInit(): end");
+        logger.log(Level.TRACE, "end");
     }
 }

@@ -48,8 +48,8 @@ public class Buffer {
     public Buffer() {
         logger.log(Level.TRACE, "<init>: begin");
 
-        int nReturn = malloc();
-        if (nReturn < 0) {
+        int ret = malloc();
+        if (ret < 0) {
             throw new RuntimeException("malloc of ogg_page failed");
         }
 
@@ -60,7 +60,7 @@ public class Buffer {
         logger.log(Level.TRACE, "malloc: begin");
 
         handle = new oggpack_buffer();
-        logger.log(Level.TRACE, String.format("malloc: handle: %s", handle));
+        logger.log(Level.TRACE, "malloc: handle: %s".formatted(handle));
 
         logger.log(Level.TRACE, "malloc: end");
 
@@ -89,126 +89,126 @@ public class Buffer {
     /**
      * Calls oggpack_writetrunc().
      */
-    public void writeTrunc(int nBits) {
-        logger.log(Level.TRACE, "writeTrunc: begin");
+    public void writeTrunc(int bits) {
+        logger.log(Level.TRACE, "begin");
 
-        OggLibrary.INSTANCE.oggpack_writetrunc(handle, new NativeLong(nBits));
+        OggLibrary.INSTANCE.oggpack_writetrunc(handle, new NativeLong(bits));
 
-        logger.log(Level.TRACE, "writeTrunc: end");
+        logger.log(Level.TRACE, "end");
     }
 
     /**
      * Calls oggpack_writealign().
      */
     public void writeAlign() {
-        logger.log(Level.TRACE, "writeAlign: begin");
+        logger.log(Level.TRACE, "begin");
 
         OggLibrary.INSTANCE.oggpack_writealign(handle);
 
-        logger.log(Level.TRACE, "writeAlign: end");
+        logger.log(Level.TRACE, "end");
     }
 
     /**
      * Calls oggpack_writecopy().
      */
-    public void writeCopy(byte[] abSource, int nBits) {
-        Memory source = new Memory(abSource.length);
-        logger.log(Level.TRACE, "writeCopy: begin");
+    public void writeCopy(byte[] _source, int bits) {
+        Memory source = new Memory(_source.length);
+        logger.log(Level.TRACE, "begin");
 
-        source.write(0, abSource, 0, abSource.length);
-        OggLibrary.INSTANCE.oggpack_writecopy(handle, source, new NativeLong(nBits));
+        source.write(0, _source, 0, _source.length);
+        OggLibrary.INSTANCE.oggpack_writecopy(handle, source, new NativeLong(bits));
         source.close();
 
-        logger.log(Level.TRACE, "writeCopy: end");
+        logger.log(Level.TRACE, "end");
     }
 
     /**
      * Calls oggpack_reset().
      */
     public void reset() {
-        logger.log(Level.TRACE, "reset: begin");
+        logger.log(Level.TRACE, "begin");
 
         OggLibrary.INSTANCE.oggpack_reset(handle);
 
-        logger.log(Level.TRACE, "reset: end");
+        logger.log(Level.TRACE, "end");
     }
 
     /**
      * Calls oggpack_writeclear().
      */
     public void writeClear() {
-        logger.log(Level.TRACE, "writeClear: begin");
+        logger.log(Level.TRACE, "begin");
 
         OggLibrary.INSTANCE.oggpack_writeclear(handle);
 
-        logger.log(Level.TRACE, "writeClear: end");
+        logger.log(Level.TRACE, "end");
     }
 
     /**
      * Calls oggpack_readinit().
      */
-    public void readInit(byte[] abBuffer, int nBytes) {
-        logger.log(Level.TRACE, "readInit: begin");
+    public void readInit(byte[] _buffer, int bytes) {
+        logger.log(Level.TRACE, "begin");
 
-        logger.log(Level.TRACE, "readInit: nBytes: " + nBytes);
+        logger.log(Level.TRACE, "bytes: " + bytes);
 
-        ByteBuffer buffer = ByteBuffer.allocate(abBuffer.length);
-        logger.log(Level.TRACE, "readInit: buffer[0]: " + buffer.get(0));
-        logger.log(Level.TRACE, "readInit: buffer[1]: " + buffer.get(1));
-        logger.log(Level.TRACE, "readInit: buffer[2]: " + buffer.get(2));
+        ByteBuffer buffer = ByteBuffer.allocate(_buffer.length);
+        logger.log(Level.TRACE, "buffer[0]: " + buffer.get(0));
+        logger.log(Level.TRACE, "buffer[1]: " + buffer.get(1));
+        logger.log(Level.TRACE, "buffer[2]: " + buffer.get(2));
 
-        OggLibrary.INSTANCE.oggpack_readinit(handle, buffer, nBytes);
-        buffer.get(abBuffer);
+        OggLibrary.INSTANCE.oggpack_readinit(handle, buffer, bytes);
+        buffer.get(_buffer);
 
-        logger.log(Level.TRACE, "readInit: end");
+        logger.log(Level.TRACE, "end");
     }
 
     /**
      * Calls oggpack_write().
      */
-    public void write(int nValue, int nBits) {
-        logger.log(Level.TRACE, "write: begin");
+    public void write(int value, int bits) {
+        logger.log(Level.TRACE, "begin");
 
-        OggLibrary.INSTANCE.oggpack_write(handle, new NativeLong(nValue), nBits);
+        OggLibrary.INSTANCE.oggpack_write(handle, new NativeLong(value), bits);
 
-        logger.log(Level.TRACE, "write: end");
+        logger.log(Level.TRACE, "end");
     }
 
     /**
      * Calls oggpack_look().
      */
-    public int look(int nBits) {
-        logger.log(Level.TRACE, "look: begin");
+    public int look(int bits) {
+        logger.log(Level.TRACE, "begin");
 
-        NativeLong nReturn = OggLibrary.INSTANCE.oggpack_look(handle, nBits);
+        NativeLong ret = OggLibrary.INSTANCE.oggpack_look(handle, bits);
 
-        logger.log(Level.TRACE, "look: end");
+        logger.log(Level.TRACE, "end");
 
-        return nReturn.intValue();
+        return ret.intValue();
     }
 
     /**
      * Calls oggpack_look1().
      */
     public int look1() {
-        logger.log(Level.TRACE, "look1: begin");
+        logger.log(Level.TRACE, "begin");
 
-        NativeLong nReturn = OggLibrary.INSTANCE.oggpack_look1(handle);
+        NativeLong ret = OggLibrary.INSTANCE.oggpack_look1(handle);
 
-        logger.log(Level.TRACE, "look1: end");
+        logger.log(Level.TRACE, "end");
 
-        return nReturn.intValue();
+        return ret.intValue();
     }
 
     /**
      * Calls oggpack_adv().
      */
-    public void adv(int nBits) {
-        logger.log(Level.TRACE, "adv: begin");
+    public void adv(int bits) {
+        logger.log(Level.TRACE, "begin");
 
-        OggLibrary.INSTANCE.oggpack_adv(handle, nBits);
+        OggLibrary.INSTANCE.oggpack_adv(handle, bits);
 
-        logger.log(Level.TRACE, "adv: end");
+        logger.log(Level.TRACE, "end");
     }
 
     /**
@@ -225,67 +225,67 @@ public class Buffer {
     /**
      * Calls oggpack_read().
      */
-    public int read(int nBits) {
-        logger.log(Level.TRACE, "read: begin");
+    public int read(int bits) {
+        logger.log(Level.TRACE, "begin");
 
-        NativeLong nReturn = OggLibrary.INSTANCE.oggpack_read(handle, nBits);
+        NativeLong ret = OggLibrary.INSTANCE.oggpack_read(handle, bits);
 
-        logger.log(Level.TRACE, "read: end");
+        logger.log(Level.TRACE, "end");
 
-        return nReturn.intValue();
+        return ret.intValue();
     }
 
     /**
      * Calls oggpack_read1().
      */
     public int read1() {
-        logger.log(Level.TRACE, "read1: begin");
+        logger.log(Level.TRACE, "begin");
 
-        NativeLong nReturn = OggLibrary.INSTANCE.oggpack_read1(handle);
+        NativeLong ret = OggLibrary.INSTANCE.oggpack_read1(handle);
 
-        logger.log(Level.TRACE, "read1: end");
+        logger.log(Level.TRACE, "end");
 
-        return nReturn.intValue();
+        return ret.intValue();
     }
 
     /**
      * Calls oggpack_bytes().
      */
     public int bytes() {
-        logger.log(Level.TRACE, "bytes: begin");
+        logger.log(Level.TRACE, "begin");
 
-        NativeLong nReturn = OggLibrary.INSTANCE.oggpack_bytes(handle);
+        NativeLong ret = OggLibrary.INSTANCE.oggpack_bytes(handle);
 
-        logger.log(Level.TRACE, "bytes: end");
+        logger.log(Level.TRACE, "end");
 
-        return nReturn.intValue();
+        return ret.intValue();
     }
 
     /**
      * Calls oggpack_bits().
      */
     public int bits() {
-        logger.log(Level.TRACE, "bits: begin");
+        logger.log(Level.TRACE, "begin");
 
-        NativeLong nReturn = OggLibrary.INSTANCE.oggpack_bits(handle);
+        NativeLong ret = OggLibrary.INSTANCE.oggpack_bits(handle);
 
-        logger.log(Level.TRACE, "bits: end");
+        logger.log(Level.TRACE, "end");
 
-        return nReturn.intValue();
+        return ret.intValue();
     }
 
     /**
      * Calls oggpack_get_buffer().
      */
     public byte[] getBuffer() {
-        logger.log(Level.TRACE, "getBuffer: begin");
+        logger.log(Level.TRACE, "begin");
 
         Pointer buffer = OggLibrary.INSTANCE.oggpack_get_buffer(handle);
-        byte[] abBuffer = new byte[handle.storage.intValue()];
-        buffer.read(0, abBuffer, 0, handle.storage.intValue());
+        byte[] _buffer = new byte[handle.storage.intValue()];
+        buffer.read(0, _buffer, 0, handle.storage.intValue());
 
-        logger.log(Level.TRACE, "getBuffer: end");
+        logger.log(Level.TRACE, "end");
 
-        return abBuffer;
+        return _buffer;
     }
 }

@@ -31,34 +31,34 @@ public class EsdMixerProvider extends TMixerProvider {
 
     private static final Logger logger = getLogger("org.tritonus.TraceMixerProvider");
 
-    private static boolean sm_bInitialized = false;
+    private static boolean initialized = false;
 
     public EsdMixerProvider() {
         super();
-        logger.log(Level.TRACE, "EsdMixerProvider.<init>(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        if (!sm_bInitialized && !isDisabled()) {
+        if (!initialized && !isDisabled()) {
             /// TODO adapt!
             if (!Esd.isLibraryAvailable()) {
                 disable();
             } else {
                 staticInit();
-                sm_bInitialized = true;
+                initialized = true;
             }
         } else {
-            logger.log(Level.TRACE, "EsdMixerProvider.<init>(): already initialized or disabled");
+            logger.log(Level.TRACE, "already initialized or disabled");
 
         }
 
-        logger.log(Level.TRACE, "EsdMixerProvider.<init>(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     @Override
     protected void staticInit() {
-        logger.log(Level.TRACE, "EsdMixerProvider.staticInit(): begin");
+        logger.log(Level.TRACE, "begin");
 
         addMixer(new EsdMixer());
 
-        logger.log(Level.TRACE, "EsdMixerProvider.staticInit(): end");
+        logger.log(Level.TRACE, "end");
     }
 }

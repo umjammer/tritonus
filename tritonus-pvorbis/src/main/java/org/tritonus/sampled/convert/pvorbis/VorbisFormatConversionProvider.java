@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import javax.sound.sampled.AudioFormat;
@@ -41,7 +40,6 @@ import biniu.vorbis.VorbisEnc;
 import org.tritonus.share.sampled.AudioFormats;
 import org.tritonus.share.sampled.convert.TAsynchronousFilteredAudioInputStream;
 import org.tritonus.share.sampled.convert.TEncodingFormatConversionProvider;
-import vavi.util.Debug;
 
 import static java.lang.System.getLogger;
 
@@ -104,20 +102,19 @@ public class VorbisFormatConversionProvider extends TEncodingFormatConversionPro
      * Constructor.
      */
     public VorbisFormatConversionProvider() {
-        super(
-                Arrays.asList(INPUT_FORMATS),
-                Arrays.asList(INPUT_FORMATS)
-//                Arrays.asList(OUTPUT_FORMATS),
+        super(List.of(INPUT_FORMATS),
+                List.of(INPUT_FORMATS)
+//                List.of(OUTPUT_FORMATS),
 //                true, // new behaviour
 //                false  // bidirectional .. constants UNIDIR../BIDIR..?
         );
-        logger.log(Level.TRACE, "VorbisFormatConversionProvider.<init>(): begin");
-        logger.log(Level.TRACE, "VorbisFormatConversionProvider.<init>(): end");
+        logger.log(Level.TRACE, "begin");
+        logger.log(Level.TRACE, "end");
     }
 
     @Override
     public AudioInputStream getAudioInputStream(AudioFormat targetFormat, AudioInputStream audioInputStream) {
-        logger.log(Level.TRACE, ">VorbisFormatConversionProvider.getAudioInputStream(): begin");
+        logger.log(Level.TRACE, "begin");
         // The AudioInputStream to return.
         AudioInputStream convertedAudioInputStream;
 
@@ -139,13 +136,13 @@ public class VorbisFormatConversionProvider extends TEncodingFormatConversionPro
             logger.log(Level.TRACE, "<conversion not supported; throwing IllegalArgumentException");
             throw new IllegalArgumentException("conversion not supported");
         }
-        logger.log(Level.TRACE, "<VorbisFormatConversionProvider.getAudioInputStream(): end");
+        logger.log(Level.TRACE, "end");
         return convertedAudioInputStream;
     }
 
     protected AudioFormat getDefaultTargetFormat(AudioFormat targetFormat, AudioFormat sourceFormat) {
-        logger.log(Level.TRACE, "VorbisFormatConversionProvider.getDefaultTargetFormat(): target format: " + targetFormat);
-        logger.log(Level.TRACE, "VorbisFormatConversionProvider.getDefaultTargetFormat(): source format: " + sourceFormat);
+        logger.log(Level.TRACE, "target format: " + targetFormat);
+        logger.log(Level.TRACE, "source format: " + sourceFormat);
         AudioFormat newTargetFormat = null;
         // return first of the matching formats
         // pre-condition: the predefined target formats (FORMATS2) must be well-defined !
@@ -157,7 +154,7 @@ public class VorbisFormatConversionProvider extends TEncodingFormatConversionPro
         if (newTargetFormat == null) {
             throw new IllegalArgumentException("conversion not supported");
         }
-        logger.log(Level.TRACE, "VorbisFormatConversionProvider.getDefaultTargetFormat(): new target format: " + newTargetFormat);
+        logger.log(Level.TRACE, "new target format: " + newTargetFormat);
         // hacked together...
         // ... only works for PCM target encoding ...
         newTargetFormat = new AudioFormat(targetFormat.getEncoding(),
@@ -168,7 +165,7 @@ public class VorbisFormatConversionProvider extends TEncodingFormatConversionPro
                 sourceFormat.getSampleRate(),
                 newTargetFormat.isBigEndian(),
                 targetFormat.properties());
-        logger.log(Level.TRACE, "VorbisFormatConversionProvider.getDefaultTargetFormat(): really new target format: " + newTargetFormat);
+        logger.log(Level.TRACE, "really new target format: " + newTargetFormat);
         return newTargetFormat;
     }
 
@@ -186,163 +183,163 @@ public class VorbisFormatConversionProvider extends TEncodingFormatConversionPro
          */
         private static final int READ = 1024;
 
-        private AudioInputStream m_decodedStream;
-        private byte[] m_abReadbuffer;
+        private final AudioInputStream decodedStream;
+        private final byte[] readbuffer;
 
-        private StreamState m_streamState;
-        private Page m_page;
-        private Packet m_packet;
+        private final StreamState streamState;
+        private final Page page;
+        private final Packet packet;
 
-        private Info m_info;
-        private Comment m_comment;
-        private DspState m_dspState;
-        private Block m_block;
-        private VorbisEnc encoder;
+        private final Info info;
+        private final Comment comment;
+        private final DspState dspState;
+        private final Block block;
+        private final VorbisEnc encoder;
 
         private boolean eos = false;
 
         public EncodedVorbisAudioInputStream(AudioFormat outputFormat, AudioInputStream inputStream) {
             super(outputFormat, AudioSystem.NOT_SPECIFIED, 262144, 16384);
-            logger.log(Level.TRACE, ">EncodedVorbisAudioInputStream.<init>(): begin");
-            m_decodedStream = inputStream;
-            m_abReadbuffer = new byte[READ * getFrameSize()];
+            logger.log(Level.TRACE, "begin");
+            decodedStream = inputStream;
+            readbuffer = new byte[READ * getFrameSize()];
             Object property;
-            Debug.println("properties: " + outputFormat.properties());
+logger.log(Level.DEBUG, "properties: " + outputFormat.properties());
 
             property = outputFormat.getProperty("vbr");
-            boolean bUseVBR = DEFAULT_VBR;
+            boolean useVBR = DEFAULT_VBR;
             if (property instanceof Boolean) {
-                bUseVBR = (Boolean) property;
+                useVBR = (Boolean) property;
             }
 
             property = outputFormat.getProperty("quality");
-            float fQuality = DEFAULT_QUALITY; // TODO cause .ArrayIndexOutOfBoundsException: Index 16 out of bounds for length 16 at VorbisEnc#setTonemask(VorbisEnc.java:228)
+            float quality = DEFAULT_QUALITY; // TODO cause .ArrayIndexOutOfBoundsException: Index 16 out of bounds for length 16 at VorbisEnc#setTonemask(VorbisEnc.java:228)
             if (property instanceof Integer) {
-                fQuality = (Integer) property / 10.0F;
+                quality = (Integer) property / 10.0F;
             }
 
             property = outputFormat.getProperty("bitrate");
-            int nNominalBitrate = DEFAULT_NOM_BITRATE;
+            int nominalBitrate = DEFAULT_NOM_BITRATE;
             if (property instanceof Integer) {
-                nNominalBitrate = (Integer) property / 1024;
+                nominalBitrate = (Integer) property / 1024;
             }
 
             property = outputFormat.getProperty("vorbis.min_bitrate");
-            int nMinBitrate = DEFAULT_MIN_BITRATE;
+            int minBitrate = DEFAULT_MIN_BITRATE;
             if (property instanceof Integer) {
-                nMinBitrate = (Integer) property / 1024;
+                minBitrate = (Integer) property / 1024;
             }
 
             property = outputFormat.getProperty("vorbis.max_bitrate");
-            int nMaxBitrate = DEFAULT_MAX_BITRATE;
+            int maxBitrate = DEFAULT_MAX_BITRATE;
             if (property instanceof Integer) {
-                nMaxBitrate = (Integer) property / 1024;
+                maxBitrate = (Integer) property / 1024;
             }
 
-            m_streamState = new StreamState();
-            m_page = new Page();
-            m_packet = new Packet();
+            streamState = new StreamState();
+            page = new Page();
+            packet = new Packet();
 
-            m_info = new Info();
-            m_comment = new Comment();
-            m_dspState = new DspState();
-            m_block = new Block(m_dspState);
+            info = new Info();
+            comment = new Comment();
+            dspState = new DspState();
+            block = new Block(dspState);
 
             encoder = new VorbisEnc();
 
-            m_info.init();
+            info.init();
 
-            int nSampleRate = (int) inputStream.getFormat().getSampleRate();
-            logger.log(Level.TRACE, "sample rate: " + nSampleRate);
+            int sampleRate = (int) inputStream.getFormat().getSampleRate();
+            logger.log(Level.TRACE, "sample rate: " + sampleRate);
             logger.log(Level.TRACE, "channels: " + getChannels());
-            if (bUseVBR) {
-                Debug.printf("VBR: ch: %d, rate: %d, q: %3.1f", getChannels(), nSampleRate, fQuality);
-                int r = encoder.initVBR(m_info, getChannels(), nSampleRate, fQuality);
+            if (useVBR) {
+logger.log(Level.DEBUG, "VBR: ch: %d, rate: %d, q: %3.1f".formatted(getChannels(), sampleRate, quality));
+                int r = encoder.initVBR(info, getChannels(), sampleRate, quality);
                 if (r != 0)
                     throw new IllegalStateException("initVBR: unexpected return value: " + r);
             } else {
-                Debug.printf("non VBR: ch: %d, rate: %d, q: %3.1f", getChannels(), nSampleRate, fQuality);
-                int r = encoder.init(m_info, getChannels(), nSampleRate, nMaxBitrate, nNominalBitrate, nMinBitrate);
+logger.log(Level.DEBUG, "non VBR: ch: %d, rate: %d, q: %3.1f".formatted(getChannels(), sampleRate, quality));
+                int r = encoder.init(info, getChannels(), sampleRate, maxBitrate, nominalBitrate, minBitrate);
                 if (r != 0)
                     throw new IllegalStateException("init: unexpected return value: " + r);
             }
 
-            m_comment.init();
-            m_comment.addTag("ENCODER", "Tritonus libvorbis via jna");
+            comment.init();
+            comment.addTag("ENCODER", "Tritonus libvorbis via jna");
             property = outputFormat.getProperty("vorbis.comments");
             if (property instanceof List<?> comments) {
-                logger.log(Level.TRACE, "<init>: comments present in target format");
+                logger.log(Level.TRACE, "comments present in target format");
                 for (Object comm : comments) {
                     if (comm instanceof String) {
-                        m_comment.addComment((String) comm);
+                        comment.addComment((String) comm);
                     }
                 }
             }
 
-            m_dspState.analysisInit(m_info);
-            m_block.blockInit(m_dspState);
+            dspState.analysisInit(info);
+            block.blockInit(dspState);
 
             Random random;
             property = outputFormat.getProperty("vorbis.test");
             if (property instanceof Boolean test && test) {
-                Debug.println("use test random seed");
+logger.log(Level.DEBUG, "use test random seed");
                 random = new Random(314159265358979L);
             } else {
                 random = new Random(System.currentTimeMillis());
             }
-            m_streamState.init(random.nextInt());
+            streamState.init(random.nextInt());
 
             Packet header = new Packet();
             Packet headerComm = new Packet();
             Packet headerCode = new Packet();
 
-            m_dspState.analysisHeaderOut(m_comment, header, headerComm, headerCode);
-            m_streamState.packetIn(header);
-            m_streamState.packetIn(headerComm);
-            m_streamState.packetIn(headerCode);
+            dspState.analysisHeaderOut(comment, header, headerComm, headerCode);
+            streamState.packetIn(header);
+            streamState.packetIn(headerComm);
+            streamState.packetIn(headerCode);
 
             while (true) {
-                boolean result = m_streamState.flush(m_page);
+                boolean result = streamState.flush(page);
                 if (!result) {
                     break;
                 }
-                getCircularBuffer().write(m_page.header_base, m_page.header, m_page.header_len);
-                getCircularBuffer().write(m_page.body_base, m_page.body, m_page.body_len);
+                getCircularBuffer().write(page.header_base, page.header, page.header_len);
+                getCircularBuffer().write(page.body_base, page.body, page.body_len);
             }
 
-            logger.log(Level.TRACE, "<init>: end");
+            logger.log(Level.TRACE, "end");
         }
 
         @Override
         public void execute() {
-            logger.log(Level.TRACE, ">execute(): begin");
-            int nFrameSize = getFrameSize();
-            int nChannels = getChannels();
-            boolean bBigEndian = isBigEndian();
-            int nBytesPerSample = nFrameSize / nChannels;
-            int nSampleSizeInBits = nBytesPerSample * 8;
-            float fScale = (float) Math.pow(2.0, nSampleSizeInBits - 1);
-            logger.log(Level.TRACE, "frame size: " + nFrameSize);
-            logger.log(Level.TRACE, "channels: " + nChannels);
-            logger.log(Level.TRACE, "big endian: " + bBigEndian);
-            logger.log(Level.TRACE, "sample size (bits): " + nSampleSizeInBits);
-            logger.log(Level.TRACE, "bytes per sample: " + nBytesPerSample);
-            logger.log(Level.TRACE, "scale: " + fScale);
+            logger.log(Level.TRACE, "begin");
+            int frameSize = getFrameSize();
+            int channels = getChannels();
+            boolean bigEndian = isBigEndian();
+            int bytesPerSample = frameSize / channels;
+            int sampleSizeInBits = bytesPerSample * 8;
+            float scale = (float) Math.pow(2.0, sampleSizeInBits - 1);
+            logger.log(Level.TRACE, "frame size: " + frameSize);
+            logger.log(Level.TRACE, "channels: " + channels);
+            logger.log(Level.TRACE, "big endian: " + bigEndian);
+            logger.log(Level.TRACE, "sample size (bits): " + sampleSizeInBits);
+            logger.log(Level.TRACE, "bytes per sample: " + bytesPerSample);
+            logger.log(Level.TRACE, "scale: " + scale);
 
             while (!eos && writeMore()) {
                 logger.log(Level.TRACE, "writeMore: " + writeMore());
                 int bytes;
                 try {
-                    bytes = m_decodedStream.read(m_abReadbuffer);
+                    bytes = decodedStream.read(readbuffer);
                     logger.log(Level.TRACE, "read from PCM stream: " + bytes);
                 } catch (IOException e) {
                     logger.log(Level.ERROR, e.getMessage(), e);
 
-                    m_streamState.clear();
-                    m_block.clear();
-                    m_dspState.clear();
-                    m_comment.clear();
-                    m_info.clear();
+                    streamState.clear();
+                    block.clear();
+                    dspState.clear();
+                    comment.clear();
+                    info.clear();
                     try {
                         close(); // TODO is it ok as SPI?
                     } catch (IOException e1) {
@@ -354,35 +351,35 @@ public class VorbisFormatConversionProvider extends TEncodingFormatConversionPro
 
                 if (bytes == 0 || bytes == -1) {
                     logger.log(Level.TRACE, "EOS reached; calling DspState.write(0)");
-                    m_dspState.analysisWrote(0);
+                    dspState.analysisWrote(0);
                 } else {
-                    int nFrames = bytes / nFrameSize;
-                    logger.log(Level.TRACE, "processing frames: " + nFrames);
-                    float[][] buffer = m_dspState.analysisBuffer(READ);
+                    int frames = bytes / frameSize;
+                    logger.log(Level.TRACE, "processing frames: " + frames);
+                    float[][] buffer = dspState.analysisBuffer(READ);
                     // uninterleave samples
-                    for (int i = 0, l = m_dspState.pcm_current; i < bytes / 4; i++, l++) {
-                        buffer[0][l] = ((m_abReadbuffer[i * 4 + 1] << 8) |
-                                (0x00ff & (int) m_abReadbuffer[i * 4])) / 32768.f;
-                        buffer[1][l] = ((m_abReadbuffer[i * 4 + 3] << 8) |
-                                (0x00ff & (int) m_abReadbuffer[i * 4 + 2])) / 32768.f;
+                    for (int i = 0, l = dspState.pcm_current; i < bytes / 4; i++, l++) {
+                        buffer[0][l] = ((readbuffer[i * 4 + 1] << 8) |
+                                (0x00ff & (int) readbuffer[i * 4])) / 32768.f;
+                        buffer[1][l] = ((readbuffer[i * 4 + 3] << 8) |
+                                (0x00ff & (int) readbuffer[i * 4 + 2])) / 32768.f;
                     }
-                    m_dspState.analysisWrote(bytes / 4);
+                    dspState.analysisWrote(bytes / 4);
                 }
 
-                while (m_block.analysisBlockOut()) {
-                    m_block.analysis(null);
-                    m_block.bitrateAddBlock();
-                    while (m_dspState.bitrateFlushPacket(m_packet)) {
-                        m_streamState.packetIn(m_packet);
+                while (block.analysisBlockOut()) {
+                    block.analysis(null);
+                    block.bitrateAddBlock();
+                    while (dspState.bitrateFlushPacket(packet)) {
+                        streamState.packetIn(packet);
                         while (!eos /* && writeMore() */) {
-                            boolean result = m_streamState.pageOut(m_page);
+                            boolean result = streamState.pageOut(page);
                             if (!result) {
                                 break;
                             }
-                            getCircularBuffer().write(m_page.header_base, m_page.header, m_page.header_len);
-                            getCircularBuffer().write(m_page.body_base, m_page.body, m_page.body_len);
+                            getCircularBuffer().write(page.header_base, page.header, page.header_len);
+                            getCircularBuffer().write(page.body_base, page.body, page.body_len);
 
-                            if (m_page.eos()) {
+                            if (page.eos()) {
                                 eos = true;
                                 logger.log(Level.TRACE, "page has detected EOS");
                             }
@@ -394,11 +391,11 @@ public class VorbisFormatConversionProvider extends TEncodingFormatConversionPro
             if (eos) {
                 logger.log(Level.TRACE, "EOS; shutting down encoder");
 
-                m_streamState.clear();
-                m_block.clear();
-                m_dspState.clear();
-                m_comment.clear();
-                m_info.clear();
+                streamState.clear();
+                block.clear();
+                dspState.clear();
+                comment.clear();
+                info.clear();
                 getCircularBuffer().close();
                 try {
                     close();
@@ -407,25 +404,25 @@ public class VorbisFormatConversionProvider extends TEncodingFormatConversionPro
                 }
             }
 
-            logger.log(Level.TRACE, "<execute(): end");
+            logger.log(Level.TRACE, "end");
         }
 
         private int getChannels() {
-            return m_decodedStream.getFormat().getChannels();
+            return decodedStream.getFormat().getChannels();
         }
 
         private int getFrameSize() {
-            return m_decodedStream.getFormat().getFrameSize();
+            return decodedStream.getFormat().getFrameSize();
         }
 
         private boolean isBigEndian() {
-            return m_decodedStream.getFormat().isBigEndian();
+            return decodedStream.getFormat().isBigEndian();
         }
 
         @Override
         public void close() throws IOException {
             super.close();
-            m_decodedStream.close();
+            decodedStream.close();
         }
 
         // copied from TConversionTool
@@ -452,63 +449,63 @@ public class VorbisFormatConversionProvider extends TEncodingFormatConversionPro
         private static final int BUFFER_SIZE = BUFFER_MULTIPLE * 256 * 2;
         private static final int CONVSIZE = BUFFER_SIZE * 2;
 
-        private InputStream m_oggBitStream;
+        private final InputStream oggBitStream;
 
-        private byte[] m_abInputBuffer;
+        private byte[] inputBuffer;
         // Ogg structures
-        private SyncState m_oggSyncState = null;
-        private StreamState m_oggStreamState = null;
-        private Page m_oggPage = null;
-        private Packet m_oggPacket = null;
+        private SyncState oggSyncState = null;
+        private StreamState oggStreamState = null;
+        private Page oggPage = null;
+        private Packet oggPacket = null;
 
         // Vorbis structures
-        private Info m_vorbisInfo = null;
-        private Comment m_vorbisComment = null;
-        private DspState m_vorbisDspState = null;
-        private Block m_vorbisBlock = null;
+        private Info vorbisInfo = null;
+        private Comment vorbisComment = null;
+        private DspState vorbisDspState = null;
+        private Block vorbisBlock = null;
 
         // private List m_songComments = new ArrayList();
         // is altered later in a dubious way
         @SuppressWarnings("unused")
-        private int convsize = -1; // BUFFER_SIZE * 2;
+        private int convSize = -1; // BUFFER_SIZE * 2;
         // TODO further checking
-        private byte[] convbuffer = new byte[CONVSIZE];
-        private float[][] m_aPcmOut;
+        private final byte[] convBuffer = new byte[CONVSIZE];
+        private float[][] pcmOut;
 
-        private boolean m_bHeadersExpected;
+        private boolean headersExpected;
 
         /**
          * Constructor.
          */
         public DecodedVorbisAudioInputStream(AudioFormat outputFormat, AudioInputStream bitStream) {
             super(outputFormat, AudioSystem.NOT_SPECIFIED);
-            logger.log(Level.TRACE, "DecodedVorbisAudioInputStream.<init>(): begin");
+            logger.log(Level.TRACE, "begin");
 
-            m_oggBitStream = bitStream;
-            m_bHeadersExpected = true;
-            init_jorbis();
+            oggBitStream = bitStream;
+            headersExpected = true;
+            initJorbis();
 
-            logger.log(Level.TRACE, "DecodedVorbisAudioInputStream.<init>(): end");
+            logger.log(Level.TRACE, "end");
         }
 
         /**
          * Initializes all the jOrbis and jOgg vars that are used for song playback.
          */
-        private void init_jorbis() {
-            m_abInputBuffer = new byte[INPUT_BUFFER_SIZE];
-            m_oggSyncState = new SyncState();
-            m_oggStreamState = new StreamState();
-            m_oggPage = new Page();
-            m_oggPacket = new Packet();
+        private void initJorbis() {
+            inputBuffer = new byte[INPUT_BUFFER_SIZE];
+            oggSyncState = new SyncState();
+            oggStreamState = new StreamState();
+            oggPage = new Page();
+            oggPacket = new Packet();
 
-            m_vorbisInfo = new Info();
-            m_vorbisComment = new Comment();
-            m_vorbisDspState = new DspState();
-            m_vorbisBlock = new Block(m_vorbisDspState);
-            m_vorbisDspState.analysisInit(m_vorbisInfo);
-            m_vorbisBlock.init(m_vorbisDspState);
+            vorbisInfo = new Info();
+            vorbisComment = new Comment();
+            vorbisDspState = new DspState();
+            vorbisBlock = new Block(vorbisDspState);
+            vorbisDspState.analysisInit(vorbisInfo);
+            vorbisBlock.init(vorbisDspState);
 
-            m_oggSyncState.init();
+            oggSyncState.init();
         }
 
         /**
@@ -516,9 +513,9 @@ public class VorbisFormatConversionProvider extends TEncodingFormatConversionPro
          */
         @Override
         public void execute() {
-            logger.log(Level.TRACE, ">DecodedVorbisAudioInputStream.execute(): begin");
+            logger.log(Level.TRACE, "begin");
 
-            if (m_bHeadersExpected) {
+            if (headersExpected) {
                 logger.log(Level.TRACE, "reading headers...");
                 // Headers (+ Comments).
                 try {
@@ -528,10 +525,10 @@ public class VorbisFormatConversionProvider extends TEncodingFormatConversionPro
 
                     closePhysicalStream();
 
-                    logger.log(Level.TRACE, "<DecodedVorbisAudioInputStream.execute(): end");
+                    logger.log(Level.TRACE, "end");
                     return;
                 }
-                m_bHeadersExpected = false;
+                headersExpected = false;
                 setupVorbisStructures();
             }
             logger.log(Level.TRACE, "decoding...");
@@ -544,39 +541,39 @@ public class VorbisFormatConversionProvider extends TEncodingFormatConversionPro
 
                     closePhysicalStream();
 
-                    logger.log(Level.TRACE, "<DecodedVorbisAudioInputStream.execute(): end");
+                    logger.log(Level.TRACE, "end");
                     return;
                 }
                 decodeDataPacket();
             }
-            if (m_oggPacket.isEos()) {
+            if (oggPacket.isEos()) {
                 logger.log(Level.TRACE, "end of vorbis stream reached");
                 // The end of the vorbis stream is reached.
                 // So we shut down the logical bitstream and
                 // vorbis structures.
-                m_oggStreamState.clear();
-                m_vorbisBlock.clear();
-                m_vorbisDspState.clear();
-                m_vorbisInfo.clear();
-                m_bHeadersExpected = true;
+                oggStreamState.clear();
+                vorbisBlock.clear();
+                vorbisDspState.clear();
+                vorbisInfo.clear();
+                headersExpected = true;
             }
-            logger.log(Level.TRACE, "<DecodedVorbisAudioInputStream.execute(): end");
+            logger.log(Level.TRACE, "end");
         }
 
         private void closePhysicalStream() {
-            logger.log(Level.TRACE, "DecodedVorbisAudioInputStream.closePhysicalStream(): begin");
+            logger.log(Level.TRACE, "begin");
 
-            m_oggSyncState.clear();
+            oggSyncState.clear();
             try {
-                if (m_oggBitStream != null) {
-                    m_oggBitStream.close();
+                if (oggBitStream != null) {
+                    oggBitStream.close();
                 }
                 getCircularBuffer().close();
             } catch (Exception e) {
                 logger.log(Level.ERROR, e.getMessage(), e);
             }
 
-            logger.log(Level.TRACE, "DecodedVorbisAudioInputStream.closePhysicalStream(): end");
+            logger.log(Level.TRACE, "end");
         }
 
         /**
@@ -591,20 +588,20 @@ public class VorbisFormatConversionProvider extends TEncodingFormatConversionPro
         /**
          * Read the vorbis identification header.
          *
-         * @throw IOException
+         * @throws IOException when an error occurs
          */
         private void readIdentificationHeader() throws IOException {
             readOggPage();
-            m_oggStreamState.init(m_oggPage.serialNo());
-            m_vorbisInfo.init();
-            m_vorbisComment.init();
-            if (m_oggStreamState.pageIn(m_oggPage) < 0) {
+            oggStreamState.init(oggPage.serialNo());
+            vorbisInfo.init();
+            vorbisComment.init();
+            if (oggStreamState.pageIn(oggPage) < 0) {
                 throw new IOException("can't read first page of Ogg bitstream data, perhaps stream version mismatch");
             }
-            if (m_oggStreamState.packetOut(m_oggPacket) != 1) {
+            if (oggStreamState.packetOut(oggPacket) != 1) {
                 throw new IOException("can't read initial header packet");
             }
-            if (m_vorbisInfo.headerIn(m_vorbisComment, m_oggPacket) < 0) {
+            if (vorbisInfo.headerIn(vorbisComment, oggPacket) < 0) {
                 throw new IOException("packet is not a vorbis header");
             }
         }
@@ -615,7 +612,7 @@ public class VorbisFormatConversionProvider extends TEncodingFormatConversionPro
         private void readCommentAndCodebookHeaders() throws IOException {
             for (int i = 0; i < 2; i++) {
                 readOggPacket();
-                if (m_vorbisInfo.headerIn(m_vorbisComment, m_oggPacket) < 0) {
+                if (vorbisInfo.headerIn(vorbisComment, oggPacket) < 0) {
                     throw new IOException("packet is not a vorbis header");
                 }
             }
@@ -625,132 +622,132 @@ public class VorbisFormatConversionProvider extends TEncodingFormatConversionPro
          *
          */
         private void processComments() {
-            logger.log(Level.TRACE, "DecodedVorbisAudioInputStream.processComments(): begin");
-            logger.log(Level.TRACE, "DecodedVorbisAudioInputStream.processComments(): encoded by: " + m_vorbisComment.getVendor());
+            logger.log(Level.TRACE, "begin");
+            logger.log(Level.TRACE, "encoded by: " + vorbisComment.getVendor());
 
-            String[] astrComments = new String[m_vorbisComment.comments];
+            String[] comments = new String[vorbisComment.comments];
             logger.log(Level.TRACE, "user comments:");
-            for (int i = 0; i < m_vorbisComment.comments; i++) {
-                astrComments[i] = m_vorbisComment.getComment(i);
-                logger.log(Level.TRACE, astrComments[i]);
+            for (int i = 0; i < vorbisComment.comments; i++) {
+                comments[i] = vorbisComment.getComment(i);
+                logger.log(Level.TRACE, comments[i]);
             }
-//            byte[][] ptr = m_vorbisComment.user_comments;
+//            byte[][] ptr = vorbisComment.user_comments;
 //            String currComment = "";
-//            m_songComments.clear();
+//            songComments.clear();
 //            for (int j = 0; j < ptr.length; j++) {
 //                if (ptr[j] == null) {
 //                    break;
 //                }
 //                currComment = (new String(ptr[j], 0, ptr[j].length - 1)).trim();
-//                m_songComments.add(currComment);
+//                songComments.add(currComment);
 //                if (currComment.toUpperCase().startsWith("ARTIST")) {
 //                    String artistLabelValue = currComment.substring(7);
 //                } else if (currComment.toUpperCase().startsWith("TITLE")) {
 //                    String titleLabelValue = currComment.substring(6);
 //                    String miniDragLabel = currComment.substring(6);
 //                }
-//                logger.log(Level.TRACE, "Comment: " + currComment);
+//logger.log(Level.TRACE, "Comment: " + currComment);
 //            }
-//            currComment = "Bitstream: " + m_vorbisInfo.getChannels() + " channel," + m_vorbisInfo.rate + "Hz";
-//            m_songComments.add(currComment);
-//            logger.log(Level.TRACE, currComment);
-//            m_songComments.add(currComment);
-//            logger.log(Level.TRACE, currComment);
-            logger.log(Level.TRACE, "DecodedVorbisAudioInputStream.processComments(): end");
+//            currComment = "Bitstream: " + vorbisInfo.getChannels() + " channel," + vorbisInfo.rate + "Hz";
+//            songComments.add(currComment);
+//logger.log(Level.TRACE, currComment);
+//            songComments.add(currComment);
+//logger.log(Level.TRACE, currComment);
+            logger.log(Level.TRACE, "end");
         }
 
         /**
          * Setup structures needed for vorbis decoding.
-         * Precondition: m_vorbisInfo has to be initialized completely
+         * Precondition: vorbisInfo has to be initialized completely
          * (i.e. all three headers are read).
          */
         private void setupVorbisStructures() {
-            convsize = BUFFER_SIZE / m_vorbisInfo.channels;
-            m_vorbisDspState.analysisInit(m_vorbisInfo);
-            m_vorbisBlock.init(m_vorbisDspState);
-            m_aPcmOut = new float[m_vorbisInfo.channels][];
+            convSize = BUFFER_SIZE / vorbisInfo.channels;
+            vorbisDspState.analysisInit(vorbisInfo);
+            vorbisBlock.init(vorbisDspState);
+            pcmOut = new float[vorbisInfo.channels][];
         }
 
         /**
          * Decode a packet of vorbis data.
          * This method assumes that a packet is available in
-         * {@link #m_oggPacket m_oggPacket}. The content of this
+         * {@link #oggPacket oggPacket}. The content of this
          * packet is run through the decoder. The resulting
          * PCM data are written to the circular buffer.
          */
         private void decodeDataPacket() {
-            int nSamples;
-            if (m_vorbisBlock.analysis(m_oggPacket) == 0) { // test for success!
-                m_vorbisDspState.blockIn(m_vorbisBlock);
+            int samples;
+            if (vorbisBlock.analysis(oggPacket) == 0) { // test for success!
+                vorbisDspState.blockIn(vorbisBlock);
             }
             float[][][] tmp = new float[1][][];
-            tmp[0] = m_aPcmOut;
-            while ((nSamples = m_vorbisDspState.pcmOut(tmp)) > 0) {
-                m_aPcmOut = tmp[0];
+            tmp[0] = pcmOut;
+            while ((samples = vorbisDspState.pcmOut(tmp)) > 0) {
+                pcmOut = tmp[0];
                 // convert floats to signed ints and
                 // interleave
-                for (int nChannel = 0; nChannel < m_vorbisInfo.channels; nChannel++) {
-                    int pointer = nChannel * getSampleSizeInBytes();
-                    for (int j = 0; j < nSamples; j++) {
-                        float fVal = m_aPcmOut[nChannel][j];
-                        clipAndWriteSample(fVal, pointer);
+                for (int channel = 0; channel < vorbisInfo.channels; channel++) {
+                    int pointer = channel * getSampleSizeInBytes();
+                    for (int j = 0; j < samples; j++) {
+                        float val = pcmOut[channel][j];
+                        clipAndWriteSample(val, pointer);
                         pointer += getFrameSize();
                     }
                 }
-                m_vorbisDspState.read(nSamples);
-                getCircularBuffer().write(convbuffer, 0, getFrameSize() * nSamples);
+                vorbisDspState.read(samples);
+                getCircularBuffer().write(convBuffer, 0, getFrameSize() * samples);
             }
         }
 
         /**
-         * Scale and clip the sample and write it to convbuffer.
+         * Scale and clip the sample and write it to convBuffer.
          */
-        private void clipAndWriteSample(float fSample, int nPointer) {
-            int nSample;
+        private void clipAndWriteSample(float sample, int pointer) {
+            int _sample;
             // TODO check if clipping is necessary
-            if (fSample > 1.0F) {
-                fSample = 1.0F;
+            if (sample > 1.0F) {
+                sample = 1.0F;
             }
-            if (fSample < -1.0F) {
-                fSample = -1.0F;
+            if (sample < -1.0F) {
+                sample = -1.0F;
             }
             switch (getFormat().getSampleSizeInBits()) {
             case 16:
-                nSample = (int) (fSample * 32767.0F);
+                _sample = (int) (sample * 32767.0F);
                 if (isBigEndian()) {
-                    convbuffer[nPointer++] = (byte) (nSample >> 8);
-                    convbuffer[nPointer] = (byte) (nSample & 0xFF);
+                    convBuffer[pointer++] = (byte) (_sample >> 8);
+                    convBuffer[pointer] = (byte) (_sample & 0xFF);
                 } else {
-                    convbuffer[nPointer++] = (byte) (nSample & 0xFF);
-                    convbuffer[nPointer] = (byte) (nSample >> 8);
+                    convBuffer[pointer++] = (byte) (_sample & 0xFF);
+                    convBuffer[pointer] = (byte) (_sample >> 8);
                 }
                 break;
 
             case 24:
-                nSample = (int) (fSample * 8388607.0F);
+                _sample = (int) (sample * 8388607.0F);
                 if (isBigEndian()) {
-                    convbuffer[nPointer++] = (byte) (nSample >> 16);
-                    convbuffer[nPointer++] = (byte) ((nSample >>> 8) & 0xFF);
-                    convbuffer[nPointer] = (byte) (nSample & 0xFF);
+                    convBuffer[pointer++] = (byte) (_sample >> 16);
+                    convBuffer[pointer++] = (byte) ((_sample >>> 8) & 0xFF);
+                    convBuffer[pointer] = (byte) (_sample & 0xFF);
                 } else {
-                    convbuffer[nPointer++] = (byte) (nSample & 0xFF);
-                    convbuffer[nPointer++] = (byte) ((nSample >>> 8) & 0xFF);
-                    convbuffer[nPointer] = (byte) (nSample >> 16);
+                    convBuffer[pointer++] = (byte) (_sample & 0xFF);
+                    convBuffer[pointer++] = (byte) ((_sample >>> 8) & 0xFF);
+                    convBuffer[pointer] = (byte) (_sample >> 16);
                 }
                 break;
 
             case 32:
-                nSample = (int) (fSample * 2147483647.0F);
+                _sample = (int) (sample * 2147483647.0F);
                 if (isBigEndian()) {
-                    convbuffer[nPointer++] = (byte) (nSample >> 24);
-                    convbuffer[nPointer++] = (byte) ((nSample >>> 16) & 0xFF);
-                    convbuffer[nPointer++] = (byte) ((nSample >>> 8) & 0xFF);
-                    convbuffer[nPointer] = (byte) (nSample & 0xFF);
+                    convBuffer[pointer++] = (byte) (_sample >> 24);
+                    convBuffer[pointer++] = (byte) ((_sample >>> 16) & 0xFF);
+                    convBuffer[pointer++] = (byte) ((_sample >>> 8) & 0xFF);
+                    convBuffer[pointer] = (byte) (_sample & 0xFF);
                 } else {
-                    convbuffer[nPointer++] = (byte) (nSample & 0xFF);
-                    convbuffer[nPointer++] = (byte) ((nSample >>> 8) & 0xFF);
-                    convbuffer[nPointer++] = (byte) ((nSample >>> 16) & 0xFF);
-                    convbuffer[nPointer] = (byte) (nSample >> 24);
+                    convBuffer[pointer++] = (byte) (_sample & 0xFF);
+                    convBuffer[pointer++] = (byte) ((_sample >>> 8) & 0xFF);
+                    convBuffer[pointer++] = (byte) ((_sample >>> 16) & 0xFF);
+                    convBuffer[pointer] = (byte) (_sample >> 24);
                 }
                 break;
             }
@@ -762,12 +759,12 @@ public class VorbisFormatConversionProvider extends TEncodingFormatConversionPro
          * packet. If needed, it calls
          * {@link #readOggPage readOggPage()}, which, in turn, may
          * read more data from the stream. The resulting packet is
-         * placed in {@link #m_oggPacket m_oggPacket} (for which the
+         * placed in {@link #oggPacket oggPacket} (for which the
          * reference is not altered; is has to be initialized before).
          */
         private void readOggPacket() throws IOException {
             while (true) {
-                int result = m_oggStreamState.packetOut(m_oggPacket);
+                int result = oggStreamState.packetOut(oggPacket);
                 if (result == 1) {
                     return;
                 }
@@ -775,7 +772,7 @@ public class VorbisFormatConversionProvider extends TEncodingFormatConversionPro
                     throw new IOException("can't read packet");
                 }
                 readOggPage();
-                if (m_oggStreamState.pageIn(m_oggPage) < 0) {
+                if (oggStreamState.pageIn(oggPage) < 0) {
                     throw new IOException("can't read page of Ogg bitstream data");
                 }
             }
@@ -786,7 +783,7 @@ public class VorbisFormatConversionProvider extends TEncodingFormatConversionPro
          * This method does everything necessary to read an ogg
          * page. If needed, it reads more data from the stream.
          * The resulting page is
-         * placed in {@link #m_oggPage m_oggPage} (for which the
+         * placed in {@link #oggPage oggPage} (for which the
          * reference is not altered; is has to be initialized before).
          * <p>
          * Note: this method doesn't deliver the page read to a
@@ -795,44 +792,44 @@ public class VorbisFormatConversionProvider extends TEncodingFormatConversionPro
          */
         private void readOggPage() throws IOException {
             while (true) {
-                int result = m_oggSyncState.pageOut(m_oggPage);
+                int result = oggSyncState.pageOut(oggPage);
                 if (result == 1) {
                     return;
                 }
                 // we need more data from the stream
                 // TODO call stream.read() directly
-                int nBytes = readFromStream(m_abInputBuffer, 0, m_abInputBuffer.length);
+                int bytes = readFromStream(inputBuffer, 0, inputBuffer.length);
                 // TODO This clause should become obsolete; readFromStream() should
                 // propagate exceptions directly.
-                if (nBytes == -1) {
+                if (bytes == -1) {
                     throw new EOFException();
                 }
-                m_oggSyncState.write(m_abInputBuffer, nBytes);
+                oggSyncState.write(inputBuffer, bytes);
             }
         }
 
         /**
          * Read raw data from to ogg bitstream.
-         * Reads from  {@link #m_oggBitStream m_oggBitStream} a
+         * Reads from  {@link #oggBitStream oggBitStream} a
          * specified number of bytes into a buffer, starting
          * at a specified buffer index.
          *
-         * @param buffer  the where the read data should be put into. Its length has to be at least nStart + nLength.
-         * @param nStart
-         * @param nLength the number of bytes to read
+         * @param buffer  the where the read data should be put into. Its length has to be at least start + length.
+         * @param start start position of the buffer to read
+         * @param length the number of bytes to read
          * @return the number of bytes read (maybe 0) or
          * -1 if there is no more data in the stream.
          */
-        private int readFromStream(byte[] buffer, int nStart, int nLength) throws IOException {
-            return m_oggBitStream.read(buffer, nStart, nLength);
+        private int readFromStream(byte[] buffer, int start, int length) throws IOException {
+            return oggBitStream.read(buffer, start, length);
         }
 
-        /**  */
+        /** */
         private int getSampleSizeInBytes() {
             return getFormat().getFrameSize() / getFormat().getChannels();
         }
 
-        /**  */
+        /** */
         private int getFrameSize() {
             return getFormat().getFrameSize();
         }
@@ -849,7 +846,7 @@ public class VorbisFormatConversionProvider extends TEncodingFormatConversionPro
         @Override
         public void close() throws IOException {
             super.close();
-            m_oggBitStream.close();
+            oggBitStream.close();
         }
     }
 }

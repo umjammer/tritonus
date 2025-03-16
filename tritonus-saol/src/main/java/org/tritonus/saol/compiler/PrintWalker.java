@@ -36,11 +36,7 @@ public class PrintWalker extends DepthFirstAdapter {
     private int indent = 0;
 
     void indent() {
-        StringBuilder s = new StringBuilder();
-        for (int i = 0; i < indent; i++) {
-            s.append(" ");
-        }
-        System.out.print(s);
+        System.out.print(" ".repeat(Math.max(0, indent)));
     }
 
     @Override
@@ -70,17 +66,15 @@ public class PrintWalker extends DepthFirstAdapter {
     }
 
     private static String getStrippedClassName(Node node) {
-        String strClassName = node.getClass().getName();
-        return stripClassName(strClassName);
+        String className = node.getClass().getName();
+        return stripClassName(className);
     }
 
-    private static String stripClassName(String strClassName) {
-        int nLastDotPosition = strClassName.lastIndexOf(".");
-        if (nLastDotPosition >= 0) {
-            strClassName = strClassName.substring(nLastDotPosition + 1);
+    private static String stripClassName(String className) {
+        int lastDotPosition = className.lastIndexOf(".");
+        if (lastDotPosition >= 0) {
+            className = className.substring(lastDotPosition + 1);
         }
-        return strClassName;
+        return className;
     }
 }
-
-

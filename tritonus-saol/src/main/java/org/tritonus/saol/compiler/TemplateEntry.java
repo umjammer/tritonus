@@ -21,22 +21,19 @@ import org.tritonus.saol.sablecc.node.ATemplatedeclTemplatedecl;
 
 public class TemplateEntry {
 
-    private String m_strTemplateName;
-    private ATemplatedeclTemplatedecl m_startNode;
+    private final String templateName;
+    private final ATemplatedeclTemplatedecl startNode;
 
-    public TemplateEntry(String strTemplateName,
-                         ATemplatedeclTemplatedecl startNode) {
-        m_strTemplateName = strTemplateName;
-        m_startNode = startNode;
+    public TemplateEntry(String templateName, ATemplatedeclTemplatedecl startNode) {
+        this.templateName = templateName;
+        this.startNode = startNode;
     }
 
     public String getTemplateName() {
-        return m_strTemplateName;
+        return templateName;
     }
 
     public ATemplatedeclTemplatedecl getStartNode() {
-        return m_startNode;
+        return startNode;
     }
 }
-
-

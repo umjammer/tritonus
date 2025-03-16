@@ -23,30 +23,21 @@ import org.tritonus.saol.sablecc.node.ASenddefGlobaldef;
 import org.tritonus.saol.sablecc.node.ASeqdefGlobaldef;
 
 
-public class GlobalSemanticsCheck
-        extends IOGTCommonSemanticsCheck {
+public class GlobalSemanticsCheck extends IOGTCommonSemanticsCheck {
 
-    private static final boolean DEBUG = true;
-    private static final int[] LEGAL_VARIABLE_TYPES = new int[]
-            {
-                    WidthAndRate.RATE_I,
-                    WidthAndRate.RATE_K,
-                    WidthAndRate.RATE_A,
-                    WidthAndRate.RATE_OPARRAY,
-            };
+    private static final int[] LEGAL_VARIABLE_TYPES = new int[] {
+            WidthAndRate.RATE_I,
+            WidthAndRate.RATE_K,
+            WidthAndRate.RATE_A,
+            WidthAndRate.RATE_OPARRAY,
+    };
 
-    private VariableTable m_globalVariableTable;
+    private final VariableTable globalVariableTable;
 
-    public GlobalSemanticsCheck(VariableTable globalVariableTable,
-                                NodeSemanticsTable nodeSemanticsTable) {
+    public GlobalSemanticsCheck(VariableTable globalVariableTable, NodeSemanticsTable nodeSemanticsTable) {
         super(nodeSemanticsTable);
-        m_globalVariableTable = globalVariableTable;
+        this.globalVariableTable = globalVariableTable;
     }
-
-
-////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////
 
     @Override
     public void inAGlobaldeclGlobaldecl(AGlobaldeclGlobaldecl node) {
@@ -88,14 +79,9 @@ public class GlobalSemanticsCheck
     public void outASeqdefGlobaldef(ASeqdefGlobaldef node) {
     }
 
-
-////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////
-
     @Override
     protected VariableTable getOwnVariableTable() {
-        return m_globalVariableTable;
+        return globalVariableTable;
     }
 
     @Override
@@ -108,5 +94,3 @@ public class GlobalSemanticsCheck
         return LEGAL_VARIABLE_TYPES;
     }
 }
-
-

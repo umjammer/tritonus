@@ -34,11 +34,11 @@ public class AuAudioOutputStreamTestCase
     @Override
     protected AudioOutputStream createAudioOutputStreamImpl(
             AudioFormat audioFormat,
-            long nLength,
+            long length,
             TDataOutputStream dataOutputStream)
             throws Exception {
         return new AuAudioOutputStream(audioFormat,
-                nLength,
+                length,
                 dataOutputStream);
     }
 
@@ -48,30 +48,30 @@ public class AuAudioOutputStreamTestCase
      */
     @Override
     protected byte[] getExpectedHeaderData(AudioFormat audioFormat,
-                                           int nLength,
-                                           boolean bSeekable,
-                                           boolean bLengthGiven) {
-        int nSampleRate = (int) audioFormat.getSampleRate();
-        byte[] abExpectedHeaderData = new byte[] {
+                                           int length,
+                                           boolean seekable,
+                                           boolean lengthGiven) {
+        int sampleRate = (int) audioFormat.getSampleRate();
+        byte[] expectedHeaderData = new byte[] {
                 0x2e, 0x73, 0x6e, 0x64,
                 0, 0, 0, (byte) (24 + getExpectedAdditionalHeaderLength()),
                 0, 0, 0, 0, // <-- not yet populated
                 0, 0, 0, getEncoding(audioFormat),
-                0, (byte) (nSampleRate / 65536), (byte) (nSampleRate / 256), (byte) nSampleRate,
+                0, (byte) (sampleRate / 65536), (byte) (sampleRate / 256), (byte) sampleRate,
                 0, 0, 0, (byte) audioFormat.getChannels()
         };
-        if (bLengthGiven || bSeekable) {
-            abExpectedHeaderData[11] = (byte) nLength;
+        if (lengthGiven || seekable) {
+            expectedHeaderData[11] = (byte) length;
         } else {
-            abExpectedHeaderData[8] = (byte) 0xff;
-            abExpectedHeaderData[9] = (byte) 0xff;
-            abExpectedHeaderData[10] = (byte) 0xff;
-            abExpectedHeaderData[11] = (byte) 0xff;
+            expectedHeaderData[8] = (byte) 0xff;
+            expectedHeaderData[9] = (byte) 0xff;
+            expectedHeaderData[10] = (byte) 0xff;
+            expectedHeaderData[11] = (byte) 0xff;
         }
-        return abExpectedHeaderData;
+        return expectedHeaderData;
     }
 
-    private byte getEncoding(AudioFormat format) {
+    private static byte getEncoding(AudioFormat format) {
         // works only for simple cases
         return (byte) (format.getSampleSizeInBits() / 8 + 1);
     }
@@ -91,5 +91,3 @@ public class AuAudioOutputStreamTestCase
         return false;
     }
 }
-
-

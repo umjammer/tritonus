@@ -27,5 +27,3 @@ public class AuZeroDataLengthAudioFileReaderTestCase
         setResourcePrefix("au_zero_data_length");
     }
 }
-
-

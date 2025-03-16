@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 2003 by Matthias Pfisterer
  *
@@ -24,5 +23,3 @@ public interface FloatSampleReader {
 
     void read(FloatSampleBuffer buffer);
 }
-
-

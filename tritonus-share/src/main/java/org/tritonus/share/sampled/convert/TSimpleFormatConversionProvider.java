@@ -50,26 +50,25 @@ public abstract class TSimpleFormatConversionProvider extends TFormatConversionP
 
     private static final Logger logger= getLogger("org.tritonus.TraceAudioConverter");
 
-    private Collection<AudioFormat.Encoding> m_sourceEncodings;
-    private Collection<AudioFormat.Encoding> m_targetEncodings;
-    private Collection<AudioFormat> m_sourceFormats;
-    private Collection<AudioFormat> m_targetFormats;
+    private Collection<AudioFormat.Encoding> sourceEncodings;
+    private Collection<AudioFormat.Encoding> targetEncodings;
+    private Collection<AudioFormat> sourceFormats;
+    private Collection<AudioFormat> targetFormats;
 
-    protected TSimpleFormatConversionProvider(
-            Collection<AudioFormat> sourceFormats,
-            Collection<AudioFormat> targetFormats) {
-        m_sourceEncodings = new ArraySet<>();
-        m_targetEncodings = new ArraySet<>();
+    protected TSimpleFormatConversionProvider(Collection<AudioFormat> sourceFormats,
+                                              Collection<AudioFormat> targetFormats) {
+        sourceEncodings = new ArraySet<>();
+        targetEncodings = new ArraySet<>();
         if (sourceFormats == null) {
             sourceFormats = new ArraySet<>();
         }
         if (targetFormats == null) {
             targetFormats = new ArraySet<>();
         }
-        m_sourceFormats = sourceFormats;
-        m_targetFormats = targetFormats;
-        collectEncodings(m_sourceFormats, m_sourceEncodings);
-        collectEncodings(m_targetFormats, m_targetEncodings);
+        this.sourceFormats = sourceFormats;
+        this.targetFormats = targetFormats;
+        collectEncodings(this.sourceFormats, sourceEncodings);
+        collectEncodings(this.targetFormats, targetEncodings);
     }
 
     /**
@@ -80,10 +79,10 @@ public abstract class TSimpleFormatConversionProvider extends TFormatConversionP
     protected void disable() {
         logger.log(Level.TRACE, "TSimpleFormatConversionProvider.disable(): disabling " + getClass().getName());
 
-        m_sourceEncodings = new ArraySet<>();
-        m_targetEncodings = new ArraySet<>();
-        m_sourceFormats = new ArraySet<>();
-        m_targetFormats = new ArraySet<>();
+        sourceEncodings = new ArraySet<>();
+        targetEncodings = new ArraySet<>();
+        sourceFormats = new ArraySet<>();
+        targetFormats = new ArraySet<>();
     }
 
     private static void collectEncodings(Collection<AudioFormat> formats, Collection<AudioFormat.Encoding> encodings) {
@@ -94,22 +93,22 @@ public abstract class TSimpleFormatConversionProvider extends TFormatConversionP
 
     @Override
     public AudioFormat.Encoding[] getSourceEncodings() {
-        return m_sourceEncodings.toArray(EMPTY_ENCODING_ARRAY);
+        return sourceEncodings.toArray(EMPTY_ENCODING_ARRAY);
     }
 
     @Override
     public AudioFormat.Encoding[] getTargetEncodings() {
-        return m_targetEncodings.toArray(EMPTY_ENCODING_ARRAY);
+        return targetEncodings.toArray(EMPTY_ENCODING_ARRAY);
     }
 
     @Override
     public boolean isSourceEncodingSupported(AudioFormat.Encoding sourceEncoding) {
-        return m_sourceEncodings.contains(sourceEncoding);
+        return sourceEncodings.contains(sourceEncoding);
     }
 
     @Override
     public boolean isTargetEncodingSupported(AudioFormat.Encoding targetEncoding) {
-        return m_targetEncodings.contains(targetEncoding);
+        return targetEncodings.contains(targetEncoding);
     }
 
     /**
@@ -136,7 +135,7 @@ public abstract class TSimpleFormatConversionProvider extends TFormatConversionP
     @Override
     public AudioFormat[] getTargetFormats(AudioFormat.Encoding targetEncoding, AudioFormat sourceFormat) {
         if (isConversionSupported(targetEncoding, sourceFormat)) {
-            return m_targetFormats.toArray(EMPTY_FORMAT_ARRAY);
+            return targetFormats.toArray(EMPTY_FORMAT_ARRAY);
         } else {
             return EMPTY_FORMAT_ARRAY;
         }
@@ -144,15 +143,15 @@ public abstract class TSimpleFormatConversionProvider extends TFormatConversionP
 
     // TODO check if necessary
     protected boolean isAllowedSourceEncoding(AudioFormat.Encoding sourceEncoding) {
-        return m_sourceEncodings.contains(sourceEncoding);
+        return sourceEncodings.contains(sourceEncoding);
     }
 
     protected boolean isAllowedTargetEncoding(AudioFormat.Encoding targetEncoding) {
-        return m_targetEncodings.contains(targetEncoding);
+        return targetEncodings.contains(targetEncoding);
     }
 
     protected boolean isAllowedSourceFormat(AudioFormat sourceFormat) {
-        for (AudioFormat format : m_sourceFormats) {
+        for (AudioFormat format : sourceFormats) {
             if (AudioFormats.matches(format, sourceFormat)) {
                 return true;
             }
@@ -161,7 +160,7 @@ public abstract class TSimpleFormatConversionProvider extends TFormatConversionP
     }
 
     protected boolean isAllowedTargetFormat(AudioFormat targetFormat) {
-        for (AudioFormat format : m_targetFormats) {
+        for (AudioFormat format : targetFormats) {
             if (AudioFormats.matches(format, targetFormat)) {
                 return true;
             }
@@ -171,19 +170,19 @@ public abstract class TSimpleFormatConversionProvider extends TFormatConversionP
 
     // $$fb 2000-04-02 added some convenience methods for overriding classes
     protected Collection<AudioFormat.Encoding> getCollectionSourceEncodings() {
-        return m_sourceEncodings;
+        return sourceEncodings;
     }
 
     protected Collection<AudioFormat.Encoding> getCollectionTargetEncodings() {
-        return m_targetEncodings;
+        return targetEncodings;
     }
 
     protected Collection<AudioFormat> getCollectionSourceFormats() {
-        return m_sourceFormats;
+        return sourceFormats;
     }
 
     protected Collection<AudioFormat> getCollectionTargetFormats() {
-        return m_targetFormats;
+        return targetFormats;
     }
 
     /**
@@ -229,34 +228,34 @@ public abstract class TSimpleFormatConversionProvider extends TFormatConversionP
      * $$fb 2000-08-16: moved from TEncodingFormatConversionProvider
      */
     protected AudioFormat replaceNotSpecified(AudioFormat sourceFormat, AudioFormat targetFormat) {
-        boolean bSetSampleSize = false;
-        boolean bSetChannels = false;
-        boolean bSetSampleRate = false;
-        boolean bSetFrameRate = false;
+        boolean setSampleSize = false;
+        boolean setChannels = false;
+        boolean setSampleRate = false;
+        boolean setFrameRate = false;
         if (targetFormat.getSampleSizeInBits() == AudioSystem.NOT_SPECIFIED
                 && sourceFormat.getSampleSizeInBits() != AudioSystem.NOT_SPECIFIED) {
-            bSetSampleSize = true;
+            setSampleSize = true;
         }
         if (targetFormat.getChannels() == AudioSystem.NOT_SPECIFIED
                 && sourceFormat.getChannels() != AudioSystem.NOT_SPECIFIED) {
-            bSetChannels = true;
+            setChannels = true;
         }
         if (targetFormat.getSampleRate() == AudioSystem.NOT_SPECIFIED
                 && sourceFormat.getSampleRate() != AudioSystem.NOT_SPECIFIED) {
-            bSetSampleRate = true;
+            setSampleRate = true;
         }
         if (targetFormat.getFrameRate() == AudioSystem.NOT_SPECIFIED
                 && sourceFormat.getFrameRate() != AudioSystem.NOT_SPECIFIED) {
-            bSetFrameRate = true;
+            setFrameRate = true;
         }
-        if (bSetSampleSize || bSetChannels || bSetSampleRate || bSetFrameRate
+        if (setSampleSize || setChannels || setSampleRate || setFrameRate
                 || (targetFormat.getFrameSize() == AudioSystem.NOT_SPECIFIED
                 && sourceFormat.getFrameSize() != AudioSystem.NOT_SPECIFIED)) {
             // create new format in place of the original target format
-            float sampleRate = bSetSampleRate ? sourceFormat.getSampleRate() : targetFormat.getSampleRate();
-            float frameRate = bSetFrameRate ? sourceFormat.getFrameRate() : targetFormat.getFrameRate();
-            int sampleSize = bSetSampleSize ? sourceFormat.getSampleSizeInBits() : targetFormat.getSampleSizeInBits();
-            int channels = bSetChannels ? sourceFormat.getChannels() : targetFormat.getChannels();
+            float sampleRate = setSampleRate ? sourceFormat.getSampleRate() : targetFormat.getSampleRate();
+            float frameRate = setFrameRate ? sourceFormat.getFrameRate() : targetFormat.getFrameRate();
+            int sampleSize = setSampleSize ? sourceFormat.getSampleSizeInBits() : targetFormat.getSampleSizeInBits();
+            int channels = setChannels ? sourceFormat.getChannels() : targetFormat.getChannels();
             int frameSize = getFrameSize(
                     targetFormat.getEncoding(),
                     sampleRate,

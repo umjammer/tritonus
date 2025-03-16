@@ -17,48 +17,35 @@
 package org.tritonus.saol.compiler;
 
 
-public class TemplateSemanticsCheck
-        extends IOTCommonSemanticsCheck {
+public class TemplateSemanticsCheck extends IOTCommonSemanticsCheck {
 
-    private static final boolean DEBUG = true;
     // TODO verify
-    private static final int[] LEGAL_VARIABLE_TYPES = new int[]
-            {
-                    WidthAndRate.RATE_I,
-                    WidthAndRate.RATE_K,
-                    WidthAndRate.RATE_A,
-                    WidthAndRate.RATE_OPARRAY,
-            };
+    private static final int[] LEGAL_VARIABLE_TYPES = new int[] {
+            WidthAndRate.RATE_I,
+            WidthAndRate.RATE_K,
+            WidthAndRate.RATE_A,
+            WidthAndRate.RATE_OPARRAY,
+    };
 
-    private VariableTable m_globalVariableTable;
-    private VariableTable m_localVariableTable;
+    private VariableTable globalVariableTable;
+    private VariableTable localVariableTable;
 
     public TemplateSemanticsCheck(VariableTable globalVariableTable,
                                   VariableTable localVariableTable,
                                   NodeSemanticsTable nodeSemanticsTable) {
         super(nodeSemanticsTable);
-        m_globalVariableTable = globalVariableTable;
-        m_localVariableTable = localVariableTable;
+        this.globalVariableTable = globalVariableTable;
+        this.localVariableTable = localVariableTable;
     }
-
-
-////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////
-
-
-////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////
 
     @Override
     protected VariableTable getOwnVariableTable() {
-        return m_localVariableTable;
+        return localVariableTable;
     }
 
     @Override
     protected VariableTable getGlobalVariableTable() {
-        return m_globalVariableTable;
+        return globalVariableTable;
     }
 
     @Override
@@ -66,5 +53,3 @@ public class TemplateSemanticsCheck
         return LEGAL_VARIABLE_TYPES;
     }
 }
-
-

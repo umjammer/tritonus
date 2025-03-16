@@ -1,8 +1,4 @@
 /*
- * TempoTestCase.java
- */
-
-/*
  *  Copyright (c) 2003 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -105,23 +101,23 @@ public class TempoTestCase extends BaseSequencerTestCase {
         checkTempoValues("after close()", seq, MPQ2, BPM2, 3.0F);
     }
 
-    private void checkTempoValues(String strMessagePrefix,
-                                  Sequencer seq,
-                                  float fExpectedMPQ,
-                                  float fExpectedBPM,
-                                  float fExpectedFactor) {
-        assertEquals(fExpectedMPQ, seq.getTempoInMPQ(), DELTA, strMessagePrefix + " tempo in MPQ");
-        assertEquals(fExpectedBPM, seq.getTempoInBPM(), DELTA, strMessagePrefix + " tempo in BPM");
-        assertEquals(fExpectedFactor, seq.getTempoFactor(), DELTA, strMessagePrefix + " tempo factor");
+    private static void checkTempoValues(String messagePrefix,
+                                         Sequencer seq,
+                                         float expectedMPQ,
+                                         float expectedBPM,
+                                         float expectedFactor) {
+        assertEquals(expectedMPQ, seq.getTempoInMPQ(), DELTA, messagePrefix + " tempo in MPQ");
+        assertEquals(expectedBPM, seq.getTempoInBPM(), DELTA, messagePrefix + " tempo in BPM");
+        assertEquals(expectedFactor, seq.getTempoFactor(), DELTA, messagePrefix + " tempo factor");
     }
 
     private static Sequence createSequence() throws Exception {
         Sequence sequence = new Sequence(Sequence.PPQ, 480);
         Track track = sequence.createTrack();
-        for (long lTick = 0; lTick < 100000; lTick += 1000) {
+        for (long tick = 0; tick < 100000; tick += 1000) {
             MetaMessage mm = new MetaMessage();
             mm.setMessage(6, TEMPOTEXT, TEMPOTEXT.length);
-            MidiEvent me = new MidiEvent(mm, lTick);
+            MidiEvent me = new MidiEvent(mm, tick);
             track.add(me);
         }
         return sequence;
@@ -129,15 +125,15 @@ public class TempoTestCase extends BaseSequencerTestCase {
 
     private static class TempoDetector implements MetaEventListener {
 
-        private long[] m_alArrivalTimes;
+        private long[] arrivalTimes;
 
         @Override
         public void meta(MetaMessage message) {
             if (message.getType() == 6) {
                 for (int i = 0; i < 9; i++) {
-                    m_alArrivalTimes[i] = m_alArrivalTimes[i + 1];
+                    arrivalTimes[i] = arrivalTimes[i + 1];
                 }
-                m_alArrivalTimes[0] = System.currentTimeMillis();
+                arrivalTimes[0] = System.currentTimeMillis();
             }
         }
 
@@ -146,5 +142,3 @@ public class TempoTestCase extends BaseSequencerTestCase {
         }
     }
 }
-
-

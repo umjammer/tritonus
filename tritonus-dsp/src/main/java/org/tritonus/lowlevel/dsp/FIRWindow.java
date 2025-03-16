@@ -14,10 +14,6 @@
  *   limitations under the License.
  */
 
-/*
- |<---            this code is formatted to fit into 80 columns             --->|
- */
-
 package org.tritonus.lowlevel.dsp;
 
 /**
@@ -28,7 +24,7 @@ public interface FIRWindow {
     /**
      * Get an array containing the window coefficients.
      *
-     * @param nOrder The number of elements that the returned array should have.
+     * @param order The number of elements that the returned array should have.
      */
-    double[] getWindow(int nOrder);
+    double[] getWindow(int order);
 }

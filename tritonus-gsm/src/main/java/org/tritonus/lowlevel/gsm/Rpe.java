@@ -103,9 +103,9 @@ public class Rpe {
              * lost when replacing L_MULT by '*'.
              */
 
-            L_result = Add.SASR(L_result, 13);
-            x[k] = (short) ((L_result < Gsm_Def.MIN_WORD ? Gsm_Def.MIN_WORD
-                    : (L_result > Gsm_Def.MAX_WORD ? Gsm_Def.MAX_WORD
+            L_result = GsmMath.sasr(L_result, 13);
+            x[k] = (short) ((L_result < GsmDef.MIN_WORD ? GsmDef.MIN_WORD
+                    : (L_result > GsmDef.MAX_WORD ? GsmDef.MAX_WORD
                     : L_result)));
         }
     }
@@ -185,7 +185,7 @@ public class Rpe {
 
     private int STEP(int m, int i) {
         int L_temp;
-        L_temp = Add.SASR(x[m + 3 * i], 2);
+        L_temp = GsmMath.sasr(x[m + 3 * i], 2);
         return (L_temp * L_temp);
     }
 
@@ -203,7 +203,7 @@ public class Rpe {
          */
         for (int i = 0; i <= 12; i++) {
             temp = xM[i];
-            temp = Add.GSM_ABS(temp);
+            temp = GsmMath.abs(temp);
             if (temp > xmax) {
                 xmax = temp;
             }
@@ -213,7 +213,7 @@ public class Rpe {
          * Qantizing and coding of xmax to get xmaxc.
          */
         exp = 0;
-        temp = Add.SASR(xmax, 9);
+        temp = GsmMath.sasr(xmax, 9);
         itest = 0;
 
         for (int i = 0; i <= 5; i++) {
@@ -222,7 +222,7 @@ public class Rpe {
             } else {
                 itest |= 0;
             }
-            temp = Add.SASR(temp, 1);
+            temp = GsmMath.sasr(temp, 1);
 
             if (!(exp <= 5)) {
                 throw new IllegalArgumentException("APCM_quantization: exp = "
@@ -246,7 +246,7 @@ public class Rpe {
                     + temp + " is out of range. Should be >= 0 and <= 11");
         }
 
-        xmaxc = Add.GSM_ADD(Add.SASR(xmax, temp), (short) (exp << 3));
+        xmaxc = GsmMath.add(GsmMath.sasr(xmax, temp), (short) (exp << 3));
 
         /*
          * Quantizing and coding of the xM[0..12] RPE sequence to get the
@@ -281,7 +281,7 @@ public class Rpe {
         }
 
         temp1 = (short) (6 - exp); // normalization by the exponent
-        temp2 = Gsm_Def.gsm_NRFAC[mant]; // inverse mantissa
+        temp2 = GsmDef.gsm_NRFAC[mant]; // inverse mantissa
 
         for (int i = 0; i <= 12; i++) {
             if (!(temp1 >= 0 && temp1 < 16)) {
@@ -290,8 +290,8 @@ public class Rpe {
             }
 
             temp = (short) (xM[i] << temp1);
-            temp = Add.GSM_MULT(temp, temp2);
-            temp = Add.SASR(temp, 12);
+            temp = GsmMath.mult(temp, temp2);
+            temp = GsmMath.sasr(temp, 12);
             xMc[i + xMc_index] = (short) (temp + 4); // see note below
         }
 
@@ -311,7 +311,7 @@ public class Rpe {
          */
 
         if (xmaxc_elem > 15) {
-            exp = (short) (Add.SASR(xmaxc_elem, 3) - 1);
+            exp = (short) (GsmMath.sasr(xmaxc_elem, 3) - 1);
         }
         mant = (short) (xmaxc_elem - (exp << 3));
 
@@ -373,13 +373,13 @@ public class Rpe {
         short temp, temp1, temp2, temp3;
 
         if (METHOD_ID == ENCODE) {
-            temp1 = Gsm_Def.gsm_FAC[mant_in];
-            temp2 = Add.GSM_SUB((short) 6, exp_in);
+            temp1 = GsmDef.gsm_FAC[mant_in];
+            temp2 = GsmMath.sub((short) 6, exp_in);
         } else { // DECODE
-            temp1 = Gsm_Def.gsm_FAC[mant_out];
-            temp2 = Add.GSM_SUB((short) 6, exp_out);
+            temp1 = GsmDef.gsm_FAC[mant_out];
+            temp2 = GsmMath.sub((short) 6, exp_out);
         }
-        temp3 = Add.gsm_asl((short) 1, Add.GSM_SUB(temp2, (short) 1));
+        temp3 = GsmMath.asl((short) 1, GsmMath.sub(temp2, (short) 1));
 
         xMp_point = 0;
 
@@ -392,9 +392,9 @@ public class Rpe {
                                 + " is out of range. Should be >= -7 and <= 7");
             }
             temp = (short) (temp << 12); // 16 bit signed
-            temp = Add.GSM_MULT_R(temp1, temp);
-            temp = Add.GSM_ADD(temp, temp3);
-            xMp[xMp_point++] = Add.gsm_asr(temp, temp2);
+            temp = GsmMath.multR(temp1, temp);
+            temp = GsmMath.add(temp, temp3);
+            xMp[xMp_point++] = GsmMath.asr(temp, temp2);
         }
     }
 

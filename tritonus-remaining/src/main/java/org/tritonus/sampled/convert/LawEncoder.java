@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 2007 by Florian Bomers
  *
@@ -19,13 +18,12 @@
 
 package org.tritonus.sampled.convert;
 
-import java.util.Arrays;
+import java.util.List;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 
 import org.tritonus.share.sampled.AudioFormats;
-import org.tritonus.share.sampled.TConversionTool;
 import org.tritonus.share.sampled.convert.TEncodingFormatConversionProvider;
 import org.tritonus.share.sampled.convert.TSynchronousFilteredAudioInputStream;
 
@@ -33,6 +31,12 @@ import static javax.sound.sampled.AudioFormat.Encoding.ALAW;
 import static javax.sound.sampled.AudioFormat.Encoding.PCM_SIGNED;
 import static javax.sound.sampled.AudioFormat.Encoding.PCM_UNSIGNED;
 import static javax.sound.sampled.AudioFormat.Encoding.ULAW;
+import static org.tritonus.share.sampled.TConversionTool.alaw2ulaw;
+import static org.tritonus.share.sampled.TConversionTool.pcm162alaw;
+import static org.tritonus.share.sampled.TConversionTool.pcm162ulaw;
+import static org.tritonus.share.sampled.TConversionTool.pcm82alaw;
+import static org.tritonus.share.sampled.TConversionTool.pcm82ulaw;
+import static org.tritonus.share.sampled.TConversionTool.ulaw2alaw;
 
 
 /**
@@ -84,12 +88,11 @@ public class LawEncoder extends TEncodingFormatConversionProvider {
      * Constructor.
      */
     public LawEncoder() {
-        super(Arrays.asList(INPUT_FORMATS), Arrays.asList(OUTPUT_FORMATS));
+        super(List.of(INPUT_FORMATS), List.of(OUTPUT_FORMATS));
     }
 
     @Override
-    public AudioInputStream getAudioInputStream(AudioFormat targetFormat,
-                                                AudioInputStream sourceStream) {
+    public AudioInputStream getAudioInputStream(AudioFormat targetFormat, AudioInputStream sourceStream) {
         AudioFormat sourceFormat = sourceStream.getFormat();
         // the non-conversion case
         // TODO does this work OK when some fields are
@@ -97,9 +100,8 @@ public class LawEncoder extends TEncodingFormatConversionProvider {
         if (AudioFormats.matches(sourceFormat, targetFormat)) {
             return sourceStream;
         }
-        if (doMatch(targetFormat.getFrameRate(), sourceFormat.getFrameRate())
-                && doMatch(targetFormat.getChannels(),
-                sourceFormat.getChannels())) {
+        if (doMatch(targetFormat.getFrameRate(), sourceFormat.getFrameRate()) &&
+                doMatch(targetFormat.getChannels(), sourceFormat.getChannels())) {
             if (doMatch(targetFormat.getSampleSizeInBits(), 8)) {
                 if (targetFormat.getEncoding().equals(ULAW)) {
                     // OK, the targetFormat seems fine, so we convert it to ULAW
@@ -122,9 +124,9 @@ public class LawEncoder extends TEncodingFormatConversionProvider {
     static final int ALAW8 = 5;
     static final int ULAW8 = 6;
 
-    // protected boolean isSupportedFormat(AudioFormat format) {
-    // return getConvertType(format)!=0;
-    // }
+//    protected boolean isSupportedFormat(AudioFormat format) {
+//        return getConvertType(format) != 0;
+//    }
 
     static int getConvertType(AudioFormat af, int unAllowed) {
         int result = 0;
@@ -169,17 +171,16 @@ public class LawEncoder extends TEncodingFormatConversionProvider {
 
     static class ToUlawStream extends TSynchronousFilteredAudioInputStream {
 
-        private int convertType;
+        private final int convertType;
 
         public ToUlawStream(AudioInputStream sourceStream) {
             // transform the targetFormat so that
             // FrameRate, SampleRate, and Channels match the sourceFormat
-            // we only retain encoding, samplesize and endian of targetFormat.
+            // we only retain encoding, sample size and endian of targetFormat.
             super(sourceStream, createTargetFormat(sourceStream.getFormat(), ULAW));
             convertType = getConvertType(sourceStream.getFormat(), ULAW8);
             if (convertType == 0) {
-                throw new IllegalArgumentException(
-                        "format conversion not supported");
+                throw new IllegalArgumentException("format conversion not supported");
             }
             if (sourceStream.getFormat().getSampleSizeInBits() == 8) {
                 enableConvertInPlace();
@@ -187,59 +188,50 @@ public class LawEncoder extends TEncodingFormatConversionProvider {
         }
 
         @Override
-        protected int convert(byte[] inBuffer, byte[] outBuffer,
-                              int outByteOffset, int inFrameCount) {
+        protected int convert(byte[] inBuffer, byte[] outBuffer, int outByteOffset, int inFrameCount) {
             int sampleCount = inFrameCount * getFormat().getChannels();
             switch (convertType) {
             case UNSIGNED8:
-                TConversionTool.pcm82ulaw(inBuffer, 0, outBuffer,
-                        outByteOffset, sampleCount, false);
+                pcm82ulaw(inBuffer, 0, outBuffer, outByteOffset, sampleCount, false);
                 break;
             case SIGNED8:
-                TConversionTool.pcm82ulaw(inBuffer, 0, outBuffer,
-                        outByteOffset, sampleCount, true);
+                pcm82ulaw(inBuffer, 0, outBuffer, outByteOffset, sampleCount, true);
                 break;
             case BIG_ENDIAN16:
-                TConversionTool.pcm162ulaw(inBuffer, 0, outBuffer,
-                        outByteOffset, sampleCount, true);
+                pcm162ulaw(inBuffer, 0, outBuffer, outByteOffset, sampleCount, true);
                 break;
             case LITTLE_ENDIAN16:
-                TConversionTool.pcm162ulaw(inBuffer, 0, outBuffer,
-                        outByteOffset, sampleCount, false);
+                pcm162ulaw(inBuffer, 0, outBuffer, outByteOffset, sampleCount, false);
                 break;
             case ALAW8:
-                TConversionTool.alaw2ulaw(inBuffer, 0, outBuffer,
-                        outByteOffset, sampleCount);
+                alaw2ulaw(inBuffer, 0, outBuffer, outByteOffset, sampleCount);
                 break;
             }
             return inFrameCount;
         }
 
         @Override
-        protected void convertInPlace(byte[] buffer, int byteOffset,
-                                      int frameCount) {
+        protected void convertInPlace(byte[] buffer, int byteOffset, int frameCount) {
             int sampleCount = frameCount * getFormat().getChannels();
             switch (convertType) {
             case UNSIGNED8:
-                TConversionTool.pcm82ulaw(buffer, byteOffset, sampleCount,
-                        false);
+                pcm82ulaw(buffer, byteOffset, sampleCount, false);
                 break;
             case SIGNED8:
-                TConversionTool.pcm82ulaw(buffer, byteOffset, sampleCount, true);
+                pcm82ulaw(buffer, byteOffset, sampleCount, true);
                 break;
             case ALAW8:
-                TConversionTool.alaw2ulaw(buffer, byteOffset, sampleCount);
+                alaw2ulaw(buffer, byteOffset, sampleCount);
                 break;
             default:
-                throw new RuntimeException(
-                        "ToUlawStream: Call to convertInPlace, but it cannot convert in place.");
+                throw new RuntimeException("Call to convertInPlace, but it cannot convert in place.");
             }
         }
     }
 
     static class ToAlawStream extends TSynchronousFilteredAudioInputStream {
 
-        private int convertType;
+        private final int convertType;
 
         public ToAlawStream(AudioInputStream sourceStream) {
             // transform the targetFormat so that
@@ -248,8 +240,7 @@ public class LawEncoder extends TEncodingFormatConversionProvider {
             super(sourceStream, createTargetFormat(sourceStream.getFormat(), ALAW));
             convertType = getConvertType(sourceStream.getFormat(), ALAW8);
             if (convertType == 0) {
-                throw new IllegalArgumentException(
-                        "format conversion not supported");
+                throw new IllegalArgumentException("format conversion not supported");
             }
             if (sourceStream.getFormat().getSampleSizeInBits() == 8) {
                 enableConvertInPlace();
@@ -257,54 +248,44 @@ public class LawEncoder extends TEncodingFormatConversionProvider {
         }
 
         @Override
-        protected int convert(byte[] inBuffer, byte[] outBuffer,
-                              int outByteOffset, int inFrameCount) {
+        protected int convert(byte[] inBuffer, byte[] outBuffer, int outByteOffset, int inFrameCount) {
             int sampleCount = inFrameCount * getFormat().getChannels();
             switch (convertType) {
             case UNSIGNED8:
-                TConversionTool.pcm82alaw(inBuffer, 0, outBuffer,
-                        outByteOffset, sampleCount, false);
+                pcm82alaw(inBuffer, 0, outBuffer, outByteOffset, sampleCount, false);
                 break;
             case SIGNED8:
-                TConversionTool.pcm82alaw(inBuffer, 0, outBuffer,
-                        outByteOffset, sampleCount, true);
+                pcm82alaw(inBuffer, 0, outBuffer, outByteOffset, sampleCount, true);
                 break;
             case BIG_ENDIAN16:
-                TConversionTool.pcm162alaw(inBuffer, 0, outBuffer,
-                        outByteOffset, sampleCount, true);
+                pcm162alaw(inBuffer, 0, outBuffer, outByteOffset, sampleCount, true);
                 break;
             case LITTLE_ENDIAN16:
-                TConversionTool.pcm162alaw(inBuffer, 0, outBuffer,
-                        outByteOffset, sampleCount, false);
+                pcm162alaw(inBuffer, 0, outBuffer, outByteOffset, sampleCount, false);
                 break;
             case ULAW8:
-                TConversionTool.ulaw2alaw(inBuffer, 0, outBuffer,
-                        outByteOffset, sampleCount);
+                ulaw2alaw(inBuffer, 0, outBuffer, outByteOffset, sampleCount);
                 break;
             }
             return inFrameCount;
         }
 
         @Override
-        protected void convertInPlace(byte[] buffer, int byteOffset,
-                                      int frameCount) {
+        protected void convertInPlace(byte[] buffer, int byteOffset, int frameCount) {
             int sampleCount = frameCount * getFormat().getChannels();
             switch (convertType) {
             case UNSIGNED8:
-                TConversionTool.pcm82alaw(buffer, byteOffset, sampleCount,
-                        false);
+                pcm82alaw(buffer, byteOffset, sampleCount, false);
                 break;
             case SIGNED8:
-                TConversionTool.pcm82alaw(buffer, byteOffset, sampleCount, true);
+                pcm82alaw(buffer, byteOffset, sampleCount, true);
                 break;
             case ULAW8:
-                TConversionTool.ulaw2alaw(buffer, byteOffset, sampleCount);
+                ulaw2alaw(buffer, byteOffset, sampleCount);
                 break;
             default:
-                throw new RuntimeException(
-                        "ToAlawStream: Call to convertInPlace, but it cannot convert in place.");
+                throw new RuntimeException("ToAlawStream: Call to convertInPlace, but it cannot convert in place.");
             }
         }
     }
-
 }

@@ -1,7 +1,5 @@
 package old;
 
-/***********************************************************************/
-
 import javax.sound.sampled.*;
 import javax.sound.sampled.AudioFormat.Encoding;
 
@@ -10,7 +8,7 @@ import java.awt.*;
 import java.io.*;
 
 
-/*
+/**
  * Reads data from the input channel and writes to the output stream
  */
 public class Capture extends Applet implements Runnable {
@@ -108,8 +106,7 @@ public class Capture extends Applet implements Runnable {
         System.out.println("line start");
 
         while (thread != null) {
-            if ((numFramesRead = line.read(data, 0, bufferLengthInFrames)) ==
-                    -1) {
+            if ((numFramesRead = line.read(data, 0, bufferLengthInFrames)) == -1) {
                 break;
             }
             out.write(data, 0, (numFramesRead * frameSizeInBytes));
@@ -145,6 +142,3 @@ public class Capture extends Applet implements Runnable {
         System.out.println("end");
     }
 }
-/***********************************************************************/
-
-

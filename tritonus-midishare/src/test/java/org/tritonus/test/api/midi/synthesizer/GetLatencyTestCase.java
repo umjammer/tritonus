@@ -1,8 +1,4 @@
 /*
- * GetLatencyTestCase.java
- */
-
-/*
  *  Copyright (c) 2006 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,28 +24,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Test for javax.sound.midi.Synthesizer.getLatency().
  */
-public class GetLatencyTestCase
-        extends BaseSynthesizerTestCase {
+public class GetLatencyTestCase extends BaseSynthesizerTestCase {
 
     @Override
-    protected void checkSynthesizer(Synthesizer synth)
-            throws Exception {
-        long latency;
+    protected void checkSynthesizer(Synthesizer synth) throws Exception {
         synth.open();
-        try {
-            latency = synth.getLatency();
-            assertTrue(
-                    latency >= 0, constructErrorMessage(synth, true));
-        } finally {
-            synth.close();
+        try (synth) {
+            long latency = synth.getLatency();
+            assertTrue(latency >= 0, constructErrorMessage(synth, true));
         }
     }
 
-    private static String constructErrorMessage(Synthesizer synth,
-                                                boolean bOpen) {
-        return BaseSynthesizerTestCase.constructErrorMessage(synth,
-                "getLatency() result not positive", bOpen);
+    private static String constructErrorMessage(Synthesizer synth, boolean open) {
+        return errmsg(synth, "getLatency() result not positive", open);
     }
 }
-
-

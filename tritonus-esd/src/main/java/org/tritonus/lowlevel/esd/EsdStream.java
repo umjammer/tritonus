@@ -18,8 +18,7 @@
 
 package org.tritonus.lowlevel.esd;
 
-public class EsdStream
-        extends Esd {
+public class EsdStream extends Esd {
 
     /**
      * Holds socket fd to EsounD.
@@ -27,7 +26,7 @@ public class EsdStream
      * size of ints may be 64 bit.
      */
     @SuppressWarnings("unused")
-    private long m_lNativeHandle;
+    private long nativeHandle;
 
     static {
         Esd.loadNativeLibrary();
@@ -39,7 +38,7 @@ public class EsdStream
     /**
      * Opens the connection to esd and initiates a stream.
      */
-    public native void open(int nFormat, int nSampleRate);
+    public native void open(int format, int sampleRate);
 
     /**
      * Writes a block of data to esd.
@@ -49,7 +48,7 @@ public class EsdStream
      *
      * @return the number of bytes written
      */
-    public native int write(byte[] abData, int nOffset, int nLength);
+    public native int write(byte[] data, int offset, int length);
 
     /**
      * Closes the connection to esd.
@@ -60,5 +59,5 @@ public class EsdStream
      */
     public native void close();
 
-    private static native void setTrace(boolean bTrace);
+    private static native void setTrace(boolean trace);
 }

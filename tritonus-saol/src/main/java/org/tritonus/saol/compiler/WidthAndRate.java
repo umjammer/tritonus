@@ -33,21 +33,19 @@ public class WidthAndRate {
     public static final int RATE_TABLE = 5;
     public static final int RATE_OPARRAY = 6;
 
-    private int m_nWidth;
-    private int m_nRate;
+    private int width;
+    private int rate;
 
-    public WidthAndRate(int nWidth, int nRate) {
-        m_nWidth = nWidth;
-        m_nRate = nRate;
+    public WidthAndRate(int width, int rate) {
+        this.width = width;
+        this.rate = rate;
     }
 
     public int getWidth() {
-        return m_nWidth;
+        return width;
     }
 
     public int getRate() {
-        return m_nRate;
+        return rate;
     }
 }
-
-

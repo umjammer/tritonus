@@ -27,28 +27,21 @@ import javax.sound.midi.MidiFileFormat;
  * Its purpose is to carry the number of tracks from
  * getMidiFileFormat() to getSequence().
  */
-public class TMidiFileFormat
-        extends MidiFileFormat {
+public class TMidiFileFormat extends MidiFileFormat {
 
-    private int m_nTrackCount;
+    private final int trackCount;
 
-    public TMidiFileFormat(int nType,
-                           float fDivisionType,
-                           int nResolution,
-                           int nByteLength,
-                           long lMicrosecondLength,
-                           int nTrackCount) {
-        super(nType,
-                fDivisionType,
-                nResolution,
-                nByteLength,
-                lMicrosecondLength);
-        m_nTrackCount = nTrackCount;
+    public TMidiFileFormat(int type,
+                           float divisionType,
+                           int resolution,
+                           int byteLength,
+                           long microsecondLength,
+                           int trackCount) {
+        super(type, divisionType, resolution, byteLength, microsecondLength);
+        this.trackCount = trackCount;
     }
 
     public int getTrackCount() {
-        return m_nTrackCount;
+        return trackCount;
     }
 }
-
-

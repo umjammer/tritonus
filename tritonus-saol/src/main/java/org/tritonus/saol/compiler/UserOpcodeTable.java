@@ -30,19 +30,17 @@ public class UserOpcodeTable {
      * Key: the name of the opcode.
      * Value: a UserOpcodeEntry instance.
      */
-    private Map<String, UserOpcodeEntry> m_opcodeMap;
+    private final Map<String, UserOpcodeEntry> opcodeMap;
 
     public UserOpcodeTable() {
-        m_opcodeMap = new HashMap<>();
+        opcodeMap = new HashMap<>();
     }
 
     public void add(UserOpcodeEntry opcodeEntry) {
-        m_opcodeMap.put(opcodeEntry.getOpcodeName(), opcodeEntry);
+        opcodeMap.put(opcodeEntry.getOpcodeName(), opcodeEntry);
     }
 
-    public UserOpcodeEntry get(String strOpcodeName) {
-        return m_opcodeMap.get(strOpcodeName);
+    public UserOpcodeEntry get(String opcodeName) {
+        return opcodeMap.get(opcodeName);
     }
 }
-
-

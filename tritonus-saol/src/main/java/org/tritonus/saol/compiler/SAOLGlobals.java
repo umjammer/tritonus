@@ -21,15 +21,15 @@ public class SAOLGlobals {
 
     private static final int DEFAULT_ARATE = 32000;
     private static final int DEFAULT_KRATE = 100;
-    private static final int DEFAULT_INCHANNELS = 0; /*?? TODO */
+    private static final int DEFAULT_INCHANNELS = 0; // ?? TODO
     private static final int DEFAULT_OUTCHANNELS = 1;
     private static final int DEFAULT_INTERP = 0;
 
-    private int m_nARate;
-    private int m_nKRate;
-    private int m_nInChannels;
-    private int m_nOutChannels;
-    private int m_nInterp;
+    private int aRate;
+    private int kRate;
+    private int inChannels;
+    private int outChannels;
+    private int interP;
 
     public SAOLGlobals() {
         this(DEFAULT_ARATE,
@@ -39,57 +39,55 @@ public class SAOLGlobals {
                 DEFAULT_INTERP);
     }
 
-    private SAOLGlobals(int nDefaultARate,
-                        int nDefaultKRate,
-                        int nDefaultInChannels,
-                        int nDefaultOutChannels,
-                        int nDefaultInterp) {
-        m_nARate = nDefaultARate;
-        m_nKRate = nDefaultKRate;
-        m_nInChannels = nDefaultInChannels;
-        m_nOutChannels = nDefaultOutChannels;
-        m_nInterp = nDefaultInterp;
+    private SAOLGlobals(int defaultARate,
+                        int defaultKRate,
+                        int defaultInChannels,
+                        int defaultOutChannels,
+                        int defaultInterP) {
+        aRate = defaultARate;
+        kRate = defaultKRate;
+        inChannels = defaultInChannels;
+        outChannels = defaultOutChannels;
+        interP = defaultInterP;
     }
 
-    public void setARate(int nARate) {
-        m_nARate = nARate;
+    public void setARate(int aRate) {
+        this.aRate = aRate;
     }
 
     public int getARate() {
-        return m_nARate;
+        return aRate;
     }
 
-    public void setKRate(int nKRate) {
-        m_nKRate = nKRate;
+    public void setKRate(int kRate) {
+        this.kRate = kRate;
     }
 
     public int getKRate() {
-        return m_nKRate;
+        return kRate;
     }
 
-    public void setInChannels(int nInChannels) {
-        m_nInChannels = nInChannels;
+    public void setInChannels(int inChannels) {
+        this.inChannels = inChannels;
     }
 
     public int getInChannels() {
-        return m_nInChannels;
+        return inChannels;
     }
 
-    public void setOutChannels(int nOutChannels) {
-        m_nOutChannels = nOutChannels;
+    public void setOutChannels(int outChannels) {
+        this.outChannels = outChannels;
     }
 
     public int getOutChannels() {
-        return m_nOutChannels;
+        return outChannels;
     }
 
-    public void setInterp(int nInterp) {
-        m_nInterp = nInterp;
+    public void setInterP(int interP) {
+        this.interP = interP;
     }
 
-    public int getInterp() {
-        return m_nInterp;
+    public int getInterP() {
+        return interP;
     }
 }
-
-

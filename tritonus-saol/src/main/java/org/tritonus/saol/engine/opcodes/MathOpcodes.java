@@ -105,10 +105,9 @@ public class MathOpcodes {
     }
 
     public static float log10(float x) {
-  /* Uses the formula:
-   log-b (a) = ln (a) / ln (b)
-   (ln: logarithmus naturalis, logarith with base e)
-  */
+        // Uses the formula:
+        // log-b (a) = ln (a) / ln (b)
+        // (ln: logarithmus naturalis, logarith with base e)
         return (float) Math.log(x) * (1 / LOG_10);
     }
 
@@ -137,11 +136,11 @@ public class MathOpcodes {
             return Math.min(x[0], x[1]);
 
         default:
-            float fMin = x[0];
+            float min = x[0];
             for (int i = 1; i < x.length; i++) {
-                fMin = Math.min(fMin, x[i]);
+                min = Math.min(min, x[i]);
             }
-            return fMin;
+            return min;
         }
     }
 
@@ -154,13 +153,11 @@ public class MathOpcodes {
             return Math.max(x[0], x[1]);
 
         default:
-            float fMax = x[0];
+            float max = x[0];
             for (int i = 1; i < x.length; i++) {
-                fMax = Math.max(fMax, x[i]);
+                max = Math.max(max, x[i]);
             }
-            return fMax;
+            return max;
         }
     }
 }
-
-

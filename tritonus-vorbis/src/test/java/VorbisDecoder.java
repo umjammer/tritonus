@@ -1,7 +1,3 @@
-/*
- * VorbisDecoder.java
- */
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
@@ -271,16 +267,16 @@ public class VorbisDecoder {
 
             // Throw the comments plus a few lines about the bitstream we're decoding
             {
-                String[] astrComments = vc.getUserComments();
-                for (i = 0; i < astrComments.length; i++) {
-                    Debug.println(astrComments[i]);
+                String[] comments = vc.getUserComments();
+                for (i = 0; i < comments.length; i++) {
+                    Debug.println(comments[i]);
                 }
                 Debug.print("\nBitstream is " + vi.getChannels() + " channel, " + vi.getRate() + " Hz\n" +
                         "Encoded by: " + vc.getVendor());
             }
 
-            int nChannels = vi.getChannels();
-            convsize = 4096 / nChannels;
+            int channels = vi.getChannels();
+            convsize = 4096 / channels;
 
             // OK, got and parsed all three headers. Initialize the Vorbis
             // packet->PCM decoder.
@@ -311,7 +307,7 @@ public class VorbisDecoder {
                                 // no reason to complain; already complained above
                             } else {
                                 // we have a packet.  Decode it
-                                float[][] pcm = new float[nChannels][];
+                                float[][] pcm = new float[channels][];
                                 int samples;
 
                                 if (vb.synthesis(op) == 0) { // test for success!
@@ -328,7 +324,7 @@ public class VorbisDecoder {
                                     int bout = Math.min(samples, convsize);
 
                                     // convert floats to 16 bit signed ints (host order) and interleave
-                                    for (i = 0; i < nChannels; i++) {
+                                    for (i = 0; i < channels; i++) {
                                         int ptr = i;
                                         //float *mono = pcm[i];
                                         for (int j = 0; j < bout; j++) {
@@ -343,27 +339,27 @@ public class VorbisDecoder {
                                                 clipflag = true;
                                             }
                                             convBuffer[ptr] = val;
-                                            ptr += nChannels;
+                                            ptr += channels;
                                         }
                                     }
 
                                     if (clipflag) {
                                         Debug.print(Level.FINER, "Clipping in frame " + vd.getSequence() + "\n");
                                     }
-                                    byte[] abBuffer = new byte[2 * nChannels * bout];
+                                    byte[] _buffer = new byte[2 * channels * bout];
                                     int byteOffset = 0;
                                     boolean bigEndian = false;
-                                    for (int nSample = 0; nSample < nChannels * bout; nSample++) {
-                                        int sample = convBuffer[nSample];
+                                    for (int _sample = 0; _sample < channels * bout; _sample++) {
+                                        int sample = convBuffer[_sample];
                                         if (bigEndian) {
-                                            abBuffer[byteOffset++] = (byte) (sample >> 8);
-                                            abBuffer[byteOffset++] = (byte) (sample & 0xFF);
+                                            _buffer[byteOffset++] = (byte) (sample >> 8);
+                                            _buffer[byteOffset++] = (byte) (sample & 0xFF);
                                         } else {
-                                            abBuffer[byteOffset++] = (byte) (sample & 0xFF);
-                                            abBuffer[byteOffset++] = (byte) (sample >> 8);
+                                            _buffer[byteOffset++] = (byte) (sample & 0xFF);
+                                            _buffer[byteOffset++] = (byte) (sample >> 8);
                                         }
                                     }
-                                    outputStream.write(abBuffer);
+                                    outputStream.write(_buffer);
 
                                     // tell libvorbis how many samples we actually consumed
                                     vd.read(bout);
@@ -418,5 +414,3 @@ public class VorbisDecoder {
         app.decode(wav, ogg);
     }
 }
-
-

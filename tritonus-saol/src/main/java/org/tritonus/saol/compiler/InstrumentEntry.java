@@ -21,28 +21,25 @@ import org.tritonus.saol.sablecc.node.AInstrdeclInstrdecl;
 
 public class InstrumentEntry {
 
-    private String m_strInstrumentName;
-    private AInstrdeclInstrdecl m_startNode;
-    VariableTable m_localVariableTable;
+    private final String instrumentName;
+    private final AInstrdeclInstrdecl startNode;
+    VariableTable localVariableTable;
 
-    public InstrumentEntry(String strInstrumentName,
-                           AInstrdeclInstrdecl startNode) {
-        m_strInstrumentName = strInstrumentName;
-        m_startNode = startNode;
-        m_localVariableTable = new VariableTable();
+    public InstrumentEntry(String instrumentName, AInstrdeclInstrdecl startNode) {
+        this.instrumentName = instrumentName;
+        this.startNode = startNode;
+        localVariableTable = new VariableTable();
     }
 
     public String getInstrumentName() {
-        return m_strInstrumentName;
+        return instrumentName;
     }
 
     public AInstrdeclInstrdecl getStartNode() {
-        return m_startNode;
+        return startNode;
     }
 
     public VariableTable getLocalVariableTable() {
-        return m_localVariableTable;
+        return localVariableTable;
     }
 }
-
-

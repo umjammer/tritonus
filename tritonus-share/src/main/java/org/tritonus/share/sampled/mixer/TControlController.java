@@ -36,29 +36,27 @@ public class TControlController implements TControllable {
      * In case this control is part of a compound control, the parentControl
      * property is set to a value other than null.
      */
-    private TCompoundControl m_parentControl;
+    private TCompoundControl parentControl;
 
     public TControlController() {
     }
 
     @Override
     public void setParentControl(TCompoundControl compoundControl) {
-        m_parentControl = compoundControl;
+        parentControl = compoundControl;
     }
 
     @Override
     public TCompoundControl getParentControl() {
-        return m_parentControl;
+        return parentControl;
     }
 
     @Override
     public void commit() {
-        logger.log(Level.TRACE, "TControlController.commit(): called [" + this.getClass().getName() + "]");
+        logger.log(Level.TRACE, "called [" + this.getClass().getName() + "]");
 
         if (getParentControl() != null) {
             getParentControl().commit();
         }
     }
 }
-
-

@@ -33,29 +33,29 @@ public class TCompoundControl extends CompoundControl implements TControllable {
 
     private static final Logger logger= getLogger("org.tritonus.TraceControl");
 
-    private final TControlController m_controller;
+    private final TControlController controller;
 
-    public TCompoundControl(CompoundControl.Type type, Control[] aMemberControls) {
-        super(type, aMemberControls);
-        logger.log(Level.TRACE, "TCompoundControl.<init>: begin");
+    public TCompoundControl(CompoundControl.Type type, Control[] memberControls) {
+        super(type, memberControls);
+        logger.log(Level.TRACE, "begin");
 
-        m_controller = new TControlController();
+        controller = new TControlController();
 
-        logger.log(Level.TRACE, "TCompoundControl.<init>: end");
+        logger.log(Level.TRACE, "end");
     }
 
     @Override
     public void setParentControl(TCompoundControl compoundControl) {
-        m_controller.setParentControl(compoundControl);
+        controller.setParentControl(compoundControl);
     }
 
     @Override
     public TCompoundControl getParentControl() {
-        return m_controller.getParentControl();
+        return controller.getParentControl();
     }
 
     @Override
     public void commit() {
-        m_controller.commit();
+        controller.commit();
     }
 }

@@ -1,6 +1,5 @@
 package vavi.sound.sampled.jna.ogg;
 
-import java.util.Arrays;
 import java.util.List;
 
 import com.sun.jna.NativeLong;
@@ -30,7 +29,7 @@ public class oggpack_buffer extends Structure {
 
     @Override
     protected List<String> getFieldOrder() {
-        return Arrays.asList("endbyte", "endbit", "buffer", "ptr", "storage");
+        return List.of("endbyte", "endbit", "buffer", "ptr", "storage");
     }
 
     /**

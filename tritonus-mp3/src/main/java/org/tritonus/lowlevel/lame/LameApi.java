@@ -18,14 +18,15 @@
 
 package org.tritonus.lowlevel.lame;
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.nio.ByteBuffer;
-import java.util.logging.Level;
 
 import com.sun.jna.ptr.PointerByReference;
 import vavi.sound.sampled.jna.lame.LameLibrary.vbr_mode_e;
 import vavi.sound.sampled.jna.lame.lame_version_t;
-import vavi.util.Debug;
 
+import static java.lang.System.getLogger;
 import static vavi.sound.sampled.jna.lame.LameLibrary.INSTANCE;
 
 
@@ -37,6 +38,8 @@ import static vavi.sound.sampled.jna.lame.LameLibrary.INSTANCE;
  */
 public class LameApi {
 
+    private static final Logger logger = getLogger(LameApi.class.getName());
+
     public int channels;
     public int sampleRate;
     public int bitrate;
@@ -44,7 +47,7 @@ public class LameApi {
     public int quality;
     public boolean vbr;
     public int mpegVersion;
-    public boolean swapbytes;
+    public boolean swapBytes;
     public PointerByReference gf;
 
     /** @return -1 if something failed. */
@@ -74,17 +77,17 @@ public class LameApi {
 
         // return effective values
         this.sampleRate = INSTANCE.lame_get_out_samplerate(this.gf);
-        Debug.println(Level.FINE, "sampleRate: " + sampleRate);
+logger.log(Level.DEBUG, "sampleRate: " + sampleRate);
         this.bitrate = INSTANCE.lame_get_brate(this.gf);
-        Debug.println(Level.FINE, "bitrate: " + bitrate);
+logger.log(Level.DEBUG, "bitrate: " + bitrate);
         this.mode = INSTANCE.lame_get_mode(this.gf);
-        Debug.println(Level.FINE, "mode: " + mode);
+logger.log(Level.DEBUG, "mode: " + mode);
         this.vbr = INSTANCE.lame_get_VBR(this.gf) != 0;
-        Debug.println(Level.FINE, "vbr: " + vbr);
+logger.log(Level.DEBUG, "vbr: " + vbr);
         this.quality = this.vbr ? INSTANCE.lame_get_VBR_q(this.gf) : INSTANCE.lame_get_quality(this.gf);
-        Debug.println(Level.FINE, "quality: " + quality);
+logger.log(Level.DEBUG, "quality: " + quality);
         this.mpegVersion = INSTANCE.lame_get_version(this.gf);
-        Debug.println(Level.FINE, "mpegVersion: " + mpegVersion);
+logger.log(Level.DEBUG, "mpegVersion: " + mpegVersion);
 
         return result;
     }
@@ -129,7 +132,7 @@ public class LameApi {
         if (len < 8) {
             return -1;
         }
-        s[0] = String.format("%d.%d", major, minor);
+        s[0] = "%d.%d".formatted(major, minor);
         thislen = s[0].length();
         len -= thislen;
         result += thislen;

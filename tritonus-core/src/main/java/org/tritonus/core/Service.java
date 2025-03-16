@@ -55,33 +55,33 @@ public class Service {
     private static final boolean REVERSE_ORDER = true;
 
     public static Iterator<?> providers(Class<?> cls) {
-        logger.log(Level.TRACE, "Service.providers(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        String strFullName = BASE_NAME + cls.getName();
-        logger.log(Level.TRACE, "Service.providers(): full name: " + strFullName);
+        String fullName = BASE_NAME + cls.getName();
+        logger.log(Level.TRACE, "full name: " + fullName);
 
-        List<Object> instancesList = createInstancesList(strFullName);
+        List<Object> instancesList = createInstancesList(fullName);
         Iterator<Object> iterator = instancesList.iterator();
 
-        logger.log(Level.TRACE, "Service.providers(): end");
+        logger.log(Level.TRACE, "end");
 
         return iterator;
     }
 
-    private static List<Object> createInstancesList(String strFullName) {
-        logger.log(Level.TRACE, "Service.createInstancesList(): begin");
+    private static List<Object> createInstancesList(String fullName) {
+        logger.log(Level.TRACE, "begin");
 
         List<Object> providers = new ArrayList<>();
-        Iterator<String> classNames = createClassNames(strFullName);
+        Iterator<String> classNames = createClassNames(fullName);
         if (classNames != null) {
             while (classNames.hasNext()) {
-                String strClassName = classNames.next();
-                logger.log(Level.TRACE, "Service.createInstancesList(): Class name: " + strClassName);
+                String className = classNames.next();
+                logger.log(Level.TRACE, "Class name: " + className);
 
                 try {
                     ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
-                    Class<?> cls = Class.forName(strClassName, true, systemClassLoader);
-                    logger.log(Level.TRACE, "Service.createInstancesList(): now creating instance of " + cls);
+                    Class<?> cls = Class.forName(className, true, systemClassLoader);
+                    logger.log(Level.TRACE, "now creating instance of " + cls);
 
                     Object instance = cls.getDeclaredConstructor().newInstance();
                     if (REVERSE_ORDER) {
@@ -95,25 +95,25 @@ public class Service {
             }
         }
 
-        logger.log(Level.TRACE, "Service.createInstancesList(): end");
+        logger.log(Level.TRACE, "end");
 
         return providers;
     }
 
-    private static Iterator<String> createClassNames(String strFullName) {
-        logger.log(Level.TRACE, "Service.createClassNames(): begin");
+    private static Iterator<String> createClassNames(String fullName) {
+        logger.log(Level.TRACE, "begin");
 
         Set<String> providers = new ArraySet<>();
         Enumeration<?> configs = null;
         try {
-            configs = ClassLoader.getSystemResources(strFullName);
+            configs = ClassLoader.getSystemResources(fullName);
         } catch (IOException e) {
             logger.log(Level.ERROR, e.getMessage(), e);
         }
         if (configs != null) {
             while (configs.hasMoreElements()) {
                 URL configFileUrl = (URL) configs.nextElement();
-                logger.log(Level.TRACE, "Service.createClassNames(): config: " + configFileUrl);
+                logger.log(Level.TRACE, "config: " + configFileUrl);
 
                 InputStream input = null;
                 try {
@@ -124,19 +124,19 @@ public class Service {
                 if (input != null) {
                     BufferedReader reader = new BufferedReader(new InputStreamReader(input));
                     try {
-                        String strLine = reader.readLine();
-                        while (strLine != null) {
-                            strLine = strLine.trim();
-                            int nPos = strLine.indexOf('#');
-                            if (nPos >= 0) {
-                                strLine = strLine.substring(0, nPos);
+                        String line = reader.readLine();
+                        while (line != null) {
+                            line = line.trim();
+                            int pos = line.indexOf('#');
+                            if (pos >= 0) {
+                                line = line.substring(0, pos);
                             }
-                            if (!strLine.isEmpty()) {
-                                providers.add(strLine);
-                                logger.log(Level.TRACE, "Service.createClassNames(): adding class name: " + strLine);
+                            if (!line.isEmpty()) {
+                                providers.add(line);
+                                logger.log(Level.TRACE, "adding class name: " + line);
 
                             }
-                            strLine = reader.readLine();
+                            line = reader.readLine();
                         }
                     } catch (IOException e) {
                         logger.log(Level.ERROR, e.getMessage(), e);
@@ -146,7 +146,7 @@ public class Service {
         }
         Iterator<String> iterator = providers.iterator();
 
-        logger.log(Level.TRACE, "Service.createClassNames(): end");
+        logger.log(Level.TRACE, "end");
 
         return iterator;
     }

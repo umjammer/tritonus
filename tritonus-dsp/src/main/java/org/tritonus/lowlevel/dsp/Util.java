@@ -45,37 +45,37 @@ public class Util {
      * optimized for speed. I.e., it does not use a 'fast'
      * algorithm.
      *
-     * @param aFrequencyDomain The array containing the frequency
+     * @param frequencyDomain The array containing the frequency
      *                         domain factors.
      * @return The reconstructed time domain values (returned as
      * complex numbers for full generality).
      */
-    public static Complex[] IDFT(Complex[] aFrequencyDomain) {
-        int N = aFrequencyDomain.length;
-        Complex[] aTimeDomain = new Complex[N];
-        double dOneOverN = 1.0 / N;
+    public static Complex[] IDFT(Complex[] frequencyDomain) {
+        int N = frequencyDomain.length;
+        Complex[] timeDomain = new Complex[N];
+        double oneOverN = 1.0 / N;
         for (int n = 0; n < N; n++) {
-            aTimeDomain[n] = new Complex(0.0, 0.0);
+            timeDomain[n] = new Complex(0.0, 0.0);
             for (int k = 0; k < N; k++) {
-                Complex exponent = new Complex(0.0, 2.0 * Math.PI * k * n * dOneOverN);
-                Complex term = Complex.times(aFrequencyDomain[k], Complex.exp(exponent));
-                aTimeDomain[n] = Complex.plus(aTimeDomain[n], term);
+                Complex exponent = new Complex(0.0, 2.0 * Math.PI * k * n * oneOverN);
+                Complex term = Complex.times(frequencyDomain[k], Complex.exp(exponent));
+                timeDomain[n] = Complex.plus(timeDomain[n], term);
             }
-            aTimeDomain[n] = Complex.times(aTimeDomain[n], dOneOverN);
+            timeDomain[n] = Complex.times(timeDomain[n], oneOverN);
         }
-        return aTimeDomain;
+        return timeDomain;
     }
 
     /**
      * Multiplication of two arrays.
      */
     public static double[] multiply(double[] ad1, double[] ad2) {
-        int nLength = Math.min(ad1.length, ad2.length);
-        double[] adResult = new double[nLength];
-        for (int i = 0; i < nLength; i++) {
-            adResult[i] = ad1[i] * ad2[i];
+        int length = Math.min(ad1.length, ad2.length);
+        double[] result = new double[length];
+        for (int i = 0; i < length; i++) {
+            result[i] = ad1[i] * ad2[i];
         }
-        return adResult;
+        return result;
     }
 
     /**
@@ -83,14 +83,14 @@ public class Util {
      * This method converts a frequency represented in
      * omega ([-PI .. +PI]) to relative (f/fs).
      *
-     * @param dOmega The frequency represented in omega
+     * @param omega The frequency represented in omega
      *               ([-PI .. +PI]).
      * @return The frequency represented relative to the sample rate
      * (f/fs).
      */
-    public static double omega2relative(double dOmega) {
-        double dRelative = dOmega / (2.0 * Math.PI);
-        return dRelative;
+    public static double omega2relative(double omega) {
+        double relative = omega / (2.0 * Math.PI);
+        return relative;
     }
 
     /**
@@ -98,14 +98,14 @@ public class Util {
      * This method converts a frequency represented relative to
      * the sample rate (f/fs) to omega ([-PI .. +PI]).
      *
-     * @param dRelative The frequency represented relative to the
+     * @param relative The frequency represented relative to the
      *                  sample rate (f/fs).
      * @return The frequency represented in omega
      * ([-PI .. +PI]).
      */
-    public static double relative2omega(double dRelative) {
-        double dOmega = dRelative * 2.0 * Math.PI;
-        return dOmega;
+    public static double relative2omega(double relative) {
+        double omega = relative * 2.0 * Math.PI;
+        return omega;
     }
 
     /**
@@ -113,14 +113,14 @@ public class Util {
      * This method converts a frequency represented in
      * omega ([-PI .. +PI]) to absolute frequency (f).
      *
-     * @param dOmega      The frequency represented in omega
+     * @param omega      The frequency represented in omega
      *                    ([-PI .. +PI]).
-     * @param dSampleRate The sample rate (fs).
+     * @param sampleRate The sample rate (fs).
      * @return The absolute frequency represented in Hz (f).
      */
-    public static double omega2absolute(double dOmega, double dSampleRate) {
-        double dAbsolute = omega2relative(dOmega) * dSampleRate;
-        return dAbsolute;
+    public static double omega2absolute(double omega, double sampleRate) {
+        double absolute = omega2relative(omega) * sampleRate;
+        return absolute;
     }
 
     /**
@@ -128,26 +128,24 @@ public class Util {
      * This method converts a frequency represented relative to
      * the sample rate (f/fs) to omega ([-PI .. +PI]).
      *
-     * @param dAbsolute   The absolute frequency expressed in Hz (f).
-     * @param dSampleRate The sample rate (fs).
+     * @param absolute   The absolute frequency expressed in Hz (f).
+     * @param sampleRate The sample rate (fs).
      * @return The frequency represented in omega
      * ([-PI .. +PI]).
      */
-    public static double absolute2omega(double dAbsolute, double dSampleRate) {
-        double dOmega = relative2omega(dAbsolute / dSampleRate);
-        return dOmega;
+    public static double absolute2omega(double absolute, double sampleRate) {
+        double omega = relative2omega(absolute / sampleRate);
+        return omega;
     }
 
     /**
      * Quantize constants from double to float.
      */
-    public static float[] quantizeToFloat(double[] adConstants) {
-        float[] afConstants = new float[adConstants.length];
-        for (int i = 0; i < adConstants.length; i++) {
-            afConstants[i] = (float) adConstants[i];
+    public static float[] quantizeToFloat(double[] constants) {
+        float[] constantsF = new float[constants.length];
+        for (int i = 0; i < constants.length; i++) {
+            constantsF[i] = (float) constants[i];
         }
-        return afConstants;
+        return constantsF;
     }
 }
-
-

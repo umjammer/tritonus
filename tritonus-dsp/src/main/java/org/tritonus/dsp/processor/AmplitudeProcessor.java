@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 2003 by Matthias Pfisterer
  *
@@ -43,7 +42,7 @@ public class AmplitudeProcessor implements FloatSampleProcessor {
      * @see #setAmplitudeLinear(float)
      * @see #setAmplitudeLog(float)
      */
-    private float m_fAmplitude;
+    private float amplitude;
 
     public AmplitudeProcessor() {
         setAmplitudeLinear(DEFAULT_AMPLITUDE);
@@ -57,8 +56,8 @@ public class AmplitudeProcessor implements FloatSampleProcessor {
      * This is in contrast to {@link #setAmplitudeLog(float) setAmplitudeLog},
      * where you can pass the amplitude change as dB values.
      */
-    public void setAmplitudeLinear(float fAmplitude) {
-        m_fAmplitude = fAmplitude;
+    public void setAmplitudeLinear(float amplitude) {
+        this.amplitude = amplitude;
     }
 
     /**
@@ -70,9 +69,9 @@ public class AmplitudeProcessor implements FloatSampleProcessor {
      * {@link #setAmplitudeLinear setAmplitudeLinear()},
      * where you can pass the amplitude change linear values.
      */
-    public void setAmplitudeLog(float fAmplitude) {
-        float fAmplitudeLinear = (float) Math.pow(10.0, fAmplitude / 20.0);
-        setAmplitudeLinear(fAmplitudeLinear);
+    public void setAmplitudeLog(float amplitude) {
+        float amplitudeLinear = (float) Math.pow(10.0, amplitude / 20.0);
+        setAmplitudeLinear(amplitudeLinear);
     }
 
     /**
@@ -82,13 +81,11 @@ public class AmplitudeProcessor implements FloatSampleProcessor {
      */
     @Override
     public void process(FloatSampleBuffer buffer) {
-        for (int nChannel = 0; nChannel < buffer.getChannelCount(); nChannel++) {
-            float[] afBuffer = buffer.getChannel(nChannel);
-            for (int nSample = 0; nSample < buffer.getSampleCount(); nSample++) {
-                afBuffer[nSample] *= m_fAmplitude;
+        for (int channel = 0; channel < buffer.getChannelCount(); channel++) {
+            float[] b = buffer.getChannel(channel);
+            for (int sample = 0; sample < buffer.getSampleCount(); sample++) {
+                b[sample] *= amplitude;
             }
         }
     }
 }
-
-/* AmplitudeProcessor.java ***/

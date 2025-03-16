@@ -11,7 +11,7 @@
   <artifactId>tritonus-test</artifactId>
   <packaging>jar</packaging>
 
-  <name>Tritonus Test1 Module</name>
+  <name>Tritonus TestCase Module</name>
 
   <dependencies>
     <dependency>

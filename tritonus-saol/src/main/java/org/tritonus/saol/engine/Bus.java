@@ -26,27 +26,26 @@ package org.tritonus.saol.engine;
  *
  * @author Matthias Pfisterer
  */
-public class Bus
-        implements Output {
+public class Bus implements Output {
 
-    private float[] m_afValues;
+    private final float[] values;
 
-    public Bus(int nWidth) {
-        m_afValues = new float[nWidth];
+    public Bus(int width) {
+        values = new float[width];
     }
 
     /**
      * Gives the width of this bus.
      *
-     * @returns width of the bus (number of channels)
+     * @return width of the bus (number of channels)
      */
     @Override
     public int getWidth() {
-        return m_afValues.length;
+        return values.length;
     }
 
     /**
-     * Initiate the cumulation of a sample value.
+     * Initiate the simulation of a sample value.
      * Sets the values of all samples to 0.0.
      * This method must be called in an a-cycle before
      * any instrument's a-cycle code is executed.
@@ -54,7 +53,7 @@ public class Bus
     @Override
     public void clear() {
         for (int i = 0; i < getWidth(); i++) {
-            m_afValues[i] = 0.0F;
+            values[i] = 0.0F;
         }
     }
 
@@ -66,9 +65,9 @@ public class Bus
      * The current hacky version allows only for mono samples.
      */
     @Override
-    public void output(float fSample) {
+    public void output(float sample) {
         for (int i = 0; i < getWidth(); i++) {
-            m_afValues[i] += fSample;
+            values[i] += sample;
         }
     }
 
@@ -80,15 +79,13 @@ public class Bus
      * The current hacky version allows only for mono samples.
      */
     @Override
-    public void output(float[] afSamples) {
+    public void output(float[] samples) {
         for (int i = 0; i < getWidth(); i++) {
-            m_afValues[i] += afSamples[i];
+            values[i] += samples[i];
         }
     }
 
     public float[] getValues() {
-        return m_afValues;
+        return values;
     }
 }
-
-

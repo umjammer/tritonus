@@ -58,11 +58,7 @@ public interface CddaMidLevel {
      */
     String getDefaultDevice();
 
-    InputStream getTocAsXml(String strDevice)
-            throws IOException;
+    InputStream getTocAsXml(String device) throws IOException;
 
-    AudioInputStream getTrack(String strDevice, int nTrack)
-            throws IOException;
+    AudioInputStream getTrack(String device, int track) throws IOException;
 }
-
-

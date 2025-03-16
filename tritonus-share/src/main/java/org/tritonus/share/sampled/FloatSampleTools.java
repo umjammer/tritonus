@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 2000-2006 by Florian Bomers
  *
@@ -15,13 +14,8 @@
  *   limitations under the License.
  */
 
-/*
- |<---            this code is formatted to fit into 80 columns             --->|
- */
-
 package org.tritonus.share.sampled;
 
-import java.lang.System.Logger.Level;
 import java.util.List;
 import java.util.Random;
 import javax.sound.sampled.AudioFormat;
@@ -45,7 +39,6 @@ import javax.sound.sampled.AudioFormat;
  * @author Florian Bomers
  * @see FloatSampleBuffer
  */
-
 public class FloatSampleTools {
 
     /** default number of bits to be dithered: 0.7f */
@@ -77,19 +70,19 @@ public class FloatSampleTools {
     static final int CT_32SB = F_32 | F_SIGNED | F_BIGENDIAN;
     static final int CT_32SL = F_32 | F_SIGNED;
 
-    // ///////////////////////// initialization ////////////////////// //
+    // initialization
 
-    /** prevent instanciation */
+    /** prevent instantiation */
     private FloatSampleTools() {
     }
 
-    // /////////////// FORMAT / FORMAT TYPE /////////////////////////// //
+    // FORMAT / FORMAT TYPE
 
     /**
      * only allow "packed" samples -- currently no support for 18, 20 bits --
      * except 24 bits stored in 4 bytes.
      *
-     * @throws IllegalArgumentException
+     * @throws IllegalArgumentException unsupported sample size
      */
     static void checkSupportedSampleSize(int ssib, int channels, int frameSize) {
         if (ssib == 24 && frameSize == 4 * channels) {
@@ -98,43 +91,34 @@ public class FloatSampleTools {
         }
         if ((ssib * channels) != frameSize * 8) {
             throw new IllegalArgumentException("unsupported sample size: "
-                    + ssib + " bits stored in " + (frameSize / channels)
-                    + " bytes.");
+                    + ssib + " bits stored in " + (frameSize / channels) + " bytes.");
         }
     }
 
     /**
      * Get the formatType code from the given format.
      *
-     * @throws IllegalArgumentException
+     * @throws IllegalArgumentException unsupported encoding
      */
     static int getFormatType(AudioFormat format) {
-        boolean signed = format.getEncoding().equals(
-                AudioFormat.Encoding.PCM_SIGNED);
-        if (!signed
-                && !format.getEncoding().equals(
-                AudioFormat.Encoding.PCM_UNSIGNED)) {
-            throw new IllegalArgumentException(
-                    "unsupported encoding: only PCM encoding supported.");
+        boolean signed = format.getEncoding().equals(AudioFormat.Encoding.PCM_SIGNED);
+        if (!signed && !format.getEncoding().equals(AudioFormat.Encoding.PCM_UNSIGNED)) {
+            throw new IllegalArgumentException("unsupported encoding: only PCM encoding supported.");
         }
         if (!signed && format.getSampleSizeInBits() != 8) {
-            throw new IllegalArgumentException(
-                    "unsupported encoding: only 8-bit can be unsigned");
+            throw new IllegalArgumentException("unsupported encoding: only 8-bit can be unsigned");
         }
-        checkSupportedSampleSize(format.getSampleSizeInBits(),
-                format.getChannels(), format.getFrameSize());
+        checkSupportedSampleSize(format.getSampleSizeInBits(), format.getChannels(), format.getFrameSize());
 
         int formatType = getFormatType(format.getSampleSizeInBits(),
-                format.getFrameSize() / format.getChannels(), signed,
-                format.isBigEndian());
+                format.getFrameSize() / format.getChannels(), signed, format.isBigEndian());
         return formatType;
     }
 
     /**
-     * @throws IllegalArgumentException
+     * @throws IllegalArgumentException given arguments are wrong
      */
-    static int getFormatType(int ssib, int bytesPerSample, boolean signed,
-                             boolean bigEndian) {
+    static int getFormatType(int ssib, int bytesPerSample, boolean signed, boolean bigEndian) {
         int res = 0;
         if (ssib == 24 || (bytesPerSample == ssib / 8)) {
             if (ssib == 8) {
@@ -152,14 +136,11 @@ public class FloatSampleTools {
             }
         }
         if (res == 0) {
-            throw new IllegalArgumentException(
-                    "ConversionTool: unsupported sample size of " + ssib
-                            + " bits per sample in " + bytesPerSample
-                            + " bytes.");
+            throw new IllegalArgumentException("ConversionTool: unsupported sample size of " + ssib
+                            + " bits per sample in " + bytesPerSample + " bytes.");
         }
         if (!signed && bytesPerSample > 1) {
-            throw new IllegalArgumentException(
-                    "ConversionTool: unsigned samples larger than "
+            throw new IllegalArgumentException("ConversionTool: unsigned samples larger than "
                             + "8 bit are not supported");
         }
         if (signed) {
@@ -172,19 +153,14 @@ public class FloatSampleTools {
     }
 
     static int getSampleSize(int formatType) {
-        switch (formatType & F_SAMPLE_WIDTH_MASK) {
-        case F_8:
-            return 1;
-        case F_16:
-            return 2;
-        case F_24_3:
-            return 3;
-        case F_24_4:
-            return 4;
-        case F_32:
-            return 4;
-        }
-        return 0;
+        return switch (formatType & F_SAMPLE_WIDTH_MASK) {
+            case F_8 -> 1;
+            case F_16 -> 2;
+            case F_24_3 -> 3;
+            case F_24_4 -> 4;
+            case F_32 -> 4;
+            default -> 0;
+        };
     }
 
     /**
@@ -211,13 +187,12 @@ public class FloatSampleTools {
         }
         res += ((formatType & F_SIGNED) == F_SIGNED) ? " signed" : " unsigned";
         if ((formatType & F_SAMPLE_WIDTH_MASK) != F_8) {
-            res += ((formatType & F_BIGENDIAN) == F_BIGENDIAN) ? " big endian"
-                    : " little endian";
+            res += ((formatType & F_BIGENDIAN) == F_BIGENDIAN) ? " big endian" : " little endian";
         }
         return res;
     }
 
-    // /////////////////// BYTE 2 FLOAT /////////////////////////////////// //
+    // BYTE 2 FLOAT
 
     private static final float twoPower7 = 128.0f;
     private static final float twoPower15 = 32768.0f;
@@ -231,41 +206,31 @@ public class FloatSampleTools {
 
     /**
      * @see #byte2float(byte[] input, int inByteOffset, Object[] output, int
-     * outOffset, int frameCount, AudioFormat format, boolean
-     * allowAddChannel)
+     * outOffset, int frameCount, AudioFormat format, boolean allowAddChannel)
      */
     public static void byte2float(byte[] input, int inByteOffset,
-                                  List<float[]> output, int outOffset, int frameCount,
-                                  AudioFormat format) {
+                                  List<float[]> output, int outOffset, int frameCount, AudioFormat format) {
 
-        byte2float(input, inByteOffset, output, outOffset, frameCount, format,
-                true);
+        byte2float(input, inByteOffset, output, outOffset, frameCount, format, true);
     }
 
     /**
      * @param output an array of float[] arrays
-     * @throws ArrayIndexOutOfBoundsException if output does not
-     *                                        format.getChannels() elements
-     * @see #byte2float(byte[] input, int inByteOffset, Object[] output, int
-     * outOffset, int frameCount, AudioFormat format, boolean
-     * allowAddChannel)
+     * @throws ArrayIndexOutOfBoundsException if output does not format.getChannels() elements
+     * @see #byte2float(byte[], int, Object[], int, int, AudioFormat, boolean)
      */
     public static void byte2float(byte[] input, int inByteOffset,
                                   Object[] output, int outOffset, int frameCount, AudioFormat format) {
 
-        byte2float(input, inByteOffset, output, outOffset, frameCount, format,
-                true);
+        byte2float(input, inByteOffset, output, outOffset, frameCount, format, true);
     }
 
     /**
      * @param output          an array of float[] arrays
      * @param allowAddChannel if true, and output has fewer channels than
      *                        format, then only output.length channels are filled
-     * @throws ArrayIndexOutOfBoundsException if output does not
-     *                                        format.getChannels() elements
-     * @see #byte2float(byte[] input, int inByteOffset, Object[] output, int
-     * outOffset, int frameCount, AudioFormat format, boolean
-     * allowAddChannel)
+     * @throws ArrayIndexOutOfBoundsException if output does not format.getChannels() elements
+     * @see #byte2float(byte[] , int, Object[], int, int, AudioFormat, boolean)
      */
     public static void byte2float(byte[] input, int inByteOffset,
                                   Object[] output, int outOffset, int frameCount, AudioFormat format,
@@ -276,8 +241,7 @@ public class FloatSampleTools {
             channels = output.length;
         }
         if (output.length < channels) {
-            throw new ArrayIndexOutOfBoundsException(
-                    "too few channel output array");
+            throw new ArrayIndexOutOfBoundsException("too few channel output array");
         }
         for (int channel = 0; channel < channels; channel++) {
             float[] data = (float[]) output[channel];
@@ -286,8 +250,7 @@ public class FloatSampleTools {
                 output[channel] = data;
             }
 
-            byte2floatGeneric(input, inByteOffset, format.getFrameSize(), data,
-                    outOffset, frameCount, format);
+            byte2floatGeneric(input, inByteOffset, format.getFrameSize(), data, outOffset, frameCount, format);
             inByteOffset += format.getFrameSize() / format.getChannels();
         }
     }
@@ -317,12 +280,10 @@ public class FloatSampleTools {
      *                        <code>output</code> to match the number of input channels,
      *                        otherwise, only the first output.size() channels of input data
      *                        are converted.
-     * @throws IllegalArgumentException if one of the parameters is out of
-     *                                  bounds
+     * @throws IllegalArgumentException if one of the parameters is out of bounds
      * @see #byte2floatInterleaved(byte[], int, float[], int, int, AudioFormat)
      */
-    public static void byte2float(byte[] input, int inByteOffset,
-                                  List<float[]> output, int outOffset, int frameCount,
+    public static void byte2float(byte[] input, int inByteOffset, List<float[]> output, int outOffset, int frameCount,
                                   AudioFormat format, boolean allowAddChannel) {
 
         int channels = format.getChannels();
@@ -342,8 +303,7 @@ public class FloatSampleTools {
                 }
             }
 
-            byte2floatGeneric(input, inByteOffset, format.getFrameSize(), data,
-                    outOffset, frameCount, format);
+            byte2floatGeneric(input, inByteOffset, format.getFrameSize(), data, outOffset, frameCount, format);
             inByteOffset += format.getFrameSize() / format.getChannels();
         }
     }
@@ -367,8 +327,7 @@ public class FloatSampleTools {
      * @param outOffset    the start offset in <code>output</code>
      * @param frameCount   number of frames to be converted
      * @param format       the input format. Only packed PCM is allowed
-     * @throws IllegalArgumentException if one of the parameters is out of
-     *                                  bounds
+     * @throws IllegalArgumentException if one of the parameters is out of bounds
      */
     public static void byte2float(int channel, byte[] input, int inByteOffset,
                                   float[] output, int outOffset, int frameCount, AudioFormat format) {
@@ -382,8 +341,7 @@ public class FloatSampleTools {
 
         // "select" the channel
         inByteOffset += format.getFrameSize() / format.getChannels() * channel;
-        byte2floatGeneric(input, inByteOffset, format.getFrameSize(), output,
-                outOffset, frameCount, format);
+        byte2floatGeneric(input, inByteOffset, format.getFrameSize(), output, outOffset, frameCount, format);
     }
 
     /**
@@ -404,8 +362,7 @@ public class FloatSampleTools {
      * @param outOffset    the start offset in <code>output</code>
      * @param frameCount   number of frames to be converted
      * @param format       the input format. Only packed PCM is allowed
-     * @throws IllegalArgumentException if one of the parameters is out of
-     *                                  bounds
+     * @throws IllegalArgumentException if one of the parameters is out of bounds
      * @see #byte2float(byte[], int, List, int, int, AudioFormat)
      */
     public static void byte2floatInterleaved(byte[] input, int inByteOffset,
@@ -434,41 +391,37 @@ public class FloatSampleTools {
      * <code>format.getFrameSize() / format.getChannels()</code>.
      *
      * @param sampleCount number of samples to be written to output
-     * @param inByteStep  how many bytes advance for each output sample in
-     *                    <code>output</code>.
-     * @throws IllegalArgumentException if one of the parameters is out of
-     *                                  bounds
+     * @param inByteStep  how many bytes advance for each output sample in <code>output</code>.
+     * @throws IllegalArgumentException if one of the parameters is out of bounds
      * @see #byte2floatInterleaved(byte[], int, float[], int, int, AudioFormat)
      * @see #byte2float(byte[], int, List, int, int, AudioFormat)
      */
     static void byte2floatGeneric(byte[] input, int inByteOffset,
-                                  int inByteStep, float[] output, int outOffset, int sampleCount,
-                                  AudioFormat format) {
+                                  int inByteStep, float[] output, int outOffset, int sampleCount, AudioFormat format) {
         int formatType = getFormatType(format);
 
-        byte2floatGeneric(input, inByteOffset, inByteStep, output, outOffset,
-                sampleCount, formatType);
+        byte2floatGeneric(input, inByteOffset, inByteStep, output, outOffset, sampleCount, formatType);
     }
 
     /**
      * Central conversion function from a byte array to a normalized float
-     * array. In order to accomodate interleaved and non-interleaved samples,
+     * array. In order to accommodate interleaved and non-interleaved samples,
      * this method takes inByteStep as parameter which can be used to flexibly
      * convert the data.
      * <p>
-     * E.g.:<br>
-     * mono->mono: inByteStep=format.getFrameSize()<br>
-     * interleaved_stereo->interleaved_stereo:
-     * inByteStep=format.getFrameSize()/2, sampleCount*2<br>
-     * stereo->2 mono arrays:<br>
-     * ---inByteOffset=0, outOffset=0, inByteStep=format.getFrameSize()<br>
-     * ---inByteOffset=format.getFrameSize()/2, outOffset=1,
-     * inByteStep=format.getFrameSize()<br>
+     * E.g.:
+     * <pre>
+     * mono->mono: inByteStep = format.getFrameSize()
+     * interleaved_stereo->interleaved_stereo: inByteStep = format.getFrameSize() / 2, sampleCount * 2
+     * stereo->2 mono arrays:
+     * --- inByteOffset = 0, outOffset = 0, inByteStep = format.getFrameSize()
+     * --- inByteOffset = format.getFrameSize() / 2, outOffset = 1,
+     *     inByteStep = format.getFrameSize()
+     * </pre>
      */
     static void byte2floatGeneric(byte[] input, int inByteOffset,
-                                  int inByteStep, float[] output, int outOffset, int sampleCount,
-                                  int formatType) {
-//        logger.log(Level.TRACE, "FloatSampleTools.byte2floatGeneric, formatType=" + formatType2Str(formatType));
+                                  int inByteStep, float[] output, int outOffset, int sampleCount, int formatType) {
+//logger.log(Level.TRACE, "FloatSampleTools.byte2floatGeneric, formatType=" + formatType2Str(formatType));
         int endCount = outOffset + sampleCount;
         int inIndex = inByteOffset;
         for (int outIndex = outOffset; outIndex < endCount; outIndex++, inIndex += inByteStep) {
@@ -536,7 +489,7 @@ public class FloatSampleTools {
         }
     }
 
-    // /////////////////// FLOAT 2 BYTE /////////////////////////////////// //
+    // FLOAT 2 BYTE
 
     private static byte quantize8(float sample, float ditherBits) {
         if (ditherBits != 0) {
@@ -622,36 +575,30 @@ public class FloatSampleTools {
      * @param format        the output format. Only packed PCM is allowed
      * @param ditherBits    if 0, do not dither. Otherwise the number of bits to be
      *                      dithered
-     * @throws IllegalArgumentException if one of the parameters is out of
-     *                                  bounds
+     * @throws IllegalArgumentException if one of the parameters is out of bounds
      * @see #DEFAULT_DITHER_BITS
      * @see #float2byteInterleaved(float[], int, byte[], int, int, AudioFormat, float)
      */
-    public static void float2byte(List<float[]> input, int inOffset,
-                                  byte[] output, int outByteOffset, int frameCount,
+    public static void float2byte(List<float[]> input, int inOffset, byte[] output, int outByteOffset, int frameCount,
                                   AudioFormat format, float ditherBits) {
         for (int channel = 0; channel < format.getChannels(); channel++) {
             float[] data = input.get(channel);
-            float2byteGeneric(data, inOffset, output, outByteOffset,
-                    format.getFrameSize(), frameCount, format, ditherBits);
+            float2byteGeneric(data, inOffset, output, outByteOffset, format.getFrameSize(), frameCount, format, ditherBits);
             outByteOffset += format.getFrameSize() / format.getChannels();
         }
     }
 
     /**
      * @param input an array of float[] arrays
-     * @throws ArrayIndexOutOfBoundsException if one of the parameters is out of
-     *                                        bounds
+     * @throws ArrayIndexOutOfBoundsException if one of the parameters is out of bounds
      * @see #float2byte(Object[], int, byte[], int, int, AudioFormat, float)
      */
     public static void float2byte(Object[] input, int inOffset, byte[] output,
-                                  int outByteOffset, int frameCount, AudioFormat format,
-                                  float ditherBits) {
+                                  int outByteOffset, int frameCount, AudioFormat format, float ditherBits) {
         int channels = format.getChannels();
         for (int channel = 0; channel < channels; channel++) {
             float[] data = (float[]) input[channel];
-            float2byteGeneric(data, inOffset, output, outByteOffset,
-                    format.getFrameSize(), frameCount, format, ditherBits);
+            float2byteGeneric(data, inOffset, output, outByteOffset, format.getFrameSize(), frameCount, format, ditherBits);
             outByteOffset += format.getFrameSize() / format.getChannels();
         }
     }
@@ -659,20 +606,16 @@ public class FloatSampleTools {
     /**
      * @param input     an array of float[] arrays
      * @param channels  how many channels to use from the input array
-     * @param frameSize only as optimization, the number of bytes per sample
-     *                  frame
-     * @throws ArrayIndexOutOfBoundsException if one of the parameters is out of
-     *                                        bounds
+     * @param frameSize only as optimization, the number of bytes per sample frame
+     * @throws ArrayIndexOutOfBoundsException if one of the parameters is out of bounds
      * @see #float2byte(Object[], int, byte[], int, int, AudioFormat, float)
      */
     static void float2byte(Object[] input, int inOffset, byte[] output,
-                           int outByteOffset, int frameCount, int formatCode, int channels,
-                           int frameSize, float ditherBits) {
+                           int outByteOffset, int frameCount, int formatCode, int channels, int frameSize, float ditherBits) {
         int sampleSize = frameSize / channels;
         for (int channel = 0; channel < channels; channel++) {
             float[] data = (float[]) input[channel];
-            float2byteGeneric(data, inOffset, output, outByteOffset, frameSize,
-                    frameCount, formatCode, ditherBits);
+            float2byteGeneric(data, inOffset, output, outByteOffset, frameSize, frameCount, formatCode, ditherBits);
             outByteOffset += sampleSize;
         }
     }
@@ -705,13 +648,11 @@ public class FloatSampleTools {
      * @param format        the output format. Only packed PCM is allowed
      * @param ditherBits    if 0, do not dither. Otherwise the number of bits to be
      *                      dithered
-     * @throws IllegalArgumentException if one of the parameters is out of
-     *                                  bounds
+     * @throws IllegalArgumentException if one of the parameters is out of bounds
      * @see #DEFAULT_DITHER_BITS
      * @see #float2byte(List, int, byte[], int, int, AudioFormat, float)
      */
-    public static void float2byteInterleaved(float[] input, int inOffset,
-                                             byte[] output, int outByteOffset, int frameCount,
+    public static void float2byteInterleaved(float[] input, int inOffset, byte[] output, int outByteOffset, int frameCount,
                                              AudioFormat format, float ditherBits) {
         float2byteGeneric(input, inOffset, output, outByteOffset,
                 format.getFrameSize() / format.getChannels(), frameCount
@@ -738,8 +679,7 @@ public class FloatSampleTools {
      * @param sampleCount number of samples in input to be converted.
      * @param outByteStep how many bytes advance for each input sample in
      *                    <code>input</code>.
-     * @throws IllegalArgumentException if one of the parameters is out of
-     *                                  bounds
+     * @throws IllegalArgumentException if one of the parameters is out of bounds
      * @see #float2byteInterleaved(float[], int, byte[], int, int, AudioFormat, float)
      * @see #float2byte(List, int, byte[], int, int, AudioFormat, float)
      */
@@ -748,32 +688,32 @@ public class FloatSampleTools {
                                   AudioFormat format, float ditherBits) {
         int formatType = getFormatType(format);
 
-        float2byteGeneric(input, inOffset, output, outByteOffset, outByteStep,
-                sampleCount, formatType, ditherBits);
+        float2byteGeneric(input, inOffset, output, outByteOffset, outByteStep, sampleCount, formatType, ditherBits);
     }
 
     /**
      * Central conversion function from normalized float array to a byte array.
-     * In order to accomodate interleaved and non-interleaved samples, this
+     * In order to accommodate interleaved and non-interleaved samples, this
      * method takes outByteStep as parameter which can be used to flexibly
      * convert the data.
      * <p>
-     * E.g.:<br>
-     * mono->mono: outByteStep=format.getFrameSize()<br>
+     * E.g.:
+     * <pre>
+     * mono->mono: outByteStep = format.getFrameSize()
      * interleaved stereo->interleaved stereo:
-     * outByteStep=format.getFrameSize()/2, sampleCount*2<br>
-     * 2 mono arrays->stereo:<br>
-     * ---inOffset=0, outByteOffset=0, outByteStep=format.getFrameSize()<br>
-     * ---inOffset=1, outByteOffset=format.getFrameSize()/2,
-     * outByteStep=format.getFrameSize()<br>
+     * outByteStep = format.getFrameSize() / 2, sampleCount * 2
+     * 2 mono arrays->stereo:
+     * ---inOffset = 0, outByteOffset = 0, outByteStep = format.getFrameSize()
+     * ---inOffset = 1, outByteOffset = format.getFrameSize() / 2,
+     * outByteStep = format.getFrameSize()
+     * </pre>
      */
     static void float2byteGeneric(float[] input, int inOffset, byte[] output,
                                   int outByteOffset, int outByteStep, int sampleCount,
                                   int formatType, float ditherBits) {
-//        logger.log(Level.TRACE, "FloatSampleBuffer.float2byteGeneric, formatType=" + "formatType2Str(formatType));
+//logger.log(Level.TRACE, "FloatSampleBuffer.float2byteGeneric, formatType=" + "formatType2Str(formatType));
 
-        if (inOffset < 0 || inOffset + sampleCount > input.length
-                || sampleCount < 0) {
+        if (inOffset < 0 || inOffset + sampleCount > input.length || sampleCount < 0) {
             throw new IllegalArgumentException("invalid input index: "
                     + "input.length=" + input.length + " inOffset=" + inOffset
                     + " sampleCount=" + sampleCount);
@@ -793,74 +733,71 @@ public class FloatSampleTools {
             random = new Random();
         }
         int endSample = inOffset + sampleCount;
-        int iSample;
+        int sample;
         int outIndex = outByteOffset;
         for (int inIndex = inOffset; inIndex < endSample; inIndex++, outIndex += outByteStep) {
             // do conversion
             switch (formatType) {
             case CT_8S:
-                output[outIndex] = quantize8(input[inIndex] * twoPower7,
-                        ditherBits);
+                output[outIndex] = quantize8(input[inIndex] * twoPower7, ditherBits);
                 break;
             case CT_8U:
-                output[outIndex] = (byte) (quantize8(
-                        (input[inIndex] * twoPower7), ditherBits) + 128);
+                output[outIndex] = (byte) (quantize8((input[inIndex] * twoPower7), ditherBits) + 128);
                 break;
             case CT_16SB:
-                iSample = quantize16(input[inIndex] * twoPower15, ditherBits);
-                output[outIndex] = (byte) (iSample >> 8);
-                output[outIndex + 1] = (byte) (iSample & 0xFF);
+                sample = quantize16(input[inIndex] * twoPower15, ditherBits);
+                output[outIndex] = (byte) (sample >> 8);
+                output[outIndex + 1] = (byte) (sample & 0xFF);
                 break;
             case CT_16SL:
-                iSample = quantize16(input[inIndex] * twoPower15, ditherBits);
-                output[outIndex + 1] = (byte) (iSample >> 8);
-                output[outIndex] = (byte) (iSample & 0xFF);
+                sample = quantize16(input[inIndex] * twoPower15, ditherBits);
+                output[outIndex + 1] = (byte) (sample >> 8);
+                output[outIndex] = (byte) (sample & 0xFF);
                 break;
             case CT_24_3SB:
-                iSample = quantize24(input[inIndex] * twoPower23, ditherBits);
-                output[outIndex] = (byte) (iSample >> 16);
-                output[outIndex + 1] = (byte) ((iSample >>> 8) & 0xFF);
-                output[outIndex + 2] = (byte) (iSample & 0xFF);
+                sample = quantize24(input[inIndex] * twoPower23, ditherBits);
+                output[outIndex] = (byte) (sample >> 16);
+                output[outIndex + 1] = (byte) ((sample >>> 8) & 0xFF);
+                output[outIndex + 2] = (byte) (sample & 0xFF);
                 break;
             case CT_24_3SL:
-                iSample = quantize24(input[inIndex] * twoPower23, ditherBits);
-                output[outIndex + 2] = (byte) (iSample >> 16);
-                output[outIndex + 1] = (byte) ((iSample >>> 8) & 0xFF);
-                output[outIndex] = (byte) (iSample & 0xFF);
+                sample = quantize24(input[inIndex] * twoPower23, ditherBits);
+                output[outIndex + 2] = (byte) (sample >> 16);
+                output[outIndex + 1] = (byte) ((sample >>> 8) & 0xFF);
+                output[outIndex] = (byte) (sample & 0xFF);
                 break;
             case CT_24_4SB:
                 // TODO verify
-                iSample = quantize24(input[inIndex] * twoPower23, ditherBits);
+                sample = quantize24(input[inIndex] * twoPower23, ditherBits);
                 output[outIndex + 0] = 0;
-                output[outIndex + 1] = (byte) (iSample >> 16);
-                output[outIndex + 2] = (byte) ((iSample >>> 8) & 0xFF);
-                output[outIndex + 3] = (byte) (iSample & 0xFF);
+                output[outIndex + 1] = (byte) (sample >> 16);
+                output[outIndex + 2] = (byte) ((sample >>> 8) & 0xFF);
+                output[outIndex + 3] = (byte) (sample & 0xFF);
                 break;
             case CT_24_4SL:
                 // TODO verify
-                iSample = quantize24(input[inIndex] * twoPower23, ditherBits);
-                output[outIndex + 3] = (byte) (iSample >> 16);
-                output[outIndex + 2] = (byte) ((iSample >>> 8) & 0xFF);
-                output[outIndex + 1] = (byte) (iSample & 0xFF);
+                sample = quantize24(input[inIndex] * twoPower23, ditherBits);
+                output[outIndex + 3] = (byte) (sample >> 16);
+                output[outIndex + 2] = (byte) ((sample >>> 8) & 0xFF);
+                output[outIndex + 1] = (byte) (sample & 0xFF);
                 output[outIndex + 0] = 0;
                 break;
             case CT_32SB:
-                iSample = quantize32(input[inIndex] * twoPower31, ditherBits);
-                output[outIndex] = (byte) (iSample >> 24);
-                output[outIndex + 1] = (byte) ((iSample >>> 16) & 0xFF);
-                output[outIndex + 2] = (byte) ((iSample >>> 8) & 0xFF);
-                output[outIndex + 3] = (byte) (iSample & 0xFF);
+                sample = quantize32(input[inIndex] * twoPower31, ditherBits);
+                output[outIndex] = (byte) (sample >> 24);
+                output[outIndex + 1] = (byte) ((sample >>> 16) & 0xFF);
+                output[outIndex + 2] = (byte) ((sample >>> 8) & 0xFF);
+                output[outIndex + 3] = (byte) (sample & 0xFF);
                 break;
             case CT_32SL:
-                iSample = quantize32(input[inIndex] * twoPower31, ditherBits);
-                output[outIndex + 3] = (byte) (iSample >> 24);
-                output[outIndex + 2] = (byte) ((iSample >>> 16) & 0xFF);
-                output[outIndex + 1] = (byte) ((iSample >>> 8) & 0xFF);
-                output[outIndex] = (byte) (iSample & 0xFF);
+                sample = quantize32(input[inIndex] * twoPower31, ditherBits);
+                output[outIndex + 3] = (byte) (sample >> 24);
+                output[outIndex + 2] = (byte) ((sample >>> 16) & 0xFF);
+                output[outIndex + 1] = (byte) ((sample >>> 8) & 0xFF);
+                output[outIndex] = (byte) (sample & 0xFF);
                 break;
             default:
-                throw new IllegalArgumentException("unsupported format="
-                        + formatType2Str(formatType));
+                throw new IllegalArgumentException("unsupported format=" + formatType2Str(formatType));
             }
         }
     }

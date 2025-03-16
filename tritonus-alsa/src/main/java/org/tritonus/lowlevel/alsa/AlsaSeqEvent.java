@@ -41,17 +41,17 @@ public class AlsaSeqEvent {
      * for the native code.
      * This must be long to be 64bit-clean.
      */
-    /* private */ long m_lNativeHandle;
+    /* private */ long nativeHandle;
 
     public AlsaSeqEvent() {
-        logger.log(Level.TRACE, "AlsaSeq.Event.<init>(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        int nReturn = malloc();
-        if (nReturn < 0) {
+        int ret = malloc();
+        if (ret < 0) {
             throw new RuntimeException("malloc of event failed");
         }
 
-        logger.log(Level.TRACE, "AlsaSeq.Event.<init>(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     /**
@@ -60,7 +60,7 @@ public class AlsaSeqEvent {
      * The native part of this method uses calloc() to
      * allocate the memory (so the allocated memory is
      * zero'ed).  The memory reference is stored in {@link
-     * #m_lNativeHandle m_lNativeHandle}.  Memory allocated
+     * #nativeHandle nativeHandle}.  Memory allocated
      * with this call should be freed by calling {@link
      * #free() free()}.
      */
@@ -101,13 +101,13 @@ public class AlsaSeqEvent {
      * SND_SEQ_EVENT_KEYPRESS
      *
      * After return, the array will contain:
-     * anValues[0] channel
-     * anValues[1] note
-     * anValues[2] velocity
-     * anValues[3] off_velocity
-     * anValues[4] duration
+     * values[0] channel
+     * values[1] note
+     * values[2] velocity
+     * values[3] off_velocity
+     * values[4] duration
      */
-    public native void getNote(int[] anValues);
+    public native void getNote(int[] values);
 
     /**
      * Retrieves the parameters of a control event.
@@ -126,11 +126,11 @@ public class AlsaSeqEvent {
      * SND_SEQ_EVENT_KEYSIGN
      *
      * After return, the array will contain:
-     * anValues[0] channel
-     * anValues[1] param
-     * anValues[2] value
+     * values[0] channel
+     * values[1] param
+     * values[2] value
      */
-    public native void getControl(int[] anValues);
+    public native void getControl(int[] values);
 
     /**
      * Retrieves the parameters of a queue control event.
@@ -147,11 +147,11 @@ public class AlsaSeqEvent {
      * SND_SEQ_EVENT_SYNC_POS
      *
      * After return, the array will contain:
-     * anValues[0] queue
-     * anValues[1] value
-     * alValues[0] time
+     * values[0] queue
+     * values[1] value
+     * valuesL[0] time
      */
-    public native void getQueueControl(int[] anValues, long[] alValues);
+    public native void getQueueControl(int[] values, long[] valuesL);
 
     /**
      * Retrieves the parameters of a variable-length event.
@@ -166,17 +166,17 @@ public class AlsaSeqEvent {
      */
     public native byte[] getVar();
 
-    public native void setCommon(int nType, int nFlags, int nTag, int nQueue, long lTimestamp, int nSourceClient, int nSourcePort, int nDestClient, int nDestPort);
+    public native void setCommon(int type, int flags, int tag, int queue, long timestamp, int sourceClient, int sourcePort, int destClient, int destPort);
 
-    public native void setTimestamp(long lTimestamp);
+    public native void setTimestamp(long timestamp);
 
-    public native void setNote(int nChannel, int nKey, int nVelocity, int nOffVelocity, int nDuration);
+    public native void setNote(int channel, int key, int velocity, int offVelocity, int duration);
 
-    public native void setControl(int nChannel, int nParam, int nValue);
+    public native void setControl(int channel, int param, int value);
 
-    public native void setQueueControl(int nControlQueue, int nControlValue, long lControlTime);
+    public native void setQueueControl(int controlQueue, int controlValue, long controlTime);
 
-    public native void setVar(byte[] abData, int nOffset, int nLength);
+    public native void setVar(byte[] data, int offset, int length);
 
-    private static native void setTrace(boolean bTrace);
+    private static native void setTrace(boolean trace);
 }

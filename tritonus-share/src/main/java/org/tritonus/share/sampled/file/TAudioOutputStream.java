@@ -41,28 +41,28 @@ public abstract class TAudioOutputStream implements AudioOutputStream {
 
     private static final Logger logger = getLogger(TAudioOutputStream.class.getName());
 
-    private AudioFormat m_audioFormat;
-    private long m_lLength; // in bytes
-    private long m_lCalculatedLength;
-    private TDataOutputStream m_dataOutputStream;
-    private boolean m_bDoBackPatching;
-    private boolean m_bHeaderWritten;
+    private final AudioFormat audioFormat;
+    private long length; // in bytes
+    private long calculatedLength;
+    private final TDataOutputStream dataOutputStream;
+    private final boolean doBackPatching;
+    private boolean headerWritten;
     /** if this flag is set, do sign conversion for 8-bit PCM data */
-    private boolean m_doSignConversion;
+    private boolean doSignConversion;
 
     /** if this flag is set, do endian conversion for 16-bit PCM data */
-    private boolean m_doEndianConversion;
+    private boolean doEndianConversion;
 
     protected TAudioOutputStream(AudioFormat audioFormat,
-                                 long lLength,
+                                 long length,
                                  TDataOutputStream dataOutputStream,
-                                 boolean bDoBackPatching) {
-        m_audioFormat = audioFormat;
-        m_lLength = lLength;
-        m_lCalculatedLength = 0;
-        m_dataOutputStream = dataOutputStream;
-        m_bDoBackPatching = bDoBackPatching;
-        m_bHeaderWritten = false;
+                                 boolean doBackPatching) {
+        this.audioFormat = audioFormat;
+        this.length = length;
+        calculatedLength = 0;
+        this.dataOutputStream = dataOutputStream;
+        this.doBackPatching = doBackPatching;
+        headerWritten = false;
     }
 
     /**
@@ -70,9 +70,9 @@ public abstract class TAudioOutputStream implements AudioOutputStream {
      * data should be done
      */
     protected void requireSign8bit(boolean signed) {
-        if (m_audioFormat.getSampleSizeInBits() == 8 && isPCM(m_audioFormat)) {
-            boolean si = m_audioFormat.getEncoding().equals(AudioFormat.Encoding.PCM_SIGNED);
-            m_doSignConversion = signed != si;
+        if (audioFormat.getSampleSizeInBits() == 8 && isPCM(audioFormat)) {
+            boolean si = audioFormat.getEncoding().equals(AudioFormat.Encoding.PCM_SIGNED);
+            doSignConversion = signed != si;
         }
     }
 
@@ -81,15 +81,15 @@ public abstract class TAudioOutputStream implements AudioOutputStream {
      * be done. Currently supported for 16, 24, and 32 bits per sample.
      */
     protected void requireEndianness(boolean bigEndian) {
-        int ssib = m_audioFormat.getSampleSizeInBits();
-        if ((ssib == 16 || ssib == 24 || ssib == 32) && isPCM(m_audioFormat)) {
-            m_doEndianConversion = bigEndian != m_audioFormat.isBigEndian();
+        int ssib = audioFormat.getSampleSizeInBits();
+        if ((ssib == 16 || ssib == 24 || ssib == 32) && isPCM(audioFormat)) {
+            doEndianConversion = bigEndian != audioFormat.isBigEndian();
         }
     }
 
     @Override
     public AudioFormat getFormat() {
-        return m_audioFormat;
+        return audioFormat;
     }
 
     /**
@@ -99,7 +99,7 @@ public abstract class TAudioOutputStream implements AudioOutputStream {
      */
     @Override
     public long getLength() {
-        return m_lLength;
+        return length;
     }
 
     /**
@@ -108,28 +108,28 @@ public abstract class TAudioOutputStream implements AudioOutputStream {
      * IDEA: rename this to BytesWritten or something like that ?
      */
     public long getCalculatedLength() {
-        return m_lCalculatedLength;
+        return calculatedLength;
     }
 
     protected TDataOutputStream getDataOutputStream() {
-        return m_dataOutputStream;
+        return dataOutputStream;
     }
 
     /** do sign or endianness conversion */
-    private void handleImplicitConversions(byte[] abData, int nOffset, int nLength) {
-        if (m_doSignConversion) {
-            convertSign8(abData, nOffset, nLength);
+    private void handleImplicitConversions(byte[] data, int offset, int length) {
+        if (doSignConversion) {
+            convertSign8(data, offset, length);
         }
-        if (m_doEndianConversion) {
-            switch (m_audioFormat.getSampleSizeInBits()) {
+        if (doEndianConversion) {
+            switch (audioFormat.getSampleSizeInBits()) {
             case 16:
-                swapOrder16(abData, nOffset, nLength / 2);
+                swapOrder16(data, offset, length / 2);
                 break;
             case 24:
-                swapOrder24(abData, nOffset, nLength / 3);
+                swapOrder24(data, offset, length / 3);
                 break;
             case 32:
-                swapOrder32(abData, nOffset, nLength / 4);
+                swapOrder32(data, offset, length / 4);
                 break;
             }
         }
@@ -141,37 +141,37 @@ public abstract class TAudioOutputStream implements AudioOutputStream {
      * IDEA: use long?
      */
     @Override
-    public int write(byte[] abData, int nOffset, int nLength) throws IOException {
-        logger.log(Level.TRACE, "TAudioOutputStream.write(): wanted length: " + nLength);
+    public int write(byte[] data, int offset, int length) throws IOException {
+        logger.log(Level.TRACE, "wanted length: " + length);
 
-        if (!m_bHeaderWritten) {
+        if (!headerWritten) {
             writeHeader();
-            m_bHeaderWritten = true;
+            headerWritten = true;
         }
         // $$fb added
         // check that total writes do not exceed specified length
-        long lTotalLength = getLength();
-        if (lTotalLength != AudioSystem.NOT_SPECIFIED && (m_lCalculatedLength + nLength) > lTotalLength) {
-            logger.log(Level.TRACE, "TAudioOutputStream.write(): requested more bytes to write than possible.");
+        long totalLength = getLength();
+        if (totalLength != AudioSystem.NOT_SPECIFIED && (calculatedLength + length) > totalLength) {
+            logger.log(Level.TRACE, "requested more bytes to write than possible.");
 
-            nLength = (int) (lTotalLength - m_lCalculatedLength);
+            length = (int) (totalLength - calculatedLength);
             // sanity
-            if (nLength < 0) {
-                nLength = 0;
+            if (length < 0) {
+                length = 0;
             }
         }
-        // TODO throw an exception if nLength==0 ? (to indicate end of file ?)
-        if (nLength > 0) {
-            handleImplicitConversions(abData, nOffset, nLength);
-            m_dataOutputStream.write(abData, nOffset, nLength);
-            m_lCalculatedLength += nLength;
+        // TODO throw an exception if length==0 ? (to indicate end of file ?)
+        if (length > 0) {
+            handleImplicitConversions(data, offset, length);
+            dataOutputStream.write(data, offset, length);
+            calculatedLength += length;
             // if we converted something, need to undo the conversion to
             // guarantee integrity of data
-            handleImplicitConversions(abData, nOffset, nLength);
+            handleImplicitConversions(data, offset, length);
         }
-        logger.log(Level.TRACE, "TAudioOutputStream.write(): calculated (total) length: " + m_lCalculatedLength + " bytes = " + (m_lCalculatedLength / getFormat().getFrameSize()) + " frames");
+        logger.log(Level.TRACE, "calculated (total) length: " + calculatedLength + " bytes = " + (calculatedLength / getFormat().getFrameSize()) + " frames");
 
-        return nLength;
+        return length;
     }
 
     /**
@@ -186,25 +186,23 @@ public abstract class TAudioOutputStream implements AudioOutputStream {
      */
     @Override
     public void close() throws IOException {
-        logger.log(Level.TRACE, "TAudioOutputStream.close(): called");
+        logger.log(Level.TRACE, "called");
 
         // flush?
-        if (m_bDoBackPatching) {
-            logger.log(Level.TRACE, "TAudioOutputStream.close(): patching header");
+        if (doBackPatching) {
+            logger.log(Level.TRACE, "patching header");
 
             patchHeader();
         }
-        m_dataOutputStream.close();
+        dataOutputStream.close();
     }
 
     protected void patchHeader() throws IOException {
-        logger.log(Level.TRACE, "TAudioOutputStream.patchHeader(): called");
+        logger.log(Level.TRACE, "called");
         // DO NOTHING
     }
 
     protected void setLengthFromCalculatedLength() {
-        m_lLength = m_lCalculatedLength;
+        length = calculatedLength;
     }
 }
-
-

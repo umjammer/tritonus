@@ -1,6 +1,5 @@
 package vavi.sound.sampled.jna.ogg;
 
-import java.util.Arrays;
 import java.util.List;
 
 import com.sun.jna.NativeLong;
@@ -79,7 +78,7 @@ public class ogg_stream_state extends Structure {
 
     @Override
     protected List<String> getFieldOrder() {
-        return Arrays.asList("body_data", "body_storage", "body_fill", "body_returned", "lacing_vals", "granule_vals", "lacing_storage", "lacing_fill", "lacing_packet", "lacing_returned", "header", "header_fill", "e_o_s", "b_o_s", "serialno", "pageno", "packetno", "granulepos");
+        return List.of("body_data", "body_storage", "body_fill", "body_returned", "lacing_vals", "granule_vals", "lacing_storage", "lacing_fill", "lacing_packet", "lacing_returned", "header", "header_fill", "e_o_s", "b_o_s", "serialno", "pageno", "packetno", "granulepos");
     }
 
     public ogg_stream_state(Pointer peer) {

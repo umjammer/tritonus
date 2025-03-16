@@ -41,13 +41,13 @@ public class DataLineInfoTestCase {
 
     private void checkInfo(DataLine.Info info,
                            Class<?> expectedLineClass,
-                           int nExpectedFormatsArrayLength,
-                           int nExpectedMinBufferSize,
-                           int nExpectedMaxBufferSize) {
+                           int expectedFormatsArrayLength,
+                           int expectedMinBufferSize,
+                           int expectedMaxBufferSize) {
         assertEquals(expectedLineClass, info.getLineClass(), "lineClass");
-        assertEquals(nExpectedFormatsArrayLength, info.getFormats().length, "AudioFormat array length");
-        assertEquals(nExpectedMinBufferSize, info.getMinBufferSize(), "min buffer size");
-        assertEquals(nExpectedMaxBufferSize, info.getMaxBufferSize(), "max buffer size");
+        assertEquals(expectedFormatsArrayLength, info.getFormats().length, "AudioFormat array length");
+        assertEquals(expectedMinBufferSize, info.getMinBufferSize(), "min buffer size");
+        assertEquals(expectedMaxBufferSize, info.getMaxBufferSize(), "max buffer size");
     }
 
     @Test
@@ -62,5 +62,3 @@ public class DataLineInfoTestCase {
     public void testToString() {
     }
 }
-
-

@@ -136,5 +136,3 @@ public class AudioFormatSet extends ArraySet<AudioFormat> {
         throw new UnsupportedOperationException("unsupported");
     }
 }
-
-

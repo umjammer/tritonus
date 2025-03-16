@@ -20,7 +20,7 @@
 package org.tritonus.sampled.file;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.List;
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioFormat;
 
@@ -63,7 +63,7 @@ public class AuAudioFileWriter extends TAudioFileWriter {
     };
 
     public AuAudioFileWriter() {
-        super(Arrays.asList(FILE_TYPES), Arrays.asList(AUDIO_FORMATS));
+        super(List.of(FILE_TYPES), List.of(AUDIO_FORMATS));
     }
 
     @Override
@@ -73,9 +73,9 @@ public class AuAudioFileWriter extends TAudioFileWriter {
 
     @Override
     protected AudioOutputStream getAudioOutputStream(AudioFormat audioFormat,
-                                                     long lLengthInBytes,
+                                                     long lengthInBytes,
                                                      AudioFileFormat.Type fileType,
                                                      TDataOutputStream dataOutputStream) throws IOException {
-        return new AuAudioOutputStream(audioFormat, lLengthInBytes, dataOutputStream);
+        return new AuAudioOutputStream(audioFormat, lengthInBytes, dataOutputStream);
     }
 }

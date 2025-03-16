@@ -40,62 +40,60 @@ public final class MidiUtils {
         return (b < 0) ? b + 256 : b;
     }
 
-    public static int get14bitValue(int nLSB, int nMSB) {
-        return (nLSB & 0x7F) | ((nMSB & 0x7F) << 7);
+    public static int get14bitValue(int lsb, int msb) {
+        return (lsb & 0x7F) | ((msb & 0x7F) << 7);
     }
 
-    public static int get14bitMSB(int nValue) {
-        return (nValue >> 7) & 0x7F;
+    public static int get14bitMSB(int value) {
+        return (value >> 7) & 0x7F;
     }
 
-    public static int get14bitLSB(int nValue) {
-        return nValue & 0x7F;
+    public static int get14bitLSB(int value) {
+        return value & 0x7F;
     }
 
-    public static byte[] getVariableLengthQuantity(long lValue) {
+    public static byte[] getVariableLengthQuantity(long value) {
         ByteArrayOutputStream data = new ByteArrayOutputStream();
         try {
-            writeVariableLengthQuantity(lValue, data);
+            writeVariableLengthQuantity(value, data);
         } catch (IOException e) {
             logger.log(Level.ERROR, e.getMessage(), e);
         }
         return data.toByteArray();
     }
 
-    public static int writeVariableLengthQuantity(long lValue, OutputStream outputStream) throws IOException {
-        int nLength = 0;
+    public static int writeVariableLengthQuantity(long value, OutputStream outputStream) throws IOException {
+        int length = 0;
         // IDEA: use a loop
-        boolean bWritingStarted = false;
-        int nByte = (int) ((lValue >> 21) & 0x7f);
-        if (nByte != 0) {
+        boolean writingStarted = false;
+        int _byte = (int) ((value >> 21) & 0x7f);
+        if (_byte != 0) {
             if (outputStream != null) {
-                outputStream.write(nByte | 0x80);
+                outputStream.write(_byte | 0x80);
             }
-            nLength++;
-            bWritingStarted = true;
+            length++;
+            writingStarted = true;
         }
-        nByte = (int) ((lValue >> 14) & 0x7f);
-        if (nByte != 0 || bWritingStarted) {
+        _byte = (int) ((value >> 14) & 0x7f);
+        if (_byte != 0 || writingStarted) {
             if (outputStream != null) {
-                outputStream.write(nByte | 0x80);
+                outputStream.write(_byte | 0x80);
             }
-            nLength++;
-            bWritingStarted = true;
+            length++;
+            writingStarted = true;
         }
-        nByte = (int) ((lValue >> 7) & 0x7f);
-        if (nByte != 0 || bWritingStarted) {
+        _byte = (int) ((value >> 7) & 0x7f);
+        if (_byte != 0 || writingStarted) {
             if (outputStream != null) {
-                outputStream.write(nByte | 0x80);
+                outputStream.write(_byte | 0x80);
             }
-            nLength++;
+            length++;
         }
-        nByte = (int) (lValue & 0x7f);
+        _byte = (int) (value & 0x7f);
         if (outputStream != null) {
-            outputStream.write(nByte);
+            outputStream.write(_byte);
         }
-        nLength++;
-        return nLength;
+        length++;
+        return length;
     }
 }
-
-

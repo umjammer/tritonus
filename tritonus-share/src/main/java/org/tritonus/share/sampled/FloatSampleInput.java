@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 2006 by Florian Bomers
  *  All rights reserved.
@@ -25,10 +24,6 @@
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/*
- |<---            this code is formatted to fit into 80 columns             --->|
  */
 
 package org.tritonus.share.sampled;
@@ -91,5 +86,4 @@ public interface FloatSampleInput {
      * negative number, e.g. AudioSystem.NOT_SPECIFIED.
      */
     float getSampleRate();
-
 }

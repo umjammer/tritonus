@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 1999 - 2006 by Matthias Pfisterer
  *
@@ -34,14 +33,14 @@ public class FluidSynthesizerProvider extends MidiDeviceProvider {
 
     private static final Logger logger = getLogger("org.tritonus.TraceMidiDeviceProvider");
 
-    private static MidiDevice.Info sm_info;
+    private static MidiDevice.Info info;
 
     public FluidSynthesizerProvider() {
         logger.log(Level.TRACE, "FluidSynthesizerProvider.<init>(): begin");
 
         synchronized (FluidSynthesizerProvider.class) {
-            if (sm_info == null) {
-                sm_info = new TMidiDevice.Info(
+            if (info == null) {
+                info = new TMidiDevice.Info(
                         "Tritonus fluidsynth Synthesizer",
                         GlobalInfo.getVendor(),
                         "a synthesizer based on fluidsynth",
@@ -57,7 +56,7 @@ public class FluidSynthesizerProvider extends MidiDeviceProvider {
         logger.log(Level.TRACE, "FluidSynthesizerProvider.getDeviceInfo(): begin");
 
         MidiDevice.Info[] infos = new MidiDevice.Info[1];
-        infos[0] = sm_info;
+        infos[0] = info;
 
         logger.log(Level.TRACE, "FluidSynthesizerProvider.getDeviceInfo(): end");
 
@@ -69,9 +68,9 @@ public class FluidSynthesizerProvider extends MidiDeviceProvider {
         logger.log(Level.TRACE, "FluidSynthesizerProvider.getDevice(): begin");
 
         MidiDevice device;
-        if (info != null && info.equals(sm_info)) {
+        if (info != null && info.equals(FluidSynthesizerProvider.info)) {
             try {
-                device = new FluidSynthesizer(sm_info);
+                device = new FluidSynthesizer(FluidSynthesizerProvider.info);
             } catch (Exception e) {
                 throw new IllegalArgumentException("unable to create device for " + info, e);
             }

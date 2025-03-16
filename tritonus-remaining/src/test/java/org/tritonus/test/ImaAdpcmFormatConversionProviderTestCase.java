@@ -27,5 +27,3 @@ public class ImaAdpcmFormatConversionProviderTestCase
         setResourcePrefix("imaadpcm");
     }
 }
-
-

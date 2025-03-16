@@ -39,11 +39,9 @@ public class ControlTypeTestCase {
      * exception.
      */
     @Test
-    public void testConstructor()
-            throws Exception {
-        String strTypeName = "TeSt";
-        @SuppressWarnings("unused") Control.Type type =
-                new TestControlType(strTypeName);
+    public void testConstructor() throws Exception {
+        String typeName = "TeSt";
+        @SuppressWarnings("unused") Control.Type type = new TestControlType(typeName);
     }
 
     /**
@@ -52,10 +50,9 @@ public class ControlTypeTestCase {
      * itself.
      */
     @Test
-    public void testEqualsSelfIdentity()
-            throws Exception {
-        String strTypeName = "TeSt";
-        Control.Type type = new TestControlType(strTypeName);
+    public void testEqualsSelfIdentity() throws Exception {
+        String typeName = "TeSt";
+        Control.Type type = new TestControlType(typeName);
         assertEquals(type, type, "self-identity");
     }
 
@@ -65,11 +62,10 @@ public class ControlTypeTestCase {
      * even if they have the same type string.
      */
     @Test
-    public void testEqualsSelfUnequality()
-            throws Exception {
-        String strTypeName = "TeSt";
-        Control.Type type0 = new TestControlType(strTypeName);
-        Control.Type type1 = new TestControlType(strTypeName);
+    public void testEqualsSelfUnequality() throws Exception {
+        String typeName = "TeSt";
+        Control.Type type0 = new TestControlType(typeName);
+        Control.Type type1 = new TestControlType(typeName);
         assertNotEquals(type0, type1, "unequality");
     }
 
@@ -79,10 +75,9 @@ public class ControlTypeTestCase {
      * same object return the same value.
      */
     @Test
-    public void testHashCode()
-            throws Exception {
-        String strTypeName = "TeSt";
-        Control.Type type = new TestControlType(strTypeName);
+    public void testHashCode() throws Exception {
+        String typeName = "TeSt";
+        Control.Type type = new TestControlType(typeName);
         assertEquals(type.hashCode(), type.hashCode(), "hash code");
     }
 
@@ -93,24 +88,20 @@ public class ControlTypeTestCase {
      * (and doesn't throw an exception).
      */
     @Test
-    public void testToString()
-            throws Exception {
-        String strTypeName = "TeSt";
-        Control.Type type = new TestControlType(strTypeName);
-        String strReturnedTypeName = type.toString();
-        assertEquals(strTypeName, strReturnedTypeName, "toString() result");
+    public void testToString() throws Exception {
+        String typeName = "TeSt";
+        Control.Type type = new TestControlType(typeName);
+        String returnedTypeName = type.toString();
+        assertEquals(typeName, returnedTypeName, "toString() result");
     }
 
     /**
      * Inner class used to get around protected constructor.
      */
-    private static class TestControlType
-            extends Control.Type {
+    private static class TestControlType extends Control.Type {
 
-        public TestControlType(String strName) {
-            super(strName);
+        public TestControlType(String name) {
+            super(name);
         }
     }
 }
-
-

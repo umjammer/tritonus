@@ -65,55 +65,55 @@ public class StandardMidiFileReader extends MidiFileReader {
     @Override
     public MidiFileFormat getMidiFileFormat(InputStream inputStream) throws InvalidMidiDataException, IOException {
         DataInputStream dataInputStream = new DataInputStream(inputStream);
-        int nHeaderMagic = dataInputStream.readInt();
-        if (nHeaderMagic != MidiConstants.HEADER_MAGIC) {
+        int headerMagic = dataInputStream.readInt();
+        if (headerMagic != MidiConstants.HEADER_MAGIC) {
             throw new InvalidMidiDataException("not a MIDI file: wrong header magic");
         }
-        int nHeaderLength = dataInputStream.readInt();
-        if (nHeaderLength < 6) {
+        int headerLength = dataInputStream.readInt();
+        if (headerLength < 6) {
             throw new InvalidMidiDataException("corrupt MIDI file: wrong header length");
         }
-        int nType = dataInputStream.readShort();
-        if (nType < 0 || nType > 2) {
+        int type = dataInputStream.readShort();
+        if (type < 0 || type > 2) {
             throw new InvalidMidiDataException("corrupt MIDI file: illegal type");
         }
-        if (nType == 2) {
+        if (type == 2) {
             throw new InvalidMidiDataException("this implementation doesn't support type 2 MIDI files");
         }
-        int nNumTracks = dataInputStream.readShort();
-        if (nNumTracks <= 0) {
+        int tracks = dataInputStream.readShort();
+        if (tracks <= 0) {
             throw new InvalidMidiDataException("corrupt MIDI file: number of tracks must be positive");
         }
-        if (nType == 0 && nNumTracks != 1) {
+        if (type == 0 && tracks != 1) {
             throw new InvalidMidiDataException("corrupt MIDI file:  type 0 files must contain exactely one track");
         }
-        int nDivision = dataInputStream.readUnsignedShort();
-        float fDivisionType;
-        int nResolution;
-        if ((nDivision & 0x8000) != 0) { // frame division
+        int division = dataInputStream.readUnsignedShort();
+        float divisionType;
+        int resolution;
+        if ((division & 0x8000) != 0) { // frame division
             // TODO
-            int nFrameType = -((nDivision >>> 8) & 0xFF);
-            fDivisionType = switch (nFrameType) {
+            int frameType = -((division >>> 8) & 0xFF);
+            divisionType = switch (frameType) {
                 case 24 -> Sequence.SMPTE_24;
                 case 25 -> Sequence.SMPTE_25;
                 case 29 -> Sequence.SMPTE_30DROP;
                 case 30 -> Sequence.SMPTE_30;
                 default -> throw new InvalidMidiDataException("corrupt MIDI file: illegal frame division type");
             };
-            nResolution = nDivision & 0xff;
+            resolution = division & 0xff;
         } else { // BPM division
-            fDivisionType = Sequence.PPQ;
-            nResolution = nDivision & 0x7fff;
+            divisionType = Sequence.PPQ;
+            resolution = division & 0x7fff;
         }
         // skip additional bytes in the header
-        dataInputStream.skip(nHeaderLength - 6);
+        dataInputStream.skipBytes(headerLength - 6);
         MidiFileFormat midiFileFormat = new TMidiFileFormat(
-                nType,
-                fDivisionType,
-                nResolution,
+                type,
+                divisionType,
+                resolution,
                 MidiFileFormat.UNKNOWN_LENGTH,
                 MidiFileFormat.UNKNOWN_LENGTH,
-                nNumTracks);
+                tracks);
         return midiFileFormat;
     }
 
@@ -179,8 +179,8 @@ public class StandardMidiFileReader extends MidiFileReader {
         MidiFileFormat midiFileFormat = getMidiFileFormat(inputStream);
         Sequence sequence = new Sequence(midiFileFormat.getDivisionType(), midiFileFormat.getResolution());
         DataInputStream dataInputStream = new DataInputStream(inputStream);
-        int nNumTracks = ((TMidiFileFormat) midiFileFormat).getTrackCount();
-        for (int nTrack = 0; nTrack < nNumTracks; nTrack++) {
+        int tracks = ((TMidiFileFormat) midiFileFormat).getTrackCount();
+        for (int _track = 0; _track < tracks; _track++) {
             Track track = sequence.createTrack();
             readTrack(dataInputStream, track);
         }
@@ -190,31 +190,32 @@ public class StandardMidiFileReader extends MidiFileReader {
     /**
      * TODO
      */
-    private void readTrack(DataInputStream dataInputStream, Track track) throws InvalidMidiDataException, IOException {
+    private static void readTrack(DataInputStream dataInputStream, Track track)
+            throws InvalidMidiDataException, IOException {
         // search for a "MTrk" chunk
         while (true) {
-            int nMagic = dataInputStream.readInt();
-            if (nMagic == MidiConstants.TRACK_MAGIC) {
+            int magic = dataInputStream.readInt();
+            if (magic == MidiConstants.TRACK_MAGIC) {
                 break;
             }
-            int nChunkLength = dataInputStream.readInt();
-            if (nChunkLength % 2 != 0) {
-                nChunkLength++;
+            int chunkLength = dataInputStream.readInt();
+            if (chunkLength % 2 != 0) {
+                chunkLength++;
             }
-            dataInputStream.skip(nChunkLength);
+            dataInputStream.skip(chunkLength);
         }
-        int nTrackChunkLength = dataInputStream.readInt();
-        long lTicks = 0;
-        long[] alRemainingBytes = new long[1];
-        alRemainingBytes[0] = nTrackChunkLength;
-        int[] anRunningStatusByte = new int[1];
+        int trackChunkLength = dataInputStream.readInt();
+        long ticks = 0;
+        long[] remainingBytes = new long[1];
+        remainingBytes[0] = trackChunkLength;
+        int[] runningStatusByte = new int[1];
         // indicates no running status in effect
-        anRunningStatusByte[0] = -1;
-        while (alRemainingBytes[0] > 0) {
-            long lDeltaTicks = readVariableLengthQuantity(dataInputStream, alRemainingBytes);
-//            logger.log(Level.TRACE, "delta ticks: " + lDeltaTicks);
-            lTicks += lDeltaTicks;
-            MidiEvent event = readEvent(dataInputStream, alRemainingBytes, anRunningStatusByte, lTicks);
+        runningStatusByte[0] = -1;
+        while (remainingBytes[0] > 0) {
+            long deltaTicks = readVariableLengthQuantity(dataInputStream, remainingBytes);
+//logger.log(Level.TRACE, "delta ticks: " + deltaTicks);
+            ticks += deltaTicks;
+            MidiEvent event = readEvent(dataInputStream, remainingBytes, runningStatusByte, ticks);
             track.add(event);
         }
     }
@@ -222,83 +223,84 @@ public class StandardMidiFileReader extends MidiFileReader {
     /**
      * TODO
      */
-    private static MidiEvent readEvent(DataInputStream dataInputStream, long[] alRemainingBytes, int[] anRunningStatusByte, long lTicks)
+    private static MidiEvent readEvent(
+            DataInputStream dataInputStream, long[] remainingBytes, int[] runningStatusByte, long ticks)
             throws InvalidMidiDataException, IOException {
-        int nStatusByte = readUnsignedByte(dataInputStream, alRemainingBytes);
-//        logger.log(Level.TRACE, "status byte: " + nStatusByte);
+        int statusByte = readUnsignedByte(dataInputStream, remainingBytes);
+//logger.log(Level.TRACE, "status byte: " + statusByte);
         MidiMessage message = null;
-        boolean bRunningStatusApplies = false;
-        int nSavedByte = 0;
-        if (nStatusByte < 0x80) {
-            if (anRunningStatusByte[0] != -1) {
-                bRunningStatusApplies = true;
-                nSavedByte = nStatusByte;
-                nStatusByte = anRunningStatusByte[0];
+        boolean runningStatusApplies = false;
+        int savedByte = 0;
+        if (statusByte < 0x80) {
+            if (runningStatusByte[0] != -1) {
+                runningStatusApplies = true;
+                savedByte = statusByte;
+                statusByte = runningStatusByte[0];
             } else {
                 throw new InvalidMidiDataException("corrupt MIDI file: status byte missing");
             }
         }
-        switch (getType(nStatusByte)) {
+        switch (getType(statusByte)) {
         case STATUS_ONE_BYTE:
-            int nByte;
-            if (bRunningStatusApplies) {
-                nByte = nSavedByte;
+            int _byte;
+            if (runningStatusApplies) {
+                _byte = savedByte;
             } else {
-                nByte = readUnsignedByte(dataInputStream, alRemainingBytes);
-                anRunningStatusByte[0] = nStatusByte;
+                _byte = readUnsignedByte(dataInputStream, remainingBytes);
+                runningStatusByte[0] = statusByte;
             }
             ShortMessage shortMessage1 = new ShortMessage();
-            shortMessage1.setMessage(nStatusByte, nByte, 0);
+            shortMessage1.setMessage(statusByte, _byte, 0);
             message = shortMessage1;
             break;
 
         case STATUS_TWO_BYTES:
-            int nByte1;
-            if (bRunningStatusApplies) {
-                nByte1 = nSavedByte;
+            int byte1;
+            if (runningStatusApplies) {
+                byte1 = savedByte;
             } else {
-                nByte1 = readUnsignedByte(dataInputStream, alRemainingBytes);
-                anRunningStatusByte[0] = nStatusByte;
+                byte1 = readUnsignedByte(dataInputStream, remainingBytes);
+                runningStatusByte[0] = statusByte;
             }
-            int nByte2 = readUnsignedByte(dataInputStream, alRemainingBytes);
+            int byte2 = readUnsignedByte(dataInputStream, remainingBytes);
             ShortMessage shortMessage2 = new ShortMessage();
-            shortMessage2.setMessage(nStatusByte, nByte1, nByte2);
+            shortMessage2.setMessage(statusByte, byte1, byte2);
             message = shortMessage2;
             break;
 
         case STATUS_SYSEX:
             if (CANCEL_RUNNING_STATUS_ON_META_AND_SYSEX) {
-                anRunningStatusByte[0] = -1;
+                runningStatusByte[0] = -1;
             }
-            int nSysexDataLength = (int) readVariableLengthQuantity(dataInputStream, alRemainingBytes);
-            byte[] abSysexData = new byte[nSysexDataLength];
-            for (int i = 0; i < nSysexDataLength; i++) {
-                int nDataByte = readUnsignedByte(dataInputStream, alRemainingBytes);
-                abSysexData[i] = (byte) nDataByte;
+            int sysexDataLength = (int) readVariableLengthQuantity(dataInputStream, remainingBytes);
+            byte[] sysexData = new byte[sysexDataLength];
+            for (int i = 0; i < sysexDataLength; i++) {
+                int dataByte = readUnsignedByte(dataInputStream, remainingBytes);
+                sysexData[i] = (byte) dataByte;
             }
             SysexMessage sysexMessage = new SysexMessage();
-            sysexMessage.setMessage(nStatusByte, abSysexData, nSysexDataLength);
+            sysexMessage.setMessage(statusByte, sysexData, sysexDataLength);
             message = sysexMessage;
             break;
 
         case STATUS_META:
             if (CANCEL_RUNNING_STATUS_ON_META_AND_SYSEX) {
-                anRunningStatusByte[0] = -1;
+                runningStatusByte[0] = -1;
             }
-            int nTypeByte = readUnsignedByte(dataInputStream, alRemainingBytes);
-            int nMetaDataLength = (int) readVariableLengthQuantity(dataInputStream, alRemainingBytes);
-            byte[] abMetaData = new byte[nMetaDataLength];
-            for (int i = 0; i < nMetaDataLength; i++) {
-                int nDataByte = readUnsignedByte(dataInputStream, alRemainingBytes);
-                abMetaData[i] = (byte) nDataByte;
+            int typeByte = readUnsignedByte(dataInputStream, remainingBytes);
+            int metaDataLength = (int) readVariableLengthQuantity(dataInputStream, remainingBytes);
+            byte[] metaData = new byte[metaDataLength];
+            for (int i = 0; i < metaDataLength; i++) {
+                int dataByte = readUnsignedByte(dataInputStream, remainingBytes);
+                metaData[i] = (byte) dataByte;
             }
             MetaMessage metaMessage = new MetaMessage();
-            metaMessage.setMessage(nTypeByte, abMetaData, nMetaDataLength);
+            metaMessage.setMessage(typeByte, metaData, metaDataLength);
             message = metaMessage;
             break;
         default:
         }
-        MidiEvent event = new MidiEvent(message, lTicks);
+        MidiEvent event = new MidiEvent(message, ticks);
         return event;
     }
 
@@ -307,10 +309,10 @@ public class StandardMidiFileReader extends MidiFileReader {
     /**
      * TODO
      */
-    private static int getType(int nStatusByte) {
-        if (nStatusByte < 0xf0) { // channel voice or mode command
-            int nCommand = nStatusByte & 0xf0;
-            return switch (nCommand) { // note off
+    private static int getType(int statusByte) {
+        if (statusByte < 0xf0) { // channel voice or mode command
+            int command = statusByte & 0xf0;
+            return switch (command) { // note off
                 // note on
                 // polyphonic key pressure
                 // control change
@@ -321,9 +323,9 @@ public class StandardMidiFileReader extends MidiFileReader {
                 case 0xc0, 0xd0 -> STATUS_ONE_BYTE;
                 default -> STATUS_NONE;
             };
-        } else if (nStatusByte == 0xf0 || nStatusByte == 0xf7) {
+        } else if (statusByte == 0xf0 || statusByte == 0xf7) {
             return STATUS_SYSEX;
-        } else if (nStatusByte == 0xff) {
+        } else if (statusByte == 0xff) {
             return STATUS_META;
         } else {
             return STATUS_NONE;
@@ -333,17 +335,17 @@ public class StandardMidiFileReader extends MidiFileReader {
     /**
      * TODO
      */
-    public static long readVariableLengthQuantity(DataInputStream dataInputStream, long[] alRemainingBytes)
+    public static long readVariableLengthQuantity(DataInputStream dataInputStream, long[] remainingBytes)
             throws InvalidMidiDataException, IOException {
-        long lValue = 0;
-        int nByteCount = 0;
-        while (nByteCount < 4) {
-            int nByte = readUnsignedByte(dataInputStream, alRemainingBytes);
-            nByteCount++;
-            lValue <<= 7;
-            lValue |= (nByte & 0x7f);
-            if (nByte < 128) { // MSB is 0: last byte
-                return lValue;
+        long value = 0;
+        int byteCount = 0;
+        while (byteCount < 4) {
+            int _byte = readUnsignedByte(dataInputStream, remainingBytes);
+            byteCount++;
+            value <<= 7;
+            value |= (_byte & 0x7f);
+            if (_byte < 128) { // MSB is 0: last byte
+                return value;
             }
         }
 
@@ -353,13 +355,13 @@ public class StandardMidiFileReader extends MidiFileReader {
     /**
      * TODO
      */
-    public static int readUnsignedByte(DataInputStream dataInputStream, long[] alRemainingBytes) throws IOException {
-        int nByte = dataInputStream.readUnsignedByte();
+    public static int readUnsignedByte(DataInputStream dataInputStream, long[] remainingBytes) throws IOException {
+        int _byte = dataInputStream.readUnsignedByte();
         // already done in DataInputStream.readUnsignedByte();
-//        if (nByte < 0) {
+//        if (_byte < 0) {
 //            throw new EOFException();
 //        }
-        alRemainingBytes[0]--;
-        return nByte;
+        remainingBytes[0]--;
+        return _byte;
     }
 }

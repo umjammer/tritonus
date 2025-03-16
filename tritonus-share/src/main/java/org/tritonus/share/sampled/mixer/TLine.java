@@ -46,48 +46,48 @@ public abstract class TLine implements Line {
 
     private static final Control[] EMPTY_CONTROL_ARRAY = new Control[0];
 
-    private Line.Info m_info;
-    private boolean m_bOpen;
-    private final List<Control> m_controls;
-    private final Set<LineListener> m_lineListeners;
-    private TMixer m_mixer;
+    private Line.Info info;
+    private boolean open;
+    private final List<Control> controls;
+    private final Set<LineListener> lineListeners;
+    private final TMixer mixer;
 
     protected TLine(TMixer mixer, Line.Info info) {
         setLineInfo(info);
         setOpen(false);
-        m_controls = new ArrayList<>();
-        m_lineListeners = new HashSet<>();
-        m_mixer = mixer;
+        controls = new ArrayList<>();
+        lineListeners = new HashSet<>();
+        this.mixer = mixer;
     }
 
     protected TLine(TMixer mixer, Line.Info info, Collection<Control> controls) {
         this(mixer, info);
-        m_controls.addAll(controls);
+        this.controls.addAll(controls);
     }
 
     protected TMixer getMixer() {
-        return m_mixer;
+        return mixer;
     }
 
     @Override
     public Line.Info getLineInfo() {
-        return m_info;
+        return info;
     }
 
     protected void setLineInfo(Line.Info info) {
-        logger.log(Level.TRACE, "TLine.setLineInfo(): setting: " + info);
+        logger.log(Level.TRACE, "setting: " + info);
 
         synchronized (this) {
-            m_info = info;
+            this.info = info;
         }
     }
 
     @Override
     public void open() throws LineUnavailableException {
-        logger.log(Level.TRACE, "TLine.open(): called");
+        logger.log(Level.TRACE, "called");
 
         if (!isOpen()) {
-            logger.log(Level.TRACE, "TLine.open(): opening");
+            logger.log(Level.TRACE, "opening");
 
             openImpl();
             if (getMixer() != null) {
@@ -95,7 +95,7 @@ public abstract class TLine implements Line {
             }
             setOpen(true);
         } else {
-            logger.log(Level.TRACE, "TLine.open(): already open");
+            logger.log(Level.TRACE, "already open");
         }
     }
 
@@ -103,15 +103,15 @@ public abstract class TLine implements Line {
      * Subclasses should override this method.
      */
     protected void openImpl() throws LineUnavailableException {
-        logger.log(Level.TRACE, "TLine.openImpl(): called");
+        logger.log(Level.TRACE, "called");
     }
 
     @Override
     public void close() {
-        logger.log(Level.TRACE, "TLine.close(): called");
+        logger.log(Level.TRACE, "called");
 
         if (isOpen()) {
-            logger.log(Level.TRACE, "TLine.close(): closing");
+            logger.log(Level.TRACE, "closing");
 
             if (getMixer() != null) {
                 getMixer().unregisterOpenLine(this);
@@ -119,7 +119,7 @@ public abstract class TLine implements Line {
             closeImpl();
             setOpen(false);
         } else {
-            logger.log(Level.TRACE, "TLine.close(): not open");
+            logger.log(Level.TRACE, "not open");
         }
     }
 
@@ -127,26 +127,26 @@ public abstract class TLine implements Line {
      * Subclasses should override this method.
      */
     protected void closeImpl() {
-        logger.log(Level.TRACE, "TLine.closeImpl(): called");
+        logger.log(Level.TRACE, "called");
     }
 
     @Override
     public boolean isOpen() {
-        return m_bOpen;
+        return open;
     }
 
-    protected void setOpen(boolean bOpen) {
-        logger.log(Level.TRACE, "TLine.setOpen(): called, value: " + bOpen);
+    protected void setOpen(boolean open) {
+        logger.log(Level.TRACE, "called, value: " + open);
 
-        boolean bOldValue = isOpen();
-        m_bOpen = bOpen;
-        if (bOldValue != isOpen()) {
+        boolean oldValue = isOpen();
+        this.open = open;
+        if (oldValue != isOpen()) {
             if (isOpen()) {
-                logger.log(Level.TRACE, "TLine.setOpen(): opened");
+                logger.log(Level.TRACE, "opened");
 
                 notifyLineEvent(LineEvent.Type.OPEN);
             } else {
-                logger.log(Level.TRACE, "TLine.setOpen(): closed");
+                logger.log(Level.TRACE, "closed");
 
                 notifyLineEvent(LineEvent.Type.CLOSE);
             }
@@ -154,28 +154,28 @@ public abstract class TLine implements Line {
     }
 
     protected void addControl(Control control) {
-        synchronized (m_controls) {
-            m_controls.add(control);
+        synchronized (controls) {
+            controls.add(control);
         }
     }
 
     protected void removeControl(Control control) {
-        synchronized (m_controls) {
-            m_controls.remove(control);
+        synchronized (controls) {
+            controls.remove(control);
         }
     }
 
     @Override
     public Control[] getControls() {
-        synchronized (m_controls) {
-            return m_controls.toArray(EMPTY_CONTROL_ARRAY);
+        synchronized (controls) {
+            return controls.toArray(EMPTY_CONTROL_ARRAY);
         }
     }
 
     @Override
     public Control getControl(Control.Type controlType) {
-        synchronized (m_controls) {
-            for (Control control : m_controls) {
+        synchronized (controls) {
+            for (Control control : controls) {
                 if (control.getType().equals(controlType)) {
                     return control;
                 }
@@ -186,35 +186,35 @@ public abstract class TLine implements Line {
 
     @Override
     public boolean isControlSupported(Control.Type controlType) {
-//        logger.log(Level.TRACE, "TLine.isSupportedControl(): called");
+//logger.log(Level.TRACE, "called");
         try {
             return getControl(controlType) != null;
         } catch (IllegalArgumentException e) {
                 logger.log(Level.ERROR, e.getMessage(), e);
 
-//            logger.log(Level.TRACE, "TLine.isSupportedControl(): returning false");
+//logger.log(Level.TRACE, "returning false");
             return false;
         }
     }
 
     @Override
     public void addLineListener(LineListener listener) {
-//        logger.log(Level.TRACE, "%% TChannel.addListener(): called");
-        synchronized (m_lineListeners) {
-            m_lineListeners.add(listener);
+//logger.log(Level.TRACE, "%% called");
+        synchronized (lineListeners) {
+            lineListeners.add(listener);
         }
     }
 
     @Override
     public void removeLineListener(LineListener listener) {
-        synchronized (m_lineListeners) {
-            m_lineListeners.remove(listener);
+        synchronized (lineListeners) {
+            lineListeners.remove(listener);
         }
     }
 
     private Set<LineListener> getLineListeners() {
-        synchronized (m_lineListeners) {
-            return new HashSet<>(m_lineListeners);
+        synchronized (lineListeners) {
+            return new HashSet<>(lineListeners);
         }
     }
 
@@ -224,10 +224,8 @@ public abstract class TLine implements Line {
     }
 
     protected void notifyLineEvent(LineEvent event) {
-//        logger.log(Level.TRACE, "%% TChannel.notifyChannelEvent(): called");
+//logger.log(Level.TRACE, "%% called");
 //        Channel.Event event = new Channel.Event(this, type, getPosition());
         TNotifier.notifier.addEntry(event, getLineListeners());
     }
 }
-
-

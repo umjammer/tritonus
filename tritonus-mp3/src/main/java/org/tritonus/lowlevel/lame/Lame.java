@@ -26,8 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.sound.sampled.AudioFormat;
 
-import vavi.util.Debug;
-
+import static java.lang.System.Logger.Level.TRACE;
 import static java.lang.System.getLogger;
 import static javax.sound.sampled.AudioSystem.NOT_SPECIFIED;
 
@@ -212,13 +211,13 @@ public class Lame {
         if (sourceFormat.getSampleRate() < 32000 && bitRate > 160) {
             bitRate = 160;
         }
-        if (logger.isLoggable(Level.TRACE)) {
+        if (logger.isLoggable(TRACE)) {
             String br = bitRate < 0 ? "auto" : (bitRate + "KBit/s");
-            logger.log(Level.TRACE, "LAME parameters: channels="
+            logger.log(TRACE, "LAME parameters: channels="
                     + sourceFormat.getChannels() + "  sample rate="
                     + (Math.round(sourceFormat.getSampleRate()) + "Hz")
                     + "  bitrate=" + br);
-            logger.log(Level.TRACE, "                 channelMode=" + chmode2string(chMode)
+            logger.log(TRACE, "                 channelMode=" + chmode2string(chMode)
                     + "   quality=" + quality + " (" + quality2string(quality)
                     + ")   VBR=" + vbr + "  bigEndian="
                     + sourceFormat.isBigEndian());
@@ -230,7 +229,7 @@ public class Lame {
             handleNativeException(result);
             throw new IllegalArgumentException("parameters not supported by LAME (returned " + result + ")");
         }
-        logger.log(Level.TRACE, "LAME effective quality=" + effQuality + " (" + quality2string(effQuality) + ")");
+        logger.log(TRACE, "LAME effective quality=" + effQuality + " (" + quality2string(effQuality) + ")");
 
         // legacy provide effective parameters to user by way of system
         // properties
@@ -247,8 +246,8 @@ public class Lame {
                             int mode, int quality, boolean vbr, boolean bigEndian) {
         int result;
 
-        logger.log(Level.TRACE, "initParams: ");
-        logger.log(Level.TRACE, String.format("   %d channels, %d Hz, %d KBit/s, mode %d, quality=%d VBR=%s bigEndian=%s",
+        logger.log(TRACE, "initParams: ");
+        logger.log(TRACE, String.format("   %d channels, %d Hz, %d KBit/s, mode %d, quality=%d VBR=%s bigEndian=%s",
                 channels, sampleRate, bitrate, mode, quality, vbr, bigEndian));
 
         this.lameApi = new LameApi();
@@ -256,9 +255,9 @@ public class Lame {
         if ((bigEndian && platformEndianness == ByteOrder.LITTLE_ENDIAN) ||
                 (!bigEndian && platformEndianness == ByteOrder.BIG_ENDIAN)) {
             // swap samples
-            lameApi.swapbytes = true;
+            lameApi.swapBytes = true;
         }
-Debug.println(java.util.logging.Level.FINE, "bigEndian: " + bigEndian + ", platformEndianness: " + platformEndianness + ", lameApi.swapbytes: " + lameApi.swapbytes);
+logger.log(TRACE, "bigEndian: " + bigEndian + ", platformEndianness: " + platformEndianness + ", lameApi.swapBytes: " + lameApi.swapBytes);
         lameApi.channels = channels;
         lameApi.sampleRate = sampleRate;
         lameApi.bitrate = bitrate;
@@ -293,16 +292,12 @@ Debug.println(java.util.logging.Level.FINE, "bigEndian: " + bigEndian + ", platf
             }
             handleNativeException(res);
         }
-        String sRes = "";
+        String _res = "";
         if (res > 0) {
-            sRes = string[0];
+            _res = string[0];
         }
-        Debug.println(java.util.logging.Level.FINE, "getEncoderVersion: " + sRes);
-        return sRes;
-    }
-
-    private int nGetPCMBufferSize(int suggested) {
-        return lameApi.doGetPCMBufferSize(suggested);
+logger.log(TRACE, "getEncoderVersion: " + _res);
+        return _res;
     }
 
     /**
@@ -314,7 +309,7 @@ Debug.println(java.util.logging.Level.FINE, "bigEndian: " + bigEndian + ", platf
      * @return value of <0 denotes an error.
      */
     public int getPCMBufferSize() {
-        int ret = nGetPCMBufferSize(DEFAULT_PCM_BUFFER_SIZE);
+        int ret = lameApi.doGetPCMBufferSize(DEFAULT_PCM_BUFFER_SIZE);
         if (ret < 0) {
             handleNativeException(ret);
             throw new IllegalArgumentException("Unknown error in Lame.nGetPCMBufferSize(). Resultcode=" + ret);
@@ -345,23 +340,22 @@ Debug.println(java.util.logging.Level.FINE, "bigEndian: " + bigEndian + ", platf
         int encodedArrayByteSize = encoded.length;
 
         int pcmArrayByteSize = pcm.length;
-        logger.log(Level.TRACE, "Lame#nEncodeBuffer: ");
-        logger.log(Level.TRACE, String.format("   length:%d", length));
-        logger.log(Level.TRACE, String.format("   %d bytes in PCM array", pcmArrayByteSize));
-        logger.log(Level.TRACE, String.format("   %d bytes in to-be-encoded array", encodedArrayByteSize));
+        logger.log(TRACE, "Lame#nEncodeBuffer: ");
+        logger.log(TRACE, "   length:%d".formatted(length));
+        logger.log(TRACE, "   %d bytes in PCM array".formatted(pcmArrayByteSize));
+        logger.log(TRACE, "   %d bytes in to-be-encoded array".formatted(encodedArrayByteSize));
 
         pcmLengthInFrames = length / (lameApi.channels * Short.BYTES); // always 16 bit
-        if (lameApi.swapbytes) {
-//Debug.println("@@@ SWAP");
+        if (lameApi.swapBytes) {
+//logger.log(Level.TRACE, "@@@ SWAP");
             swapSamples(pcm, length / Short.BYTES);
         }
 
-        logger.log(Level.TRACE, String.format("   Encoding %d frames into buffer of size %d bytes.",
-                pcmLengthInFrames, encodedArrayByteSize));
-//        logger.log(Level.TRACE, "   Sample1=%d Sample2=%d", pcmSamples[0], pcmSamples[1]);
+logger.log(TRACE, "   Encoding %d frames into buffer of size %d bytes.".formatted(pcmLengthInFrames, encodedArrayByteSize));
+//logger.log(Level.TRACE, "   Sample1=%d Sample2=%d".formatted(pcmSamples[0], pcmSamples[1]));
 
         result = lameApi.doEncode(pcm, pcmLengthInFrames, encoded, encodedArrayByteSize);
-//        logger.log(Level.TRACE, "   MP3-1=%d MP3-2=%d", (int) encodedBytes[0], (int) encodedBytes[1]);
+//logger.log(Level.TRACE, "   MP3-1=%d MP3-2=%d".formatted((int) encodedBytes[0], (int) encodedBytes[1]));
 
         return result;
     }
@@ -406,8 +400,8 @@ Debug.println(java.util.logging.Level.FINE, "bigEndian: " + bigEndian + ", platf
         int result = 0;
 
         //jsize length=(*env).GetArrayLength(env, buffer);
-        logger.log(Level.TRACE, "encodeFinish: ");
-//        logger.log(Level.TRACE, "   %d bytes in the array", (int) length);
+        logger.log(TRACE, "encodeFinish: ");
+//logger.log(Level.TRACE, "   %d bytes in the array".formatted((int) length));
 
         ByteBuffer charBuffer = ByteBuffer.allocateDirect(encoded.length);
         result = lameApi.doEncodeFinish(charBuffer, encoded.length);
@@ -415,16 +409,16 @@ Debug.println(java.util.logging.Level.FINE, "bigEndian: " + bigEndian + ", platf
 
         lameApi.doClose();
 
-        logger.log(Level.TRACE, String.format("   %d bytes returned", result));
+        logger.log(TRACE, "   %d bytes returned".formatted(result));
 
         return result;
     }
 
-    /*
+    /**
      * Deallocates resources used by the native library. *MUST* be called !
      */
     public void close() {
-        logger.log(Level.TRACE, "close. ");
+        logger.log(TRACE, "close. ");
 
         if (lameApi != null) {
             lameApi.doClose();
@@ -432,7 +426,7 @@ Debug.println(java.util.logging.Level.FINE, "bigEndian: " + bigEndian + ", platf
         }
     }
 
-    // properties
+    /** properties */
     private void readProps(Map<String, Object> props) {
         Object q = props.get(P_QUALITY);
         if (q instanceof String) {
@@ -658,54 +652,54 @@ Debug.println(java.util.logging.Level.FINE, "bigEndian: " + bigEndian + ", platf
         throw new IllegalArgumentException("wrong string for boolean property: " + val);
     }
 
-    private boolean getBooleanProperty(String strName, boolean def) {
-        String strPropertyName = PROPERTY_PREFIX + strName;
-        String strValue = def ? "true" : "false";
+    private boolean getBooleanProperty(String name, boolean def) {
+        String propertyName = PROPERTY_PREFIX + name;
+        String value = def ? "true" : "false";
         try {
-            String s = System.getProperty(strPropertyName);
+            String s = System.getProperty(propertyName);
             if (s != null && !s.isEmpty()) {
                 hadSystemProps = true;
-                strValue = s;
+                value = s;
             }
         } catch (Throwable t) {
             logger.log(Level.ERROR, t.getMessage(), t);
         }
-        strValue = strValue.toLowerCase();
-        boolean bValue = false;
-        if (!strValue.isEmpty()) {
+        value = value.toLowerCase();
+        boolean _value = false;
+        if (!value.isEmpty()) {
             if (def) {
-                bValue = (strValue.charAt(0) != 'f') // false
-                        && (strValue.charAt(0) != 'n') // no
-                        && (!strValue.equals("off"));
+                _value = (value.charAt(0) != 'f') // false
+                        && (value.charAt(0) != 'n') // no
+                        && (!value.equals("off"));
             } else {
-                bValue = (strValue.charAt(0) == 't') // true
-                        || (strValue.charAt(0) == 'y') // yes
-                        || (strValue.equals("on"));
+                _value = (value.charAt(0) == 't') // true
+                        || (value.charAt(0) == 'y') // yes
+                        || (value.equals("on"));
             }
         }
-        return bValue;
+        return _value;
     }
 
-    private String getStringProperty(String strName, String def) {
-        String strPropertyName = PROPERTY_PREFIX + strName;
-        String strValue = def;
+    private String getStringProperty(String name, String def) {
+        String propertyName = PROPERTY_PREFIX + name;
+        String value = def;
         try {
-            String s = System.getProperty(strPropertyName);
+            String s = System.getProperty(propertyName);
             if (s != null && !s.isEmpty()) {
                 hadSystemProps = true;
-                strValue = s;
+                value = s;
             }
         } catch (Throwable t) {
             logger.log(Level.ERROR, t.getMessage(), t);
         }
-        return strValue;
+        return value;
     }
 
-    private int getIntProperty(String strName, int def) {
-        String strPropertyName = PROPERTY_PREFIX + strName;
+    private int getIntProperty(String name, int def) {
+        String propertyName = PROPERTY_PREFIX + name;
         int value = def;
         try {
-            String s = System.getProperty(strPropertyName);
+            String s = System.getProperty(propertyName);
             if (s != null && !s.isEmpty()) {
                 hadSystemProps = true;
                 value = Integer.parseInt(s);

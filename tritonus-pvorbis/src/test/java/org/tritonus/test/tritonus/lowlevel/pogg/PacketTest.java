@@ -53,25 +53,25 @@ public class PacketTest {
     @Test
     public void testSetData() throws Exception {
         Packet p = new Packet();
-        byte[] abData = new byte[1024];
-        for (int i = 0; i < abData.length; i++) {
-            abData[i] = (byte) i;
+        byte[] data = new byte[1024];
+        for (int i = 0; i < data.length; i++) {
+            data[i] = (byte) i;
         }
-        p.packetByte = abData;
-        checkPacket(p, "set data test", false, false, 0, 0, abData);
+        p.packetByte = data;
+        checkPacket(p, "set data test", false, false, 0, 0, data);
     }
 
     @Test
     public void testSetDataTruncated() throws Exception {
         Packet p = new Packet();
-        byte[] abData = new byte[1024];
-        for (int i = 0; i < abData.length; i++) {
-            abData[i] = (byte) i;
+        byte[] data = new byte[1024];
+        for (int i = 0; i < data.length; i++) {
+            data[i] = (byte) i;
         }
-        p.packetByte = Arrays.copyOfRange(abData, 0, abData.length / 2);
-        byte[] abCompare = new byte[abData.length / 2];
-        System.arraycopy(abData, 0, abCompare, 0, abData.length / 2);
-        checkPacket(p, "set data truncated test", false, false, 0, 0, abCompare);
+        p.packetByte = Arrays.copyOfRange(data, 0, data.length / 2);
+        byte[] compare = new byte[data.length / 2];
+        System.arraycopy(data, 0, compare, 0, data.length / 2);
+        checkPacket(p, "set data truncated test", false, false, 0, 0, compare);
     }
 
     @Test
@@ -82,27 +82,27 @@ public class PacketTest {
         checkFlags("set flags test 4", true, true, Long.MIN_VALUE, 0);
     }
 
-    private void checkFlags(String strMessage, boolean bBos, boolean bEos,
-                            long lGranulePos, long lPacketNo) throws Exception {
+    private static void checkFlags(String message, boolean bos, boolean eos, long granulePos,
+                                   long packetNo) throws Exception {
         Packet p = new Packet();
-        byte[] abData = new byte[0];
-        p.packetByte = abData;
-        p.b_o_s = bBos;
-        p.e_o_s = bEos;
-        p.granulePos = lGranulePos;
-        p.packetNo = lPacketNo;
-        checkPacket(p, strMessage, bBos, bEos, lGranulePos, lPacketNo, abData);
+        byte[] data = new byte[0];
+        p.packetByte = data;
+        p.b_o_s = bos;
+        p.e_o_s = eos;
+        p.granulePos = granulePos;
+        p.packetNo = packetNo;
+        checkPacket(p, message, bos, eos, granulePos, packetNo, data);
     }
 
-    private void checkPacket(Packet p, String strMessage, boolean bBosExpected,
-                             boolean bEosExpected, long lGranulePosExpected,
-                             long lPacketNoExpected, byte[] abDataExpected) throws Exception {
-        assertEquals(bBosExpected, p.isBos(), constructErrorMessage(strMessage, "bos flag"));
-        assertEquals(bEosExpected, p.isEos(), constructErrorMessage(strMessage, "eos flag"));
-        assertEquals(lGranulePosExpected, p.granulePos, constructErrorMessage(strMessage, "granulepos"));
-        assertEquals(lPacketNoExpected, p.packetNo, constructErrorMessage(strMessage, "packetno"));
+    private static void checkPacket(Packet p, String message, boolean bosExpected,
+                                    boolean eosExpected, long granulePosExpected,
+                                    long packetNoExpected, byte[] dataExpected) throws Exception {
+        assertEquals(bosExpected, p.isBos(), constructErrorMessage(message, "bos flag"));
+        assertEquals(eosExpected, p.isEos(), constructErrorMessage(message, "eos flag"));
+        assertEquals(granulePosExpected, p.granulePos, constructErrorMessage(message, "granulepos"));
+        assertEquals(packetNoExpected, p.packetNo, constructErrorMessage(message, "packetno"));
         System.out.println("data: " + Arrays.toString(p.packetByte));
-        assertTrue(equals(abDataExpected, p.packetByte), constructErrorMessage(strMessage, "data content"));
+        assertTrue(equals(dataExpected, p.packetByte), constructErrorMessage(message, "data content"));
     }
 
     private static boolean equals(Packet p1, Packet p2) {
@@ -121,15 +121,13 @@ public class PacketTest {
         return false;
     }
 
-    private static boolean equals(byte[] b1, int nOffset1,
-                                  byte[] b2, int nOffset2,
-                                  int nLength) {
+    private static boolean equals(byte[] b1, int offset1, byte[] b2, int offset2, int length) {
         if (b1 == null && b2 == null)
             return true;
-        if (nOffset1 + nLength > b1.length || nOffset2 + nLength > b2.length)
+        if (offset1 + length > b1.length || offset2 + length > b2.length)
             return false;
-        for (int i = 0; i < nLength; i++) {
-            if (b1[nOffset1 + i] != b2[nOffset2 + i])
+        for (int i = 0; i < length; i++) {
+            if (b1[offset1 + i] != b2[offset2 + i])
                 return false;
         }
         return true;

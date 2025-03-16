@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 1999 by Matthias Pfisterer
  *
@@ -31,5 +30,3 @@ public class TVolumeUtils {
         return Math.pow(10.0, dLogarithmic * FACTOR2);
     }
 }
-
-

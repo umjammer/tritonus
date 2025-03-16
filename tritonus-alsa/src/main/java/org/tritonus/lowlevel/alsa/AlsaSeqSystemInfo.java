@@ -41,17 +41,17 @@ public class AlsaSeqSystemInfo {
      * for the native code.
      * This must be long to be 64bit-clean.
      */
-    /* private */ long m_lNativeHandle;
+    /* private */ long nativeHandle;
 
     public AlsaSeqSystemInfo() {
-        logger.log(Level.TRACE, "AlsaSeq.SystemInfo.<init>(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        int nReturn = malloc();
-        if (nReturn < 0) {
+        int ret = malloc();
+        if (ret < 0) {
             throw new RuntimeException("malloc of system_info failed");
         }
 
-        logger.log(Level.TRACE, "AlsaSeq.SystemInfo.<init>(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     private native int malloc();
@@ -70,7 +70,5 @@ public class AlsaSeqSystemInfo {
 
     public native int getCurrentQueues();
 
-    private static native void setTrace(boolean bTrace);
+    private static native void setTrace(boolean trace);
 }
-
-

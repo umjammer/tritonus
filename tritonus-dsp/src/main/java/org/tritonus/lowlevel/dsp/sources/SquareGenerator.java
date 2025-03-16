@@ -14,9 +14,8 @@ public class SquareGenerator extends AbstractPeriodicGenerator {
         super(sampleRate, channelCount);
     }
 
-    /** {@inheritDoc} */
     @Override
-    protected float generateSample(float fPeriodPosition) {
-        return (fPeriodPosition < 0.5F) ? 1.0F : -1.0F;
+    protected float generateSample(float periodPosition) {
+        return (periodPosition < 0.5f) ? 1.0f : -1.0f;
     }
 }

@@ -47,13 +47,13 @@ public abstract class TMixer extends TLine implements Mixer {
     private static Line.Info[] EMPTY_LINE_INFO_ARRAY = new Line.Info[0];
     private static Line[] EMPTY_LINE_ARRAY = new Line[0];
 
-    private Mixer.Info m_mixerInfo;
-    private Collection<AudioFormat> m_supportedSourceFormats;
-    private Collection<AudioFormat> m_supportedTargetFormats;
-    private Collection<Line.Info> m_supportedSourceLineInfos;
-    private Collection<Line.Info> m_supportedTargetLineInfos;
-    private final Set<SourceDataLine> m_openSourceDataLines;
-    private final Set<TargetDataLine> m_openTargetDataLines;
+    private final Mixer.Info mixerInfo;
+    private Collection<AudioFormat> supportedSourceFormats;
+    private Collection<AudioFormat> supportedTargetFormats;
+    private Collection<Line.Info> supportedSourceLineInfos;
+    private Collection<Line.Info> supportedTargetLineInfos;
+    private final Set<SourceDataLine> openSourceDataLines;
+    private final Set<TargetDataLine> openTargetDataLines;
 
     /**
      * Constructor for mixers that use setSupportInformation().
@@ -73,18 +73,18 @@ public abstract class TMixer extends TLine implements Mixer {
                      Collection<Line.Info> supportedTargetLineInfos) {
         super(null, lineInfo);
 
-        logger.log(Level.TRACE, "TMixer.<init>(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        m_mixerInfo = mixerInfo;
+        this.mixerInfo = mixerInfo;
         setSupportInformation(
                 supportedSourceFormats,
                 supportedTargetFormats,
                 supportedSourceLineInfos,
                 supportedTargetLineInfos);
-        m_openSourceDataLines = new ArraySet<>();
-        m_openTargetDataLines = new ArraySet<>();
+        openSourceDataLines = new ArraySet<>();
+        openTargetDataLines = new ArraySet<>();
 
-        logger.log(Level.TRACE, "TMixer.<init>(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     protected void setSupportInformation(
@@ -93,50 +93,50 @@ public abstract class TMixer extends TLine implements Mixer {
             Collection<Line.Info> supportedSourceLineInfos,
             Collection<Line.Info> supportedTargetLineInfos) {
 
-        logger.log(Level.TRACE, "TMixer.setSupportInformation(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        m_supportedSourceFormats = supportedSourceFormats;
-        m_supportedTargetFormats = supportedTargetFormats;
-        m_supportedSourceLineInfos = supportedSourceLineInfos;
-        m_supportedTargetLineInfos = supportedTargetLineInfos;
+        this.supportedSourceFormats = supportedSourceFormats;
+        this.supportedTargetFormats = supportedTargetFormats;
+        this.supportedSourceLineInfos = supportedSourceLineInfos;
+        this.supportedTargetLineInfos = supportedTargetLineInfos;
 
-        logger.log(Level.TRACE, "TMixer.setSupportInformation(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     @Override
     public Mixer.Info getMixerInfo() {
-        logger.log(Level.TRACE, "TMixer.getMixerInfo(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        logger.log(Level.TRACE, "TMixer.getMixerInfo(): end");
+        logger.log(Level.TRACE, "end");
 
-        return m_mixerInfo;
+        return mixerInfo;
     }
 
     @Override
     public Line.Info[] getSourceLineInfo() {
-        logger.log(Level.TRACE, "TMixer.getSourceLineInfo(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        Line.Info[] infos = m_supportedSourceLineInfos.toArray(EMPTY_LINE_INFO_ARRAY);
+        Line.Info[] infos = supportedSourceLineInfos.toArray(EMPTY_LINE_INFO_ARRAY);
 
-        logger.log(Level.TRACE, "TMixer.getSourceLineInfo(): end");
+        logger.log(Level.TRACE, "end");
 
         return infos;
     }
 
     @Override
     public Line.Info[] getTargetLineInfo() {
-        logger.log(Level.TRACE, "TMixer.getTargetLineInfo(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        Line.Info[] infos = m_supportedTargetLineInfos.toArray(EMPTY_LINE_INFO_ARRAY);
+        Line.Info[] infos = supportedTargetLineInfos.toArray(EMPTY_LINE_INFO_ARRAY);
 
-        logger.log(Level.TRACE, "TMixer.getTargetLineInfo(): end");
+        logger.log(Level.TRACE, "end");
 
         return infos;
     }
 
     @Override
     public Line.Info[] getSourceLineInfo(Line.Info info) {
-        logger.log(Level.TRACE, "TMixer.getSourceLineInfo(Line.Info): info to test: " + info);
+        logger.log(Level.TRACE, "info to test: " + info);
 
         // TODO
         return EMPTY_LINE_INFO_ARRAY;
@@ -144,7 +144,7 @@ public abstract class TMixer extends TLine implements Mixer {
 
     @Override
     public Line.Info[] getTargetLineInfo(Line.Info info) {
-        logger.log(Level.TRACE, "TMixer.getTargetLineInfo(Line.Info): info to test: " + info);
+        logger.log(Level.TRACE, "info to test: " + info);
 
         // TODO
         return EMPTY_LINE_INFO_ARRAY;
@@ -152,15 +152,15 @@ public abstract class TMixer extends TLine implements Mixer {
 
     @Override
     public boolean isLineSupported(Line.Info info) {
-        logger.log(Level.TRACE, "TMixer.isLineSupported(): info to test: " + info);
+        logger.log(Level.TRACE, "info to test: " + info);
 
         Class<?> lineClass = info.getLineClass();
         if (lineClass.equals(SourceDataLine.class)) {
-            return isLineSupportedImpl(info, m_supportedSourceLineInfos);
+            return isLineSupportedImpl(info, supportedSourceLineInfos);
         } else if (lineClass.equals(TargetDataLine.class)) {
-            return isLineSupportedImpl(info, m_supportedTargetLineInfos);
+            return isLineSupportedImpl(info, supportedTargetLineInfos);
         } else if (lineClass.equals(Port.class)) {
-            return isLineSupportedImpl(info, m_supportedSourceLineInfos) || isLineSupportedImpl(info, m_supportedTargetLineInfos);
+            return isLineSupportedImpl(info, supportedSourceLineInfos) || isLineSupportedImpl(info, supportedTargetLineInfos);
         } else {
             return false;
         }
@@ -177,132 +177,132 @@ public abstract class TMixer extends TLine implements Mixer {
 
     @Override
     public Line getLine(Line.Info info) throws LineUnavailableException {
-        logger.log(Level.TRACE, "TMixer.getLine(): begin");
+        logger.log(Level.TRACE, "begin");
 
         Class<?> lineClass = info.getLineClass();
         DataLine.Info dataLineInfo = null;
         Port.Info portInfo = null;
-        AudioFormat[] aFormats = null;
+        AudioFormat[] formats = null;
         if (info instanceof DataLine.Info) {
             dataLineInfo = (DataLine.Info) info;
-            aFormats = dataLineInfo.getFormats();
+            formats = dataLineInfo.getFormats();
         } else if (info instanceof Port.Info) {
             portInfo = (Port.Info) info;
         }
         AudioFormat format;
         Line line;
         if (lineClass == SourceDataLine.class) {
-            logger.log(Level.TRACE, "TMixer.getLine(): type: SourceDataLine");
+            logger.log(Level.TRACE, "type: SourceDataLine");
 
             if (dataLineInfo == null) {
                 throw new IllegalArgumentException("need DataLine.Info for SourceDataLine");
             }
-            format = getSupportedSourceFormat(aFormats);
+            format = getSupportedSourceFormat(formats);
             line = getSourceDataLine(format, dataLineInfo.getMaxBufferSize());
         } else if (lineClass == Clip.class) {
-            logger.log(Level.TRACE, "TMixer.getLine(): type: Clip");
+            logger.log(Level.TRACE, "type: Clip");
 
             if (dataLineInfo == null) {
                 throw new IllegalArgumentException("need DataLine.Info for Clip");
             }
-            format = getSupportedSourceFormat(aFormats);
+            format = getSupportedSourceFormat(formats);
             line = getClip(format);
         } else if (lineClass == TargetDataLine.class) {
-            logger.log(Level.TRACE, "TMixer.getLine(): type: TargetDataLine");
+            logger.log(Level.TRACE, "type: TargetDataLine");
 
             if (dataLineInfo == null) {
                 throw new IllegalArgumentException("need DataLine.Info for TargetDataLine");
             }
-            format = getSupportedTargetFormat(aFormats);
+            format = getSupportedTargetFormat(formats);
             line = getTargetDataLine(format, dataLineInfo.getMaxBufferSize());
         } else if (lineClass == Port.class) {
-            logger.log(Level.TRACE, "TMixer.getLine(): type: TargetDataLine");
+            logger.log(Level.TRACE, "type: TargetDataLine");
 
             if (portInfo == null) {
                 throw new IllegalArgumentException("need Port.Info for Port");
             }
             line = getPort(portInfo);
         } else {
-            logger.log(Level.TRACE, "TMixer.getLine(): unknown line type, will throw exception");
+            logger.log(Level.TRACE, "unknown line type, will throw exception");
 
             throw new LineUnavailableException("unknown line class: " + lineClass);
         }
 
-        logger.log(Level.TRACE, "TMixer.getLine(): end");
+        logger.log(Level.TRACE, "end");
 
         return line;
     }
 
-    protected SourceDataLine getSourceDataLine(AudioFormat format, int nBufferSize) throws LineUnavailableException {
-        logger.log(Level.TRACE, "TMixer.getSourceDataLine(): begin");
+    protected SourceDataLine getSourceDataLine(AudioFormat format, int bufferSize) throws LineUnavailableException {
+        logger.log(Level.TRACE, "begin");
 
         throw new IllegalArgumentException("this mixer does not support SourceDataLines");
     }
 
     protected Clip getClip(AudioFormat format) throws LineUnavailableException {
-        logger.log(Level.TRACE, "TMixer.getClip(): begin");
+        logger.log(Level.TRACE, "begin");
 
         throw new IllegalArgumentException("this mixer does not support Clips");
     }
 
-    protected TargetDataLine getTargetDataLine(AudioFormat format, int nBufferSize) throws LineUnavailableException {
-        logger.log(Level.TRACE, "TMixer.getTargetDataLine(): begin");
+    protected TargetDataLine getTargetDataLine(AudioFormat format, int bufferSize) throws LineUnavailableException {
+        logger.log(Level.TRACE, "begin");
 
         throw new IllegalArgumentException("this mixer does not support TargetDataLines");
     }
 
     protected Port getPort(Port.Info info) throws LineUnavailableException {
-        logger.log(Level.TRACE, "TMixer.getTargetDataLine(): begin");
+        logger.log(Level.TRACE, "begin");
 
         throw new IllegalArgumentException("this mixer does not support Ports");
     }
 
-    private AudioFormat getSupportedSourceFormat(AudioFormat[] aFormats) {
-        logger.log(Level.TRACE, "TMixer.getSupportedSourceFormat(): begin");
+    private AudioFormat getSupportedSourceFormat(AudioFormat[] formats) {
+        logger.log(Level.TRACE, "begin");
 
         AudioFormat format = null;
-        for (AudioFormat aFormat : aFormats) {
-            logger.log(Level.TRACE, "TMixer.getSupportedSourceFormat(): checking " + aFormat + "...");
+        for (AudioFormat aFormat : formats) {
+            logger.log(Level.TRACE, "checking " + aFormat + "...");
 
             if (isSourceFormatSupported(aFormat)) {
-                logger.log(Level.TRACE, "TMixer.getSupportedSourceFormat(): ...supported");
+                logger.log(Level.TRACE, "...supported");
 
                 format = aFormat;
                 break;
             } else {
-                logger.log(Level.TRACE, "TMixer.getSupportedSourceFormat(): ...no luck");
+                logger.log(Level.TRACE, "...no luck");
             }
         }
         if (format == null) {
             throw new IllegalArgumentException("no line matchine one of the passed formats");
         }
 
-        logger.log(Level.TRACE, "TMixer.getSupportedSourceFormat(): end");
+        logger.log(Level.TRACE, "end");
 
         return format;
     }
 
-    private AudioFormat getSupportedTargetFormat(AudioFormat[] aFormats) {
-        logger.log(Level.TRACE, "TMixer.getSupportedTargetFormat(): begin");
+    private AudioFormat getSupportedTargetFormat(AudioFormat[] formats) {
+        logger.log(Level.TRACE, "begin");
 
         AudioFormat format = null;
-        for (AudioFormat aFormat : aFormats) {
-            logger.log(Level.TRACE, "TMixer.getSupportedTargetFormat(): checking " + aFormat + " ...");
+        for (AudioFormat aFormat : formats) {
+            logger.log(Level.TRACE, "checking " + aFormat + " ...");
 
             if (isTargetFormatSupported(aFormat)) {
-                logger.log(Level.TRACE, "TMixer.getSupportedTargetFormat(): ...supported");
+                logger.log(Level.TRACE, "...supported");
 
                 format = aFormat;
                 break;
             } else {
-                logger.log(Level.TRACE, "TMixer.getSupportedTargetFormat(): ...no luck");
+                logger.log(Level.TRACE, "...no luck");
             }
         }
         if (format == null) {
             throw new IllegalArgumentException("no line matchine one of the passed formats");
         }
 
-        logger.log(Level.TRACE, "TMixer.getSupportedTargetFormat(): end");
+        logger.log(Level.TRACE, "end");
 
         return format;
     }
@@ -312,37 +312,37 @@ public abstract class TMixer extends TLine implements Mixer {
 
     @Override
     public Line[] getSourceLines() {
-        logger.log(Level.TRACE, "TMixer.getSourceLines(): called");
+        logger.log(Level.TRACE, "called");
 
-        return m_openSourceDataLines.toArray(EMPTY_LINE_ARRAY);
+        return openSourceDataLines.toArray(EMPTY_LINE_ARRAY);
     }
 
     @Override
     public Line[] getTargetLines() {
-        logger.log(Level.TRACE, "TMixer.getTargetLines(): called");
+        logger.log(Level.TRACE, "called");
 
-        return m_openTargetDataLines.toArray(EMPTY_LINE_ARRAY);
+        return openTargetDataLines.toArray(EMPTY_LINE_ARRAY);
     }
 
     @Override
-    public void synchronize(Line[] aLines, boolean bMaintainSync) {
+    public void synchronize(Line[] lines, boolean maintainSync) {
         throw new UnsupportedOperationException("synchronization not supported");
     }
 
     @Override
-    public void unsynchronize(Line[] aLines) {
+    public void unsynchronize(Line[] lines) {
         throw new UnsupportedOperationException("synchronization not supported");
     }
 
     @Override
-    public boolean isSynchronizationSupported(Line[] aLines, boolean bMaintainSync) {
+    public boolean isSynchronizationSupported(Line[] lines, boolean maintainSync) {
         return false;
     }
 
     protected boolean isSourceFormatSupported(AudioFormat format) {
-        logger.log(Level.TRACE, "TMixer.isSourceFormatSupported(): format to test: " + format);
+        logger.log(Level.TRACE, "format to test: " + format);
 
-        for (AudioFormat supportedFormat : m_supportedSourceFormats) {
+        for (AudioFormat supportedFormat : supportedSourceFormats) {
             if (AudioFormats.matches(supportedFormat, format)) {
                 return true;
             }
@@ -351,9 +351,9 @@ public abstract class TMixer extends TLine implements Mixer {
     }
 
     protected boolean isTargetFormatSupported(AudioFormat format) {
-        logger.log(Level.TRACE, "TMixer.isTargetFormatSupported(): format to test: " + format);
+        logger.log(Level.TRACE, "format to test: " + format);
 
-        for (AudioFormat supportedFormat : m_supportedTargetFormats) {
+        for (AudioFormat supportedFormat : supportedTargetFormats) {
             if (AudioFormats.matches(supportedFormat, format)) {
                 return true;
             }
@@ -362,29 +362,29 @@ public abstract class TMixer extends TLine implements Mixer {
     }
 
     /* package */ void registerOpenLine(Line line) {
-        logger.log(Level.TRACE, "TMixer.registerOpenLine(): line to register: " + line);
+        logger.log(Level.TRACE, "line to register: " + line);
 
         if (line instanceof SourceDataLine) {
-            synchronized (m_openSourceDataLines) {
-                m_openSourceDataLines.add((SourceDataLine) line);
+            synchronized (openSourceDataLines) {
+                openSourceDataLines.add((SourceDataLine) line);
             }
         } else if (line instanceof TargetDataLine) {
-            synchronized (m_openSourceDataLines) {
-                m_openTargetDataLines.add((TargetDataLine) line);
+            synchronized (openSourceDataLines) {
+                openTargetDataLines.add((TargetDataLine) line);
             }
         }
     }
 
     /* package */ void unregisterOpenLine(Line line) {
-        logger.log(Level.TRACE, "TMixer.unregisterOpenLine(): line to unregister: " + line);
+        logger.log(Level.TRACE, "line to unregister: " + line);
 
         if (line instanceof SourceDataLine) {
-            synchronized (m_openSourceDataLines) {
-                m_openSourceDataLines.remove(line);
+            synchronized (openSourceDataLines) {
+                openSourceDataLines.remove(line);
             }
         } else if (line instanceof TargetDataLine) {
-            synchronized (m_openTargetDataLines) {
-                m_openTargetDataLines.remove(line);
+            synchronized (openTargetDataLines) {
+                openTargetDataLines.remove(line);
             }
         }
     }

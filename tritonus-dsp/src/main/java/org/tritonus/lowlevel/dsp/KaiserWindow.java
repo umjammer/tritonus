@@ -14,10 +14,6 @@
  *   limitations under the License.
  */
 
-/*
- |<---            this code is formatted to fit into 80 columns             --->|
- */
-
 package org.tritonus.lowlevel.dsp;
 
 /**
@@ -28,15 +24,15 @@ public class KaiserWindow implements FIRWindow {
     /**
      * The alpha parameter of the Kaiser window.
      */
-    private double m_dAlpha;
+    private double alpha;
 
     /**
      * Constructor taking alpha.
      *
-     * @param dAlpha The alpha parameter of the Kaiser window.
+     * @param alpha The alpha parameter of the Kaiser window.
      */
-    public KaiserWindow(double dAlpha) {
-        m_dAlpha = dAlpha;
+    public KaiserWindow(double alpha) {
+        this.alpha = alpha;
     }
 
     /**
@@ -45,20 +41,15 @@ public class KaiserWindow implements FIRWindow {
      * @return alpha.
      */
     public double getAlpha() {
-        return m_dAlpha;
+        return alpha;
     }
 
-    /** {@inheritDoc} */
     @Override
-    public double[] getWindow(int nOrder) {
-        double[] adWindow = new double[nOrder];
-        for (int n = 0; n < nOrder; n++) {
-            adWindow[n] = Util.I0(getAlpha()
-                    * Math.sqrt(n * (2.0 * nOrder - n)) / nOrder)
-                    / Util.I0(getAlpha());
+    public double[] getWindow(int order) {
+        double[] window = new double[order];
+        for (int n = 0; n < order; n++) {
+            window[n] = Util.I0(getAlpha() * Math.sqrt(n * (2.0 * order - n)) / order) / Util.I0(getAlpha());
         }
-        return adWindow;
+        return window;
     }
 }
-
-

@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-/*
+/**
  * MidiSystemTestCase.java
  */
 public class MidiSystemTestCase {
@@ -76,5 +76,3 @@ public class MidiSystemTestCase {
         }
     }
 }
-
-

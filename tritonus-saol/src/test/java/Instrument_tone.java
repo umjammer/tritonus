@@ -1,13 +1,11 @@
-/*
- * Instrument_tone.java
- */
-
 import org.tritonus.saol.engine.AbstractInstrument;
 import org.tritonus.saol.engine.RTSystem;
 
 
-public class Instrument_tone
-        extends AbstractInstrument {
+/**
+ * Instrument_tone.
+ */
+public class Instrument_tone extends AbstractInstrument {
 
     private float a;
     private float x;
@@ -21,15 +19,11 @@ public class Instrument_tone
         init = 0.0F;
     }
 
+//    public void doIPass() {
+//    }
 
-//  public void doIPass()
-//  {
-//  }
-
-
-//  public void doKPass()
-//  {
-//  }
+//    public void doKPass() {
+//    }
 
     @Override
     public void doAPass(RTSystem rtSystem) {
@@ -44,5 +38,3 @@ public class Instrument_tone
         rtSystem.output(y);
     }
 }
-
-

@@ -41,9 +41,9 @@ public class MpegAudioFileReader extends TAudioFileReader {
 
      private static final Logger logger= getLogger("org.tritonus.TraceAudioFileReader");
 
-    private static final int SYNC = 0xFFE00000;
+    private static final int SYNC = 0xffe0_0000;
 
-    private static final AudioFormat.Encoding[][] sm_aEncodings = {{
+    private static final AudioFormat.Encoding[][] encodings = {{
             new AudioFormat.Encoding("MPEG2DOT5L3"),
             new AudioFormat.Encoding("MPEG2DOT5L2"),
             new AudioFormat.Encoding("MPEG2DOT5L1")
@@ -62,7 +62,7 @@ public class MpegAudioFileReader extends TAudioFileReader {
         },
     };
 
-    private static final float[][] sm_afSamplingRates = {
+    private static final float[][] samplingRates = {
             {11025.0F, 12000.0F, 8000.0F},
             {0.0F, 0.0F, 0.0F},            // reserved
             {22050.0F, 24000.0F, 16000.0F},
@@ -76,10 +76,10 @@ public class MpegAudioFileReader extends TAudioFileReader {
     }
 
     @Override
-    protected AudioFileFormat getAudioFileFormat(InputStream inputStream, long lFileSizeInBytes)
+    protected AudioFileFormat getAudioFileFormat(InputStream inputStream, long fileLengthInBytes)
             throws UnsupportedAudioFileException, IOException {
 
-        logger.log(Level.TRACE, "MpegAudioFileReader.getAudioFileFormat(): begin");
+        logger.log(Level.TRACE, "begin");
 
         int b0 = inputStream.read();
         int b1 = inputStream.read();
@@ -88,35 +88,35 @@ public class MpegAudioFileReader extends TAudioFileReader {
         if ((b0 | b1 | b2 | b3) < 0) {
             throw new EOFException();
         }
-        int nHeader = (b0 << 24) + (b1 << 16) + (b2 << 8) + (b3 << 0);
+        int header = (b0 << 24) + (b1 << 16) + (b2 << 8) + (b3 << 0);
         // We check for the sync bits. If they are present, we
         // assume that we have an MPEG bitstream.
-        if ((nHeader & SYNC) != SYNC) {
+        if ((header & SYNC) != SYNC) {
             throw new UnsupportedAudioFileException("not a MPEG stream: no sync bits");
         }
-        int nVersion = (nHeader >> 19) & 0x3;
-        if (nVersion == 1) {
+        int version = (header >> 19) & 0x3;
+        if (version == 1) {
             throw new UnsupportedAudioFileException("not a MPEG stream: wrong version");
         }
-        int nLayer = (nHeader >> 17) & 0x3;
-        if (nLayer == 0) {
+        int layer = (header >> 17) & 0x3;
+        if (layer == 0) {
             throw new UnsupportedAudioFileException("not a MPEG stream: wrong layer");
         }
-        AudioFormat.Encoding encoding = sm_aEncodings[nVersion][nLayer - 1];
+        AudioFormat.Encoding encoding = encodings[version][layer - 1];
         // TODO bit rate, protection
-        int nSFIndex = (nHeader >> 10) & 0x3;
-        if (nSFIndex == 3) {
+        int sfIndex = (header >> 10) & 0x3;
+        if (sfIndex == 3) {
             throw new UnsupportedAudioFileException("not a MPEG stream: wrong sampling rate");
         }
-        float fSamplingRate = sm_afSamplingRates[nVersion][nSFIndex];
-        int nMode = (nHeader >> 6) & 0x3;
-        int nChannels = nMode == 3 ? 1 : 2;
+        float samplingRate = samplingRates[version][sfIndex];
+        int mode = (header >> 6) & 0x3;
+        int channels = mode == 3 ? 1 : 2;
 
         AudioFormat format = new AudioFormat(
                 encoding,
-                fSamplingRate,
+                samplingRate,
                 AudioSystem.NOT_SPECIFIED, // ???
-                nChannels,
+                channels,
                 AudioSystem.NOT_SPECIFIED, // ????
                 AudioSystem.NOT_SPECIFIED, // ????
                 true);
@@ -133,22 +133,17 @@ public class MpegAudioFileReader extends TAudioFileReader {
         // NOT_SPECIFIED. 'Unknown' is considered less incorrect than
         // a wrong value.
         // [fb] not specifying it causes Sun's Wave file writer to write rubbish
-        int nByteSize = AudioSystem.NOT_SPECIFIED;
-        int nFrameSize = AudioSystem.NOT_SPECIFIED;
-        if (lFileSizeInBytes != AudioSystem.NOT_SPECIFIED && lFileSizeInBytes <= Integer.MAX_VALUE) {
-            nByteSize = (int) lFileSizeInBytes;
+        int byteSize = AudioSystem.NOT_SPECIFIED;
+        int frameSize = AudioSystem.NOT_SPECIFIED;
+        if (fileLengthInBytes != AudioSystem.NOT_SPECIFIED && fileLengthInBytes <= Integer.MAX_VALUE) {
+            byteSize = (int) fileLengthInBytes;
             // TODO check if we can calculate a useful value here
-//            nFrameSize = (int) (lFileSizeInBytes / 33);
+//            frameSize = (int) (fileSizeInBytes / 33);
         }
 
-        AudioFileFormat audioFileFormat =
-                new TAudioFileFormat(
-                        type,
-                        format,
-                        nFrameSize,
-                        nByteSize);
+        AudioFileFormat audioFileFormat = new TAudioFileFormat(type, format, frameSize, byteSize);
 
-        logger.log(Level.TRACE, "MpegAudioFileReader.getAudioFileFormat(): end");
+        logger.log(Level.TRACE, "end");
 
         return audioFileFormat;
     }

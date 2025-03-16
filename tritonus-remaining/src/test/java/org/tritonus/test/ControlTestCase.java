@@ -25,7 +25,7 @@ import javax.sound.sampled.Control;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 
 /**
@@ -39,8 +39,7 @@ public class ControlTestCase {
      * getType() is the one passed to the constructor.
      */
     @Test
-    public void testGetTypeObject()
-            throws Exception {
+    public void testGetTypeObject() throws Exception {
         Control.Type type = BooleanControl.Type.MUTE;
         Control control = new TestControl(type);
         Control.Type returnedType = control.getType();
@@ -53,8 +52,7 @@ public class ControlTestCase {
      * getType() is null, as is passed to the constructor.
      */
     @Test
-    public void testGetTypeNull()
-            throws Exception {
+    public void testGetTypeNull() throws Exception {
         Control.Type type = null;
         Control control = new TestControl(type);
         Control.Type returnedType = control.getType();
@@ -67,24 +65,20 @@ public class ControlTestCase {
      * contains characters (and doesn't throw an exception).
      */
     @Test
-    public void testToString()
-            throws Exception {
+    public void testToString() throws Exception {
         Control.Type type = BooleanControl.Type.MUTE;
         Control control = new TestControl(type);
-        String strReturnedString = control.toString();
-        assertTrue(!strReturnedString.isEmpty(), "toString() result");
+        String returnedString = control.toString();
+        assertFalse(returnedString.isEmpty(), "toString() result");
     }
 
     /**
      * Inner class used to get around protected constructor.
      */
-    private static class TestControl
-            extends Control {
+    private static class TestControl extends Control {
 
         public TestControl(Control.Type type) {
             super(type);
         }
     }
 }
-
-

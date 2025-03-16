@@ -1,8 +1,4 @@
 /*
- * TNonSeekableDataOutputStreamTestCase.java
- */
-
-/*
  *  Copyright (c) 2004 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,27 +22,25 @@ import org.tritonus.share.sampled.file.TDataOutputStream;
 import org.tritonus.share.sampled.file.TNonSeekableDataOutputStream;
 
 
-public class TNonSeekableDataOutputStreamTestCase
-        extends BaseDataOutputStreamTestCase {
+/**
+ * TNonSeekableDataOutputStreamTestCase.
+ */
+public class TNonSeekableDataOutputStreamTestCase extends BaseDataOutputStreamTestCase {
 
-    ByteArrayOutputStream m_baos;
+    ByteArrayOutputStream baos;
 
     public TNonSeekableDataOutputStreamTestCase() {
         super(false);  // non seekable
     }
 
     @Override
-    protected TDataOutputStream createDataOutputStream()
-            throws Exception {
-        m_baos = new ByteArrayOutputStream();
-        return new TNonSeekableDataOutputStream(m_baos);
+    protected TDataOutputStream createDataOutputStream() throws Exception {
+        baos = new ByteArrayOutputStream();
+        return new TNonSeekableDataOutputStream(baos);
     }
 
     @Override
-    protected byte[] getWrittenData()
-            throws Exception {
-        return m_baos.toByteArray();
+    protected byte[] getWrittenData() throws Exception {
+        return baos.toByteArray();
     }
 }
-
-

@@ -14,10 +14,6 @@
  *   limitations under the License.
  */
 
-/*
- |<---            this code is formatted to fit into 80 columns             --->|
- */
-
 package org.tritonus.lowlevel.dsp;
 
 /**
@@ -40,11 +36,11 @@ public interface FilterDescription {
      * filter.
      * </p>
      *
-     * @param dOmega The frequency for which the frequency response should be
+     * @param omega The frequency for which the frequency response should be
      *               calculated. Has to be given as omega values ([-PI .. +PI]).
      * @return The calculated frequency response
      */
-    double getFrequencyResponse(double dOmega);
+    double getFrequencyResponse(double omega);
 
     /**
      * Get the phase response of the filter at a specified frequency.
@@ -55,11 +51,9 @@ public interface FilterDescription {
      * filter is operating. It does not affect the operation of the filter.
      * </p>
      *
-     * @param dOmega The frequency for which the phase response should be
+     * @param omega The frequency for which the phase response should be
      *               calculated. Has to be given as omega values ([-PI .. +PI]).
      * @return The calculated phase response
      */
-    double getPhaseResponse(double dOmega);
+    double getPhaseResponse(double omega);
 }
-
-

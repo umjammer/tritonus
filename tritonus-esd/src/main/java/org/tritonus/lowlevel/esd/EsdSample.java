@@ -19,8 +19,7 @@
 package org.tritonus.lowlevel.esd;
 
 
-public class EsdSample
-        extends Esd {
+public class EsdSample extends Esd {
 
     /**
      * Holds socket fd to EsounD.
@@ -29,7 +28,7 @@ public class EsdSample
      * size of ints may be 64 bit.
      */
     @SuppressWarnings("unused")
-    private long m_lNativeFd;
+    private long nativeFd;
 
     /**
      * Holds the sample id.
@@ -38,7 +37,7 @@ public class EsdSample
      * size of ints may be 64 bit.
      */
     @SuppressWarnings("unused")
-    private long m_lNativeId;
+    private long nativeId;
 
     static {
         Esd.loadNativeLibrary();
@@ -55,7 +54,7 @@ public class EsdSample
      * To free native resources, call close() if you're done with
      * the sample (not after you've uploaded all data).
      */
-    public native void open(int nFormat, int nSampleRate, int nLength);
+    public native void open(int format, int sampleRate, int length);
 //		throws IOException;
 
     /**
@@ -67,7 +66,7 @@ public class EsdSample
      *
      * @return the number of bytes written
      */
-    public native int write(byte[] abData, int nOffset, int nLength);
+    public native int write(byte[] data, int offset, int length);
     //throws IOException;
 
     /**
@@ -108,7 +107,5 @@ public class EsdSample
     /**
      * Sets the volume for the sample.
      */
-    public native void setVolume(int nLeftVolume, int nRightVolume);
+    public native void setVolume(int leftVolume, int rightVolume);
 }
-
-

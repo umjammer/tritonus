@@ -1,8 +1,4 @@
 /*
- * ClipPlayerApplet.java
- */
-
-/*
  *  Copyright (c) 1999 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -42,29 +38,30 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 
-public class ClipPlayerApplet
-        extends JApplet
-        implements LineListener {
+/**
+ * ClipPlayerApplet.
+ */
+public class ClipPlayerApplet extends JApplet implements LineListener {
 
-    private AudioInputStream m_audioInputStream;
-    private AudioFormat m_format;
-    private Clip m_clip;
+    private AudioInputStream audioInputStream;
+    private AudioFormat format;
+    private Clip clip;
 
-    private JPanel m_panel;
-    private JButton m_loopButton;
-    private JButton m_stopButton;
+    private JPanel panel;
+    private JButton loopButton;
+    private JButton stopButton;
 
     public ClipPlayerApplet() {
     }
 
     public void init() {
-        System.out.println("ClipPlayerApplet.init(): context class loader: " + Thread.currentThread().getContextClassLoader());
-        System.out.println("ClipPlayerApplet.init(): system class loader: " + ClassLoader.getSystemClassLoader());
-        String strClipURL = getParameter("clipurl");
-        System.out.println("URL str: " + strClipURL);
+        System.out.println("context class loader: " + Thread.currentThread().getContextClassLoader());
+        System.out.println("system class loader: " + ClassLoader.getSystemClassLoader());
+        String clipURL = getParameter("clipurl");
+        System.out.println("URL str: " + clipURL);
         URL clipURL = null;
         try {
-            clipURL = new URL(getDocumentBase(), strClipURL);
+            clipURL = new URL(getDocumentBase(), clipURL);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -73,72 +70,68 @@ public class ClipPlayerApplet
         JPanel panel = new JPanel();
         this.getContentPane().add(panel);
         // TODO label showing the url
-        m_loopButton = new JButton("Loop");
-        m_loopButton.addActionListener(new ActionListener() {
+        loopButton = new JButton("Loop");
+        loopButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-                m_clip.loop(Clip.LOOP_CONTINUOUSLY);
+                clip.loop(Clip.LOOP_CONTINUOUSLY);
             }
         });
-        panel.add(m_loopButton);
-        m_stopButton = new JButton("Stop");
-        m_stopButton.addActionListener(new ActionListener() {
+        panel.add(loopButton);
+        stopButton = new JButton("Stop");
+        stopButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-                m_clip.loop(0);
+                clip.loop(0);
             }
         });
-        m_stopButton.setEnabled(false);
-        panel.add(m_stopButton);
+        stopButton.setEnabled(false);
+        panel.add(stopButton);
     }
 
     public void destroy() {
-        if (m_clip != null) {
-            m_clip.close();
+        if (clip != null) {
+            clip.close();
         }
     }
 
     private void loadClip(URL clipURL) {
-        System.out.println("ClipPlayerApplet.loadClip(): setting another class loader");
+        System.out.println("setting another class loader");
         ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(ClassLoader.getSystemClassLoader());
         try {
-            m_audioInputStream = AudioSystem.getAudioInputStream(clipURL);
+            audioInputStream = AudioSystem.getAudioInputStream(clipURL);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (m_audioInputStream != null) {
-            m_format = m_audioInputStream.getFormat();
-            DataLine.Info info = new DataLine.Info(Clip.class, m_format, AudioSystem.NOT_SPECIFIED);
+        if (audioInputStream != null) {
+            format = audioInputStream.getFormat();
+            DataLine.Info info = new DataLine.Info(Clip.class, format, AudioSystem.NOT_SPECIFIED);
             try {
-                m_clip = (Clip) AudioSystem.getLine(info);
-                m_clip.addLineListener(this);
-                m_clip.open(m_audioInputStream);
+                clip = (Clip) AudioSystem.getLine(info);
+                clip.addLineListener(this);
+                clip.open(audioInputStream);
             } catch (LineUnavailableException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            // m_clip.loop(nLoopCount);
+            // clip.loop(nLoopCount);
         } else {
             // TODO popup (also for other error conditions)
-            System.out.println("ClipPlayerApplet.<init>(): can't get data from URL " + clipURL);
+            System.out.println("can't get data from URL " + clipURL);
         }
         Thread.currentThread().setContextClassLoader(originalClassLoader);
-        System.out.println("ClipPlayerApplet.loadClip(): restored the original class loader");
+        System.out.println("restored the original class loader");
     }
 
     public void update(LineEvent event) {
-        System.out.println("ClipPlayerApplet.update(): received event: " + event);
+        System.out.println("received event: " + event);
         if (event.getType().equals(LineEvent.Type.START)) {
-            m_loopButton.setEnabled(false);
-            m_stopButton.setEnabled(true);
+            loopButton.setEnabled(false);
+            stopButton.setEnabled(true);
         }
         if (event.getType().equals(LineEvent.Type.STOP)) {
-            m_loopButton.setEnabled(true);
-            m_stopButton.setEnabled(false);
+            loopButton.setEnabled(true);
+            stopButton.setEnabled(false);
         }
     }
-
-
 }
-
-

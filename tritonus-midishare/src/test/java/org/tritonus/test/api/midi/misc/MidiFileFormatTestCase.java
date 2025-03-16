@@ -1,8 +1,4 @@
 /*
- * MidiFileFormatTestCase.java
- */
-
-/*
  *  Copyright (c) 2003 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,7 +28,6 @@ import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 
 public class MidiFileFormatTestCase {
@@ -47,25 +42,20 @@ public class MidiFileFormatTestCase {
         checkGetValues(2, -1.0F, 25, 725, 600000L, true);
     }
 
-    private void checkGetValues(int nType, float fDivisionType,
-                                int nResolution, int nByteLength,
-                                long lMicrosecondLength, boolean bWithMap) {
+    private static void checkGetValues(int type, float divisionType,
+                                       int resolution, int byteLength, long microsecondLength, boolean withMap) {
         MidiFileFormat fileFormat;
-        if (bWithMap) {
+        if (withMap) {
             Map<String, Object> prop = new HashMap<>();
-            fileFormat = new MidiFileFormat(nType, fDivisionType,
-                    nResolution, nByteLength,
-                    lMicrosecondLength, prop);
+            fileFormat = new MidiFileFormat(type, divisionType, resolution, byteLength, microsecondLength, prop);
         } else {
-            fileFormat = new MidiFileFormat(nType, fDivisionType,
-                    nResolution, nByteLength,
-                    lMicrosecondLength);
+            fileFormat = new MidiFileFormat(type, divisionType, resolution, byteLength, microsecondLength);
         }
-        assertEquals(nType, fileFormat.getType(), "type");
-        assertEquals(fDivisionType, fileFormat.getDivisionType(), DELTA, "division type");
-        assertEquals(nResolution, fileFormat.getResolution(), "resolution");
-        assertEquals(nByteLength, fileFormat.getByteLength(), "byte length");
-        assertEquals(lMicrosecondLength, fileFormat.getMicrosecondLength(), "microsecond length");
+        assertEquals(type, fileFormat.getType(), "type");
+        assertEquals(divisionType, fileFormat.getDivisionType(), DELTA, "division type");
+        assertEquals(resolution, fileFormat.getResolution(), "resolution");
+        assertEquals(byteLength, fileFormat.getByteLength(), "byte length");
+        assertEquals(microsecondLength, fileFormat.getMicrosecondLength(), "microsecond length");
     }
 
     @Test
@@ -80,14 +70,14 @@ public class MidiFileFormatTestCase {
 
     @Test
     public void testNullMap() {
-        assertThrows(NullPointerException.class, () -> new MidiFileFormat(0, 0.0F, 0, 0, 0L, null));
+        assertThrows(NullPointerException.class,
+                () -> new MidiFileFormat(0, 0.0F, 0, 0, 0L, null));
     }
 
     @Test
     public void testEmptyMap() {
         Map<String, Object> prop = new HashMap<>();
-        MidiFileFormat fileFormat = new MidiFileFormat(0, 0.0F, 0, 0, 0L,
-                prop);
+        var fileFormat = new MidiFileFormat(0, 0.0F, 0, 0, 0L, prop);
         Map<String, Object> propReturn = fileFormat.properties();
         assertTrue(propReturn.isEmpty());
         Object result = propReturn.get("bitrate");
@@ -98,8 +88,7 @@ public class MidiFileFormatTestCase {
     public void testCopying() {
         Map<String, Object> prop = new HashMap<>();
         prop.put("bitrate", 22.5F);
-        MidiFileFormat fileFormat = new MidiFileFormat(0, 0, 0, 0, 0,
-                prop);
+        var fileFormat = new MidiFileFormat(0, 0, 0, 0, 0, prop);
         Map<String, Object> propReturn = fileFormat.properties();
         assertNotSame(prop, propReturn);
         prop.put("bitrate", 42.5F);
@@ -110,14 +99,10 @@ public class MidiFileFormatTestCase {
     @Test
     public void testUnmodifiable() {
         Map<String, Object> prop = new HashMap<>();
-        MidiFileFormat fileFormat = new MidiFileFormat(0, 0.0F, 0, 0, 0L,
-                prop);
+        var fileFormat = new MidiFileFormat(0, 0.0F, 0, 0, 0L, prop);
         Map<String, Object> propReturn = fileFormat.properties();
-        try {
-            propReturn.put("author", "Matthias Pfisterer");
-            fail("returned Map allows modifications");
-        } catch (UnsupportedOperationException e) {
-        }
+        assertThrows(UnsupportedOperationException.class, () -> propReturn.put("author", "Matthias Pfisterer"),
+                "returned Map allows modifications");
     }
 
     @Test
@@ -125,12 +110,9 @@ public class MidiFileFormatTestCase {
         Map<String, Object> prop = new HashMap<>();
         prop.put("bitrate", 22.5F);
         prop.put("author", "Matthias Pfisterer");
-        MidiFileFormat fileFormat = new MidiFileFormat(0, 0.0F, 0, 0, 0L,
-                prop);
+        var fileFormat = new MidiFileFormat(0, 0.0F, 0, 0, 0L, prop);
         Map<String, Object> propReturn = fileFormat.properties();
         assertEquals(22.5F, propReturn.get("bitrate"));
         assertEquals("Matthias Pfisterer", propReturn.get("author"));
     }
 }
-
-

@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 2003 by Matthias Pfisterer
  *
@@ -36,21 +35,17 @@ import javax.sound.sampled.AudioInputStream;
  * creating of the object, thereby maintaining the immutable
  * character of these classes.
  */
+public class TAudioInputStream extends AudioInputStream {
 
-public class TAudioInputStream
-        extends AudioInputStream {
-
-    private Map<String, Object> m_properties;
-    private Map<String, Object> m_unmodifiableProperties;
+    private Map<String, Object> properties;
+    private Map<String, Object> unmodifiableProperties;
 
     /**
      * Constructor without properties.
      * Creates an empty properties map.
      */
-    public TAudioInputStream(InputStream inputStream,
-                             AudioFormat audioFormat,
-                             long lLengthInFrames) {
-        super(inputStream, audioFormat, lLengthInFrames);
+    public TAudioInputStream(InputStream inputStream, AudioFormat audioFormat, long lengthInFrames) {
+        super(inputStream, audioFormat, lengthInFrames);
         initMaps(new HashMap<>());
     }
 
@@ -62,18 +57,17 @@ public class TAudioInputStream
      */
     public TAudioInputStream(InputStream inputStream,
                              AudioFormat audioFormat,
-                             long lLengthInFrames,
+                             long lengthInFrames,
                              Map<String, Object> properties) {
-        super(inputStream, audioFormat, lLengthInFrames);
+        super(inputStream, audioFormat, lengthInFrames);
         initMaps(properties);
     }
 
     private void initMaps(Map<String, Object> properties) {
-  /* Here, we make a shallow copy of the map. It's unclear if this
-     is sufficient (of if a deep copy should be made).
-  */
-        m_properties = properties;
-        m_unmodifiableProperties = Collections.unmodifiableMap(m_properties);
+        // Here, we make a shallow copy of the map. It's unclear if this
+        // is sufficient (of if a deep copy should be made).
+        this.properties = properties;
+        unmodifiableProperties = Collections.unmodifiableMap(this.properties);
     }
 
     /**
@@ -84,7 +78,7 @@ public class TAudioInputStream
      * @return a map containing the properties.
      */
     public Map<String, Object> properties() {
-        return m_unmodifiableProperties;
+        return unmodifiableProperties;
     }
 
     /**
@@ -93,8 +87,6 @@ public class TAudioInputStream
      * restricted to be used in the constructor.
      */
     protected void setProperty(String key, Object value) {
-        m_properties.put(key, value);
+        properties.put(key, value);
     }
 }
-
-

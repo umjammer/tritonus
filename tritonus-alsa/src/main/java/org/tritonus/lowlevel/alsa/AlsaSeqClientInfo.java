@@ -36,19 +36,19 @@ public class AlsaSeqClientInfo {
      * for the native code.
      * This must be long to be 64bit-clean.
      */
-    /* private */ long m_lNativeHandle;
+    /* private */ long nativeHandle;
 
     public AlsaSeqClientInfo() {
-        logger.log(Level.TRACE, "AlsaSeq.ClientInfo.<init>(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        int nReturn = malloc();
-        logger.log(Level.TRACE, "AlsaSeq.ClientInfo.<init>(): malloc() returns: " + nReturn);
+        int ret = malloc();
+        logger.log(Level.TRACE, "malloc() returns: " + ret);
 
-        if (nReturn < 0) {
+        if (ret < 0) {
             throw new RuntimeException("malloc of client_info failed");
         }
 
-        logger.log(Level.TRACE, "AlsaSeq.ClientInfo.<init>(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     private native int malloc();
@@ -71,15 +71,15 @@ public class AlsaSeqClientInfo {
 
     public native int getEventLost();
 
-    public native void setClient(int nClient);
+    public native void setClient(int client);
 
-    public native void setName(String strName);
+    public native void setName(String name);
 
-    public native void setBroadcastFilter(int nBroadcastFilter);
+    public native void setBroadcastFilter(int broadcastFilter);
 
-    public native void setErrorBounce(int nErrorBounce);
+    public native void setErrorBounce(int errorBounce);
 
-    private static native void setTrace(boolean bTrace);
+    private static native void setTrace(boolean trace);
 
     // TODO event filter
 }

@@ -25,22 +25,17 @@ import javax.sound.sampled.AudioFormat;
 /**
  * AudioOutputStream for files without a header; the input is written as it is.
  *
+ * TODO implement directly AudioOutputStream without using TAudioOutputStream
+ *
  * @author Florian Bomers
  */
-
-// todo: implement directly AudioOutputStream without using TAudioOutputStream
-
 public class HeaderlessAudioOutputStream extends TAudioOutputStream {
 
-    public HeaderlessAudioOutputStream(AudioFormat audioFormat,
-                                       long lLength,
-                                       TDataOutputStream dataOutputStream) {
-        super(audioFormat, lLength, dataOutputStream, false);
+    public HeaderlessAudioOutputStream(AudioFormat audioFormat, long length, TDataOutputStream dataOutputStream) {
+        super(audioFormat, length, dataOutputStream, false);
     }
 
     @Override
     protected void writeHeader() throws IOException {
     }
 }
-
-

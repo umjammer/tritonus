@@ -48,28 +48,25 @@ public class AiffTool {
         // endianness is converted in audio output stream
         // sign is converted for 8-bit files
         AudioFormat.Encoding encoding = format.getEncoding();
-        int nSampleSize = format.getSampleSizeInBits();
+        int sampleSize = format.getSampleSizeInBits();
         // $$fb 2000-08-16: check the frame size, too.
         boolean frameSizeOK = format.getFrameSize() == AudioSystem.NOT_SPECIFIED
                 || format.getChannels() != AudioSystem.NOT_SPECIFIED
-                || format.getFrameSize() == nSampleSize / 8 * format.getChannels();
+                || format.getFrameSize() == sampleSize / 8 * format.getChannels();
         boolean signed = encoding.equals(AudioFormat.Encoding.PCM_SIGNED);
         boolean unsigned = encoding.equals(AudioFormat.Encoding.PCM_UNSIGNED);
-        if (nSampleSize == 8 && frameSizeOK && (signed || unsigned)) {
+        if (sampleSize == 8 && frameSizeOK && (signed || unsigned)) {
             // support signed and unsigned PCM for 8 bit
             return AIFF_COMM_PCM;
-        } else if (nSampleSize > 8 && nSampleSize <= 32 && frameSizeOK && signed) {
+        } else if (sampleSize > 8 && sampleSize <= 32 && frameSizeOK && signed) {
             // support only signed PCM for > 8 bit
             return AIFF_COMM_PCM;
-        } else if (encoding.equals(AudioFormat.Encoding.ULAW) && nSampleSize == 8 && frameSizeOK) {
+        } else if (encoding.equals(AudioFormat.Encoding.ULAW) && sampleSize == 8 && frameSizeOK) {
             return AIFF_COMM_ULAW;
-        } else if (encoding.equals(new AudioFormat.Encoding("IMA_ADPCM")) && nSampleSize == 4) {
+        } else if (encoding.equals(new AudioFormat.Encoding("IMA_ADPCM")) && sampleSize == 4) {
             return AIFF_COMM_IMA_ADPCM;
         } else {
             return AIFF_COMM_UNSPECIFIED;
         }
     }
-
 }
-
-

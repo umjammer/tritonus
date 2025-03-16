@@ -54,7 +54,7 @@ public abstract class TFormatConversionProvider extends FormatConversionProvider
                 AudioSystem.NOT_SPECIFIED, // frame size
                 AudioSystem.NOT_SPECIFIED, // frame rate
                 sourceFormat.isBigEndian()); // big endian
-        logger.log(Level.TRACE, "TFormatConversionProvider.getAudioInputStream(AudioFormat.Encoding, AudioInputStream):");
+        logger.log(Level.TRACE, "begin");
         logger.log(Level.TRACE, "trying to convert to " + targetFormat);
         return getAudioInputStream(targetFormat, audioInputStream);
     }
@@ -64,7 +64,7 @@ public abstract class TFormatConversionProvider extends FormatConversionProvider
      * which may create infinite loops if the latter is overwritten.
      * <p>
      * This method is overwritten here to make use of org.tritonus.share.sampled.AudioFormats.matches
-     * and is considered temporary until AudioFormat.matches is corrected in the JavaSound API.
+     * and is considered temporary until AudioFormat#matches is corrected in the JavaSound API.
      * <p>
      * $$mp: if we decide to use getMatchingFormat(), this method should be
      * implemented by simply calling getMatchingFormat() and comparing the
@@ -72,16 +72,16 @@ public abstract class TFormatConversionProvider extends FormatConversionProvider
      */
     @Override
     public boolean isConversionSupported(AudioFormat targetFormat, AudioFormat sourceFormat) {
-        logger.log(Level.TRACE, ">TFormatConversionProvider.isConversionSupported(AudioFormat, AudioFormat):");
+        logger.log(Level.TRACE, "begin");
         logger.log(Level.TRACE, "class: " + getClass().getName());
         logger.log(Level.TRACE, "checking if conversion possible");
         logger.log(Level.TRACE, "from: " + sourceFormat);
         logger.log(Level.TRACE, "to: " + targetFormat);
-        AudioFormat[] aTargetFormats = getTargetFormats(targetFormat.getEncoding(), sourceFormat);
-        for (AudioFormat aTargetFormat : aTargetFormats) {
-            logger.log(Level.TRACE, "checking against possible target format: " + aTargetFormat);
+        AudioFormat[] targetFormats = getTargetFormats(targetFormat.getEncoding(), sourceFormat);
+        for (AudioFormat _targetFormat : targetFormats) {
+            logger.log(Level.TRACE, "checking against possible target format: " + _targetFormat);
 
-            if (aTargetFormat != null && AudioFormats.matches(aTargetFormat, targetFormat)) {
+            if (_targetFormat != null && AudioFormats.matches(_targetFormat, targetFormat)) {
                 logger.log(Level.TRACE, "<result=true");
 
                 return true;
@@ -100,13 +100,13 @@ public abstract class TFormatConversionProvider extends FormatConversionProvider
      * and is considered temporary until AudioFormat.matches is corrected in the JavaSound API.
      */
     public AudioFormat getMatchingFormat(AudioFormat targetFormat, AudioFormat sourceFormat) {
-        logger.log(Level.TRACE, ">TFormatConversionProvider.isConversionSupported(AudioFormat, AudioFormat):");
+        logger.log(Level.TRACE, "begin");
         logger.log(Level.TRACE, "class: " + getClass().getName());
         logger.log(Level.TRACE, "checking if conversion possible");
         logger.log(Level.TRACE, "from: " + sourceFormat);
         logger.log(Level.TRACE, "to: " + targetFormat);
-        AudioFormat[] aTargetFormats = getTargetFormats(targetFormat.getEncoding(), sourceFormat);
-        for (AudioFormat aTargetFormat : aTargetFormats) {
+        AudioFormat[] targetFormats = getTargetFormats(targetFormat.getEncoding(), sourceFormat);
+        for (AudioFormat aTargetFormat : targetFormats) {
             logger.log(Level.TRACE, "checking against possible target format: " + aTargetFormat);
 
             if (aTargetFormat != null && AudioFormats.matches(aTargetFormat, targetFormat)) {

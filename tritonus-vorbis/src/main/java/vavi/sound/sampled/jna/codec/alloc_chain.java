@@ -1,6 +1,5 @@
 package vavi.sound.sampled.jna.codec;
 
-import java.util.Arrays;
 import java.util.List;
 
 import com.sun.jna.Pointer;
@@ -30,7 +29,7 @@ public class alloc_chain extends Structure {
 
     @Override
     protected List<String> getFieldOrder() {
-        return Arrays.asList("ptr", "next");
+        return List.of("ptr", "next");
     }
 
     /**

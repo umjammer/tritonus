@@ -35,5 +35,3 @@ public class NodeSemanticsTable extends HashMap<Node, NodeSemantics> {
         return get(node);
     }
 }
-
-

@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 1999 -2004 by Matthias Pfisterer
  *
@@ -25,9 +24,7 @@ import java.util.Collection;
 import java.util.Set;
 
 
-public class ArraySet<E>
-        extends ArrayList<E>
-        implements Set<E> {
+public class ArraySet<E> extends ArrayList<E> implements Set<E> {
 
     @Serial
     private static final long serialVersionUID = 1;
@@ -53,14 +50,11 @@ public class ArraySet<E>
 
     @Override
     public void add(int index, E element) {
-        throw new UnsupportedOperationException("ArraySet.add(int index, Object element) unsupported");
+        throw new UnsupportedOperationException("unsupported");
     }
 
     @Override
     public E set(int index, E element) {
-        throw new UnsupportedOperationException("ArraySet.set(int index, Object element) unsupported");
+        throw new UnsupportedOperationException("unsupported");
     }
-
 }
-
-

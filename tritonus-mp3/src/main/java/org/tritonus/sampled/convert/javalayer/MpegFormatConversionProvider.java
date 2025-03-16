@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
-import java.util.Arrays;
+import java.util.List;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -34,11 +34,11 @@ import javazoom.jl.decoder.DecoderException;
 import javazoom.jl.decoder.Header;
 import javazoom.jl.decoder.Obuffer;
 import org.tritonus.share.sampled.AudioUtils;
-import org.tritonus.share.sampled.TConversionTool;
 import org.tritonus.share.sampled.convert.TAsynchronousFilteredAudioInputStream;
 import org.tritonus.share.sampled.convert.TEncodingFormatConversionProvider;
 
 import static java.lang.System.getLogger;
+import static org.tritonus.share.sampled.TConversionTool.shortToBytes16;
 
 
 /**
@@ -169,7 +169,7 @@ public class MpegFormatConversionProvider extends TEncodingFormatConversionProvi
      * Constructor.
      */
     public MpegFormatConversionProvider() {
-        super(Arrays.asList(INPUT_FORMATS), Arrays.asList(OUTPUT_FORMATS));
+        super(List.of(INPUT_FORMATS), List.of(OUTPUT_FORMATS));
         logger.log(Level.TRACE, "MpegFormatConversionProvider()");
     }
 
@@ -177,7 +177,7 @@ public class MpegFormatConversionProvider extends TEncodingFormatConversionProvi
     public AudioInputStream getAudioInputStream(AudioFormat targetFormat, AudioInputStream audioInputStream) {
         AudioFormat sourceFormat = audioInputStream.getFormat();
 
-        logger.log(Level.TRACE, ">MpegFormatConversionProvider.getAudioInputStream(AudioFormat, AudioInputStream):");
+        logger.log(Level.TRACE, "begin");
         logger.log(Level.TRACE, "trying to convert");
         logger.log(Level.TRACE, "\tfrom: " + sourceFormat);
         logger.log(Level.TRACE, "\tto: " + targetFormat);
@@ -294,49 +294,49 @@ public class MpegFormatConversionProvider extends TEncodingFormatConversionProvi
 
     @Override
     public boolean isConversionSupported(AudioFormat targetFormat, AudioFormat sourceFormat) {
-        logger.log(Level.TRACE, ">MpegFormatConversionProvider.isConversionSupported(AudioFormat targetFormat, AudioFormat sourceFormat):");
+        logger.log(Level.TRACE, "begin");
         logger.log(Level.TRACE, "checking if conversion possible");
         logger.log(Level.TRACE, "from: " + sourceFormat);
         logger.log(Level.TRACE, "to: " + targetFormat);
         AudioFormat format = getFullyQualifiedTargetFormat(targetFormat, sourceFormat, true);
         boolean supported = (format != null);
 
-        logger.log(Level.TRACE, "<MpegFormatConversionProvider.isConversionSupported(AudioFormat targetFormat, AudioFormat sourceFormat), result=" + supported);
+        logger.log(Level.TRACE, "result=" + supported);
 
         return supported;
     }
 
     public static class DecodedMpegAudioInputStream extends TAsynchronousFilteredAudioInputStream {
 
-        private InputStream m_encodedStream;
-        private Bitstream m_bitstream;
-        private Decoder m_decoder;
-        private DMAISObuffer m_oBuffer;
+        private final InputStream encodedStream;
+        private final Bitstream bitstream;
+        private final Decoder decoder;
+        private final DMAISObuffer oBuffer;
 
         public DecodedMpegAudioInputStream(AudioFormat outputFormat, AudioInputStream inputStream) {
             // TODO try to find out length (possible?)
             super(outputFormat, AudioSystem.NOT_SPECIFIED);
-            m_encodedStream = inputStream;
-            m_bitstream = new Bitstream(inputStream);
-            m_decoder = new Decoder(null);
-            m_oBuffer = new DMAISObuffer(outputFormat.getChannels());
-            m_decoder.setOutputBuffer(m_oBuffer);
+            encodedStream = inputStream;
+            bitstream = new Bitstream(inputStream);
+            decoder = new Decoder(null);
+            oBuffer = new DMAISObuffer(outputFormat.getChannels());
+            decoder.setOutputBuffer(oBuffer);
         }
 
         @Override
         public void execute() {
             try {
-                Header header = m_bitstream.readFrame();
+                Header header = bitstream.readFrame();
                 if (header == null) {
                     logger.log(Level.TRACE, "header is null (end of mpeg stream)");
 
                     getCircularBuffer().close();
                     return;
                 }
-                m_decoder.decodeFrame(header, m_bitstream);
-                m_bitstream.closeFrame();
-                getCircularBuffer().write(m_oBuffer.getBuffer(), 0, m_oBuffer.getCurrentBufferSize());
-                m_oBuffer.reset();
+                decoder.decodeFrame(header, bitstream);
+                bitstream.closeFrame();
+                getCircularBuffer().write(oBuffer.getBuffer(), 0, oBuffer.getCurrentBufferSize());
+                oBuffer.reset();
             } catch (BitstreamException | DecoderException e) {
                 logger.log(Level.ERROR, e.getMessage(), e);
             }
@@ -349,28 +349,28 @@ public class MpegFormatConversionProvider extends TEncodingFormatConversionProvi
         @Override
         public void close() throws IOException {
             super.close();
-            m_encodedStream.close();
+            encodedStream.close();
         }
 
         private class DMAISObuffer extends Obuffer {
 
-            private int m_nChannels;
-            private byte[] m_abBuffer;
-            private int[] m_anBufferPointers;
-            private boolean m_bIsBigEndian;
+            private final int channels;
+            private final byte[] buffer;
+            private final int[] bufferPointers;
+            private final boolean isBigEndian;
 
-            public DMAISObuffer(int nChannels) {
-                m_nChannels = nChannels;
-                m_abBuffer = new byte[OBUFFERSIZE * nChannels];
-                m_anBufferPointers = new int[nChannels];
+            public DMAISObuffer(int channels) {
+                this.channels = channels;
+                buffer = new byte[OBUFFERSIZE * channels];
+                bufferPointers = new int[channels];
                 reset();
-                m_bIsBigEndian = DecodedMpegAudioInputStream.this.isBigEndian();
+                isBigEndian = DecodedMpegAudioInputStream.this.isBigEndian();
             }
 
             @Override
-            public void append(int nChannel, short sValue) {
-                TConversionTool.shortToBytes16(sValue, m_abBuffer, m_anBufferPointers[nChannel], m_bIsBigEndian);
-                m_anBufferPointers[nChannel] += m_nChannels * 2;
+            public void append(int channel, short value) {
+                shortToBytes16(value, buffer, bufferPointers[channel], isBigEndian);
+                bufferPointers[channel] += channels * 2;
             }
 
             @Override
@@ -382,7 +382,7 @@ public class MpegFormatConversionProvider extends TEncodingFormatConversionProvi
             }
 
             @Override
-            public void write_buffer(int nValue) {
+            public void write_buffer(int value) {
             }
 
             @Override
@@ -390,18 +390,18 @@ public class MpegFormatConversionProvider extends TEncodingFormatConversionProvi
             }
 
             public byte[] getBuffer() {
-                return m_abBuffer;
+                return buffer;
             }
 
             public int getCurrentBufferSize() {
-                return m_anBufferPointers[0];
+                return bufferPointers[0];
             }
 
             public void reset() {
-                for (int i = 0; i < m_nChannels; i++) {
+                for (int i = 0; i < channels; i++) {
                     // Points to byte location,
                     // implicitly assuming 16 bit samples.
-                    m_anBufferPointers[i] = i * 2;
+                    bufferPointers[i] = i * 2;
                 }
             }
         }

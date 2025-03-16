@@ -1,6 +1,5 @@
 package vavi.sound.sampled.jna.ogg;
 
-import java.util.Arrays;
 import java.util.List;
 
 import com.sun.jna.NativeLong;
@@ -26,7 +25,7 @@ public class ogg_iovec_t extends Structure {
 
     @Override
     protected List<String> getFieldOrder() {
-        return Arrays.asList("iov_base", "iov_len");
+        return List.of("iov_base", "iov_len");
     }
 
     /** @param iov_base C type : void* */

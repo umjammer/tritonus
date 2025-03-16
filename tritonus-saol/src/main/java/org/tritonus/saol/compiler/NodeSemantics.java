@@ -18,7 +18,7 @@ package org.tritonus.saol.compiler;
 
 
 /**
- * NodeSemantics.java
+ * NodeSemantics.
  * <p>
  * This file is part of Tritonus: http://www.tritonus.org/
  */
@@ -27,24 +27,22 @@ public class NodeSemantics extends WidthAndRate {
     /**
      * Auxiliary information.
      */
-    private Object m_aux;
+    private final Object aux;
 
-    public NodeSemantics(int nWidth, int nRate) {
-        this(nWidth, nRate, null);
+    public NodeSemantics(int width, int rate) {
+        this(width, rate, null);
     }
 
     public NodeSemantics(Object aux) {
         this(WidthAndRate.WIDTH_UNKNOWN, WidthAndRate.RATE_UNKNOWN, aux);
     }
 
-    public NodeSemantics(int nWidth, int nRate, Object aux) {
-        super(nWidth, nRate);
-        m_aux = aux;
+    public NodeSemantics(int width, int rate, Object aux) {
+        super(width, rate);
+        this.aux = aux;
     }
 
     public Object getAux() {
-        return m_aux;
+        return aux;
     }
 }
-
-

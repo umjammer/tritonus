@@ -17,35 +17,32 @@
 package org.tritonus.saol.compiler;
 
 
-public class VariableEntry
-        extends WidthAndRate {
+public class VariableEntry extends WidthAndRate {
 
-    private String m_strVariableName;
-    private boolean m_bImports;
-    private boolean m_bExports;
+    private final String variableName;
+    private final boolean imports;
+    private final boolean exports;
 
-    public VariableEntry(String strVariableName,
-                         int nWidth,
-                         int nRate,
-                         boolean bImports,
-                         boolean bExports) {
-        super(nWidth, nRate);
-        m_strVariableName = strVariableName;
-        m_bImports = bImports;
-        m_bExports = bExports;
+    public VariableEntry(String variableName,
+                         int width,
+                         int rate,
+                         boolean imports,
+                         boolean exports) {
+        super(width, rate);
+        this.variableName = variableName;
+        this.imports = imports;
+        this.exports = exports;
     }
 
     public String getVariableName() {
-        return m_strVariableName;
+        return variableName;
     }
 
     public boolean getImports() {
-        return m_bImports;
+        return imports;
     }
 
     public boolean getExports() {
-        return m_bExports;
+        return exports;
     }
 }
-
-

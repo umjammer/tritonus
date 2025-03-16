@@ -27,5 +27,3 @@ public interface TControllable {
 
     void commit();
 }
-
-

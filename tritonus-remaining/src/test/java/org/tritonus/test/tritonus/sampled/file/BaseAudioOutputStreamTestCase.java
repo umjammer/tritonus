@@ -1,7 +1,4 @@
 /*
- * BaseAudioOutputStreamTestCase.java
- */
-/*
  *  Copyright (c) 2001 - 2002 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,6 +18,8 @@ package org.tritonus.test.tritonus.sampled.file;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 
@@ -31,205 +30,171 @@ import org.tritonus.share.sampled.file.TNonSeekableDataOutputStream;
 import org.tritonus.share.sampled.file.TSeekableDataOutputStream;
 import org.tritonus.test.Util;
 
+import static java.lang.System.getLogger;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-/*
-TEST:
-- length (not) given/ (not) seekable
-- illegal cases should throw exception
-- formats:
-
-signed 16 bit
-signed 24 bit
-signed 32 bit
-unsigned 8 bit
-signed 8 bit? check for exception?
-always: stereo and mono
-
-either big or little, depending on file format
-- illegal endianess should throw exception
-
+/**
+ * TEST:
+ * - length (not) given/ (not) seekable
+ * - illegal cases should throw exception
+ * - formats:
+ *
+ * signed 16 bit
+ * signed 24 bit
+ * signed 32 bit
+ * unsigned 8 bit
+ * signed 8 bit? check for exception?
+ * always: stereo and mono
+ *
+ * either big or little, depending on file format
+ * - illegal endianess should throw exception
  */
 public abstract class BaseAudioOutputStreamTestCase {
 
-    private static final boolean DEBUG = true;
+    private static final Logger logger = getLogger(BaseAudioOutputStreamTestCase.class.getName());
 
     /**
      * List of sample rates that are used for testing.
      */
-    private static final int[] SAMPLE_RATES =
-            {
-                    8000, 11025, 12000,
-                    16000, 22050, 24000,
-                    32000, 44100, 48000,
-                    96000, 192000
-            };
+    private static final int[] SAMPLE_RATES = {
+            8000, 11025, 12000,
+            16000, 22050, 24000,
+            32000, 44100, 48000,
+            96000, 192000
+    };
 
     /**
      * List of sample sizes that are used for testing.
      */
-    private static final int[] SAMPLE_SIZES =
-            {
-                    8, 16, 24, 32
-            };
+    private static final int[] SAMPLE_SIZES = {
+            8, 16, 24, 32
+    };
 
     /**
      * List of (number of) channels that are used for testing.
      */
-    private static final int[] CHANNEL_COUNTS =
-            {1, 2};
+    private static final int[] CHANNEL_COUNTS = {1, 2};
 
-    private File m_file;
-    private ByteArrayOutputStream m_baos;
+    private File file;
+    private ByteArrayOutputStream baos;
 
     // non-seekable, given length
     @Test
-    public void testAOS1()
-            throws Exception {
+    public void testAOS1() throws Exception {
         doTest(false, true);
     }
 
     // non-seekable, unknown length
     @Test
-    public void testAOS2()
-            throws Exception {
+    public void testAOS2() throws Exception {
         doTest(false, false);
     }
 
     // seekable, given length
     @Test
-    public void testAOS3()
-            throws Exception {
+    public void testAOS3() throws Exception {
         doTest(true, true);
     }
 
     // seekable, unknown length
     @Test
-    public void testAOS4()
-            throws Exception {
+    public void testAOS4() throws Exception {
         doTest(true, false);
     }
 
-    private void doTest(boolean bSeekable, boolean bLengthGiven)
-            throws Exception {
+    private void doTest(boolean seekable, boolean lengthGiven) throws Exception {
         for (int sampleRate : SAMPLE_RATES) {
-            if (DEBUG) out("sample rate: " + sampleRate);
+            logger.log(Level.DEBUG, "sample rate: " + sampleRate);
             for (int sampleSize : SAMPLE_SIZES) {
-                if (DEBUG) out("sample size: " + sampleSize);
+                logger.log(Level.DEBUG, "sample size: " + sampleSize);
                 for (int channelCount : CHANNEL_COUNTS) {
-                    if (DEBUG) out("sample size: " + channelCount);
-                    boolean bSigned = !(sampleSize == 8
-                            && is8bitUnsigned());
-                    AudioFormat audioFormat = new AudioFormat(
-                            sampleRate,
-                            sampleSize,
-                            channelCount,
-                            bSigned, getBigEndian());
-                    if (DEBUG) out("AudioFormat: " + audioFormat);
-                    doTest(audioFormat, bSeekable, bLengthGiven);
+                    logger.log(Level.DEBUG, "sample size: " + channelCount);
+                    boolean signed = !(sampleSize == 8 && is8bitUnsigned());
+                    var audioFormat = new AudioFormat(sampleRate, sampleSize, channelCount, signed, getBigEndian());
+                    logger.log(Level.DEBUG, "AudioFormat: " + audioFormat);
+                    doTest(audioFormat, seekable, lengthGiven);
                 }
             }
         }
     }
 
-    private void doTest(AudioFormat audioFormat,
-                        boolean bSeekable, boolean bLengthGiven)
-            throws Exception {
-        byte[] abData = createAudioData(audioFormat.getFrameSize());
-        int nStatedLength;
-        if (bLengthGiven) {
-            nStatedLength = abData.length;
+    private void doTest(AudioFormat audioFormat, boolean seekable, boolean lengthGiven) throws Exception {
+        byte[] data = createAudioData(audioFormat.getFrameSize());
+        int statedLength;
+        if (lengthGiven) {
+            statedLength = data.length;
         } else {
-            nStatedLength = AudioSystem.NOT_SPECIFIED;
+            statedLength = AudioSystem.NOT_SPECIFIED;
         }
-        AudioOutputStream aos =
-                createAudioOutputStream(audioFormat,
-                        nStatedLength,
-                        bSeekable);
-        aos.write(abData, 0, abData.length);
+        AudioOutputStream aos = createAudioOutputStream(audioFormat, statedLength, seekable);
+        aos.write(data, 0, data.length);
         aos.close();
-        byte[] abExpectedHeaderData = getExpectedHeaderData(audioFormat, abData.length, bSeekable, bLengthGiven);
-        byte[] abResultingData = getWrittenData(bSeekable);
-        if (DEBUG) {
-            out("expected:");
-            Util.dumpByteArray(abExpectedHeaderData);
-            out("actual:");
-            Util.dumpByteArray(abResultingData);
+        byte[] expectedHeaderData = getExpectedHeaderData(audioFormat, data.length, seekable, lengthGiven);
+        byte[] resultingData = getWrittenData(seekable);
+        if (logger.isLoggable(Level.DEBUG)) {
+            logger.log(Level.DEBUG, "expected:");
+            Util.dumpByteArray(expectedHeaderData);
+            logger.log(Level.DEBUG, "actual:");
+            Util.dumpByteArray(resultingData);
         }
-        boolean bHeaderDataOk = Util.compareByteArrays(abExpectedHeaderData, 0, abResultingData, 0, abExpectedHeaderData.length);
-        if (DEBUG) out("headerok: " + bHeaderDataOk);
-        assertTrue(bHeaderDataOk, "header data");
-        assertTrue(Util.compareByteArrays(abData, 0, abResultingData, abExpectedHeaderData.length + getExpectedAdditionalHeaderLength(), abData.length), "audio data");
-        if (m_file != null) {
-            m_file.delete();
-            m_file = null;
+        boolean headerDataOk = Util.compareByteArrays(expectedHeaderData, 0, resultingData, 0, expectedHeaderData.length);
+        logger.log(Level.DEBUG, "headerok: " + headerDataOk);
+        assertTrue(headerDataOk, "header data");
+        assertTrue(Util.compareByteArrays(data, 0, resultingData, expectedHeaderData.length + getExpectedAdditionalHeaderLength(), data.length), "audio data");
+        if (file != null) {
+            file.delete();
+            file = null;
         }
     }
 
-    private byte[] createAudioData(int nFrameSize) {
-        byte[] abData = new byte[8 * nFrameSize];
-        for (int i = 0; i < abData.length; i++) {
-            abData[i] = (byte) i;
+    private static byte[] createAudioData(int frameSize) {
+        byte[] data = new byte[8 * frameSize];
+        for (int i = 0; i < data.length; i++) {
+            data[i] = (byte) i;
         }
-        return abData;
+        return data;
     }
 
-    private TDataOutputStream createDataOutputStream(boolean bSeekable)
-            throws Exception {
+    private TDataOutputStream createDataOutputStream(boolean seekable) throws Exception {
         TDataOutputStream dataOutputStream;
-        if (bSeekable) {
-            m_file = File.createTempFile("aos", "au");
-            dataOutputStream = new TSeekableDataOutputStream(m_file);
+        if (seekable) {
+            file = File.createTempFile("aos", "au");
+            dataOutputStream = new TSeekableDataOutputStream(file);
         } else {
-            m_baos = new ByteArrayOutputStream();
-            dataOutputStream = new TNonSeekableDataOutputStream(m_baos);
+            baos = new ByteArrayOutputStream();
+            dataOutputStream = new TNonSeekableDataOutputStream(baos);
         }
         return dataOutputStream;
     }
 
     private AudioOutputStream createAudioOutputStream(
-            AudioFormat audioFormat,
-            long nLength,
-            boolean bSeekable)
-            throws Exception {
-        TDataOutputStream dataOutputStream = createDataOutputStream(bSeekable);
-        return createAudioOutputStreamImpl(audioFormat,
-                nLength,
-                dataOutputStream);
+            AudioFormat audioFormat, long length, boolean seekable) throws Exception {
+        TDataOutputStream dataOutputStream = createDataOutputStream(seekable);
+        return createAudioOutputStreamImpl(audioFormat, length, dataOutputStream);
     }
 
     protected abstract AudioOutputStream createAudioOutputStreamImpl(
-            AudioFormat audioFormat,
-            long nLength,
-            TDataOutputStream dataOutputStream)
-            throws Exception;
+            AudioFormat audioFormat, long length, TDataOutputStream dataOutputStream) throws Exception;
 
-    private byte[] getWrittenData(boolean bSeekable)
-            throws Exception {
-        byte[] abResultingData;
-        if (bSeekable) {
-            abResultingData = Util.getByteArrayFromFile(m_file);
+    private byte[] getWrittenData(boolean seekable) throws Exception {
+        byte[] resultingData;
+        if (seekable) {
+            resultingData = Util.getByteArrayFromFile(file);
         } else {
-            abResultingData = m_baos.toByteArray();
+            resultingData = baos.toByteArray();
         }
-        return abResultingData;
+        return resultingData;
     }
 
     protected abstract byte[] getExpectedHeaderData(AudioFormat audioFormat,
-                                                    int nLength,
-                                                    boolean bSeekable,
-                                                    boolean bLengthGiven);
+                                                    int length,
+                                                    boolean seekable,
+                                                    boolean lengthGiven);
 
     protected abstract int getExpectedAdditionalHeaderLength();
 
     protected abstract boolean getBigEndian();
 
     protected abstract boolean is8bitUnsigned();
-
-    protected void out(String strMessage) {
-        System.out.println(strMessage);
-    }
 }
-
-

@@ -20,6 +20,7 @@ package org.tritonus.midi.device.java;
 import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
 import java.util.Arrays;
+import java.util.List;
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MetaMessage;
 import javax.sound.midi.MidiDevice;
@@ -56,97 +57,97 @@ public class JavaSequencer extends TSequencer implements Runnable {
     /** closing, terminate thread */
     private static final int STATE_CLOSING = 4;
 
-    private Thread m_thread;
-    private long m_lMicroSecondsPerTick;
+    private Thread thread;
+    private long microSecondsPerTick;
 
-    private int[] m_anTrackPositions;
-    private long m_lTickPosition;
-    private long m_lStartTime;
+    private int[] trackPositions;
+    private long tickPosition;
+    private long startTime;
 
     /**
      * Internal state of the sequencer.
      * As values, the symbolic constants STATE_*
      * are used.
      */
-    private int m_nPhase;
-    private boolean m_bTempoChanged;
+    private int phase;
+    private boolean tempoChanged;
 
     /**
      * The clock to use as time base for this sequencer.
-     * This is commonly intialized in the constructor,
+     * This is commonly initialized in the constructor,
      * but can also be set with {@link #setClock}.
      */
-    private Clock m_clock;
+    private Clock clock;
 
     /**
      * How long to sleep in the main loop.
      * The value is initialized in the constructor by reading a
      * system property.
      */
-    private long m_lSleepInterval;
+    private final long sleepInterval;
 
     public JavaSequencer(MidiDevice.Info info) {
-        super(info, Arrays.asList(MASTER_SYNC_MODES), Arrays.asList(SLAVE_SYNC_MODES));
-        logger.log(Level.TRACE, "JavaSequencer.<init>(): begin");
+        super(info, List.of(MASTER_SYNC_MODES), List.of(SLAVE_SYNC_MODES));
+        logger.log(Level.TRACE, "begin");
 
-        String strVersion = System.getProperty("java.version");
-        if (strVersion.contains("1.4.2")) {
+        String version = System.getProperty("java.version");
+        if (version.contains("1.4.2")) {
             setClock(new SunMiscPerfClock());
         } else {
             setClock(new SystemCurrentTimeMillisClock());
         }
-        String strOS = System.getProperty("os.name");
-        if (strOS.equals("Linux")) {
-            m_lSleepInterval = 0;
+        String os = System.getProperty("os.name");
+        if (os.equals("Linux")) {
+            sleepInterval = 0;
         } else {
-            m_lSleepInterval = 1;
+            sleepInterval = 1;
         }
 
-        logger.log(Level.TRACE, "JavaSequencer.<init>(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     @Override
     protected void openImpl() {
-        logger.log(Level.TRACE, "JavaSequencer.openImpl(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        m_nPhase = STATE_STOPPED;
-        m_thread = new Thread(this);
-        m_thread.setPriority(Thread.MAX_PRIORITY);
+        phase = STATE_STOPPED;
+        thread = new Thread(this);
+        thread.setPriority(Thread.MAX_PRIORITY);
 
-        logger.log(Level.TRACE, "JavaSequencer.openImpl(): starting thread");
+        logger.log(Level.TRACE, "starting thread");
 
-        m_thread.start();
+        thread.start();
 
-        logger.log(Level.TRACE, "JavaSequencer.openImpl(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     @Override
     protected void closeImpl() {
-        logger.log(Level.TRACE, "JavaSequencer.closeImpl(): begin");
+        logger.log(Level.TRACE, "begin");
 
         stop();
         // terminate the thread
         synchronized (this) {
-            m_nPhase = STATE_CLOSING; // ask end of thread
+            phase = STATE_CLOSING; // ask end of thread
             this.notifyAll();
         }
         // now the thread should terminate
-        m_thread = null;
+        thread = null;
 
-        logger.log(Level.TRACE, "JavaSequencer.closeImpl(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     @Override
     protected void startImpl() {
-        logger.log(Level.TRACE, "JavaSequencer.startImpl(): begin");
+        logger.log(Level.TRACE, "begin");
 
         synchronized (this) {
-            if (m_nPhase == STATE_STOPPED) {
+            if (phase == STATE_STOPPED) {
                 // unlock thread waiting for start
-                m_nPhase = STATE_STARTING;  // ask for start
+                phase = STATE_STARTING;  // ask for start
                 this.notifyAll();
-                // wait until m_lStartTime is set
-                while (m_nPhase == STATE_STARTING) {
+                // wait until startTime is set
+                while (phase == STATE_STARTING) {
                     try {
                         this.wait();
                     } catch (InterruptedException e) {
@@ -156,24 +157,24 @@ public class JavaSequencer extends TSequencer implements Runnable {
             }
         }
 
-        logger.log(Level.TRACE, "JavaSequencer.startImpl(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     @Override
     protected void stopImpl() {
-        logger.log(Level.TRACE, "JavaSequencer.stopImpl(): begin");
+        logger.log(Level.TRACE, "begin");
 
         synchronized (this) {
             // condition true if called from own run() method
-            if (Thread.currentThread() == m_thread) {
-                if (m_nPhase != STATE_STOPPED) {
-                    m_nPhase = STATE_STOPPED;
+            if (Thread.currentThread() == thread) {
+                if (phase != STATE_STOPPED) {
+                    phase = STATE_STOPPED;
                     notifyAll();
                 }
             } else {
-                if (m_nPhase == STATE_STARTED) {
-                    m_nPhase = STATE_STOPPING; // ask for stop
-                    while (m_nPhase == STATE_STOPPING) {
+                if (phase == STATE_STARTED) {
+                    phase = STATE_STOPPING; // ask for stop
+                    while (phase == STATE_STOPPING) {
                         try {
                             this.wait();
                         } catch (InterruptedException e) {
@@ -193,7 +194,7 @@ public class JavaSequencer extends TSequencer implements Runnable {
 
         while (true) {
             synchronized (this) {
-                while (m_nPhase == STATE_STOPPED) {
+                while (phase == STATE_STOPPED) {
                     logger.log(Level.TRACE, "JavaSequencer.run(): waiting to become running");
 
                     try {
@@ -202,7 +203,7 @@ public class JavaSequencer extends TSequencer implements Runnable {
                         logger.log(Level.ERROR, e.getMessage(), e);
                     }
                 }
-                if (m_nPhase == STATE_CLOSING) {
+                if (phase == STATE_CLOSING) {
                     logger.log(Level.TRACE, "JavaSequencer.run(): end");
 
                     return;
@@ -210,8 +211,8 @@ public class JavaSequencer extends TSequencer implements Runnable {
                 logger.log(Level.TRACE, "JavaSequencer.run(): now running");
 
                 // NOTE: all time calculations are done in microseconds
-                m_lStartTime = getTimeInMicroseconds() - m_lTickPosition * m_lMicroSecondsPerTick;
-                m_nPhase = STATE_STARTED;
+                startTime = getTimeInMicroseconds() - tickPosition * microSecondsPerTick;
+                phase = STATE_STARTED;
                 this.notifyAll();
             }
             Sequence sequence = getSequence();
@@ -219,61 +220,61 @@ public class JavaSequencer extends TSequencer implements Runnable {
                 stop();
                 continue;
             }
-            Track[] aTracks = sequence.getTracks();
+            Track[] tracks = sequence.getTracks();
             // this is used to get a useful time value for the end of track message
-//            long lHighestTime = 0;
-            while (m_nPhase == STATE_STARTED) {
+//            long highestTime = 0;
+            while (phase == STATE_STARTED) {
                 // searching for the next event
-                boolean bTrackPresent = false;
-                long lBestTick = Long.MAX_VALUE;
-                int nBestTrack = -1;
-                for (int nTrack = 0; nTrack < aTracks.length; nTrack++) {
-//                    logger.log(Level.TRACE, "track " + nTrack);
-//                    Track track = aTracks[nTrack];
-                    if (m_anTrackPositions[nTrack] < aTracks[nTrack].size() && isTrackEnabled(nTrack)) {
-                        bTrackPresent = true;
-                        MidiEvent event = aTracks[nTrack].get(m_anTrackPositions[nTrack]);
-                        long lTick = event.getTick();
-                        if (lTick < lBestTick) {
-                            lBestTick = lTick;
-                            nBestTrack = nTrack;
+                boolean trackPresent = false;
+                long bestTick = Long.MAX_VALUE;
+                int bestTrack = -1;
+                for (int track = 0; track < tracks.length; track++) {
+//logger.log(Level.TRACE, "track " + track);
+//                    Track track = tracks[track];
+                    if (trackPositions[track] < tracks[track].size() && isTrackEnabled(track)) {
+                        trackPresent = true;
+                        MidiEvent event = tracks[track].get(trackPositions[track]);
+                        long tick = event.getTick();
+                        if (tick < bestTick) {
+                            bestTick = tick;
+                            bestTrack = track;
                         }
                     }
                 }
-                if (!bTrackPresent) {
+                if (!trackPresent) {
                     MetaMessage metaMessage = new MetaMessage();
                     try {
                         metaMessage.setMessage(0x2F, new byte[0], 0);
                     } catch (InvalidMidiDataException e) {
                         logger.log(Level.ERROR, e.getMessage(), e);
                     }
-                    logger.log(Level.TRACE, "JavaSequencer.run(): sending End of Track message with tick " + (m_lTickPosition + 1));
+                    logger.log(Level.TRACE, "sending End of Track message with tick " + (tickPosition + 1));
 
                     // TODO calulate us
-                    deliverEvent(metaMessage, m_lTickPosition + 1);
+                    deliverEvent(metaMessage, tickPosition + 1);
                     stop();
                     break;
                 }
-                MidiEvent event = aTracks[nBestTrack].get(m_anTrackPositions[nBestTrack]);
+                MidiEvent event = tracks[bestTrack].get(trackPositions[bestTrack]);
                 MidiMessage message = event.getMessage();
-                long lTick = event.getTick();
+                long tick = event.getTick();
                 if (message instanceof MetaMessage && ((MetaMessage) message).getType() == 0x2F) {
-                    logger.log(Level.TRACE, "JavaSequencer.run(): ignoring End of Track message with tick " + lTick);
+                    logger.log(Level.TRACE, "ignoring End of Track message with tick " + tick);
 
-                    m_anTrackPositions[nBestTrack]++;
+                    trackPositions[bestTrack]++;
                     synchronized (this) {
-                        m_lTickPosition = lTick;
+                        tickPosition = tick;
                     }
                 } else {
-                    if (deliverEvent(message, lTick)) {
-                        m_anTrackPositions[nBestTrack]++;
+                    if (deliverEvent(message, tick)) {
+                        trackPositions[bestTrack]++;
                         synchronized (this) {
-                            m_lTickPosition = lTick;
+                            tickPosition = tick;
                         }
                     } else {
                         // be sure that the current position is before the next event
                         synchronized (this) {
-                            m_lTickPosition = Math.min(lTick, (getTimeInMicroseconds() - m_lStartTime) / m_lMicroSecondsPerTick);
+                            tickPosition = Math.min(tick, (getTimeInMicroseconds() - startTime) / microSecondsPerTick);
                         }
                     }
                 }
@@ -286,55 +287,53 @@ public class JavaSequencer extends TSequencer implements Runnable {
     /**
      * Deliver a message at a certain time.
      *
-     * @param lScheduledTick when to deliver the message in ticks
+     * @param scheduledTick when to deliver the message in ticks
      * @return true if the event was sent, false otherwise
      */
-    private boolean deliverEvent(MidiMessage message, long lScheduledTick) {
+    private boolean deliverEvent(MidiMessage message, long scheduledTick) {
         logger.log(Level.TRACE, "JavaSequencer.deliverEvent(): begin");
 
-        long lScheduledTime;
+        long scheduledTime;
         synchronized (this) {
-            lScheduledTime = lScheduledTick * m_lMicroSecondsPerTick + m_lStartTime;
+            scheduledTime = scheduledTick * microSecondsPerTick + startTime;
         }
 
         // wait for scheduled time
-        while (getTimeInMicroseconds() < lScheduledTime) {
-            if (m_nPhase != STATE_STARTED)
+        while (getTimeInMicroseconds() < scheduledTime) {
+            if (phase != STATE_STARTED)
                 return false;
-            if (m_bTempoChanged) {
+            if (tempoChanged) {
                 synchronized (this) {
-                    lScheduledTime = lScheduledTick * m_lMicroSecondsPerTick + m_lStartTime;
-                    m_bTempoChanged = false;
+                    scheduledTime = scheduledTick * microSecondsPerTick + startTime;
+                    tempoChanged = false;
                 }
             }
             try {
-                Thread.sleep(m_lSleepInterval);
+                Thread.sleep(sleepInterval);
             } catch (InterruptedException e) {
                 logger.log(Level.ERROR, e.getMessage(), e);
             }
         }
 
         // send midi message
-        if (message instanceof MetaMessage) {
-            MetaMessage metaMessage = (MetaMessage) message;
-            if (metaMessage.getType() == 0x51) // set tempo
-            {
-                byte[] abData = metaMessage.getData();
-                int nTempo = MidiUtils.getUnsignedInteger(abData[0]) * 65536 +
-                        MidiUtils.getUnsignedInteger(abData[1]) * 256 +
-                        MidiUtils.getUnsignedInteger(abData[2]);
-//                logger.log(Level.TRACE, "tempo (us/quarter note): " + nTempo);
-                setTempoInMPQ(nTempo); // TODO setTempoInMPQ() seems to be not thread-safe
+        if (message instanceof MetaMessage metaMessage) {
+            if (metaMessage.getType() == 0x51) { // set tempo
+                byte[] data = metaMessage.getData();
+                int tempo = MidiUtils.getUnsignedInteger(data[0]) * 65536 +
+                        MidiUtils.getUnsignedInteger(data[1]) * 256 +
+                        MidiUtils.getUnsignedInteger(data[2]);
+//logger.log(Level.TRACE, "tempo (us/quarter note): " + tempo);
+                setTempoInMPQ(tempo); // TODO setTempoInMPQ() seems to be not thread-safe
             }
         }
 
-        logger.log(Level.TRACE, "JavaSequencer.deliverEvent(): sending message: " + message + " at: " + lScheduledTime);
+        logger.log(Level.TRACE, "sending message: " + message + " at: " + scheduledTime);
 
 //        sendImpl(message, event.getTick());
         sendImpl(message, -1); // TODO sendImpl() seems to be not thread-safe
         notifyListeners(message); // TODO notifyListeners() seems to be not thread-safe
 
-        logger.log(Level.TRACE, "JavaSequencer.deliverEvent(): end");
+        logger.log(Level.TRACE, "end");
 
         return true; // success
     }
@@ -351,46 +350,46 @@ public class JavaSequencer extends TSequencer implements Runnable {
 
     @Override
     public void setSequence(Sequence sequence) throws InvalidMidiDataException {
-        boolean bWasRunning = isRunning();
-        if (bWasRunning) {
+        boolean wasRunning = isRunning();
+        if (wasRunning) {
             stop();
         }
         super.setSequence(sequence);
-        m_lTickPosition = 0;
-        m_anTrackPositions = new int[sequence.getTracks().length];
-        Arrays.fill(m_anTrackPositions, 0);
-        if (bWasRunning) {
+        tickPosition = 0;
+        trackPositions = new int[sequence.getTracks().length];
+        Arrays.fill(trackPositions, 0);
+        if (wasRunning) {
             start();
         }
     }
 
     @Override
-    public void setMicrosecondPosition(long lPosition) {
-        setTickPosition(lPosition / m_lMicroSecondsPerTick);
+    public void setMicrosecondPosition(long position) {
+        setTickPosition(position / microSecondsPerTick);
     }
 
     @Override
-    public void setTickPosition(long lPosition) {
-        if (getSequence() == null || m_anTrackPositions == null) {
+    public void setTickPosition(long position) {
+        if (getSequence() == null || trackPositions == null) {
             return;
         }
-        boolean bWasRunning = isRunning();
-        if (bWasRunning)
+        boolean wasRunning = isRunning();
+        if (wasRunning)
             stop();
-        m_lTickPosition = Math.min(lPosition, getSequence().getTickLength());
-        for (int i = 0; i < m_anTrackPositions.length; i++) {
-            m_anTrackPositions[i] = getTrackPosition(getSequence().getTracks()[i], lPosition);
+        tickPosition = Math.min(position, getSequence().getTickLength());
+        for (int i = 0; i < trackPositions.length; i++) {
+            trackPositions[i] = getTrackPosition(getSequence().getTracks()[i], position);
         }
-        if (bWasRunning)
+        if (wasRunning)
             start();
     }
 
     @Override
     public synchronized long getTickPosition() {
-        if (m_nPhase == STATE_STARTED) {
-            return Math.max(m_lTickPosition, (getTimeInMicroseconds() - m_lStartTime) / m_lMicroSecondsPerTick);
+        if (phase == STATE_STARTED) {
+            return Math.max(tickPosition, (getTimeInMicroseconds() - startTime) / microSecondsPerTick);
         } else {
-            return m_lTickPosition;
+            return tickPosition;
         }
     }
 
@@ -402,7 +401,7 @@ public class JavaSequencer extends TSequencer implements Runnable {
     }
 
     @Override
-    public void recordEnable(Track track, int nChannel) {
+    public void recordEnable(Track track, int channel) {
     }
 
     @Override
@@ -421,20 +420,21 @@ public class JavaSequencer extends TSequencer implements Runnable {
     }
 
     @Override
-    protected synchronized void setTempoImpl(float fMPQ) {
-        logger.log(Level.TRACE, "JavaSequencer.setTempoImpl(): begin");
+    protected synchronized void setTempoImpl(float mpq) {
+        logger.log(Level.TRACE, "begin");
 
-        int nResolution = getResolution();
+        int resolution = getResolution();
         long currentTime = getTimeInMicroseconds();
         long currentTickPosition = 0;
-        if (m_lMicroSecondsPerTick != 0)
-            currentTickPosition = (currentTime - m_lStartTime) / m_lMicroSecondsPerTick;
-        m_lMicroSecondsPerTick = (long) fMPQ / nResolution;
-        m_lStartTime = currentTime - currentTickPosition * m_lMicroSecondsPerTick;
-        m_bTempoChanged = true;
-        // TODO update m_lMicroSecondsPerTick and m_lStartTime only after the next event because the the event now waiting for its schedule is not updated
+        if (microSecondsPerTick != 0)
+            currentTickPosition = (currentTime - startTime) / microSecondsPerTick;
+        microSecondsPerTick = (long) mpq / resolution;
+        startTime = currentTime - currentTickPosition * microSecondsPerTick;
+        tempoChanged = true;
+        // TODO update microSecondsPerTick and startTime only after the next event
+        //      because the the event now waiting for its schedule is not updated
 
-        logger.log(Level.TRACE, "JavaSequencer.setTempoImpl(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     /**
@@ -450,7 +450,7 @@ public class JavaSequencer extends TSequencer implements Runnable {
         // quick search
         int idx1 = 0;
         int idx2 = track.size() - 1;
-        for (; ; ) {
+        for (;;) {
             if ((idx2 - idx1) == 1)
                 return idx1;
             int idx3 = (int) (((long) idx1 + (long) idx2) / 2L);
@@ -486,7 +486,7 @@ public class JavaSequencer extends TSequencer implements Runnable {
         if (isOpen()) {
             throw new IllegalStateException("closed state required to set the clock");
         }
-        m_clock = clock;
+        this.clock = clock;
     }
 
     /**
@@ -495,7 +495,7 @@ public class JavaSequencer extends TSequencer implements Runnable {
      * @return the clock currently set for this sequencer
      */
     public Clock getClock() {
-        return m_clock;
+        return clock;
     }
 
     /**

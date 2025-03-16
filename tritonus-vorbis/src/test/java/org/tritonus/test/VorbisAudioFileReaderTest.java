@@ -27,5 +27,3 @@ public class VorbisAudioFileReaderTest extends BaseAudioFileReaderTestCase {
         setCheckRealLengths(false);
     }
 }
-
-

@@ -36,17 +36,17 @@ public class AlsaCtlCardInfo {
      * The access modifier is not private because this
      * variable has to be accessed from AlsaCtl.
      */
-    long m_lNativeHandle;
+    long nativeHandle;
 
     public AlsaCtlCardInfo() {
-        logger.log(Level.TRACE, "AlsaPcm.CardInfo.<init>(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        int nReturn = malloc();
-        if (nReturn < 0) {
-            throw new RuntimeException("malloc of card_info failed");
+        int ret = malloc();
+        if (ret < 0) {
+            throw new IllegalStateException("malloc of card_info failed");
         }
 
-        logger.log(Level.TRACE, "AlsaPcm.CardInfo.<init>(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     /**
@@ -94,5 +94,5 @@ public class AlsaCtlCardInfo {
      */
     public native String getComponents();
 
-    private static native void setTrace(boolean bTrace);
+    private static native void setTrace(boolean trace);
 }

@@ -20,9 +20,9 @@ package org.tritonus.lowlevel.alsa;
  * TODO
  */
 public class AlsaMixerElement {
- /* Channel type constants.
-  They mirror the values of snd_mixer_selem_channel_id_t.
-  */
+
+    // Channel type constants.
+    // They mirror the values of snd_mixer_selem_channel_id_t.
 
     /** Unknown */
     public static final int SND_MIXER_SCHN_UNKNOWN = -1;
@@ -42,37 +42,31 @@ public class AlsaMixerElement {
     /** Mono (Front left alias) */
     public static final int SND_MIXER_SCHN_MONO = SND_MIXER_SCHN_FRONT_LEFT;
 
-    private AlsaMixer m_mixer;
+    private final AlsaMixer mixer;
 
     @SuppressWarnings("unused")
-    private long m_lNativeHandle;
+    private long nativeHandle;
 
     static {
         Alsa.loadNativeLibrary();
     }
 
-    public AlsaMixerElement(AlsaMixer mixer,
-                            int nIndex,
-                            String strName) {
-        m_mixer = mixer;
-        int nReturn;
-        nReturn = open(getMixer(), nIndex, strName);
-        {
-            if (nReturn < 0) {
-                throw new RuntimeException("cannot open");
-            }
+    public AlsaMixerElement(AlsaMixer mixer, int index, String name) {
+        this.mixer = mixer;
+        int ret;
+        ret = open(getMixer(), index, name);
+        if (ret < 0) {
+            throw new RuntimeException("cannot open");
         }
     }
 
     /**
      * Calls snd_mixer_find_selem().
      */
-    private native int open(AlsaMixer mixer,
-                            int nIndex,
-                            String strName);
+    private native int open(AlsaMixer mixer, int index, String name);
 
     private AlsaMixer getMixer() {
-        return m_mixer;
+        return mixer;
     }
 
     // TODO getId()
@@ -100,7 +94,7 @@ public class AlsaMixerElement {
     /**
      * Calls snd_mixer_selem_has_playback_channel().
      */
-    public native boolean hasPlaybackChannel(int nChannelType);
+    public native boolean hasPlaybackChannel(int channelType);
 
     /**
      * Calls snd_mixer_selem_is_capture_mono().
@@ -110,7 +104,7 @@ public class AlsaMixerElement {
     /**
      * Calls snd_mixer_selem_has_capture_channel().
      */
-    public native boolean hasCaptureChannel(int nChannelType);
+    public native boolean hasCaptureChannel(int channelType);
 
     /**
      * Calls snd_mixer_selem_get_capture_group().
@@ -175,94 +169,94 @@ public class AlsaMixerElement {
     /**
      * Calls snd_mixer_selem_get_playback_volume().
      */
-    public native int getPlaybackVolume(int nChannelType);
+    public native int getPlaybackVolume(int channelType);
 
     /**
      * Calls snd_mixer_selem_get_capture_volume().
      */
-    public native int getCaptureVolume(int nChannelType);
+    public native int getCaptureVolume(int channelType);
 
     /**
      * Calls snd_mixer_selem_get_playback_switch().
      */
-    public native boolean getPlaybackSwitch(int nChannelType);
+    public native boolean getPlaybackSwitch(int channelType);
 
     /**
      * Calls snd_mixer_selem_get_capture_switch().
      */
-    public native boolean getCaptureSwitch(int nChannelType);
+    public native boolean getCaptureSwitch(int channelType);
 
     /**
      * Calls snd_mixer_selem_set_playback_volume().
      */
-    public native void setPlaybackVolume(int nChannelType, int nValue);
+    public native void setPlaybackVolume(int channelType, int value);
 
     /**
      * Calls snd_mixer_selem_set_capture_volume().
      */
-    public native void setCaptureVolume(int nChannelType, int nValue);
+    public native void setCaptureVolume(int channelType, int value);
 
     /**
      * Calls snd_mixer_selem_set_playback_volume_all().
      */
-    public native void setPlaybackVolumeAll(int nValue);
+    public native void setPlaybackVolumeAll(int value);
 
     /**
      * Calls snd_mixer_selem_set_capture_volume_all().
      */
-    public native void setCaptureVolumeAll(int nValue);
+    public native void setCaptureVolumeAll(int value);
 
     /**
      * Calls snd_mixer_selem_set_playback_switch().
      */
-    public native void setPlaybackSwitch(int nChannelType, boolean bValue);
+    public native void setPlaybackSwitch(int channelType, boolean value);
 
     /**
      * Calls snd_mixer_selem_set_capture_switch().
      */
-    public native void setCaptureSwitch(int nChannelType, boolean bValue);
+    public native void setCaptureSwitch(int channelType, boolean value);
 
     /**
      * Calls snd_mixer_selem_set_playback_switch_all().
      */
-    public native void setPlaybackSwitchAll(boolean bValue);
+    public native void setPlaybackSwitchAll(boolean value);
 
     /**
      * Calls snd_mixer_selem_set_capture_switch_all().
      */
-    public native void setCaptureSwitchAll(boolean bValue);
+    public native void setCaptureSwitchAll(boolean value);
 
     /**
      * Calls snd_mixer_selem_get_playback_volume_range().
-     * anValues[0]: minimum
-     * anValues[1]: maximum
+     * values[0]: minimum
+     * values[1]: maximum
      */
-    public native void getPlaybackVolumeRange(int[] anValues);
+    public native void getPlaybackVolumeRange(int[] values);
 
     /**
      * Calls snd_mixer_selem_get_capture_volume_range().
-     * anValues[0]: minimum
-     * anValues[1]: maximum
+     * values[0]: minimum
+     * values[1]: maximum
      */
-    public native void getCaptureVolumeRange(int[] anValues);
+    public native void getCaptureVolumeRange(int[] values);
 
     /**
      * Calls snd_mixer_selem_set_playback_volume_range().
      */
-    public native void setPlaybackVolumeRange(int nMin, int nMax);
+    public native void setPlaybackVolumeRange(int min, int max);
 
     /**
      * Calls snd_mixer_selem_set_capture_volume_range().
      */
-    public native void setCaptureVolumeRange(int nMin, int nMax);
+    public native void setCaptureVolumeRange(int min, int max);
 
     /**
      * Calls snd_mixer_selem_channel_name().
      */
-    public static native String getChannelName(int nChannelType);
+    public static native String getChannelName(int channelType);
 
     /**
      * TODO
      */
-    private static native void setTrace(boolean bTrace);
+    private static native void setTrace(boolean trace);
 }

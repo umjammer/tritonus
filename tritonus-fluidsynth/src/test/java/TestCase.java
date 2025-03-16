@@ -4,7 +4,6 @@
  * Programmed by Naohide Sano
  */
 
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,20 +18,21 @@ import javax.sound.midi.Synthesizer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.tritonus.midi.device.fluidsynth.FluidSynthesizer;
-import vavi.sound.midi.MidiUtil;
 import vavi.util.Debug;
 import vavi.util.properties.annotation.Property;
 import vavi.util.properties.annotation.PropsEntity;
 
+import static vavi.sound.midi.MidiUtil.volume;
+
 
 /**
- * Test1.
+ * TestCase.
  *
  * @author <a href="mailto:umjammer@gmail.com">Naohide Sano</a> (nsano)
  * @version 0.00 080701 nsano initial version <br>
  */
 @PropsEntity(url = "file:local.properties")
-public class Test1 {
+class TestCase {
 
     static boolean localPropertiesExists() {
         return Files.exists(Paths.get("local.properties"));
@@ -44,7 +44,11 @@ public class Test1 {
     @Property(name = "tritonus.fluidsynth.defaultsoundbank")
     String sf = "/usr/local/Cellar/fluid-synth/2.3.5/share/soundfonts/default.sf2";
 
-    static final float volume = Float.parseFloat(System.getProperty("vavi.test.volume", "0.2"));
+    @Property(name = "vavi.test.volume.midi")
+    float volume = 0.2f;
+
+    static boolean onIde = System.getProperty("vavi.test", "").equals("ide");
+    static long time = onIde ? 1000 * 1000 : 10 * 1000;
 
     @BeforeEach
     void setup() throws Exception {
@@ -61,17 +65,8 @@ Debug.println(Level.WARNING, "soundfont file set by 'tritonus.fluidsynth.default
 
     @Test
     void test() throws Exception {
-        main(new String[] {midi});
-    }
-
-    /**
-     * @param args 0: midi
-     */
-    public static void main(String[] args) throws Exception {
-        File file = new File(args[0]);
-Debug.println("midi: " + args[0]);
-
-        Sequence sequence = MidiSystem.getSequence(file);
+Debug.println("midi: " + midi);
+        Sequence sequence = MidiSystem.getSequence(Path.of(midi).toFile());
 Debug.println("sequence: " + sequence);
 
         Synthesizer synthesizer = MidiSystem.getSynthesizer();
@@ -93,29 +88,38 @@ Debug.println("sequencer: " + sequencer);
         // tell the sequencer to use your synthesizer instance which volume is downed
         sequencer.getTransmitter().setReceiver(synthesizer.getReceiver());
 
-        CountDownLatch countDownLatch = new CountDownLatch(1);
+        CountDownLatch cdl = new CountDownLatch(1);
         MetaEventListener mel = meta -> {
 Debug.println("META: " + meta.getType());
-            if (meta.getType() == 47) {
-                countDownLatch.countDown();
-            }
+            if (meta.getType() == 47) cdl.countDown();
         };
 
+        volume(synthesizer.getReceiver(), volume);
         sequencer.setSequence(sequence);
         sequencer.addMetaEventListener(mel);
         sequencer.start();
-        MidiUtil.volume(synthesizer.getReceiver(), volume);
 Debug.println("START");
-        if (!System.getProperty("vavi.test", "").equals("ide")) {
-            Thread.sleep(5 * 1000);
-            sequencer.stop();
-Debug.println("STOP");
-        } else {
-            countDownLatch.await();
-        }
+if (!onIde) {
+ Thread.sleep(time);
+ sequencer.stop();
+ Debug.println("STOP");
+} else {
+            cdl.await();
+}
 Debug.println("END");
         sequencer.stop();
         sequencer.removeMetaEventListener(mel);
         sequencer.close();
+    }
+
+    /**
+     * @param args 0: midi
+     */
+    public static void main(String[] args) throws Exception {
+        TestCase app = new TestCase();
+        app.setup();
+
+        app.midi = args[0];
+        app.test();
     }
 }

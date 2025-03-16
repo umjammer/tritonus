@@ -73,36 +73,37 @@ public abstract class TAudioFileWriter extends AudioFileWriter {
      * The audio file types (AudioFileFormat.Type) that can be
      * handled by the AudioFileWriter.
      */
-    private Collection<AudioFileFormat.Type> m_audioFileTypes;
+    private final Collection<AudioFileFormat.Type> audioFileTypes;
 
     /**
      * The AudioFormats that can be handled by the
      * AudioFileWriter.
+     * <p>
+     * IDEA: implement a special collection that uses matches() to test whether an element is already in
      */
-    // IDEA: implement a special collection that uses matches() to test whether an element is already in
-    private Collection<AudioFormat> m_audioFormats;
+    private final Collection<AudioFormat> audioFormats;
 
     /**
      * Inheriting classes should call this constructor
      * in order to make use of the functionality of TAudioFileWriter.
      */
     protected TAudioFileWriter(Collection<AudioFileFormat.Type> fileTypes, Collection<AudioFormat> audioFormats) {
-        logger.log(Level.TRACE, "TAudioFileWriter.<init>(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        m_audioFileTypes = fileTypes;
-        m_audioFormats = audioFormats;
+        audioFileTypes = fileTypes;
+        this.audioFormats = audioFormats;
 
-        logger.log(Level.TRACE, "TAudioFileWriter.<init>(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     @Override
     public AudioFileFormat.Type[] getAudioFileTypes() {
-        return m_audioFileTypes.toArray(NULL_TYPE_ARRAY);
+        return audioFileTypes.toArray(NULL_TYPE_ARRAY);
     }
 
     @Override
     public boolean isFileTypeSupported(AudioFileFormat.Type fileType) {
-        return m_audioFileTypes.contains(fileType);
+        return audioFileTypes.contains(fileType);
     }
 
     @Override
@@ -112,7 +113,7 @@ public abstract class TAudioFileWriter extends AudioFileWriter {
         // $$fb 2000-08-16
         AudioFormat format = audioInputStream.getFormat();
         ArraySet<AudioFileFormat.Type> res = new ArraySet<>();
-        for (AudioFileFormat.Type thisType : m_audioFileTypes) {
+        for (AudioFileFormat.Type thisType : audioFileTypes) {
             if (isAudioFormatSupportedImpl(format, thisType)) {
                 res.add(thisType);
             }
@@ -126,7 +127,7 @@ public abstract class TAudioFileWriter extends AudioFileWriter {
         // $$fb 2000-08-16
         return isFileTypeSupported(fileType)
                 && (isAudioFormatSupportedImpl(audioInputStream.getFormat(), fileType)
-                || findConvertableFormat(audioInputStream.getFormat(), fileType) != null);
+                || findConvertibleFormat(audioInputStream.getFormat(), fileType) != null);
         // we may soft it up by including the possibility of endian/sign
         // changing for PCM formats.
         // I prefer to return false if the format is not exactly supported
@@ -135,7 +136,7 @@ public abstract class TAudioFileWriter extends AudioFileWriter {
 
     @Override
     public int write(AudioInputStream audioInputStream, AudioFileFormat.Type fileType, File file) throws IOException {
-        logger.log(Level.TRACE, ">TAudioFileWriter.write(.., File): called");
+        logger.log(Level.TRACE, "called");
         logger.log(Level.TRACE, "class: " + getClass().getName());
         // $$fb added this check
         if (!isFileTypeSupported(fileType)) {
@@ -148,39 +149,39 @@ public abstract class TAudioFileWriter extends AudioFileWriter {
         logger.log(Level.TRACE, "input format: " + inputFormat);
 
         AudioFormat outputFormat;
-        boolean bNeedsConversion;
+        boolean needsConversion;
         if (isAudioFormatSupportedImpl(inputFormat, fileType)) {
-            logger.log(Level.TRACE, "input format is supported directely");
+            logger.log(Level.TRACE, "input format is supported directly");
 
             outputFormat = inputFormat;
-            bNeedsConversion = false;
+            needsConversion = false;
         } else {
-            logger.log(Level.TRACE, "input format is not supported directely; trying to find a convertable format");
+            logger.log(Level.TRACE, "input format is not supported directly; trying to find a convertible format");
 
-            outputFormat = findConvertableFormat(inputFormat, fileType);
+            outputFormat = findConvertibleFormat(inputFormat, fileType);
             if (outputFormat != null) {
-                bNeedsConversion = true;
+                needsConversion = true;
                 // made consistent with new conversion trials
                 // if 8 bit and only endianness changed, don't convert !
                 // $$fb 2000-08-16
                 if (outputFormat.getSampleSizeInBits() == 8
                         && outputFormat.getEncoding().equals(inputFormat.getEncoding())) {
-                    bNeedsConversion = false;
+                    needsConversion = false;
                 }
             } else {
-                logger.log(Level.TRACE, "< input format is not supported and not convertable.");
+                logger.log(Level.TRACE, "< input format is not supported and not convertible.");
 
-                throw new IllegalArgumentException("format not supported and not convertable");
+                throw new IllegalArgumentException("format not supported and not convertible");
             }
         }
-        long lLengthInBytes = AudioUtils.getLengthInBytes(audioInputStream);
+        long lengthInBytes = AudioUtils.getLengthInBytes(audioInputStream);
         TDataOutputStream dataOutputStream = new TSeekableDataOutputStream(file);
         AudioOutputStream audioOutputStream = getAudioOutputStream(
                 outputFormat,
-                lLengthInBytes,
+                lengthInBytes,
                 fileType,
                 dataOutputStream);
-        int written = writeImpl(audioInputStream, audioOutputStream, bNeedsConversion);
+        int written = writeImpl(audioInputStream, audioOutputStream, needsConversion);
         logger.log(Level.TRACE, "< wrote " + written + " bytes.");
 
         return written;
@@ -193,29 +194,29 @@ public abstract class TAudioFileWriter extends AudioFileWriter {
         if (!isFileTypeSupported(fileType)) {
             throw new IllegalArgumentException("file type is not supported.");
         }
-        logger.log(Level.TRACE, ">TAudioFileWriter.write(.., OutputStream): called");
+        logger.log(Level.TRACE, "called");
         logger.log(Level.TRACE, "class: " + getClass().getName());
         AudioFormat inputFormat = audioInputStream.getFormat();
         logger.log(Level.TRACE, "input format: " + inputFormat);
 
         AudioFormat outputFormat;
-        boolean bNeedsConversion;
+        boolean needsConversion;
         if (isAudioFormatSupportedImpl(inputFormat, fileType)) {
-            logger.log(Level.TRACE, "input format is supported directely");
+            logger.log(Level.TRACE, "input format is supported directly");
 
             outputFormat = inputFormat;
-            bNeedsConversion = false;
+            needsConversion = false;
         } else {
-            logger.log(Level.TRACE, "input format is not supported directely; trying to find a convertable format");
+            logger.log(Level.TRACE, "input format is not supported directly; trying to find a convertible format");
 
-            outputFormat = findConvertableFormat(inputFormat, fileType);
+            outputFormat = findConvertibleFormat(inputFormat, fileType);
             if (outputFormat != null) {
-                bNeedsConversion = true;
+                needsConversion = true;
                 // $$fb 2000-08-16 made consistent with new conversion trials
                 // if 8 bit and only endianness changed, don't convert !
                 if (outputFormat.getSampleSizeInBits() == 8
                         && outputFormat.getEncoding().equals(inputFormat.getEncoding())) {
-                    bNeedsConversion = false;
+                    needsConversion = false;
                 }
             } else {
                 logger.log(Level.TRACE, "< format is not supported");
@@ -223,14 +224,14 @@ public abstract class TAudioFileWriter extends AudioFileWriter {
                 throw new IllegalArgumentException("format not supported and not convertable");
             }
         }
-        long lLengthInBytes = AudioUtils.getLengthInBytes(audioInputStream);
+        long lengthInBytes = AudioUtils.getLengthInBytes(audioInputStream);
         TDataOutputStream dataOutputStream = new TNonSeekableDataOutputStream(outputStream);
         AudioOutputStream audioOutputStream = getAudioOutputStream(
                 outputFormat,
-                lLengthInBytes,
+                lengthInBytes,
                 fileType,
                 dataOutputStream);
-        int written = writeImpl(audioInputStream, audioOutputStream, bNeedsConversion);
+        int written = writeImpl(audioInputStream, audioOutputStream, needsConversion);
         logger.log(Level.TRACE, "< wrote " + written + " bytes.");
 
         return written;
@@ -238,39 +239,39 @@ public abstract class TAudioFileWriter extends AudioFileWriter {
 
     protected int writeImpl(AudioInputStream audioInputStream,
                             AudioOutputStream audioOutputStream,
-                            boolean bNeedsConversion) throws IOException {
-        logger.log(Level.TRACE, ">TAudioFileWriter.writeImpl(): called");
+                            boolean needsConversion) throws IOException {
+        logger.log(Level.TRACE, "called");
         logger.log(Level.TRACE, "class: " + getClass().getName());
-        int nTotalWritten = 0;
+        int totalWritten = 0;
         AudioFormat outputFormat = audioOutputStream.getFormat();
 
         // TODO handle case when frame size is unknown ?
-        int nBytesPerSample = outputFormat.getFrameSize() / outputFormat.getChannels();
+        int bytesPerSample = outputFormat.getFrameSize() / outputFormat.getChannels();
 
         // $$fb 2000-07-18: BUFFER_LENGTH must be a multiple of frame size...
-        int nBufferSize = (BUFFER_LENGTH / outputFormat.getFrameSize()) * outputFormat.getFrameSize();
-        byte[] abBuffer = new byte[nBufferSize];
+        int bufferSize = (BUFFER_LENGTH / outputFormat.getFrameSize()) * outputFormat.getFrameSize();
+        byte[] buffer = new byte[bufferSize];
         while (true) {
-            logger.log(Level.TRACE, "trying to read (bytes): " + abBuffer.length);
+            logger.log(Level.TRACE, "trying to read (bytes): " + buffer.length);
 
-            int nBytesRead = audioInputStream.read(abBuffer);
-            logger.log(Level.TRACE, "read (bytes): " + nBytesRead);
+            int bytesRead = audioInputStream.read(buffer);
+            logger.log(Level.TRACE, "read (bytes): " + bytesRead);
 
-            if (nBytesRead == -1) {
+            if (bytesRead == -1) {
                 break;
             }
-            if (bNeedsConversion) {
-                TConversionTool.changeOrderOrSign(abBuffer, 0,
-                        nBytesRead, nBytesPerSample);
+            if (needsConversion) {
+                TConversionTool.changeOrderOrSign(buffer, 0,
+                        bytesRead, bytesPerSample);
             }
-            int nWritten = audioOutputStream.write(abBuffer, 0, nBytesRead);
-            nTotalWritten += nWritten;
+            int written = audioOutputStream.write(buffer, 0, bytesRead);
+            totalWritten += written;
         }
-        logger.log(Level.TRACE, "<TAudioFileWriter.writeImpl(): after main loop. Wrote " + nTotalWritten + " bytes");
+        logger.log(Level.TRACE, "after main loop. Wrote " + totalWritten + " bytes");
 
         audioOutputStream.close();
         // TODO get bytes written for header etc. from AudioOutputStrem and add to nTotalWrittenBytes
-        return nTotalWritten;
+        return totalWritten;
     }
 
     /**
@@ -281,7 +282,7 @@ public abstract class TAudioFileWriter extends AudioFileWriter {
      * has to be overwritten by subclasses.
      */
     protected Iterator<AudioFormat> getSupportedAudioFormats(AudioFileFormat.Type fileType) {
-        return m_audioFormats.iterator();
+        return audioFormats.iterator();
     }
 
     /**
@@ -305,7 +306,7 @@ public abstract class TAudioFileWriter extends AudioFileWriter {
      * </p>
      */
     protected boolean isAudioFormatSupportedImpl(AudioFormat audioFormat, AudioFileFormat.Type fileType) {
-        logger.log(Level.TRACE, "> TAudioFileWriter.isAudioFormatSupportedImpl(): format to test: " + audioFormat);
+        logger.log(Level.TRACE, "> format to test: " + audioFormat);
         logger.log(Level.TRACE, "class: " + getClass().getName());
         Iterator<AudioFormat> audioFormats = getSupportedAudioFormats(fileType);
         while (audioFormats.hasNext()) {
@@ -325,14 +326,14 @@ public abstract class TAudioFileWriter extends AudioFileWriter {
 
     protected abstract AudioOutputStream getAudioOutputStream(
             AudioFormat audioFormat,
-            long lLengthInBytes,
+            long lengthInBytes,
             AudioFileFormat.Type fileType,
             TDataOutputStream dataOutputStream) throws IOException;
 
-    private AudioFormat findConvertableFormat(
+    private AudioFormat findConvertibleFormat(
             AudioFormat inputFormat,
             AudioFileFormat.Type fileType) {
-        logger.log(Level.TRACE, "TAudioFileWriter.findConvertableFormat(): input format: " + inputFormat);
+        logger.log(Level.TRACE, "input format: " + inputFormat);
 
         if (!isFileTypeSupported(fileType)) {
             logger.log(Level.TRACE, "< input file type is not supported.");

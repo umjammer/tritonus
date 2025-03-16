@@ -1,6 +1,5 @@
 package vavi.sound.sampled.jna.vorbisfile;
 
-import java.util.Arrays;
 import java.util.List;
 
 import com.sun.jna.NativeLong;
@@ -84,7 +83,7 @@ public class OggVorbis_File extends Structure {
 
     @Override
     protected List<String> getFieldOrder() {
-        return Arrays.asList("datasource", "seekable", "offset", "end", "oy", "links", "offsets", "dataoffsets", "serialnos", "pcmlengths", "vi", "vc", "pcm_offset", "ready_state", "current_serialno", "current_link", "bittrack", "samptrack", "os", "vd", "vb", "callbacks");
+        return List.of("datasource", "seekable", "offset", "end", "oy", "links", "offsets", "dataoffsets", "serialnos", "pcmlengths", "vi", "vc", "pcm_offset", "ready_state", "current_serialno", "current_link", "bittrack", "samptrack", "os", "vd", "vb", "callbacks");
     }
 
     public OggVorbis_File(Pointer peer) {

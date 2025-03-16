@@ -1,7 +1,3 @@
-/*
- * VorbisEncoder.java
- */
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.OutputStream;
@@ -35,6 +31,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static vavi.sound.SoundUtil.volume;
 
 
+/**
+ * VorbisEncoder
+ */
 @PropsEntity(url = "file:local.properties")
 public class VorbisEncoder {
 
@@ -231,16 +230,16 @@ public class VorbisEncoder {
 
                 // expose the buffer to submit data
                 float[][] buffer = new float[format.getChannels()][READ];
-                //float[][] buffer = vd.buffer(READ);
+//                float[][] buffer = vd.buffer(READ);
 
                 // uninterleave samples
                 for (int i = 0; i < bytes / 4; i++) {
-                    int nSample = (readBuffer[i * 4 + 1] << 8) | (0x00ff & readBuffer[i * 4 + 0]);
-                    float fSample = nSample / 32768.0F;
-                    buffer[0][i] = fSample;
-                    nSample = (readBuffer[i * 4 + 3] << 8) | (0x00ff & readBuffer[i * 4 + 2]);
-                    fSample = nSample / 32768.f;
-                    buffer[1][i] = fSample;
+                    int sample = (readBuffer[i * 4 + 1] << 8) | (0x00ff & readBuffer[i * 4 + 0]);
+                    float _sample = sample / 32768.0F;
+                    buffer[0][i] = _sample;
+                    sample = (readBuffer[i * 4 + 3] << 8) | (0x00ff & readBuffer[i * 4 + 2]);
+                    _sample = sample / 32768.f;
+                    buffer[1][i] = _sample;
                 }
 
                 // tell the library how much we actually submitted

@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 1999,2000 by Matthias Pfisterer
  *  Copyright (c) 1999 by Florian Bomers
@@ -57,8 +56,7 @@ public class AudioFormats {
      */
     // IDEA: create a special "NOT_SPECIFIED" encoding
     // and a AudioFormat.Encoding.matches method.
-    public static boolean matches(AudioFormat format1,
-                                  AudioFormat format2) {
+    public static boolean matches(AudioFormat format1, AudioFormat format2) {
         //$$fb 19 Dec 99: endian must be checked, too.
         //
         // we do have a problem with redundant elements:
@@ -72,8 +70,7 @@ public class AudioFormats {
         //
         // As a workaround of this issue I return in the converters
         // all combinations, e.g. for ULAW I return bigEndian and !bigEndian formats.
-        /* old version
-         */
+        // old version
         // as proposed by florian
         return format1.getEncoding().equals(format2.getEncoding())
                 && (format2.getSampleSizeInBits() <= 8
@@ -94,8 +91,7 @@ public class AudioFormats {
      * This is a proposition to be used as AudioFormat.equals.
      * It can therefore be considered as a temporary workaround.
      */
-    public static boolean equals(AudioFormat format1,
-                                 AudioFormat format2) {
+    public static boolean equals(AudioFormat format1, AudioFormat format2) {
         return format1.getEncoding().equals(format2.getEncoding())
                 && format1.getChannels() == format2.getChannels()
                 && format1.getSampleSizeInBits() == format2.getSampleSizeInBits()
@@ -103,7 +99,4 @@ public class AudioFormats {
                 && (Math.abs(format1.getSampleRate() - format2.getSampleRate()) < 1.0e-9)
                 && (Math.abs(format1.getFrameRate() - format2.getFrameRate()) < 1.0e-9);
     }
-
 }
-
-

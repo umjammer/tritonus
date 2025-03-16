@@ -1,8 +1,4 @@
 /*
- * TSeekableDataOutputStreamTestCase.java
- */
-
-/*
  *  Copyright (c) 2004 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,27 +23,25 @@ import org.tritonus.share.sampled.file.TSeekableDataOutputStream;
 import org.tritonus.test.Util;
 
 
-public class TSeekableDataOutputStreamTestCase
-        extends BaseDataOutputStreamTestCase {
+/**
+ * TSeekableDataOutputStreamTestCase.
+ */
+public class TSeekableDataOutputStreamTestCase extends BaseDataOutputStreamTestCase {
 
-    private File m_file;
+    private File file;
 
     public TSeekableDataOutputStreamTestCase() {
         super(true); // seekable
     }
 
     @Override
-    protected TDataOutputStream createDataOutputStream()
-            throws Exception {
-        m_file = new File("/tmp/dataoutputstream.tmp");
-        return new TSeekableDataOutputStream(m_file);
+    protected TDataOutputStream createDataOutputStream() throws Exception {
+        file = new File("/tmp/dataoutputstream.tmp");
+        return new TSeekableDataOutputStream(file);
     }
 
     @Override
-    protected byte[] getWrittenData()
-            throws Exception {
-        return Util.getByteArrayFromFile(m_file);
+    protected byte[] getWrittenData() throws Exception {
+        return Util.getByteArrayFromFile(file);
     }
 }
-
-

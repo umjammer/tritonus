@@ -27,5 +27,3 @@ public class WaveAudioFileReaderTestCase
         setResourcePrefix("wave");
     }
 }
-
-

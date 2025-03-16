@@ -29,20 +29,20 @@ public class AlsaQueueHolder {
     /**
      * The object interfacing to the ALSA sequencer.
      */
-    private AlsaSeq m_aSequencer;
+    private final AlsaSeq sequencer;
 
     /**
      * ALSA queue number.
      */
-    private int m_nQueue;
+    private final int queue;
 
     /**
      *
      */
-    public AlsaQueueHolder(AlsaSeq aSequencer) {
-        m_aSequencer = aSequencer;
-        m_nQueue = m_aSequencer.allocQueue();
-        if (m_nQueue < 0) {
+    public AlsaQueueHolder(AlsaSeq sequencer) {
+        this.sequencer = sequencer;
+        queue = this.sequencer.allocQueue();
+        if (queue < 0) {
             throw new RuntimeException("can't get ALSA sequencer queue");
         }
     }
@@ -53,13 +53,13 @@ public class AlsaQueueHolder {
      * @return the queue number.
      */
     public int getQueue() {
-        return m_nQueue;
+        return queue;
     }
 
     /**
      * Frees the queue.
      */
     public void close() {
-        m_aSequencer.freeQueue(getQueue());
+        sequencer.freeQueue(getQueue());
     }
 }

@@ -22,8 +22,8 @@ import java.util.List;
 import org.tritonus.saol.sablecc.node.*;
 
 
-/*
- * IOTCommonSemanticsCheck.java
+/**
+ * IOTCommonSemanticsCheck.
  *
  * This file is part of Tritonus: http://www.tritonus.org/
  */
@@ -79,21 +79,21 @@ public abstract class IOTCommonSemanticsCheck extends IOGTCommonSemanticsCheck {
 
     @Override
     public void outASigvarOpvardecl(ASigvarOpvardecl node) {
-        boolean bImports = false;
-        boolean bExports = false;
+        boolean imports = false;
+        boolean exports = false;
         if (node.getTaglist() != null) {
-            NodeSemantics taglistSemantics = getNodeSemantics(node.getTaglist());
-            String strImEx = (String) taglistSemantics.getAux();
-            if (strImEx.indexOf('I') >= 0) {
-                bImports = true;
+            NodeSemantics tagListSemantics = getNodeSemantics(node.getTaglist());
+            String text = (String) tagListSemantics.getAux();
+            if (text.indexOf('I') >= 0) {
+                imports = true;
             }
-            if (strImEx.indexOf('E') >= 0) {
-                bExports = true;
+            if (text.indexOf('E') >= 0) {
+                exports = true;
             }
             // TODO check if matching global variable exists
         }
-        int nRate = getNodeSemantics(node.getStype()).getRate();
-        if (!isLegalVariableType(nRate)) {
+        int rate = getNodeSemantics(node.getStype()).getRate();
+        if (!isLegalVariableType(rate)) {
             throw new RuntimeException("illegal variable type used");
         }
         @SuppressWarnings("unchecked")
@@ -102,38 +102,38 @@ public abstract class IOTCommonSemanticsCheck extends IOGTCommonSemanticsCheck {
             VariableEntry variable = instrument;
             variable = new VariableEntry(variable.getVariableName(),
                     variable.getWidth(),
-                    nRate,
-                    bImports,
-                    bExports);
+                    rate,
+                    imports,
+                    exports);
             getOwnVariableTable().add(variable);
         }
     }
 
     @Override
     public void outATablevarOpvardecl(ATablevarOpvardecl node) {
-        boolean bImports = false;
-        boolean bExports = false;
+        boolean imports = false;
+        boolean exports = false;
         // for tables, this is not optional
         NodeSemantics taglistSemantics = getNodeSemantics(node.getTaglist());
-        String strImEx = (String) taglistSemantics.getAux();
-        if (strImEx.indexOf('I') >= 0) {
-            bImports = true;
+        String text = (String) taglistSemantics.getAux();
+        if (text.indexOf('I') >= 0) {
+            imports = true;
         }
-        if (strImEx.indexOf('E') >= 0) {
-            bExports = true;
+        if (text.indexOf('E') >= 0) {
+            exports = true;
         }
         // TODO check if matching global variable exists
 
-        int nRate = WidthAndRate.RATE_TABLE;
+        int rate = WidthAndRate.RATE_TABLE;
         @SuppressWarnings("unchecked")
         List<VariableEntry> instruments = (List<VariableEntry>) getNodeSemantics(node.getNamelist()).getAux();
         for (VariableEntry instrument : instruments) {
             VariableEntry variable = instrument;
             variable = new VariableEntry(variable.getVariableName(),
                     variable.getWidth(),
-                    nRate,
-                    bImports,
-                    bExports);
+                    rate,
+                    imports,
+                    exports);
             getOwnVariableTable().add(variable);
         }
     }
@@ -181,33 +181,33 @@ public abstract class IOTCommonSemanticsCheck extends IOGTCommonSemanticsCheck {
 
     @Override
     public void outASimpleName(ASimpleName node) {
-        String strVariableName = node.getIdentifier().getText();
-        handleName(node, strVariableName, 1);
+        String variableName = node.getIdentifier().getText();
+        handleName(node, variableName, 1);
     }
 
     @Override
     public void outAIndexedName(AIndexedName node) {
-        String strVariableName = node.getIdentifier().getText();
-        String strInteger = node.getInteger().getText();
-        int nInteger = Integer.parseInt(strInteger);
-        handleName(node, strVariableName, nInteger);
+        String variableName = node.getIdentifier().getText();
+        String _integer = node.getInteger().getText();
+        int integer = Integer.parseInt(_integer);
+        handleName(node, variableName, integer);
     }
 
     @Override
     public void outAInchannelsName(AInchannelsName node) {
-        String strVariableName = node.getIdentifier().getText();
-        handleName(node, strVariableName, WidthAndRate.WIDTH_INCHANNELS);
+        String variableName = node.getIdentifier().getText();
+        handleName(node, variableName, WidthAndRate.WIDTH_INCHANNELS);
     }
 
     @Override
     public void outAOutchannelsName(AOutchannelsName node) {
-        String strVariableName = node.getIdentifier().getText();
-        handleName(node, strVariableName, WidthAndRate.WIDTH_OUTCHANNELS);
+        String variableName = node.getIdentifier().getText();
+        handleName(node, variableName, WidthAndRate.WIDTH_OUTCHANNELS);
     }
 
     // TODO check if gathering of variable name can be generalized
-    private void handleName(Node node, String strVariableName, int nWidth) {
-        VariableEntry variableEntry = new VariableEntry(strVariableName, nWidth, WidthAndRate.RATE_UNKNOWN, false, false);
+    private void handleName(Node node, String variableName, int width) {
+        VariableEntry variableEntry = new VariableEntry(variableName, width, WidthAndRate.RATE_UNKNOWN, false, false);
         NodeSemantics nodeSemantics = new NodeSemantics(variableEntry);
         setNodeSemantics(node, nodeSemantics);
     }
@@ -397,10 +397,10 @@ public abstract class IOTCommonSemanticsCheck extends IOGTCommonSemanticsCheck {
      */
     @Override
     public void outAIndexedTerm(AIndexedTerm node) {
-//   // TODO correct rounding (1.5 -> 2.0)
-//   m_aMethods[METHOD_A].appendInstruction(InstructionConstants.F2I);
-//   // and now fetch the value from the array
-//   setNodeAttribute(node, InstructionConstants.FALOAD);
+//        // TODO correct rounding (1.5 -> 2.0)
+//        methods[METHOD_A].appendInstruction(InstructionConstants.F2I);
+//        // and now fetch the value from the array
+//        setNodeAttribute(node, InstructionConstants.FALOAD);
     }
 
     @Override
@@ -487,5 +487,3 @@ public abstract class IOTCommonSemanticsCheck extends IOGTCommonSemanticsCheck {
     public void outANumberConst(ANumberConst node) {
     }
 }
-
-

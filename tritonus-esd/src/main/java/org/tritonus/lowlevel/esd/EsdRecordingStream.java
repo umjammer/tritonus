@@ -26,7 +26,7 @@ public class EsdRecordingStream extends Esd {
      * size of ints may be 64 bit.
      */
     @SuppressWarnings("unused")
-    private long m_lNativeHandle;
+    private long nativeHandle;
 
     static {
         Esd.loadNativeLibrary();
@@ -38,7 +38,7 @@ public class EsdRecordingStream extends Esd {
     /**
      * Opens the connection to esd and initiates a stream.
      */
-    public native void open(int nFormat, int nSampleRate);
+    public native void open(int format, int sampleRate);
 
     /**
      * Reads a block of data to esd.
@@ -48,7 +48,7 @@ public class EsdRecordingStream extends Esd {
      *
      * @return the number of bytes read
      */
-    public native int read(byte[] abData, int nOffset, int nLength);
+    public native int read(byte[] data, int offset, int length);
 
     /**
      * Closes the connection to esd.
@@ -59,5 +59,5 @@ public class EsdRecordingStream extends Esd {
      */
     public native void close();
 
-    private static native void setTrace(boolean bTrace);
+    private static native void setTrace(boolean trace);
 }

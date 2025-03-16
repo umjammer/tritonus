@@ -37,7 +37,7 @@ import org.tritonus.saol.sablecc.parser.Parser;
 import static java.lang.System.getLogger;
 
 
-/*
+/**
  * Compiler.
  *
  * This file is part of Tritonus: http://www.tritonus.org/
@@ -50,37 +50,37 @@ public class Compiler {
     private static final int ACTION_COMPILE_INSTRUMENTS = 1;
     private static final int ACTION_GENERATE_MP4 = 2;
 
-    private File m_saolFile;
-    private int m_nAction;
+    private final File saolFile;
+    private final int action;
 
-    private Map<String, Class<AbstractInstrument>> m_instrumentMap;
+    private Map<String, Class<AbstractInstrument>> instrumentMap;
 
     public Compiler(File saolFile) {
         this(saolFile, ACTION_COMPILE_INSTRUMENTS);
     }
 
-    public Compiler(File saolFile, int nAction) {
-        m_saolFile = saolFile;
-        m_nAction = nAction;
+    public Compiler(File saolFile, int action) {
+        this.saolFile = saolFile;
+        this.action = action;
     }
 
     public void compile() throws Exception {
-        Reader reader = new FileReader(m_saolFile);
+        Reader reader = new FileReader(saolFile);
         reader = new BufferedReader(reader);
         PushbackReader pbReader = new PushbackReader(reader, 1024);
         Lexer lexer = new Lexer(pbReader);
         Parser parser = new Parser(lexer);
         Start tree = parser.parse();
 
-        switch (m_nAction) {
+        switch (action) {
         case ACTION_DUMP_TREE:
             dumpTree(tree);
             break;
 
         case ACTION_COMPILE_INSTRUMENTS:
             logger.log(Level.TRACE, "compiling instruments...");
-            m_instrumentMap = compileInstruments(tree);
-            logger.log(Level.TRACE, "IM: " + m_instrumentMap);
+            instrumentMap = compileInstruments(tree);
+            logger.log(Level.TRACE, "IM: " + instrumentMap);
             break;
         }
     }
@@ -103,17 +103,15 @@ public class Compiler {
         Map<String, Class<AbstractInstrument>> instrumentMap = new HashMap<>();
         NodeSemanticsTable nodeSemanticsTable = new NodeSemanticsTable();
 
-        /*
-         * Divide the AST into sections. There is one section for global, and
-         * one for each instrument, opcode or template.
-         */
+        // Divide the AST into sections. There is one section for global, and
+        // one for each instrument, opcode or template.
+        //
         TreeDivider treeDivider = new TreeDivider(instrumentTable, opcodeTable, templateTable);
         tree.apply(treeDivider);
         AGlobaldeclGlobaldecl globalNode = treeDivider.getGlobalNode();
 
-        /*
-         * Process the global section.
-         */
+        // Process the global section.
+        //
         SAOLGlobals saolGlobals = new SAOLGlobals();
         if (globalNode != null) {
             GlobalsSearcher gsearcher = new GlobalsSearcher(saolGlobals);
@@ -123,28 +121,25 @@ public class Compiler {
         logger.log(Level.DEBUG, "k-rate: " + saolGlobals.getKRate());
         logger.log(Level.DEBUG, "inchannels: " + saolGlobals.getInChannels());
         logger.log(Level.DEBUG, "outchannels: " + saolGlobals.getOutChannels());
-        logger.log(Level.DEBUG, "interp: " + saolGlobals.getInterp());
+        logger.log(Level.DEBUG, "interp: " + saolGlobals.getInterP());
 
         VariableTable globalVariableTable = new VariableTable();
 
-        /*
-         * Semantic check on instruments.
-         */
+        // Semantic check on instruments.
+        //
         Iterator<InstrumentEntry> instruments = instrumentTable.values().iterator();
         while (instruments.hasNext()) {
             InstrumentEntry entry = instruments.next();
             AInstrdeclInstrdecl startNode = entry.getStartNode();
             VariableTable localVariableTable = entry.getLocalVariableTable();
-            InstrumentSemanticsCheck isc = new InstrumentSemanticsCheck(globalVariableTable,
-                    localVariableTable,
-                    nodeSemanticsTable);
+            InstrumentSemanticsCheck isc = new InstrumentSemanticsCheck(
+                    globalVariableTable, localVariableTable, nodeSemanticsTable);
             startNode.apply(isc);
         }
         // TODO collection of variable tables, semantic checks
 
-        /*
-         * Compiling the instruments.
-         */
+        // Compiling the instruments.
+        //
         InstrumentCompilation ic = new InstrumentCompilation(saolGlobals, instrumentMap);
         instruments = instrumentTable.values().iterator();
         while (instruments.hasNext()) {
@@ -162,23 +157,23 @@ public class Compiler {
     }
 
     public Map<String, Class<AbstractInstrument>> getInstrumentMap() {
-        if (m_nAction != ACTION_COMPILE_INSTRUMENTS) {
+        if (action != ACTION_COMPILE_INSTRUMENTS) {
             logger.log(Level.TRACE, "I.M.: returning null");
             return null;
         }
-        logger.log(Level.TRACE, "I.M.: " + m_instrumentMap);
-        return m_instrumentMap;
+        logger.log(Level.TRACE, "I.M.: " + instrumentMap);
+        return instrumentMap;
     }
 
-    public static void main(String[] arguments) {
-        int nAction = ACTION_COMPILE_INSTRUMENTS;
-        String strSaolFilename = arguments[0];
-        if (arguments[0].equals("-d")) {
-            nAction = ACTION_DUMP_TREE;
-            strSaolFilename = arguments[1];
+    public static void main(String[] args) {
+        int action = ACTION_COMPILE_INSTRUMENTS;
+        String saolFilename = args[0];
+        if (args[0].equals("-d")) {
+            action = ACTION_DUMP_TREE;
+            saolFilename = args[1];
         }
-        File saolFile = new File(strSaolFilename);
-        Compiler compiler = new Compiler(saolFile, nAction);
+        File saolFile = new File(saolFilename);
+        Compiler compiler = new Compiler(saolFile, action);
         try {
             compiler.compile();
         } catch (Exception e) {

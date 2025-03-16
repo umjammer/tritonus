@@ -32,70 +32,53 @@ public class TFloatControl extends FloatControl implements TControllable {
 
     private static final Logger logger= getLogger("org.tritonus.TraceControl");
 
-    private TControlController m_controller;
+    private final TControlController controller;
 
     public TFloatControl(FloatControl.Type type,
-                         float fMinimum,
-                         float fMaximum,
-                         float fPrecision,
-                         int nUpdatePeriod,
-                         float fInitialValue,
-                         String strUnits) {
-        super(type,
-                fMinimum,
-                fMaximum,
-                fPrecision,
-                nUpdatePeriod,
-                fInitialValue,
-                strUnits);
-        logger.log(Level.TRACE, "TFloatControl.<init>: begin");
+                         float minimum,
+                         float maximum,
+                         float precision,
+                         int updatePeriod,
+                         float initialValue,
+                         String units) {
+        super(type, minimum, maximum, precision, updatePeriod, initialValue, units);
+        logger.log(Level.TRACE, "begin");
 
-        m_controller = new TControlController();
+        controller = new TControlController();
 
-        logger.log(Level.TRACE, "TFloatControl.<init>: end");
+        logger.log(Level.TRACE, "end");
     }
 
     public TFloatControl(FloatControl.Type type,
-                         float fMinimum,
-                         float fMaximum,
-                         float fPrecision,
-                         int nUpdatePeriod,
-                         float fInitialValue,
-                         String strUnits,
-                         String strMinLabel,
-                         String strMidLabel,
-                         String strMaxLabel) {
-        super(type,
-                fMinimum,
-                fMaximum,
-                fPrecision,
-                nUpdatePeriod,
-                fInitialValue,
-                strUnits,
-                strMinLabel,
-                strMidLabel,
-                strMaxLabel);
-        logger.log(Level.TRACE, "TFloatControl.<init>: begin");
+                         float minimum,
+                         float maximum,
+                         float precision,
+                         int updatePeriod,
+                         float initialValue,
+                         String units,
+                         String minLabel,
+                         String midLabel,
+                         String maxLabel) {
+        super(type, minimum, maximum, precision, updatePeriod, initialValue, units, minLabel, midLabel, maxLabel);
+        logger.log(Level.TRACE, "begin");
 
-        m_controller = new TControlController();
+        controller = new TControlController();
 
-        logger.log(Level.TRACE, "TFloatControl.<init>: end");
+        logger.log(Level.TRACE, "end");
     }
 
     @Override
     public void setParentControl(TCompoundControl compoundControl) {
-        m_controller.setParentControl(compoundControl);
+        controller.setParentControl(compoundControl);
     }
 
     @Override
     public TCompoundControl getParentControl() {
-        return m_controller.getParentControl();
+        return controller.getParentControl();
     }
 
     @Override
     public void commit() {
-        m_controller.commit();
+        controller.commit();
     }
 }
-
-

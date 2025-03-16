@@ -29,64 +29,64 @@ public class TCircularBuffer {
 
     private static final Logger logger= getLogger("org.tritonus.TraceCircularBuffer");
 
-    private boolean m_bBlockingRead;
-    private boolean m_bBlockingWrite;
-    private byte[] m_abData;
-    private int m_nSize;
-    private long m_lReadPos;
-    private long m_lWritePos;
-    private Trigger m_trigger;
-    private boolean m_bOpen;
+    private final boolean blockingRead;
+    private final boolean blockingWrite;
+    private final byte[] data;
+    private final int size;
+    private long readPos;
+    private long writePos;
+    private final Trigger trigger;
+    private boolean open;
 
-    public TCircularBuffer(int nSize, boolean bBlockingRead, boolean bBlockingWrite, Trigger trigger) {
-        m_bBlockingRead = bBlockingRead;
-        m_bBlockingWrite = bBlockingWrite;
-        m_nSize = nSize;
-        m_abData = new byte[m_nSize];
-        m_lReadPos = 0;
-        m_lWritePos = 0;
-        m_trigger = trigger;
-        m_bOpen = true;
+    public TCircularBuffer(int size, boolean blockingRead, boolean blockingWrite, Trigger trigger) {
+        this.blockingRead = blockingRead;
+        this.blockingWrite = blockingWrite;
+        this.size = size;
+        data = new byte[this.size];
+        readPos = 0;
+        writePos = 0;
+        this.trigger = trigger;
+        open = true;
     }
 
     public void close() {
-        m_bOpen = false;
+        open = false;
         // TODO call notify() ?
     }
 
     private boolean isOpen() {
-        return m_bOpen;
+        return open;
     }
 
     public int availableRead() {
-        return (int) (m_lWritePos - m_lReadPos);
+        return (int) (writePos - readPos);
     }
 
     public int availableWrite() {
-        return m_nSize - availableRead();
+        return size - availableRead();
     }
 
     private int getReadPos() {
-        return (int) (m_lReadPos % m_nSize);
+        return (int) (readPos % size);
     }
 
     private int getWritePos() {
-        return (int) (m_lWritePos % m_nSize);
+        return (int) (writePos % size);
     }
 
-    public int read(byte[] abData) {
-        return read(abData, 0, abData.length);
+    public int read(byte[] data) {
+        return read(data, 0, data.length);
     }
 
-    public int read(byte[] abData, int nOffset, int nLength) {
+    public int read(byte[] data, int offset, int length) {
         if (logger.isLoggable(Level.TRACE)) {
-            logger.log(Level.TRACE, ">TCircularBuffer.read(): called.");
+            logger.log(Level.TRACE, "called.");
             dumpInternalState();
         }
         if (!isOpen()) {
             if (availableRead() > 0) {
-                nLength = Math.min(nLength, availableRead());
-                logger.log(Level.TRACE, "reading rest in closed buffer, length: " + nLength);
+                length = Math.min(length, availableRead());
+                logger.log(Level.TRACE, "reading rest in closed buffer, length: " + length);
 
             } else {
                 logger.log(Level.TRACE, "< not open. returning -1.");
@@ -95,16 +95,16 @@ public class TCircularBuffer {
             }
         }
         synchronized (this) {
-            if (m_trigger != null && availableRead() < nLength) {
+            if (trigger != null && availableRead() < length) {
                 logger.log(Level.TRACE, "executing trigger.");
 
-                m_trigger.execute();
+                trigger.execute();
             }
-            if (!m_bBlockingRead) {
-                nLength = Math.min(availableRead(), nLength);
+            if (!blockingRead) {
+                length = Math.min(availableRead(), length);
             }
-            int nRemainingBytes = nLength;
-            while (nRemainingBytes > 0) {
+            int remainingBytes = length;
+            while (remainingBytes > 0) {
                 while (availableRead() == 0) {
                     try {
                         wait();
@@ -112,43 +112,43 @@ public class TCircularBuffer {
                         logger.log(Level.ERROR, e.getMessage(), e);
                     }
                 }
-                int nAvailable = Math.min(availableRead(), nRemainingBytes);
-                while (nAvailable > 0) {
-                    int nToRead = Math.min(nAvailable, m_nSize - getReadPos());
-                    System.arraycopy(m_abData, getReadPos(), abData, nOffset, nToRead);
-                    m_lReadPos += nToRead;
-                    nOffset += nToRead;
-                    nAvailable -= nToRead;
-                    nRemainingBytes -= nToRead;
+                int available = Math.min(availableRead(), remainingBytes);
+                while (available > 0) {
+                    int toRead = Math.min(available, size - getReadPos());
+                    System.arraycopy(this.data, getReadPos(), data, offset, toRead);
+                    readPos += toRead;
+                    offset += toRead;
+                    available -= toRead;
+                    remainingBytes -= toRead;
                 }
                 notifyAll();
             }
             if (logger.isLoggable(Level.TRACE)) {
                 logger.log(Level.TRACE, "After read:");
                 dumpInternalState();
-                logger.log(Level.TRACE, "< completed. Read " + nLength + " bytes");
+                logger.log(Level.TRACE, "< completed. Read " + length + " bytes");
             }
-            return nLength;
+            return length;
         }
     }
 
-    public int write(byte[] abData) {
-        return write(abData, 0, abData.length);
+    public int write(byte[] data) {
+        return write(data, 0, data.length);
     }
 
-    public int write(byte[] abData, int nOffset, int nLength) {
+    public int write(byte[] data, int offset, int length) {
         if (logger.isLoggable(Level.TRACE)) {
-            logger.log(Level.TRACE, ">TCircularBuffer.write(): called; nLength: " + nLength);
+            logger.log(Level.TRACE, "called; length: " + length);
             dumpInternalState();
         }
         synchronized (this) {
             logger.log(Level.TRACE, "entered synchronized block.");
 
-            if (!m_bBlockingWrite) {
-                nLength = Math.min(availableWrite(), nLength);
+            if (!blockingWrite) {
+                length = Math.min(availableWrite(), length);
             }
-            int nRemainingBytes = nLength;
-            while (nRemainingBytes > 0) {
+            int remainingBytes = length;
+            while (remainingBytes > 0) {
                 while (availableWrite() == 0) {
                     try {
                         wait();
@@ -156,30 +156,30 @@ public class TCircularBuffer {
                         logger.log(Level.ERROR, e.getMessage(), e);
                     }
                 }
-                int nAvailable = Math.min(availableWrite(), nRemainingBytes);
-                while (nAvailable > 0) {
-                    int nToWrite = Math.min(nAvailable, m_nSize - getWritePos());
-//logger.log(Level.DEBUG, "src buf size= " + abData.length + ", offset = " + nOffset + ", dst buf size=" + m_abData.length + " write pos=" + getWritePos() + " len=" + nToWrite);
-                    System.arraycopy(abData, nOffset, m_abData, getWritePos(), nToWrite);
-                    m_lWritePos += nToWrite;
-                    nOffset += nToWrite;
-                    nAvailable -= nToWrite;
-                    nRemainingBytes -= nToWrite;
+                int available = Math.min(availableWrite(), remainingBytes);
+                while (available > 0) {
+                    int toWrite = Math.min(available, size - getWritePos());
+//logger.log(Level.DEBUG, "src buf size= " + data.length + ", offset = " + offset + ", dst buf size=" + data.length + " write pos=" + getWritePos() + " len=" + toWrite);
+                    System.arraycopy(data, offset, this.data, getWritePos(), toWrite);
+                    writePos += toWrite;
+                    offset += toWrite;
+                    available -= toWrite;
+                    remainingBytes -= toWrite;
                 }
                 notifyAll();
             }
             if (logger.isLoggable(Level.TRACE)) {
                 logger.log(Level.TRACE, "After write:");
                 dumpInternalState();
-                logger.log(Level.TRACE, "< completed. Wrote " + nLength + " bytes");
+                logger.log(Level.TRACE, "< completed. Wrote " + length + " bytes");
             }
-            return nLength;
+            return length;
         }
     }
 
     private void dumpInternalState() {
-        logger.log(Level.TRACE, "m_lReadPos  = " + m_lReadPos + " ^= " + getReadPos());
-        logger.log(Level.TRACE, "m_lWritePos = " + m_lWritePos + " ^= " + getWritePos());
+        logger.log(Level.TRACE, "readPos  = " + readPos + " ^= " + getReadPos());
+        logger.log(Level.TRACE, "writePos = " + writePos + " ^= " + getWritePos());
         logger.log(Level.TRACE, "availableRead()  = " + availableRead());
         logger.log(Level.TRACE, "availableWrite() = " + availableWrite());
     }

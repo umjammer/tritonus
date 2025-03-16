@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 2000-2006 by Florian Bomers
  *
@@ -15,13 +14,11 @@
  *   limitations under the License.
  */
 
-/*
- |<---            this code is formatted to fit into 80 columns             --->|
- */
-
 package org.tritonus.share.sampled;
 
 import javax.sound.sampled.AudioFormat;
+
+import static org.tritonus.share.sampled.FloatSampleTools.F_SAMPLE_WIDTH_MASK;
 
 
 /**
@@ -116,7 +113,7 @@ import javax.sound.sampled.AudioFormat;
  * </ul>
  * The lazy mechanism can save many array instantiation (and copy-) operations
  * for the sake of performance. All relevant methods exist in a second version
- * which allows explicitely to disable lazy deletion.
+ * which allows explicitly to disable lazy deletion.
  * <p>
  * Use the <code>reset</code> functions to clear the memory and remove hidden
  * samples and channels.
@@ -153,7 +150,6 @@ import javax.sound.sampled.AudioFormat;
  *
  * @author Florian Bomers
  */
-
 public class FloatSampleBuffer {
 
     /** Whether the functions without lazy parameter are lazy or not. */
@@ -181,7 +177,7 @@ public class FloatSampleBuffer {
     // e.g. the sample rate converter may want to force dithering
     private int ditherMode = DITHER_MODE_AUTOMATIC;
 
-    // ////////////////////////////// initialization //////////////////////
+    // initialization
 
     /**
      * Create an instance with initially no channels.
@@ -202,18 +198,16 @@ public class FloatSampleBuffer {
      * Creates a new instance of FloatSampleBuffer and initializes it with audio
      * data given in the interleaved byte array <code>buffer</code>.
      */
-    public FloatSampleBuffer(byte[] buffer, int offset, int byteCount,
-                             AudioFormat format) {
-        this(format.getChannels(), byteCount
-                        / (format.getSampleSizeInBits() / 8 * format.getChannels()),
+    public FloatSampleBuffer(byte[] buffer, int offset, int byteCount, AudioFormat format) {
+        this(format.getChannels(), byteCount / (format.getSampleSizeInBits() / 8 * format.getChannels()),
                 format.getSampleRate());
         initFromByteArray(buffer, offset, byteCount, format);
     }
 
     /**
      * Initialize this sample buffer to have the specified channels, sample
-     * count, and sample rate. If LAZY_DEFAULT is true, as much as possible will
-     * existing arrays be reused. Otherwise, any hidden channels are freed.
+     * count, and sample rate. If LAZY_DEFAULT is true, as much as possible
+     * existing arrays will be reused. Otherwise, any hidden channels are freed.
      *
      * @param newChannelCount
      * @param newSampleCount
@@ -221,32 +215,28 @@ public class FloatSampleBuffer {
      * @throws IllegalArgumentException if newChannelCount or newSampleCount are
      *                                  negative, or newSampleRate is not positive.
      */
-    public void init(int newChannelCount, int newSampleCount,
-                     float newSampleRate) {
+    public void init(int newChannelCount, int newSampleCount, float newSampleRate) {
         init(newChannelCount, newSampleCount, newSampleRate, LAZY_DEFAULT);
     }
 
     /**
      * Initialize this sample buffer to have the specified channels, sample
-     * count, and sample rate. If lazy is true, as much as possible will
-     * existing arrays be reused. Otherwise, any hidden channels are freed.
+     * count, and sample rate. If lazy is true, as much as possible
+     * existing arrays will be reused. Otherwise, any hidden channels are freed.
      *
      * @param newChannelCount
      * @param newSampleCount
      * @param newSampleRate
-     * @param lazy
+     * @param lazy            If true, as much as possible existing arrays will be reused
      * @throws IllegalArgumentException if newChannelCount or newSampleCount are
      *                                  negative, or newSampleRate is not positive.
      */
-    public void init(int newChannelCount, int newSampleCount,
-                     float newSampleRate, boolean lazy) {
+    public void init(int newChannelCount, int newSampleCount, float newSampleRate, boolean lazy) {
         if (newChannelCount < 0 || newSampleCount < 0 || newSampleRate <= 0.0f) {
-            throw new IllegalArgumentException(
-                    "invalid parameters in initialization of FloatSampleBuffer.");
+            throw new IllegalArgumentException("invalid parameters in initialization of FloatSampleBuffer.");
         }
         setSampleRate(newSampleRate);
-        if (this.sampleCount != newSampleCount
-                || this.channelCount != newChannelCount) {
+        if (this.sampleCount != newSampleCount || this.channelCount != newChannelCount) {
             createChannels(newChannelCount, newSampleCount, lazy);
         }
     }
@@ -272,17 +262,14 @@ public class FloatSampleBuffer {
     private void grow(int newChannelCount, boolean lazy) {
         if (channels.length < newChannelCount || !lazy) {
             Object[] newChannels = new Object[newChannelCount];
-            System.arraycopy(channels, 0, newChannels, 0,
-                    Math.min(channelCount, newChannelCount));
+            System.arraycopy(channels, 0, newChannels, 0, Math.min(channelCount, newChannelCount));
             this.channels = newChannels;
         }
     }
 
-    private void createChannels(int newChannelCount, int newSampleCount,
-                                boolean lazy) {
+    private void createChannels(int newChannelCount, int newSampleCount, boolean lazy) {
         // shortcut
-        if (lazy && newChannelCount <= channelCount
-                && newSampleCount <= this.sampleCount) {
+        if (lazy && newChannelCount <= channelCount && newSampleCount <= this.sampleCount) {
             setSampleCountImpl(newSampleCount);
             setChannelCountImpl(newChannelCount);
             return;
@@ -305,10 +292,9 @@ public class FloatSampleBuffer {
      * <code>byteCount / format.getFrameSize()</code>. If LAZY_DEFAULT is
      * true, it will use lazy deletion.
      *
-     * @throws IllegalArgumentException
+     * @throws IllegalArgumentException when buffer is too small
      */
-    public void initFromByteArray(byte[] buffer, int offset, int byteCount,
-                                  AudioFormat format) {
+    public void initFromByteArray(byte[] buffer, int offset, int byteCount, AudioFormat format) {
         initFromByteArray(buffer, offset, byteCount, format, LAZY_DEFAULT);
     }
 
@@ -319,35 +305,29 @@ public class FloatSampleBuffer {
      *
      * @param lazy if true, then existing channels will be tried to be re-used
      *             to minimize garbage collection.
-     * @throws IllegalArgumentException
+     * @throws IllegalArgumentException when buffer is too small
      */
-    public void initFromByteArray(byte[] buffer, int offset, int byteCount,
-                                  AudioFormat format, boolean lazy) {
+    public void initFromByteArray(byte[] buffer, int offset, int byteCount, AudioFormat format, boolean lazy) {
         if (offset + byteCount > buffer.length) {
-            throw new IllegalArgumentException(
-                    "FloatSampleBuffer.initFromByteArray: buffer too small.");
+            throw new IllegalArgumentException("buffer too small.");
         }
 
         int thisSampleCount = byteCount / format.getFrameSize();
-        init(format.getChannels(), thisSampleCount, format.getSampleRate(),
-                lazy);
+        init(format.getChannels(), thisSampleCount, format.getSampleRate(), lazy);
 
         // save format for automatic dithering mode
         originalFormatType = FloatSampleTools.getFormatType(format);
 
-        FloatSampleTools.byte2float(buffer, offset, channels, 0, sampleCount,
-                format);
+        FloatSampleTools.byte2float(buffer, offset, channels, 0, sampleCount, format);
     }
 
     /**
      * Resets this sample buffer with the data in <code>source</code>.
      */
     public void initFromFloatSampleBuffer(FloatSampleBuffer source) {
-        init(source.getChannelCount(), source.getSampleCount(),
-                source.getSampleRate());
+        init(source.getChannelCount(), source.getSampleCount(), source.getSampleRate());
         for (int ch = 0; ch < getChannelCount(); ch++) {
-            System.arraycopy(source.getChannel(ch), 0, getChannel(ch), 0,
-                    sampleCount);
+            System.arraycopy(source.getChannel(ch), 0, getChannel(ch), 0, sampleCount);
         }
     }
 
@@ -370,8 +350,7 @@ public class FloatSampleBuffer {
      * @param aSampleCount    the number of samples to write
      * @return the number of samples actually written
      */
-    public int writeByteBuffer(byte[] buffer, int srcByteOffset,
-                               AudioFormat format, int dstSampleOffset, int aSampleCount) {
+    public int writeByteBuffer(byte[] buffer, int srcByteOffset, AudioFormat format, int dstSampleOffset, int aSampleCount) {
         if (dstSampleOffset + aSampleCount > getSampleCount()) {
             aSampleCount = getSampleCount() - dstSampleOffset;
         }
@@ -386,8 +365,7 @@ public class FloatSampleBuffer {
             float[] data = getChannel(channel);
 
             FloatSampleTools.byte2floatGeneric(buffer, srcByteOffset,
-                    format.getFrameSize(), data, dstSampleOffset, aSampleCount,
-                    format);
+                    format.getFrameSize(), data, dstSampleOffset, aSampleCount, format);
             srcByteOffset += format.getFrameSize() / format.getChannels();
         }
         return aSampleCount;
@@ -409,7 +387,7 @@ public class FloatSampleBuffer {
         init(newChannels, newSampleCount, newSampleRate, false);
     }
 
-    // //////////////////////// conversion back to bytes ///////////////////
+    // conversion back to bytes
 
     /**
      * @return the required size of the buffer for calling
@@ -436,8 +414,7 @@ public class FloatSampleBuffer {
      * hold all data.
      *
      * @return number of bytes written to <code>buffer</code>
-     * @throws IllegalArgumentException when buffer is too small or
-     *                                  <code>format</code> doesn't match
+     * @throws IllegalArgumentException when buffer is too small or <code>format</code> doesn't match
      */
     public int convertToByteArray(byte[] buffer, int offset, AudioFormat format) {
         return convertToByteArray(0, getSampleCount(), buffer, offset, format);
@@ -452,30 +429,24 @@ public class FloatSampleBuffer {
      * interleaved byte array. <code>buffer</code> must be large enough to
      * hold all data.
      *
-     * @param readOffset   the sample offset from where samples are read from this
-     *                     FloatSampleBuffer
+     * @param readOffset   the sample offset from where samples are read from this FloatSampleBuffer
      * @param lenInSamples how many samples are converted
      * @param buffer       the byte buffer written to
      * @param writeOffset  the byte offset in buffer
      * @return number of bytes written to <code>buffer</code>
-     * @throws IllegalArgumentException when buffer is too small or
-     *                                  <code>format</code> doesn't match
+     * @throws IllegalArgumentException when buffer is too small or <code>format</code> doesn't match
      */
-    public int convertToByteArray(int readOffset, int lenInSamples,
-                                  byte[] buffer, int writeOffset, AudioFormat format) {
+    public int convertToByteArray(int readOffset, int lenInSamples, byte[] buffer, int writeOffset, AudioFormat format) {
         int byteCount = format.getFrameSize() * lenInSamples;
         if (writeOffset + byteCount > buffer.length) {
-            throw new IllegalArgumentException(
-                    "FloatSampleBuffer.convertToByteArray: buffer too small.");
+            throw new IllegalArgumentException("buffer too small.");
         }
         if (format != lastConvertToByteArrayFormat) {
             if (format.getSampleRate() != getSampleRate()) {
-                throw new IllegalArgumentException(
-                        "FloatSampleBuffer.convertToByteArray: different samplerates.");
+                throw new IllegalArgumentException("different sample rates.");
             }
             if (format.getChannels() != getChannelCount()) {
-                throw new IllegalArgumentException(
-                        "FloatSampleBuffer.convertToByteArray: different channel count.");
+                throw new IllegalArgumentException("different channel count.");
             }
             lastConvertToByteArrayFormat = format;
             lastConvertToByteArrayFormatCode = FloatSampleTools.getFormatType(format);
@@ -489,11 +460,9 @@ public class FloatSampleBuffer {
     }
 
     /**
-     * Creates a new byte[] buffer, fills it with the audio data, and returns
-     * it.
+     * Creates a new byte[] buffer, fills it with the audio data, and returns it.
      *
-     * @throws IllegalArgumentException when sample rate or channels do not
-     *                                  match
+     * @throws IllegalArgumentException when sample rate or channels do not match
      * @see #convertToByteArray(byte[], int, AudioFormat)
      */
     public byte[] convertToByteArray(AudioFormat format) {
@@ -504,7 +473,7 @@ public class FloatSampleBuffer {
         return res;
     }
 
-    // ////////////////////////////// actions /////////////////////////////////
+    // actions
 
     /**
      * Resizes this buffer.
@@ -597,8 +566,7 @@ public class FloatSampleBuffer {
      */
     public void makeSilence(int offset, int count) {
         if (offset < 0 || (count + offset) > getSampleCount() || count < 0) {
-            throw new IllegalArgumentException(
-                    "offset and/or sampleCount out of bounds");
+            throw new IllegalArgumentException("offset and/or sampleCount out of bounds");
         }
         // silence all channels
         int localChannelCount = getChannelCount();
@@ -725,8 +693,8 @@ public class FloatSampleBuffer {
             // there are hidden channels. Try to use one.
             for (int ch = virtSize; ch < physSize; ch++) {
                 float[] thisChannel = (float[]) channels[ch];
-                if (thisChannel != null
-                        && ((lazy && thisChannel.length >= getSampleCount()) || (!lazy && thisChannel.length == getSampleCount()))) {
+                if (thisChannel != null && ((lazy && thisChannel.length >= getSampleCount()) ||
+                        (!lazy && thisChannel.length == getSampleCount()))) {
                     // we found a matching channel. Use it !
                     newChannel = thisChannel;
                     channels[ch] = null;
@@ -792,12 +760,10 @@ public class FloatSampleBuffer {
      * are indices in the channel list. Both source and target channel have to
      * exist. targetChannel will be overwritten
      */
-    public void copyChannel(int sourceChannel, int sourceOffset,
-                            int targetChannel, int targetOffset, int aSampleCount) {
+    public void copyChannel(int sourceChannel, int sourceOffset, int targetChannel, int targetOffset, int aSampleCount) {
         float[] source = getChannel(sourceChannel);
         float[] target = getChannel(targetChannel);
-        System.arraycopy(source, sourceOffset, target, targetOffset,
-                aSampleCount);
+        System.arraycopy(source, sourceOffset, target, targetOffset, aSampleCount);
     }
 
     /**
@@ -838,8 +804,7 @@ public class FloatSampleBuffer {
     public void expandChannel(int targetChannelCount) {
         // even more sanity...
         if (getChannelCount() != 1) {
-            throw new IllegalArgumentException(
-                    "FloatSampleBuffer: can only expand channels for mono signals.");
+            throw new IllegalArgumentException("FloatSampleBuffer: can only expand channels for mono signals.");
         }
         for (int ch = 1; ch < targetChannelCount; ch++) {
             addChannel(false);
@@ -961,8 +926,7 @@ public class FloatSampleBuffer {
             localChannelCount = dest.getChannelCount();
         }
         for (int ch = 0; ch < localChannelCount; ch++) {
-            System.arraycopy(getChannel(ch), srcOffset, dest.getChannel(ch),
-                    destOffset, count);
+            System.arraycopy(getChannel(ch), srcOffset, dest.getChannel(ch), destOffset, count);
         }
         return count;
     }
@@ -970,7 +934,7 @@ public class FloatSampleBuffer {
     /**
      * Initializes audio data from the provided byte array. The float samples
      * are written at <code>destOffset</code>. This FloatSampleBuffer must be
-     * big enough to accomodate the samples.
+     * big enough to accommodate the samples.
      * <p>
      * <code>srcBuffer</code> is read from index <code>srcOffset</code> to
      * <code>(srcOffset + (lengthInSamples * format.getFrameSize()))</code.
@@ -981,25 +945,20 @@ public class FloatSampleBuffer {
      * @param floatOffset  the offset where to write the float samples
      * @param frameCount   number of samples to write to this sample buffer
      */
-    public void setSamplesFromBytes(byte[] input, int inByteOffset,
-                                    AudioFormat format, int floatOffset, int frameCount) {
+    public void setSamplesFromBytes(byte[] input, int inByteOffset, AudioFormat format, int floatOffset, int frameCount) {
         if (floatOffset < 0 || frameCount < 0 || inByteOffset < 0) {
-            throw new IllegalArgumentException(
-                    "FloatSampleBuffer.setSamplesFromBytes: negative inByteOffset, floatOffset, or frameCount");
+            throw new IllegalArgumentException("negative inByteOffset, floatOffset, or frameCount");
         }
         if (inByteOffset + (frameCount * format.getFrameSize()) > input.length) {
-            throw new IllegalArgumentException(
-                    "FloatSampleBuffer.setSamplesFromBytes: input buffer too small.");
+            throw new IllegalArgumentException("input buffer too small.");
         }
         if (floatOffset + frameCount > getSampleCount()) {
-            throw new IllegalArgumentException(
-                    "FloatSampleBuffer.setSamplesFromBytes: frameCount too large");
+            throw new IllegalArgumentException("frameCount too large");
         }
-        FloatSampleTools.byte2float(input, inByteOffset, channels, floatOffset,
-                frameCount, format, false);
+        FloatSampleTools.byte2float(input, inByteOffset, channels, floatOffset, frameCount, format, false);
     }
 
-    // ////////////////////////////// properties /////////////////////////////
+    // properties
 
     public int getChannelCount() {
         return channelCount;
@@ -1053,8 +1012,7 @@ public class FloatSampleBuffer {
      */
     public void setSampleRate(float sampleRate) {
         if (sampleRate <= 0) {
-            throw new IllegalArgumentException(
-                    "Invalid samplerate for FloatSampleBuffer.");
+            throw new IllegalArgumentException("Invalid samplerate for FloatSampleBuffer.");
         }
         if (this.sampleRate != sampleRate) {
             this.sampleRate = sampleRate;
@@ -1074,8 +1032,7 @@ public class FloatSampleBuffer {
      */
     public float[] getChannel(int channel) {
         if (channel >= this.channelCount) {
-            throw new IllegalArgumentException(
-                    "FloatSampleBuffer: invalid channel number.");
+            throw new IllegalArgumentException("FloatSampleBuffer: invalid channel number.");
         }
         return (float[]) channels[channel];
     }
@@ -1094,8 +1051,7 @@ public class FloatSampleBuffer {
      */
     public float[] setRawChannel(int channel, float[] data) {
         if (data == null) {
-            throw new IllegalArgumentException(
-                    "cannot set a channel to a null array");
+            throw new IllegalArgumentException("cannot set a channel to a null array");
         }
         float[] ret = getChannel(channel);
         channels[channel] = data;
@@ -1123,8 +1079,7 @@ public class FloatSampleBuffer {
      */
     public void setDitherBits(float ditherBits) {
         if (ditherBits <= 0) {
-            throw new IllegalArgumentException(
-                    "DitherBits must be greater than 0");
+            throw new IllegalArgumentException("DitherBits must be greater than 0");
         }
         this.ditherBits = ditherBits;
     }
@@ -1143,8 +1098,7 @@ public class FloatSampleBuffer {
      * </ul>
      */
     public void setDitherMode(int mode) {
-        if (mode != DITHER_MODE_AUTOMATIC && mode != DITHER_MODE_ON
-                && mode != DITHER_MODE_OFF) {
+        if (mode != DITHER_MODE_AUTOMATIC && mode != DITHER_MODE_ON && mode != DITHER_MODE_OFF) {
             throw new IllegalArgumentException("Illegal DitherMode");
         }
         this.ditherMode = mode;
@@ -1159,18 +1113,13 @@ public class FloatSampleBuffer {
      */
     protected float getConvertDitherBits(int newFormatType) {
         // let's see whether dithering is necessary
-        boolean doDither = false;
-        switch (ditherMode) {
-        case DITHER_MODE_AUTOMATIC:
-            doDither = (originalFormatType & FloatSampleTools.F_SAMPLE_WIDTH_MASK) > (newFormatType & FloatSampleTools.F_SAMPLE_WIDTH_MASK);
-            break;
-        case DITHER_MODE_ON:
-            doDither = true;
-            break;
-        case DITHER_MODE_OFF:
-            doDither = false;
-            break;
-        }
+        boolean doDither = switch (ditherMode) {
+            case DITHER_MODE_AUTOMATIC ->
+                    (originalFormatType & F_SAMPLE_WIDTH_MASK) > (newFormatType & F_SAMPLE_WIDTH_MASK);
+            case DITHER_MODE_ON -> true;
+            case DITHER_MODE_OFF -> false;
+            default -> false;
+        };
         return doDither ? ditherBits : 0.0f;
     }
 }

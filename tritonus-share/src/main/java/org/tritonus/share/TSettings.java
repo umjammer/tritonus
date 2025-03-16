@@ -25,15 +25,13 @@ public class TSettings {
 
     public static boolean AlsaUsePlughw = getBooleanProperty("AlsaUsePlughw");
 
-    private static boolean getBooleanProperty(String strName) {
-        String strPropertyName = PROPERTY_PREFIX + strName;
-        String strValue = System.getProperty(strPropertyName, "false");
-        // logger.log(Level.TRACE, "property: " + strPropertyName + "=" + strValue);
-        boolean bValue = strValue.equalsIgnoreCase("true");
-        // logger.log(Level.TRACE, "bValue: " + bValue);
-        return bValue;
+    private static boolean getBooleanProperty(String name) {
+        String propertyName = PROPERTY_PREFIX + name;
+        String _value = System.getProperty(propertyName, "false");
+        //logger.log(Level.TRACE, "property: " + propertyName + "=" + _value);
+        boolean value = _value.equalsIgnoreCase("true");
+        //logger.log(Level.TRACE, "value: " + value);
+        return value;
     }
 }
-
-
 

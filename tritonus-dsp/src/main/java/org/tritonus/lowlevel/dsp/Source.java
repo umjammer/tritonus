@@ -29,5 +29,3 @@ public interface Source {
      */
     float process();
 }
-
-

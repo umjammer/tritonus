@@ -28,7 +28,7 @@ native files
 ============
 
 - I suggest to not check in source code of the core fluidsynth distribution into the tritonus CVS. This is generally uncommon, and would raise synchronization problems. In general, I think a build should be possible with the compiled fluidsynth libraries and the public headers installed on a system.
-This is currently a problem because fluidsynt_jni.c uses two internal headers,
+This is currently a problem because fluidsynth_jni.c uses two internal headers,
 fluid_midi.h and fluid_sfont.h. This is something that needs to be worked out.
 
 - Because I had linkage problems with fluidsynth_jni.cpp and fluidsynth_Synth.cpp, I changed them from C++ to C, renaming them to *.c and changing 'env->function(...' to '(*env)->function(env, ...'. Since this makes

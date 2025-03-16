@@ -35,29 +35,29 @@ public class Esd {
     public static final int ESD_MONO = 0x0010;
     public static final int ESD_STEREO = 0x0020;
 
-    private static boolean sm_bIsLibraryAvailable = false;
+    private static boolean isLibraryAvailable = false;
 
     static {
         Esd.loadNativeLibrary();
     }
 
     public static void loadNativeLibrary() {
-        logger.log(Level.TRACE, "Esd.loadNativeLibrary(): loading native library tritonusesd");
+        logger.log(Level.TRACE, "loading native library tritonusesd");
 
         try {
             System.loadLibrary("tritonusesd");
-            sm_bIsLibraryAvailable = true;
+            isLibraryAvailable = true;
         } catch (Throwable t) {
             logger.log(Level.ERROR, t.getMessage(), t);
         }
 
-        logger.log(Level.TRACE, "Esd.loadNativeLibrary(): loaded");
+        logger.log(Level.TRACE, "loaded");
     }
 
     /**
      * Returns whether the libraries are installed correctly.
      */
     public static boolean isLibraryAvailable() {
-        return sm_bIsLibraryAvailable;
+        return isLibraryAvailable;
     }
 }

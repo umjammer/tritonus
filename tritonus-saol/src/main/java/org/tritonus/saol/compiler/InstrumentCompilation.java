@@ -18,6 +18,8 @@ package org.tritonus.saol.compiler;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,6 +51,8 @@ import org.tritonus.saol.engine.AbstractInstrument;
 import org.tritonus.saol.sablecc.analysis.DepthFirstAdapter;
 import org.tritonus.saol.sablecc.node.*;
 
+import static java.lang.System.getLogger;
+
 
 /**
  * InstrumentCompilation.java
@@ -57,7 +61,7 @@ import org.tritonus.saol.sablecc.node.*;
  */
 public class InstrumentCompilation extends DepthFirstAdapter {
 
-    private static final boolean DEBUG = true;
+    private static final Logger logger = getLogger(InstrumentCompilation.class.getName());
 
     // may become "org.tritonus.saol.generated."
     private static final String PACKAGE_PREFIX = "";
@@ -73,75 +77,75 @@ public class InstrumentCompilation extends DepthFirstAdapter {
 
     private static final Type FLOAT_ARRAY = new ArrayType(Type.FLOAT, 1);
 
-    private SAOLGlobals m_saolGlobals;
+    private final SAOLGlobals saolGlobals;
 
     // maps instrument names (String) to classes (Class)
-    private Map<String, Class<AbstractInstrument>> m_instrumentMap;
-    private Map<Node, Object> m_nodeAttributes;
-    private String m_strClassName;
-    private ClassGen m_classGen;
-    private ConstantPoolGen m_constantPoolGen;
-    //    private MethodGen m_methodGen;
-//    private InstructionList m_instructionList;
-    private InstructionFactory m_instructionFactory;
-//    private BranchInstruction m_pendingBranchInstruction;
+    private final Map<String, Class<AbstractInstrument>> instrumentMap;
+    private final Map<Node, Object> nodeAttributes;
+    private String className;
+    private ClassGen classGen;
+    private ConstantPoolGen constantPoolGen;
+//    private MethodGen methodGen;
+//    private InstructionList instructionList;
+    private InstructionFactory instructionFactory;
+//    private BranchInstruction pendingBranchInstruction;
 
     // TODO should be made obsolete by using node attributes
-    private boolean m_bOpvardecls;
-    private MemoryClassLoader m_classLoader = new MemoryClassLoader();
+    private boolean opVarDecls;
+    private MemoryClassLoader classLoader = new MemoryClassLoader();
 
     // 0: constructor
     // 1: doIPass()
     // 2: doKPass()
     // 3: doAPass()
-    private InstrumentMethod[] m_aMethods;
+    private InstrumentMethod[] methods;
 
     public InstrumentCompilation(SAOLGlobals saolGlobals, Map<String, Class<AbstractInstrument>> instrumentMap) {
-        m_saolGlobals = saolGlobals;
-        m_instrumentMap = instrumentMap;
-        m_nodeAttributes = new HashMap<>();
-        m_aMethods = new InstrumentMethod[4];
+        this.saolGlobals = saolGlobals;
+        this.instrumentMap = instrumentMap;
+        nodeAttributes = new HashMap<>();
+        methods = new InstrumentMethod[4];
     }
 
     @Override
     public void inAInstrdeclInstrdecl(AInstrdeclInstrdecl node) {
-        String strInstrumentName = node.getIdentifier().getText();
-        m_strClassName = PACKAGE_PREFIX + strInstrumentName;
-        m_classGen = new ClassGen(m_strClassName,
+        String instrumentName = node.getIdentifier().getText();
+        className = PACKAGE_PREFIX + instrumentName;
+        classGen = new ClassGen(className,
                 SUPERCLASS_NAME,
                 "<generated>",
                 Const.ACC_PUBLIC | Const.ACC_SUPER,
                 null);
-        m_constantPoolGen = m_classGen.getConstantPool();
-        m_instructionFactory = new InstructionFactory(m_constantPoolGen);
-        m_aMethods[METHOD_CONSTR] = new InstrumentMethod(m_classGen, "<init>");
-        m_aMethods[METHOD_I] = new InstrumentMethod(m_classGen, "doIPass");
-        m_aMethods[METHOD_K] = new InstrumentMethod(m_classGen, "doKPass");
-        m_aMethods[METHOD_A] = new InstrumentMethod(m_classGen, "doAPass");
-        m_aMethods[METHOD_CONSTR].appendInstruction(InstructionConst.ALOAD_0);
-        Instruction invokeSuperInstruction = m_instructionFactory.createInvoke(SUPERCLASS_NAME, "<init>", Type.VOID, Type.NO_ARGS, Const.INVOKESPECIAL);
-//        Instruction invokeSuperInstruction = m_instructionFactory.createInvoke(SUPERCLASS_NAME, SUPERCLASS_CONSTRUCTOR_NAME, Type.VOID, Type.NO_ARGS, Constants.INVOKESPECIAL);
-        m_aMethods[METHOD_CONSTR].appendInstruction(invokeSuperInstruction);
+        constantPoolGen = classGen.getConstantPool();
+        instructionFactory = new InstructionFactory(constantPoolGen);
+        methods[METHOD_CONSTR] = new InstrumentMethod(classGen, "<init>");
+        methods[METHOD_I] = new InstrumentMethod(classGen, "doIPass");
+        methods[METHOD_K] = new InstrumentMethod(classGen, "doKPass");
+        methods[METHOD_A] = new InstrumentMethod(classGen, "doAPass");
+        methods[METHOD_CONSTR].appendInstruction(InstructionConst.ALOAD_0);
+        Instruction invokeSuperInstruction = instructionFactory.createInvoke(SUPERCLASS_NAME, "<init>", Type.VOID, Type.NO_ARGS, Const.INVOKESPECIAL);
+//        Instruction invokeSuperInstruction = instructionFactory.createInvoke(SUPERCLASS_NAME, SUPERCLASS_CONSTRUCTOR_NAME, Type.VOID, Type.NO_ARGS, Constants.INVOKESPECIAL);
+        methods[METHOD_CONSTR].appendInstruction(invokeSuperInstruction);
     }
 
     @Override
     public void outAInstrdeclInstrdecl(AInstrdeclInstrdecl node) {
-        for (InstrumentMethod m_aMethod : m_aMethods) {
-            m_aMethod.finish();
-        }
-        JavaClass javaClass = m_classGen.getJavaClass();
         try {
+            for (InstrumentMethod method : methods) {
+                method.finish();
+            }
+            JavaClass javaClass = classGen.getJavaClass();
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             javaClass.dump(baos);
-            byte[] abData = baos.toByteArray();
+            byte[] data = baos.toByteArray();
             @SuppressWarnings("unchecked")
-            Class<AbstractInstrument> instrumentClass = (Class<AbstractInstrument>) m_classLoader.findClass(m_strClassName, abData);
-            m_instrumentMap.put(m_strClassName, instrumentClass);
-            if (DEBUG) {
-                javaClass.dump(m_strClassName + CLASSFILENAME_SUFFIX);
+            Class<AbstractInstrument> instrumentClass = (Class<AbstractInstrument>) classLoader.findClass(className, data);
+            instrumentMap.put(className, instrumentClass);
+            if (logger.isLoggable(Level.DEBUG)) {
+                javaClass.dump(className + CLASSFILENAME_SUFFIX);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace(System.err);
         }
     }
 
@@ -156,7 +160,7 @@ public class InstrumentCompilation extends DepthFirstAdapter {
     @Override
     public void outAAssignmentStatement(AAssignmentStatement node) {
         Instruction instruction = (Instruction) getNodeAttribute(node.getLvalue());
-        m_aMethods[METHOD_A].appendInstruction(instruction);
+        methods[METHOD_A].appendInstruction(instruction);
     }
 
     @Override
@@ -190,10 +194,10 @@ public class InstrumentCompilation extends DepthFirstAdapter {
         if (node.getRPar() != null) {
             node.getRPar().apply(this);
         }
-        m_aMethods[METHOD_A].appendInstruction(InstructionConst.FCONST_0);
-        m_aMethods[METHOD_A].appendInstruction(InstructionConst.FCMPL);
+        methods[METHOD_A].appendInstruction(InstructionConst.FCONST_0);
+        methods[METHOD_A].appendInstruction(InstructionConst.FCMPL);
         BranchInstruction ifeq = new IFEQ(null);
-        m_aMethods[METHOD_A].appendInstruction(ifeq);
+        methods[METHOD_A].appendInstruction(ifeq);
         if (node.getLBrace() != null) {
             node.getLBrace().apply(this);
         }
@@ -203,7 +207,7 @@ public class InstrumentCompilation extends DepthFirstAdapter {
         if (node.getRBrace() != null) {
             node.getRBrace().apply(this);
         }
-        m_aMethods[METHOD_A].setPendingBranchInstruction(ifeq);
+        methods[METHOD_A].setPendingBranchInstruction(ifeq);
         outAIfStatement(node);
     }
 
@@ -285,19 +289,19 @@ public class InstrumentCompilation extends DepthFirstAdapter {
      */
     @Override
     public void outASimpleLvalue(ASimpleLvalue node) {
-        m_aMethods[METHOD_A].appendInstruction(InstructionConst.ALOAD_0);
-        String strVariableName = node.getIdentifier().getText();
+        methods[METHOD_A].appendInstruction(InstructionConst.ALOAD_0);
+        String variableName = node.getIdentifier().getText();
         // TODO use getClassName()
         // set the instruction to be executed after the rvalue is calculated
-        Instruction instruction = getInstructionFactory().createPutField(m_strClassName, strVariableName, Type.FLOAT);
+        Instruction instruction = getInstructionFactory().createPutField(className, variableName, Type.FLOAT);
         setNodeAttribute(node, instruction);
     }
 
     @Override
     public void inAIndexedLvalue(AIndexedLvalue node) {
         // push the array reference onto the stack
-        String strVariableName = node.getIdentifier().getText();
-        m_aMethods[METHOD_A].appendGetField(strVariableName);
+        String variableName = node.getIdentifier().getText();
+        methods[METHOD_A].appendGetField(variableName);
     }
 
     /**
@@ -308,7 +312,7 @@ public class InstrumentCompilation extends DepthFirstAdapter {
     @Override
     public void outAIndexedLvalue(AIndexedLvalue node) {
         // TODO correct rounding (1.5 -> 2.0)
-        m_aMethods[METHOD_A].appendInstruction(InstructionConst.F2I);
+        methods[METHOD_A].appendInstruction(InstructionConst.F2I);
         // set the instruction to be executed after the rvalue is calculated
         setNodeAttribute(node, InstructionConst.FASTORE);
     }
@@ -355,12 +359,12 @@ public class InstrumentCompilation extends DepthFirstAdapter {
 
     @Override
     public void inASigvarOpvardecl(ASigvarOpvardecl node) {
-        m_bOpvardecls = true;
+        opVarDecls = true;
     }
 
     @Override
     public void outASigvarOpvardecl(ASigvarOpvardecl node) {
-        m_bOpvardecls = false;
+        opVarDecls = false;
     }
 
     @Override
@@ -389,24 +393,24 @@ public class InstrumentCompilation extends DepthFirstAdapter {
 
     @Override
     public void outASimpleName(ASimpleName node) {
-        if (m_bOpvardecls) {
-            String strVariableName = node.getIdentifier().getText();
-            addLocalVariable(strVariableName);
+        if (opVarDecls) {
+            String variableName = node.getIdentifier().getText();
+            addLocalVariable(variableName);
         }
     }
 
     @Override
     public void outAIndexedName(AIndexedName node) {
-        if (m_bOpvardecls) {
-            String strVariableName = node.getIdentifier().getText();
-            String strInteger = node.getInteger().getText();
-            int nInteger = Integer.parseInt(strInteger);
-            addLocalArray(strVariableName);
+        if (opVarDecls) {
+            String variableName = node.getIdentifier().getText();
+            String text = node.getInteger().getText();
+            int integer = Integer.parseInt(text);
+            addLocalArray(variableName);
             // code to allocate array in constructor
-            m_aMethods[METHOD_CONSTR].appendInstruction(InstructionConst.ALOAD_0);
-            Instruction instruction = getInstructionFactory().createNewArray(Type.FLOAT, (short) nInteger);
-            m_aMethods[METHOD_CONSTR].appendInstruction(instruction);
-            m_aMethods[METHOD_CONSTR].appendPutField(strVariableName);
+            methods[METHOD_CONSTR].appendInstruction(InstructionConst.ALOAD_0);
+            Instruction instruction = getInstructionFactory().createNewArray(Type.FLOAT, (short) integer);
+            methods[METHOD_CONSTR].appendInstruction(instruction);
+            methods[METHOD_CONSTR].appendPutField(variableName);
         }
     }
 
@@ -535,13 +539,13 @@ public class InstrumentCompilation extends DepthFirstAdapter {
     @Override
     public void outANeqEqualityexpr(ANeqEqualityexpr node) {
         BranchInstruction branch = new IFNE(null);
-        m_aMethods[METHOD_A].appendRelationalOperation(branch);
+        methods[METHOD_A].appendRelationalOperation(branch);
     }
 
     @Override
     public void outAEqEqualityexpr(AEqEqualityexpr node) {
         BranchInstruction branch = new IFEQ(null);
-        m_aMethods[METHOD_A].appendRelationalOperation(branch);
+        methods[METHOD_A].appendRelationalOperation(branch);
     }
 
     @Override
@@ -551,79 +555,78 @@ public class InstrumentCompilation extends DepthFirstAdapter {
     @Override
     public void outAGtRelationalexpr(AGtRelationalexpr node) {
         BranchInstruction branch = new IFGT(null);
-        m_aMethods[METHOD_A].appendRelationalOperation(branch);
+        methods[METHOD_A].appendRelationalOperation(branch);
     }
 
     @Override
     public void outALtRelationalexpr(ALtRelationalexpr node) {
         BranchInstruction branch = new IFLT(null);
-        m_aMethods[METHOD_A].appendRelationalOperation(branch);
+        methods[METHOD_A].appendRelationalOperation(branch);
     }
 
     @Override
     public void outALteqRelationalexpr(ALteqRelationalexpr node) {
         BranchInstruction branch = new IFLE(null);
-        m_aMethods[METHOD_A].appendRelationalOperation(branch);
+        methods[METHOD_A].appendRelationalOperation(branch);
     }
 
     @Override
     public void outAGteqRelationalexpr(AGteqRelationalexpr node) {
         BranchInstruction branch = new IFGE(null);
-        m_aMethods[METHOD_A].appendRelationalOperation(branch);
+        methods[METHOD_A].appendRelationalOperation(branch);
     }
 
     @Override
     public void outAPlusAddexpr(APlusAddexpr node) {
-        m_aMethods[METHOD_A].appendInstruction(InstructionConst.FADD);
+        methods[METHOD_A].appendInstruction(InstructionConst.FADD);
     }
 
     @Override
     public void outAMinusAddexpr(AMinusAddexpr node) {
-        m_aMethods[METHOD_A].appendInstruction(InstructionConst.FSUB);
+        methods[METHOD_A].appendInstruction(InstructionConst.FSUB);
     }
 
     @Override
     public void outAMultFactor(AMultFactor node) {
-        m_aMethods[METHOD_A].appendInstruction(InstructionConst.FMUL);
+        methods[METHOD_A].appendInstruction(InstructionConst.FMUL);
     }
 
     @Override
     public void outADivFactor(ADivFactor node) {
-        m_aMethods[METHOD_A].appendInstruction(InstructionConst.FDIV);
+        methods[METHOD_A].appendInstruction(InstructionConst.FDIV);
     }
 
     @Override
     public void outANotUnaryminusterm(ANotUnaryminusterm node) {
-        m_aMethods[METHOD_A].appendInstruction(InstructionConst.FNEG);
+        methods[METHOD_A].appendInstruction(InstructionConst.FNEG);
     }
 
     @Override
     public void outANotNotterm(ANotNotterm node) {
-        m_aMethods[METHOD_A].appendInstruction(InstructionConst.FCONST_0);
-        m_aMethods[METHOD_A].appendInstruction(InstructionConst.FCMPL);
+        methods[METHOD_A].appendInstruction(InstructionConst.FCONST_0);
+        methods[METHOD_A].appendInstruction(InstructionConst.FCMPL);
         BranchInstruction branch0 = new IFNE(null);
-        m_aMethods[METHOD_A].appendInstruction(branch0);
-        m_aMethods[METHOD_A].appendInstruction(InstructionConst.FCONST_1);
+        methods[METHOD_A].appendInstruction(branch0);
+        methods[METHOD_A].appendInstruction(InstructionConst.FCONST_1);
         BranchInstruction branch1 = new GOTO(null);
-        m_aMethods[METHOD_A].appendInstruction(branch1);
-        m_aMethods[METHOD_A].setPendingBranchInstruction(branch0);
-        m_aMethods[METHOD_A].appendInstruction(InstructionConst.FCONST_0);
-        m_aMethods[METHOD_A].setPendingBranchInstruction(branch1);
+        methods[METHOD_A].appendInstruction(branch1);
+        methods[METHOD_A].setPendingBranchInstruction(branch0);
+        methods[METHOD_A].appendInstruction(InstructionConst.FCONST_0);
+        methods[METHOD_A].setPendingBranchInstruction(branch1);
     }
 
     @Override
     public void outAIdentifierTerm(AIdentifierTerm node) {
-        String strVariableName = node.getIdentifier().getText();
-        m_aMethods[METHOD_A].appendGetField(strVariableName);
+        String variableName = node.getIdentifier().getText();
+        methods[METHOD_A].appendGetField(variableName);
     }
 
     @Override
     public void outAConstantTerm(AConstantTerm node) {
         Object constant = getNodeAttribute(node.getConst());
-        if (constant instanceof Integer ||
-                constant instanceof Float) {
-            float fValue = ((Number) constant).floatValue();
-            m_aMethods[METHOD_A].appendFloatConstant(fValue);
+        if (constant instanceof Integer || constant instanceof Float) {
+            float value = ((Number) constant).floatValue();
+            methods[METHOD_A].appendFloatConstant(value);
         } else {
             throw new RuntimeException("constant is neither int nor float");
         }
@@ -632,8 +635,8 @@ public class InstrumentCompilation extends DepthFirstAdapter {
     @Override
     public void inAIndexedTerm(AIndexedTerm node) {
         // push the array reference onto the stack
-        String strVariableName = node.getIdentifier().getText();
-        m_aMethods[METHOD_A].appendGetField(strVariableName);
+        String variableName = node.getIdentifier().getText();
+        methods[METHOD_A].appendGetField(variableName);
     }
 
     /**
@@ -644,7 +647,7 @@ public class InstrumentCompilation extends DepthFirstAdapter {
     @Override
     public void outAIndexedTerm(AIndexedTerm node) {
         // TODO correct rounding (1.5 -> 2.0)
-        m_aMethods[METHOD_A].appendInstruction(InstructionConst.F2I);
+        methods[METHOD_A].appendInstruction(InstructionConst.F2I);
         // and now fetch the value from the array
         setNodeAttribute(node, InstructionConst.FALOAD);
     }
@@ -727,43 +730,43 @@ public class InstrumentCompilation extends DepthFirstAdapter {
 
     @Override
     public void outAIntegerConst(AIntegerConst node) {
-        String strInteger = node.getInteger().getText();
-        setNodeAttribute(node, Integer.parseInt(strInteger));
+        String text = node.getInteger().getText();
+        setNodeAttribute(node, Integer.parseInt(text));
     }
 
     @Override
     public void outANumberConst(ANumberConst node) {
-        String strNumber = node.getNumber().getText();
-        setNodeAttribute(node, Float.parseFloat(strNumber));
+        String text = node.getNumber().getText();
+        setNodeAttribute(node, Float.parseFloat(text));
     }
 
     // helper methods
 
     private void setNodeAttribute(Node node, Object attribute) {
-        m_nodeAttributes.put(node, attribute);
+        nodeAttributes.put(node, attribute);
     }
 
     private Object getNodeAttribute(Node node) {
-        return m_nodeAttributes.get(node);
+        return nodeAttributes.get(node);
     }
 
-    private void addLocalVariable(String strVariableName) {
+    private void addLocalVariable(String variableName) {
         FieldGen fieldGen;
         fieldGen = new FieldGen(Const.ACC_PRIVATE,
                 Type.FLOAT,
-                strVariableName,
-                m_constantPoolGen);
-        m_classGen.addField(fieldGen.getField());
+                variableName,
+                constantPoolGen);
+        classGen.addField(fieldGen.getField());
 
     }
 
-    private void addLocalArray(String strVariableName) {
+    private void addLocalArray(String variableName) {
         FieldGen fieldGen;
         fieldGen = new FieldGen(Const.ACC_PRIVATE,
                 FLOAT_ARRAY,
-                strVariableName,
-                m_constantPoolGen);
-        m_classGen.addField(fieldGen.getField());
+                variableName,
+                constantPoolGen);
+        classGen.addField(fieldGen.getField());
 
     }
 
@@ -774,48 +777,48 @@ public class InstrumentCompilation extends DepthFirstAdapter {
      * InstructionFactory per generated class.
      */
     private InstructionFactory getInstructionFactory() {
-        return m_instructionFactory;
+        return instructionFactory;
     }
 
     private class InstrumentMethod {
 
-        private ClassGen m_classGen;
-        private MethodGen m_methodGen;
-        private InstructionList m_instructionList;
-        private BranchInstruction m_pendingBranchInstruction;
+        private final ClassGen classGen;
+        private final MethodGen methodGen;
+        private final InstructionList instructionList;
+        private BranchInstruction pendingBranchInstruction;
 
-        public InstrumentMethod(ClassGen classGen, String strMethodName) {
-            m_classGen = classGen;
-            m_instructionList = new InstructionList();
-            m_methodGen = new MethodGen(
+        public InstrumentMethod(ClassGen classGen, String methodName) {
+            this.classGen = classGen;
+            instructionList = new InstructionList();
+            methodGen = new MethodGen(
                     Const.ACC_PUBLIC,
                     Type.VOID,
                     new Type[] {new ObjectType("org.tritonus.saol.engine.RTSystem")},
                     new String[] {"rtSystem"},
-                    strMethodName,
-                    m_classGen.getClassName(),
-                    m_instructionList,
-                    m_classGen.getConstantPool());
+                    methodName,
+                    this.classGen.getClassName(),
+                    instructionList,
+                    this.classGen.getConstantPool());
         }
 
         /**
          * Append an instruction to the method's Instruction
          * list. If a BranchInstruction is pending, it is
-         * targetted here.
+         * targeted here.
          */
         public InstructionHandle appendInstruction(Instruction instruction) {
             // System.out.println("instruction: " + instruction);
             InstructionHandle target;
             if (instruction instanceof BranchInstruction) {
-                target = m_instructionList.append((BranchInstruction) instruction);
+                target = instructionList.append((BranchInstruction) instruction);
             } else if (instruction instanceof CompoundInstruction) {
-                target = m_instructionList.append((CompoundInstruction) instruction);
+                target = instructionList.append((CompoundInstruction) instruction);
             } else {
-                target = m_instructionList.append(instruction);
+                target = instructionList.append(instruction);
             }
-            if (m_pendingBranchInstruction != null) {
-                m_pendingBranchInstruction.setTarget(target);
-                m_pendingBranchInstruction = null;
+            if (pendingBranchInstruction != null) {
+                pendingBranchInstruction.setTarget(target);
+                pendingBranchInstruction = null;
             }
             return target;
         }
@@ -831,72 +834,58 @@ public class InstrumentCompilation extends DepthFirstAdapter {
          * the pending BranchInstruction.
          */
         public void setPendingBranchInstruction(BranchInstruction branchInstruction) {
-            if (m_pendingBranchInstruction != null) {
+            if (pendingBranchInstruction != null) {
                 throw new RuntimeException("pending branch instruction already set");
             }
-            m_pendingBranchInstruction = branchInstruction;
+            pendingBranchInstruction = branchInstruction;
         }
 
-        public void appendGetField(String strVariableName) {
-            // System.out.println("class name: " + m_strClassName);
-            // System.out.println("var name: " + strVariableName);
+        public void appendGetField(String variableName) {
+            // System.out.println("class name: " + className);
+            // System.out.println("var name: " + variableName);
             appendInstruction(InstructionConst.ALOAD_0);
-            Instruction instruction = getInstructionFactory().createGetField(m_strClassName, strVariableName, Type.FLOAT);
+            Instruction instruction = getInstructionFactory().createGetField(className, variableName, Type.FLOAT);
             appendInstruction(instruction);
         }
 
         /**
          * NOTE: this method does not append an ALOAD_0 instruction!
          */
-        public void appendPutField(String strVariableName) {
-            // System.out.println("class name: " + m_strClassName);
-            // System.out.println("var name: " + strVariableName);
-            Instruction instruction = getInstructionFactory().createPutField(m_strClassName, strVariableName, Type.FLOAT);
+        public void appendPutField(String variableName) {
+            // System.out.println("class name: " + className);
+            // System.out.println("var name: " + variableName);
+            Instruction instruction = getInstructionFactory().createPutField(className, variableName, Type.FLOAT);
             appendInstruction(instruction);
         }
 
-        public void appendIntegerConstant(int nValue) {
-            Instruction instruction;
-            switch (nValue) {
-            case -1:
-                instruction = InstructionConst.ICONST_M1;
-                break;
-            case 0:
-                instruction = InstructionConst.ICONST_0;
-                break;
-            case 1:
-                instruction = InstructionConst.ICONST_1;
-                break;
-            case 2:
-                instruction = InstructionConst.ICONST_2;
-                break;
-            case 3:
-                instruction = InstructionConst.ICONST_3;
-                break;
-            case 4:
-                instruction = InstructionConst.ICONST_4;
-                break;
-            case 5:
-                instruction = InstructionConst.ICONST_5;
-                break;
-            default:
-                int nConstantIndex = m_constantPoolGen.addInteger(nValue);
-                instruction = new LDC(nConstantIndex);
-            }
+        public void appendIntegerConstant(int value) {
+            Instruction instruction = switch (value) {
+                case -1 -> InstructionConst.ICONST_M1;
+                case 0 -> InstructionConst.ICONST_0;
+                case 1 -> InstructionConst.ICONST_1;
+                case 2 -> InstructionConst.ICONST_2;
+                case 3 -> InstructionConst.ICONST_3;
+                case 4 -> InstructionConst.ICONST_4;
+                case 5 -> InstructionConst.ICONST_5;
+                default -> {
+                    int constantIndex = constantPoolGen.addInteger(value);
+                    yield new LDC(constantIndex);
+                }
+            };
             appendInstruction(instruction);
         }
 
-        public void appendFloatConstant(float fValue) {
+        public void appendFloatConstant(float value) {
             Instruction instruction;
-            if (fValue == 0.0) {
+            if (value == 0.0) {
                 instruction = InstructionConst.FCONST_0;
-            } else if (fValue == 1.0) {
+            } else if (value == 1.0) {
                 instruction = InstructionConst.FCONST_1;
-            } else if (fValue == 2.0) {
+            } else if (value == 2.0) {
                 instruction = InstructionConst.FCONST_2;
             } else {
-                int nConstantIndex = m_constantPoolGen.addFloat(fValue);
-                instruction = new LDC(nConstantIndex);
+                int constantIndex = constantPoolGen.addFloat(value);
+                instruction = new LDC(constantIndex);
             }
             appendInstruction(instruction);
         }
@@ -914,10 +903,8 @@ public class InstrumentCompilation extends DepthFirstAdapter {
 
         public void finish() {
             appendInstruction(InstructionConst.RETURN);
-            m_methodGen.setMaxStack();
-            m_classGen.addMethod(m_methodGen.getMethod());
+            methodGen.setMaxStack();
+            classGen.addMethod(methodGen.getMethod());
         }
     }
 }
-
-

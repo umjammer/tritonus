@@ -39,65 +39,55 @@ public class SkipTest {
         if (args.length == 0) {
             printUsageAndExit();
         }
-        int nLoadMethod = LOAD_METHOD_FILE;
-        boolean bCheckAudioInputStream;
-        int nCurrentArg = 0;
-        while (nCurrentArg < args.length) {
-            if (args[nCurrentArg].equals("-h")) {
+        int loadMethod = LOAD_METHOD_FILE;
+        boolean checkAudioInputStream;
+        int currentArg = 0;
+        while (currentArg < args.length) {
+            if (args[currentArg].equals("-h")) {
                 printUsageAndExit();
+//            } else if (args[currentArg].equals("-s")) {
+//                loadMethod = LOAD_METHOD_STREAM;
+//            } else if (args[currentArg].equals("-f")) {
+//                loadMethod = LOAD_METHOD_FILE;
+//            } else if (args[currentArg].equals("-u")) {
+//                loadMethod = LOAD_METHOD_URL;
+//            } else if (args[currentArg].equals("-i")) {
+//                checkAudioInputStream = true;
             }
-/*
-   else if (args[nCurrentArg].equals("-s"))
-   {
-    nLoadMethod = LOAD_METHOD_STREAM;
-   }
-   else if (args[nCurrentArg].equals("-f"))
-   {
-    nLoadMethod = LOAD_METHOD_FILE;
-   }
-   else if (args[nCurrentArg].equals("-u"))
-   {
-    nLoadMethod = LOAD_METHOD_URL;
-   }
-   else if (args[nCurrentArg].equals("-i"))
-   {
-    bCheckAudioInputStream = true;
-   }
-*/
 
-            nCurrentArg++;
+            currentArg++;
         }
-        bCheckAudioInputStream = true;
-        String strSource = args[nCurrentArg - 2];
-        long lSkip = Long.parseLong(args[nCurrentArg - 1]);
-        String strFilename = null;
+        checkAudioInputStream = true;
+        String source = args[currentArg - 2];
+        long skip = Long.parseLong(args[currentArg - 1]);
+        String filename = null;
         AudioFileFormat aff = null;
         AudioInputStream ais = null;
         try {
-            switch (nLoadMethod) {
+            switch (loadMethod) {
             case LOAD_METHOD_STREAM:
                 InputStream inputStream = System.in;
                 aff = AudioSystem.getAudioFileFormat(inputStream);
-                strFilename = "<standard input>";
-                if (bCheckAudioInputStream) {
+                filename = "<standard input>";
+                if (checkAudioInputStream) {
                     ais = AudioSystem.getAudioInputStream(inputStream);
                 }
                 break;
 
             case LOAD_METHOD_FILE:
-                File file = new File(strSource);
+                File file = new File(source);
                 aff = AudioSystem.getAudioFileFormat(file);
-                strFilename = file.getCanonicalPath();
-                if (bCheckAudioInputStream) {
+                filename = file.getCanonicalPath();
+                if (checkAudioInputStream) {
                     ais = AudioSystem.getAudioInputStream(file);
                 }
                 break;
 
             case LOAD_METHOD_URL:
-                URL url = new URL(strSource);
+                URL url = new URL(source);
                 aff = AudioSystem.getAudioFileFormat(url);
-                strFilename = url.toString();
-                if (bCheckAudioInputStream) {
+                filename = url.toString();
+                if (checkAudioInputStream) {
                     ais = AudioSystem.getAudioInputStream(url);
                 }
                 break;
@@ -109,47 +99,41 @@ public class SkipTest {
         if (aff == null) {
             System.out.println("Cannot determine format");
         } else {
-/*
-   AudioFormat format = aff.getFormat();
-   System.out.println("---------------------------------------------------------------------------");
-   System.out.println("Source: " + strFilename);
-   System.out.println("Type: " + aff.getType());
-   System.out.println("AudioFormat: " + format);
-   System.out.println("---------------------------------------------------------------------------");
-   String strAudioLength = null;
-   if (aff.getFrameLength() != AudioSystem.NOT_SPECIFIED)
-   {
-    strAudioLength = "" + aff.getFrameLength() + " frames (= " + aff.getFrameLength() * format.getFrameSize() + " bytes)";
-   }
-   else
-   {
-    strAudioLength = "unknown";
-   }
-   System.out.println("Length of audio data: " + strAudioLength);
-   String strFileLength = null;
-   if (aff.getByteLength() != AudioSystem.NOT_SPECIFIED)
-   {
-    strFileLength = "" + aff.getByteLength() + " bytes)";
-   }
-   else
-   {
-    strFileLength = "unknown";
-   }
-   System.out.println("Total length of file (including headers): " + strFileLength);
-*/
-            if (bCheckAudioInputStream) {
+
+//            AudioFormat format = aff.getFormat();
+//            System.out.println("---------------------------------------------------------------------------");
+//            System.out.println("Source: " + filename);
+//            System.out.println("Type: " + aff.getType());
+//            System.out.println("AudioFormat: " + format);
+//            System.out.println("---------------------------------------------------------------------------");
+//            String audioLength = null;
+//            if (aff.getFrameLength() != AudioSystem.NOT_SPECIFIED) {
+//                audioLength = "" + aff.getFrameLength() + " frames (= " + aff.getFrameLength() * format.getFrameSize() + " bytes)";
+//            } else {
+//                audioLength = "unknown";
+//            }
+//            System.out.println("Length of audio data: " + audioLength);
+//            String fileLength = null;
+//            if (aff.getByteLength() != AudioSystem.NOT_SPECIFIED) {
+//                fileLength = "" + aff.getByteLength() + " bytes)";
+//            } else {
+//                fileLength = "unknown";
+//            }
+//            System.out.println("Total length of file (including headers): " + fileLength);
+
+            if (checkAudioInputStream) {
                 // System.out.println("[AudioInputStream says:] Length of audio data: " + ais.getFrameLength() + " frames (= " + ais.getFrameLength() * ais.getFormat().getFrameSize() + " bytes)");
                 System.out.println("frame length: " + ais.getFrameLength());
                 System.out.println("frame size: " + ais.getFormat().getFrameSize());
                 System.out.println("AIS class:" + ais);
                 System.out.println("now skipping...");
-                long lSkipped = 0;
+                long skipped = 0;
                 try {
-                    lSkipped = ais.skip(lSkip);
+                    skipped = ais.skip(skip);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                System.out.println("skipped: " + lSkipped);
+                System.out.println("skipped: " + skipped);
             }
             System.out.println("---------------------------------------------------------------------------");
         }
@@ -160,8 +144,4 @@ public class SkipTest {
         System.out.println("\tjava SkipTest <audiofile> <skip>");
         System.exit(1);
     }
-
-
 }
-
-

@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 2003 by Matthias Pfisterer
  *
@@ -23,11 +22,10 @@ import java.util.Map;
 import javax.sound.sampled.AudioFormat;
 
 
-public class TAudioFormat
-        extends AudioFormat {
+public class TAudioFormat extends AudioFormat {
 
-    private Map<String, Object> m_properties;
-    private Map<String, Object> m_unmodifiableProperties;
+    private Map<String, Object> properties;
+    private Map<String, Object> unmodifiableProperties;
 
     public TAudioFormat(AudioFormat.Encoding encoding,
                         float sampleRate,
@@ -37,19 +35,12 @@ public class TAudioFormat
                         float frameRate,
                         boolean bigEndian,
                         Map<String, Object> properties) {
-        super(encoding,
-                sampleRate,
-                sampleSizeInBits,
-                channels,
-                frameSize,
-                frameRate,
-                bigEndian);
+        super(encoding, sampleRate, sampleSizeInBits, channels, frameSize, frameRate, bigEndian);
         initMaps(properties);
     }
 
     /**
-     * Create an instance of TAudioFormat as a copy of the supplied audio
-     * format.
+     * Create an instance of TAudioFormat as a copy of the supplied audio format.
      *
      * @param format the instance to copy
      */
@@ -73,10 +64,9 @@ public class TAudioFormat
      * @param format     the instance to copy
      * @param properties properties to be added to this TAudioFormat
      */
-    public TAudioFormat(AudioFormat format,
-                        Map<String, Object> properties) {
+    public TAudioFormat(AudioFormat format, Map<String, Object> properties) {
         this(format);
-        m_properties.putAll(properties);
+        this.properties.putAll(properties);
     }
 
     public TAudioFormat(float sampleRate,
@@ -85,47 +75,41 @@ public class TAudioFormat
                         boolean signed,
                         boolean bigEndian,
                         Map<String, Object> properties) {
-        super(sampleRate,
-                sampleSizeInBits,
-                channels,
-                signed,
-                bigEndian);
+        super(sampleRate, sampleSizeInBits, channels, signed, bigEndian);
         initMaps(properties);
     }
 
     private void initMaps(Map<String, Object> properties) {
-  /* Here, we make a shallow copy of the map. It's unclear if this
-     is sufficient (or if a deep copy should be made).
-  */
-        m_properties = new HashMap<>();
+        // Here, we make a shallow copy of the map. It's unclear if this
+        // is sufficient (or if a deep copy should be made).
+
+        this.properties = new HashMap<>();
         if (properties != null) {
-            m_properties.putAll(properties);
+            this.properties.putAll(properties);
         }
-        m_unmodifiableProperties = Collections.unmodifiableMap(m_properties);
+        unmodifiableProperties = Collections.unmodifiableMap(this.properties);
     }
 
     @Override
     public Map<String, Object> properties() {
-        if (m_properties == null) {
+        if (properties == null) {
             initMaps(null);
         }
-        return m_unmodifiableProperties;
+        return unmodifiableProperties;
     }
 
     @Override
     public Object getProperty(String key) {
-        if (m_properties == null) {
+        if (properties == null) {
             return null;
         }
-        return m_properties.get(key);
+        return properties.get(key);
     }
 
     protected void setProperty(String key, Object value) {
-        if (m_properties == null) {
+        if (properties == null) {
             initMaps(null);
         }
-        m_properties.put(key, value);
+        properties.put(key, value);
     }
 }
-
-

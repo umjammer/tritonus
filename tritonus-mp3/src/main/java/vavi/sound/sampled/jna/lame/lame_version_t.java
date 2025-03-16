@@ -1,6 +1,5 @@
 package vavi.sound.sampled.jna.lame;
 
-import java.util.Arrays;
 import java.util.List;
 
 import com.sun.jna.Pointer;
@@ -39,7 +38,7 @@ public class lame_version_t extends Structure {
 
     @Override
     protected List<String> getFieldOrder() {
-        return Arrays.asList("major", "minor", "alpha", "beta", "psy_major", "psy_minor", "psy_alpha", "psy_beta", "features");
+        return List.of("major", "minor", "alpha", "beta", "psy_major", "psy_minor", "psy_alpha", "psy_beta", "features");
     }
 
     /**

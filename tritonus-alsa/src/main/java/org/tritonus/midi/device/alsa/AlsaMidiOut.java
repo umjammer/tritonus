@@ -29,6 +29,12 @@ import org.tritonus.lowlevel.alsa.AlsaSeq;
 import org.tritonus.lowlevel.alsa.AlsaSeqEvent;
 
 import static java.lang.System.getLogger;
+import static org.tritonus.lowlevel.alsa.AlsaSeq.SND_SEQ_ADDRESS_SUBSCRIBERS;
+import static org.tritonus.lowlevel.alsa.AlsaSeq.SND_SEQ_ADDRESS_UNKNOWN;
+import static org.tritonus.lowlevel.alsa.AlsaSeq.SND_SEQ_QUEUE_DIRECT;
+import static org.tritonus.lowlevel.alsa.AlsaSeq.SND_SEQ_TIME_MODE_REL;
+import static org.tritonus.lowlevel.alsa.AlsaSeq.SND_SEQ_TIME_STAMP_REAL;
+import static org.tritonus.lowlevel.alsa.AlsaSeq.SND_SEQ_TIME_STAMP_TICK;
 
 
 /**
@@ -44,317 +50,319 @@ public class AlsaMidiOut {
     /**
      * The low-level object to interface to the ALSA sequencer.
      */
-    private AlsaSeq m_alsaSeq;
+    private final AlsaSeq alsaSeq;
 
     /**
      * The source port to use for sending messages via the ALSA sequencer.
      */
-    private int m_nSourcePort;
+    private final int sourcePort;
 
     /**
      * The sequencer queue to use inside the ALSA sequencer.
-     * This value is only used (and valid) if m_bImmediately
+     * This value is only used (and valid) if immediately
      * false. Otherwise, events are sent directely to the destination
      * client, circumventing queues.
      */
-    private int m_nQueue;
+    private final int queue;
 
-    private boolean m_bImmediately;
+    private final boolean immediately;
 
-    private boolean m_bHandleMetaMessages;
+    private boolean handleMetaMessages;
 
-    private AlsaSeqEvent m_event = new AlsaSeqEvent();
+    private final AlsaSeqEvent event = new AlsaSeqEvent();
 
     /*
      * Sends to all subscribers via queue.
      */
-    public AlsaMidiOut(AlsaSeq aSequencer, int nSourcePort, int nQueue) {
-        this(aSequencer, nSourcePort, nQueue, false);
+    public AlsaMidiOut(AlsaSeq sequencer, int sourcePort, int queue) {
+        this(sequencer, sourcePort, queue, false);
     }
 
     /*
      * Sends to all subscribers immediately.
      */
-    public AlsaMidiOut(AlsaSeq aSequencer, int nSourcePort) {
-        this(aSequencer, nSourcePort, -1, true);
+    public AlsaMidiOut(AlsaSeq sequencer, int sourcePort) {
+        this(sequencer, sourcePort, -1, true);
     }
 
-    private AlsaMidiOut(AlsaSeq aSequencer, int nSourcePort, int nQueue, boolean bImmediately) {
-        logger.log(Level.TRACE, "AlsaMidiOut.<init>(AlsaSeq, int, int, boolean): begin");
+    private AlsaMidiOut(AlsaSeq sequencer, int sourcePort, int queue, boolean immediately) {
+        logger.log(Level.TRACE, "begin");
 
-        m_alsaSeq = aSequencer;
-        m_nSourcePort = nSourcePort;
-        m_nQueue = nQueue;
-        m_bImmediately = bImmediately;
-        m_bHandleMetaMessages = false;
+        alsaSeq = sequencer;
+        this.sourcePort = sourcePort;
+        this.queue = queue;
+        this.immediately = immediately;
+        handleMetaMessages = false;
 
-        logger.log(Level.TRACE, "AlsaMidiOut.<init>(AlsaSeq, int, int, boolean): end");
+        logger.log(Level.TRACE, "end");
     }
 
     private AlsaSeq getAlsaSeq() {
-        return m_alsaSeq;
+        return alsaSeq;
     }
 
     private int getSourcePort() {
-        return m_nSourcePort;
+        return sourcePort;
     }
 
     private int getQueue() {
-        return m_nQueue;
+        return queue;
     }
 
     private boolean getImmediately() {
-        return m_bImmediately;
+        return immediately;
     }
 
     public boolean getHandleMetaMessages() {
-        return m_bHandleMetaMessages;
+        return handleMetaMessages;
     }
 
-    public void setHandleMetaMessages(boolean bHandleMetaMessages) {
-        m_bHandleMetaMessages = bHandleMetaMessages;
+    public void setHandleMetaMessages(boolean handleMetaMessages) {
+        this.handleMetaMessages = handleMetaMessages;
     }
 
-    public synchronized void enqueueMessage(MidiMessage event, long lTick) {
-        logger.log(Level.TRACE, "AlsaMidiOut.enqueueMessage(): begin");
+    public synchronized void enqueueMessage(MidiMessage event, long tick) {
+        logger.log(Level.TRACE, "begin");
 
         if (event instanceof ShortMessage) {
-            enqueueShortMessage((ShortMessage) event, lTick);
+            enqueueShortMessage((ShortMessage) event, tick);
         } else if (event instanceof SysexMessage) {
-            enqueueSysexMessage((SysexMessage) event, lTick);
+            enqueueSysexMessage((SysexMessage) event, tick);
         } else if (event instanceof MetaMessage && getHandleMetaMessages()) {
-            enqueueMetaMessage((MetaMessage) event, lTick);
+            enqueueMetaMessage((MetaMessage) event, tick);
         } else {
             // Ignore it.
         }
 
-        logger.log(Level.TRACE, "AlsaMidiOut.enqueueMessage(): end");
+        logger.log(Level.TRACE, "end");
     }
 
-    private void enqueueShortMessage(ShortMessage shortMessage, long lTime) {
-        int nChannel = shortMessage.getChannel();
+    private void enqueueShortMessage(ShortMessage shortMessage, long time) {
+        int channel = shortMessage.getChannel();
         switch (shortMessage.getCommand()) {
         case ShortMessage.NOTE_OFF:
-            sendNoteOffEvent(lTime, nChannel, shortMessage.getData1(), shortMessage.getData2());
+            sendNoteOffEvent(time, channel, shortMessage.getData1(), shortMessage.getData2());
             break;
 
         case ShortMessage.NOTE_ON:
-            sendNoteOnEvent(lTime, nChannel, shortMessage.getData1(), shortMessage.getData2());
+            sendNoteOnEvent(time, channel, shortMessage.getData1(), shortMessage.getData2());
             break;
 
         case ShortMessage.POLY_PRESSURE:
-            sendKeyPressureEvent(lTime, nChannel, shortMessage.getData1(), shortMessage.getData2());
+            sendKeyPressureEvent(time, channel, shortMessage.getData1(), shortMessage.getData2());
             break;
 
         case ShortMessage.CONTROL_CHANGE:
-            sendControlChangeEvent(lTime, nChannel, shortMessage.getData1(), shortMessage.getData2());
+            sendControlChangeEvent(time, channel, shortMessage.getData1(), shortMessage.getData2());
             break;
 
         case ShortMessage.PROGRAM_CHANGE:
-            sendProgramChangeEvent(lTime, nChannel, shortMessage.getData1());
+            sendProgramChangeEvent(time, channel, shortMessage.getData1());
             break;
 
         case ShortMessage.CHANNEL_PRESSURE:
-            sendChannelPressureEvent(lTime, nChannel, shortMessage.getData1());
+            sendChannelPressureEvent(time, channel, shortMessage.getData1());
             break;
 
         case ShortMessage.PITCH_BEND:
-            sendPitchBendEvent(lTime, nChannel, get14bitValue(shortMessage.getData1(), shortMessage.getData2()));
+            sendPitchBendEvent(time, channel, get14bitValue(shortMessage.getData1(), shortMessage.getData2()));
             break;
 
         case 0xF0:
             switch (shortMessage.getStatus()) {
             case ShortMessage.MIDI_TIME_CODE:
-                sendMTCEvent(lTime, shortMessage.getData1());
+                sendMTCEvent(time, shortMessage.getData1());
                 break;
 
             case ShortMessage.SONG_POSITION_POINTER:
-                sendSongPositionPointerEvent(lTime, get14bitValue(shortMessage.getData1(), shortMessage.getData2()));
+                sendSongPositionPointerEvent(time, get14bitValue(shortMessage.getData1(), shortMessage.getData2()));
                 break;
 
             case ShortMessage.SONG_SELECT:
-                sendSongSelectEvent(lTime, shortMessage.getData1());
+                sendSongSelectEvent(time, shortMessage.getData1());
                 break;
 
             case ShortMessage.TUNE_REQUEST:
-                sendTuneRequestEvent(lTime);
+                sendTuneRequestEvent(time);
                 break;
 
             case ShortMessage.TIMING_CLOCK:
-                sendMidiClockEvent(lTime);
+                sendMidiClockEvent(time);
                 break;
 
             case ShortMessage.START:
-                sendStartEvent(lTime);
+                sendStartEvent(time);
                 break;
 
             case ShortMessage.CONTINUE:
-                sendContinueEvent(lTime);
+                sendContinueEvent(time);
                 break;
 
             case ShortMessage.STOP:
-                sendStopEvent(lTime);
+                sendStopEvent(time);
                 break;
 
             case ShortMessage.ACTIVE_SENSING:
-                sendActiveSensingEvent(lTime);
+                sendActiveSensingEvent(time);
                 break;
 
             case ShortMessage.SYSTEM_RESET:
-                sendSystemResetEvent(lTime);
+                sendSystemResetEvent(time);
                 break;
 
             default:
-                logger.log(Level.TRACE, "AlsaMidiOut.enqueueShortMessage(): UNKNOWN EVENT TYPE: " + shortMessage.getStatus());
+                logger.log(Level.TRACE, "UNKNOWN EVENT TYPE: " + shortMessage.getStatus());
             }
             break;
 
         default:
-            logger.log(Level.TRACE, "AlsaMidiOut.enqueueShortMessage(): UNKNOWN EVENT TYPE: " + shortMessage.getStatus());
+            logger.log(Level.TRACE, "UNKNOWN EVENT TYPE: " + shortMessage.getStatus());
         }
     }
 
-    private static int get14bitValue(int nLSB, int nMSB) {
-        return (nLSB & 0x7F) | ((nMSB & 0x7F) << 7);
+    private static int get14bitValue(int lsb, int msb) {
+        return (lsb & 0x7F) | ((msb & 0x7F) << 7);
     }
 
-    private void sendNoteOffEvent(long lTime, int nChannel, int nNote, int nVelocity) {
-        sendNoteEvent(AlsaSeq.SND_SEQ_EVENT_NOTEOFF, lTime, nChannel, nNote, nVelocity);
+    private void sendNoteOffEvent(long time, int channel, int note, int velocity) {
+        sendNoteEvent(AlsaSeq.SND_SEQ_EVENT_NOTEOFF, time, channel, note, velocity);
     }
 
-    private void sendNoteOnEvent(long lTime, int nChannel, int nNote, int nVelocity) {
-        sendNoteEvent(AlsaSeq.SND_SEQ_EVENT_NOTEON, lTime, nChannel, nNote, nVelocity);
+    private void sendNoteOnEvent(long time, int channel, int note, int velocity) {
+        sendNoteEvent(AlsaSeq.SND_SEQ_EVENT_NOTEON, time, channel, note, velocity);
     }
 
-    private void sendNoteEvent(int nType, long lTime, int nChannel, int nNote, int nVelocity) {
-        setCommon(nType, 0, lTime);
-        m_event.setNote(nChannel, nNote, nVelocity, 0, 0);
+    private void sendNoteEvent(int type, long time, int channel, int note, int velocity) {
+        setCommon(type, 0, time);
+        event.setNote(channel, note, velocity, 0, 0);
         sendEvent();
     }
 
-    private void sendKeyPressureEvent(long lTime, int nChannel, int nNote, int nPressure) {
-        sendControlEvent(AlsaSeq.SND_SEQ_EVENT_KEYPRESS, lTime, nChannel, nNote, nPressure);
+    private void sendKeyPressureEvent(long time, int channel, int note, int pressure) {
+        sendControlEvent(AlsaSeq.SND_SEQ_EVENT_KEYPRESS, time, channel, note, pressure);
     }
 
-    private void sendControlChangeEvent(long lTime, int nChannel, int nControl, int nValue) {
-        sendControlEvent(AlsaSeq.SND_SEQ_EVENT_CONTROLLER, lTime, nChannel, nControl, nValue);
+    private void sendControlChangeEvent(long time, int channel, int control, int value) {
+        sendControlEvent(AlsaSeq.SND_SEQ_EVENT_CONTROLLER, time, channel, control, value);
     }
 
-    private void sendProgramChangeEvent(long lTime, int nChannel, int nProgram) {
-        sendControlEvent(AlsaSeq.SND_SEQ_EVENT_PGMCHANGE, lTime, nChannel, 0, nProgram);
+    private void sendProgramChangeEvent(long time, int channel, int program) {
+        sendControlEvent(AlsaSeq.SND_SEQ_EVENT_PGMCHANGE, time, channel, 0, program);
     }
 
-    private void sendChannelPressureEvent(long lTime, int nChannel, int nPressure) {
-        sendControlEvent(AlsaSeq.SND_SEQ_EVENT_CHANPRESS, lTime, nChannel, 0, nPressure);
+    private void sendChannelPressureEvent(long time, int channel, int pressure) {
+        sendControlEvent(AlsaSeq.SND_SEQ_EVENT_CHANPRESS, time, channel, 0, pressure);
     }
 
     // TODO recheck!!!!
-    private void sendPitchBendEvent(long lTime, int nChannel, int nPitch) {
-        sendControlEvent(AlsaSeq.SND_SEQ_EVENT_PITCHBEND, lTime, nChannel, 0, nPitch);
+    private void sendPitchBendEvent(long time, int channel, int pitch) {
+        sendControlEvent(AlsaSeq.SND_SEQ_EVENT_PITCHBEND, time, channel, 0, pitch);
     }
 
-    private void sendControlEvent(int nType, long lTime, int nChannel, int nParam, int nValue) {
-        setCommon(nType, 0, lTime);
-        m_event.setControl(nChannel, nParam, nValue);
+    private void sendControlEvent(int type, long time, int channel, int param, int value) {
+        setCommon(type, 0, time);
+        event.setControl(channel, param, value);
         sendEvent();
     }
 
-    private void sendMTCEvent(long lTime, int nData) {
-        sendControlEvent(AlsaSeq.SND_SEQ_EVENT_QFRAME, lTime, 0, 0, nData);
+    private void sendMTCEvent(long time, int data) {
+        sendControlEvent(AlsaSeq.SND_SEQ_EVENT_QFRAME, time, 0, 0, data);
     }
 
-    private void sendSongPositionPointerEvent(long lTime, int nPosition) {
-        sendControlEvent(AlsaSeq.SND_SEQ_EVENT_SONGPOS, lTime, 0, 0, nPosition);
+    private void sendSongPositionPointerEvent(long time, int position) {
+        sendControlEvent(AlsaSeq.SND_SEQ_EVENT_SONGPOS, time, 0, 0, position);
     }
 
-    private void sendSongSelectEvent(long lTime, int nSong) {
-        sendControlEvent(AlsaSeq.SND_SEQ_EVENT_SONGSEL, lTime, 0, 0, nSong);
+    private void sendSongSelectEvent(long time, int song) {
+        sendControlEvent(AlsaSeq.SND_SEQ_EVENT_SONGSEL, time, 0, 0, song);
     }
 
-    private void sendTuneRequestEvent(long lTime) {
-        sendEvent(AlsaSeq.SND_SEQ_EVENT_TUNE_REQUEST, lTime);
+    private void sendTuneRequestEvent(long time) {
+        sendEvent(AlsaSeq.SND_SEQ_EVENT_TUNE_REQUEST, time);
     }
 
-    private void sendMidiClockEvent(long lTime) {
-        sendQueueControlEvent(AlsaSeq.SND_SEQ_EVENT_CLOCK, lTime, 0, 0, 0);
+    private void sendMidiClockEvent(long time) {
+        sendQueueControlEvent(AlsaSeq.SND_SEQ_EVENT_CLOCK, time, 0, 0, 0);
     }
 
-    private void sendStartEvent(long lTime) {
-        sendQueueControlEvent(AlsaSeq.SND_SEQ_EVENT_START, lTime, 0, 0, 0);
+    private void sendStartEvent(long time) {
+        sendQueueControlEvent(AlsaSeq.SND_SEQ_EVENT_START, time, 0, 0, 0);
     }
 
-    private void sendContinueEvent(long lTime) {
-        sendQueueControlEvent(AlsaSeq.SND_SEQ_EVENT_CONTINUE, lTime, 0, 0, 0);
+    private void sendContinueEvent(long time) {
+        sendQueueControlEvent(AlsaSeq.SND_SEQ_EVENT_CONTINUE, time, 0, 0, 0);
     }
 
-    private void sendStopEvent(long lTime) {
-        sendQueueControlEvent(AlsaSeq.SND_SEQ_EVENT_STOP, lTime, 0, 0, 0);
+    private void sendStopEvent(long time) {
+        sendQueueControlEvent(AlsaSeq.SND_SEQ_EVENT_STOP, time, 0, 0, 0);
     }
 
-    private void sendActiveSensingEvent(long lTime) {
-        sendEvent(AlsaSeq.SND_SEQ_EVENT_SENSING, lTime);
+    private void sendActiveSensingEvent(long time) {
+        sendEvent(AlsaSeq.SND_SEQ_EVENT_SENSING, time);
     }
 
-    private void sendSystemResetEvent(long lTime) {
-        sendEvent(AlsaSeq.SND_SEQ_EVENT_RESET, lTime);
+    private void sendSystemResetEvent(long time) {
+        sendEvent(AlsaSeq.SND_SEQ_EVENT_RESET, time);
     }
 
-    private void sendQueueControlEvent(int nType, long lTime, int nQueue, int nValue, long lControlTime) {
-        setCommon(nType, 0, lTime);
-        m_event.setQueueControl(nQueue, nValue, lControlTime);
+    private void sendQueueControlEvent(int type, long time, int queue, int value, long controlTime) {
+        setCommon(type, 0, time);
+        event.setQueueControl(queue, value, controlTime);
         sendEvent();
     }
 
-    private void sendEvent(int nType, long lTime) {
-        setCommon(nType, 0, lTime);
+    private void sendEvent(int type, long time) {
+        setCommon(type, 0, time);
         sendEvent();
     }
 
-    private void enqueueSysexMessage(SysexMessage message, long lTick) {
-//        logger.log(Level.TRACE, "enqueueSysexMessage()");
-        byte[] abData = message.getMessage();
-        int nLength = message.getLength();
-//        logger.log(Level.TRACE, "sysex len:" + nLength);
-//        logger.log(Level.TRACE, "abData[0]:" + (abData[0] & 255));
-        if ((abData[0] & 0xFF) == SysexMessage.SYSTEM_EXCLUSIVE) {
-//            logger.log(Level.TRACE, "standard sysex branch");
-            sendVarEvent(AlsaSeq.SND_SEQ_EVENT_SYSEX, lTick, abData, 0, nLength);
+    private void enqueueSysexMessage(SysexMessage message, long tick) {
+//logger.log(Level.TRACE, "enqueueSysexMessage()");
+        byte[] data = message.getMessage();
+        int length = message.getLength();
+//logger.log(Level.TRACE, "sysex len:" + length);
+//logger.log(Level.TRACE, "data[0]:" + (data[0] & 255));
+        if ((data[0] & 0xFF) == SysexMessage.SYSTEM_EXCLUSIVE) {
+//logger.log(Level.TRACE, "standard sysex branch");
+            sendVarEvent(AlsaSeq.SND_SEQ_EVENT_SYSEX, tick, data, 0, length);
         } else { // SysexMessage.SPECIAL_SYSTEM_EXCLUSIVE
-//            logger.log(Level.TRACE, "special sysex branch");
-            sendVarEvent(AlsaSeq.SND_SEQ_EVENT_SYSEX, lTick, abData, 1, nLength - 1);
+//logger.log(Level.TRACE, "special sysex branch");
+            sendVarEvent(AlsaSeq.SND_SEQ_EVENT_SYSEX, tick, data, 1, length - 1);
         }
     }
 
     /**
      * We pack the type byte in front of the data bytes.
      */
-    private void enqueueMetaMessage(MetaMessage message, long lTick) {
-        byte[] abData = message.getData();
-        byte[] abTransferData = new byte[abData.length + 1];
-        abTransferData[0] = (byte) message.getType();
-        System.arraycopy(abData, 0, abTransferData, 1, abData.length);
-//        logger.log(Level.TRACE, "message data length: " + abTransferData.length);
-//        logger.log(Level.TRACE, "message length: " + message.getLength());
-        sendVarEvent(AlsaSeq.SND_SEQ_EVENT_USR_VAR4, lTick, abTransferData, 0, abTransferData.length);
+    private void enqueueMetaMessage(MetaMessage message, long tick) {
+        byte[] data = message.getData();
+        byte[] transferData = new byte[data.length + 1];
+        transferData[0] = (byte) message.getType();
+        System.arraycopy(data, 0, transferData, 1, data.length);
+//logger.log(Level.TRACE, "message data length: " + transferData.length);
+//logger.log(Level.TRACE, "message length: " + message.getLength());
+        sendVarEvent(AlsaSeq.SND_SEQ_EVENT_USR_VAR4, tick, transferData, 0, transferData.length);
     }
 
-    private void sendVarEvent(int nType, long lTime, byte[] abData, int nOffset, int nLength) {
-        setCommon(nType, AlsaSeq.SND_SEQ_EVENT_LENGTH_VARIABLE, lTime);
-        m_event.setVar(abData, 0, nLength);
+    private void sendVarEvent(int type, long time, byte[] data, int offset, int length) {
+        setCommon(type, AlsaSeq.SND_SEQ_EVENT_LENGTH_VARIABLE, time);
+        event.setVar(data, 0, length);
         sendEvent();
     }
 
-    private void setCommon(int nType, int nAdditionalFlags, long lTime) {
+    private void setCommon(int type, int additionalFlags, long time) {
         if (getImmediately()) {
-            logger.log(Level.TRACE, "AlsaMidiOut.enqueueShortMessage(): sending noteoff message (immediately)");
+            logger.log(Level.TRACE, "sending noteoff message (immediately)");
 
-            m_event.setCommon(nType, AlsaSeq.SND_SEQ_TIME_STAMP_REAL | AlsaSeq.SND_SEQ_TIME_MODE_REL | nAdditionalFlags, 0, AlsaSeq.SND_SEQ_QUEUE_DIRECT, 0L,
-                    0, getSourcePort(), AlsaSeq.SND_SEQ_ADDRESS_SUBSCRIBERS, AlsaSeq.SND_SEQ_ADDRESS_UNKNOWN);
+            event.setCommon(type, SND_SEQ_TIME_STAMP_REAL | SND_SEQ_TIME_MODE_REL | additionalFlags,
+                    0, SND_SEQ_QUEUE_DIRECT, 0L, 0, getSourcePort(),
+                    SND_SEQ_ADDRESS_SUBSCRIBERS, SND_SEQ_ADDRESS_UNKNOWN);
         } else { // send via queue
-            logger.log(Level.TRACE, "AlsaMidiOut.enqueueShortMessage(): sending noteoff message (timed)");
+            logger.log(Level.TRACE, "sending noteoff message (timed)");
 
-            m_event.setCommon(nType, AlsaSeq.SND_SEQ_TIME_STAMP_TICK | AlsaSeq.SND_SEQ_TIME_MODE_ABS | nAdditionalFlags, 0, getQueue(), lTime,
-                    0, getSourcePort(), AlsaSeq.SND_SEQ_ADDRESS_SUBSCRIBERS, AlsaSeq.SND_SEQ_ADDRESS_UNKNOWN);
+            event.setCommon(type, SND_SEQ_TIME_STAMP_TICK | AlsaSeq.SND_SEQ_TIME_MODE_ABS | additionalFlags,
+                    0, getQueue(), time, 0, getSourcePort(),
+                    SND_SEQ_ADDRESS_SUBSCRIBERS, SND_SEQ_ADDRESS_UNKNOWN);
         }
     }
 
@@ -362,7 +370,7 @@ public class AlsaMidiOut {
      * Puts the event into the queue.
      */
     private void sendEvent() {
-        getAlsaSeq().eventOutput(m_event);
+        getAlsaSeq().eventOutput(event);
         getAlsaSeq().drainOutput();
     }
 }

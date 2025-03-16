@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 1999,2000 by Florian Bomers
  *  Copyright (c) 2000 by Matthias Pfisterer
@@ -194,7 +193,7 @@ public class TConversionTool {
         }
     }
 
-    ///////////////// conversion functions for byte arrays ////////////////////////////
+    // conversion functions for byte arrays
 
     /**
      * Converts 2 bytes to a signed sample of type <code>short</code>.
@@ -391,23 +390,23 @@ public class TConversionTool {
      * 29 September 1989 <BR>
      */
     public static byte linear2ulaw(int sample) {
-        int sign, exponent, mantissa, ulawbyte;
+        int sign, exponent, mantissa, ulawByte;
 
         if (sample > 32767) sample = 32767;
         else if (sample < -32768) sample = -32768;
-        /* Get the sample into sign-magnitude. */
-        sign = (sample >> 8) & 0x80;    /* set aside the sign */
-        if (sign != 0) sample = -sample;    /* get magnitude */
-        if (sample > CLIP) sample = CLIP;    /* clip the magnitude */
+        // Get the sample into sign-magnitude.
+        sign = (sample >> 8) & 0x80;    // set aside the sign
+        if (sign != 0) sample = -sample;    // get magnitude
+        if (sample > CLIP) sample = CLIP;    // clip the magnitude
 
         /* Convert from 16 bit linear to ulaw. */
         sample = sample + BIAS;
         exponent = exp_lut1[(sample >> 7) & 0xFF];
         mantissa = (sample >> (exponent + 3)) & 0x0F;
-        ulawbyte = ~(sign | (exponent << 4) | mantissa);
+        ulawByte = ~(sign | (exponent << 4) | mantissa);
         if (ZEROTRAP)
-            if (ulawbyte == 0) ulawbyte = 0x02;  /* optional CCITT trap */
-        return ((byte) ulawbyte);
+            if (ulawByte == 0) ulawByte = 0x02;  // optional CCITT trap
+        return ((byte) ulawByte);
     }
 
     /** u-law to linear conversion table */
@@ -461,16 +460,14 @@ public class TConversionTool {
         int ulawIndex = shortIndex;
         if (bigEndian) {
             while (sampleCount > 0) {
-                buffer[ulawIndex++] = linear2ulaw
-                        (bytesToInt16(buffer[shortIndex], buffer[shortIndex + 1]));
+                buffer[ulawIndex++] = linear2ulaw(bytesToInt16(buffer[shortIndex], buffer[shortIndex + 1]));
                 shortIndex++;
                 shortIndex++;
                 sampleCount--;
             }
         } else {
             while (sampleCount > 0) {
-                buffer[ulawIndex++] = linear2ulaw
-                        (bytesToInt16(buffer[shortIndex + 1], buffer[shortIndex]));
+                buffer[ulawIndex++] = linear2ulaw(bytesToInt16(buffer[shortIndex + 1], buffer[shortIndex]));
                 shortIndex++;
                 shortIndex++;
                 sampleCount--;
@@ -485,23 +482,20 @@ public class TConversionTool {
      * There will be sampleCount*2 bytes read from inBuffer;
      * There will be sampleCount <B>bytes</B> written to outBuffer.
      */
-    public static void pcm162ulaw(byte[] inBuffer, int inByteOffset,
-                                  byte[] outBuffer, int outByteOffset,
+    public static void pcm162ulaw(byte[] inBuffer, int inByteOffset, byte[] outBuffer, int outByteOffset,
                                   int sampleCount, boolean bigEndian) {
         int shortIndex = inByteOffset;
         int ulawIndex = outByteOffset;
         if (bigEndian) {
             while (sampleCount > 0) {
-                outBuffer[ulawIndex++] = linear2ulaw
-                        (bytesToInt16(inBuffer[shortIndex], inBuffer[shortIndex + 1]));
+                outBuffer[ulawIndex++] = linear2ulaw(bytesToInt16(inBuffer[shortIndex], inBuffer[shortIndex + 1]));
                 shortIndex++;
                 shortIndex++;
                 sampleCount--;
             }
         } else {
             while (sampleCount > 0) {
-                outBuffer[ulawIndex++] = linear2ulaw
-                        (bytesToInt16(inBuffer[shortIndex + 1], inBuffer[shortIndex]));
+                outBuffer[ulawIndex++] = linear2ulaw(bytesToInt16(inBuffer[shortIndex + 1], inBuffer[shortIndex]));
                 shortIndex++;
                 shortIndex++;
                 sampleCount--;
@@ -536,8 +530,8 @@ public class TConversionTool {
      * writing starts at outBuffer[outByteOffset].
      * There will be sampleCount <B>bytes</B> written to outBuffer.
      */
-    public static void pcm82ulaw(byte[] inBuffer, int inByteOffset,
-                                 byte[] outBuffer, int outByteOffset, int sampleCount, boolean signed) {
+    public static void pcm82ulaw(byte[] inBuffer, int inByteOffset, byte[] outBuffer, int outByteOffset,
+                                 int sampleCount, boolean signed) {
         int ulawIndex = outByteOffset;
         int pcmIndex = inByteOffset;
         if (signed) {
@@ -560,14 +554,12 @@ public class TConversionTool {
      * There will be sampleCount bytes read from inBuffer;
      * There will be sampleCount*2 bytes written to outBuffer.
      */
-    public static void ulaw2pcm16(byte[] inBuffer, int inByteOffset,
-                                  byte[] outBuffer, int outByteOffset,
+    public static void ulaw2pcm16(byte[] inBuffer, int inByteOffset, byte[] outBuffer, int outByteOffset,
                                   int sampleCount, boolean bigEndian) {
         int shortIndex = outByteOffset;
         int ulawIndex = inByteOffset;
         while (sampleCount > 0) {
-            intToBytes16
-                    (u2l[inBuffer[ulawIndex++] & 0xFF], outBuffer, shortIndex++, bigEndian);
+            intToBytes16(u2l[inBuffer[ulawIndex++] & 0xFF], outBuffer, shortIndex++, bigEndian);
             shortIndex++;
             sampleCount--;
         }
@@ -606,14 +598,12 @@ public class TConversionTool {
         int pcmIndex = outByteOffset;
         if (signed) {
             while (sampleCount > 0) {
-                outBuffer[pcmIndex++] =
-                        (byte) ((u2l[inBuffer[ulawIndex++] & 0xFF] >> 8) & 0xFF);
+                outBuffer[pcmIndex++] = (byte) ((u2l[inBuffer[ulawIndex++] & 0xFF] >> 8) & 0xFF);
                 sampleCount--;
             }
         } else {
             while (sampleCount > 0) {
-                outBuffer[pcmIndex++] =
-                        (byte) ((u2l[inBuffer[ulawIndex++] & 0xFF] >> 8) + 128);
+                outBuffer[pcmIndex++] = (byte) ((u2l[inBuffer[ulawIndex++] & 0xFF] >> 8) + 128);
                 sampleCount--;
             }
         }
@@ -652,21 +642,21 @@ public class TConversionTool {
     };
 
     /** 2's complement (16-bit range) */
-    public static byte linear2alaw(short pcm_val) {
+    public static byte linear2alaw(short pcmVal) {
         byte mask;
         byte seg = 8;
         byte aval;
 
-        if (pcm_val >= 0) {
+        if (pcmVal >= 0) {
             mask = (byte) 0xD5; // sign (7th) bit = 1
         } else {
             mask = 0x55; // sign bit = 0
-            pcm_val = (short) (-pcm_val - 8);
+            pcmVal = (short) (-pcmVal - 8);
         }
 
         // Convert the scaled magnitude to segment number.
         for (int i = 0; i < 8; i++) {
-            if (pcm_val <= seg_end[i]) {
+            if (pcmVal <= seg_end[i]) {
                 seg = (byte) i;
                 break;
             }
@@ -678,9 +668,9 @@ public class TConversionTool {
         else {
             aval = (byte) (seg << SEG_SHIFT);
             if (seg < 2)
-                aval = (byte) (aval | (pcm_val >> 4) & QUANT_MASK);
+                aval = (byte) (aval | (pcmVal >> 4) & QUANT_MASK);
             else
-                aval = (byte) (aval | (pcm_val >> (seg + 3)) & QUANT_MASK);
+                aval = (byte) (aval | (pcmVal >> (seg + 3)) & QUANT_MASK);
             return (byte) ((aval ^ mask) & 0xFF);
         }
     }
@@ -809,14 +799,12 @@ public class TConversionTool {
         int pcmIndex = inByteOffset;
         if (signed) {
             while (sampleCount > 0) {
-                outBuffer[alawIndex++] =
-                        linear2alaw((short) (inBuffer[pcmIndex++] << 8));
+                outBuffer[alawIndex++] = linear2alaw((short) (inBuffer[pcmIndex++] << 8));
                 sampleCount--;
             }
         } else {
             while (sampleCount > 0) {
-                outBuffer[alawIndex++] =
-                        linear2alaw((short) (((byte) (inBuffer[pcmIndex++] + 128)) << 8));
+                outBuffer[alawIndex++] = linear2alaw((short) (((byte) (inBuffer[pcmIndex++] + 128)) << 8));
                 sampleCount--;
             }
         }
@@ -853,14 +841,12 @@ public class TConversionTool {
         int pcmIndex = outByteOffset;
         if (signed) {
             while (sampleCount > 0) {
-                outBuffer[pcmIndex++] =
-                        (byte) ((a2l[inBuffer[alawIndex++] & 0xFF] >> 8) & 0xFF);
+                outBuffer[pcmIndex++] = (byte) ((a2l[inBuffer[alawIndex++] & 0xFF] >> 8) & 0xFF);
                 sampleCount--;
             }
         } else {
             while (sampleCount > 0) {
-                outBuffer[pcmIndex++] =
-                        (byte) ((a2l[inBuffer[alawIndex++] & 0xFF] >> 8) + 128);
+                outBuffer[pcmIndex++] = (byte) ((a2l[inBuffer[alawIndex++] & 0xFF] >> 8) + 128);
                 sampleCount--;
             }
         }
@@ -879,8 +865,7 @@ public class TConversionTool {
         int shortIndex = outByteOffset;
         int alawIndex = inByteOffset;
         while (sampleCount > 0) {
-            intToBytes16
-                    (a2l[inBuffer[alawIndex++] & 0xFF], outBuffer, shortIndex++, bigEndian);
+            intToBytes16(a2l[inBuffer[alawIndex++] & 0xFF], outBuffer, shortIndex++, bigEndian);
             shortIndex++;
             sampleCount--;
         }
@@ -992,19 +977,19 @@ public class TConversionTool {
      * !! Here, unlike other functions in this class, the length is
      * in bytes rather than samples !!
      */
-    public static void changeOrderOrSign(byte[] buffer, int nOffset, int nByteLength, int nBytesPerSample) {
-        switch (nBytesPerSample) {
+    public static void changeOrderOrSign(byte[] buffer, int offset, int byteLength, int bytesPerSample) {
+        switch (bytesPerSample) {
         case 1:
-            convertSign8(buffer, nOffset, nByteLength);
+            convertSign8(buffer, offset, byteLength);
             break;
         case 2:
-            swapOrder16(buffer, nOffset, nByteLength / 2);
+            swapOrder16(buffer, offset, byteLength / 2);
             break;
         case 3:
-            swapOrder24(buffer, nOffset, nByteLength / 3);
+            swapOrder24(buffer, offset, byteLength / 3);
             break;
         case 4:
-            swapOrder32(buffer, nOffset, nByteLength / 4);
+            swapOrder32(buffer, offset, byteLength / 4);
             break;
         }
     }
@@ -1013,25 +998,22 @@ public class TConversionTool {
      * !! Here, unlike other functions in this class, the length is
      * in bytes rather than samples !!
      */
-    public static void changeOrderOrSign(
-            byte[] inBuffer, int nInOffset,
-            byte[] outBuffer, int nOutOffset,
-            int nByteLength, int nBytesPerSample) {
-        switch (nBytesPerSample) {
+    public static void changeOrderOrSign(byte[] inBuffer, int inOffset,
+                                         byte[] outBuffer, int outOffset,
+                                         int byteLength, int bytesPerSample) {
+        switch (bytesPerSample) {
         case 1:
-            convertSign8(inBuffer, nInOffset, outBuffer, nOutOffset, nByteLength);
+            convertSign8(inBuffer, inOffset, outBuffer, outOffset, byteLength);
             break;
         case 2:
-            swapOrder16(inBuffer, nInOffset, outBuffer, nOutOffset, nByteLength / 2);
+            swapOrder16(inBuffer, inOffset, outBuffer, outOffset, byteLength / 2);
             break;
         case 3:
-            swapOrder24(inBuffer, nInOffset, outBuffer, nOutOffset, nByteLength / 3);
+            swapOrder24(inBuffer, inOffset, outBuffer, outOffset, byteLength / 3);
             break;
         case 4:
-            swapOrder32(inBuffer, nInOffset, outBuffer, nOutOffset, nByteLength / 4);
+            swapOrder32(inBuffer, inOffset, outBuffer, outOffset, byteLength / 4);
             break;
         }
     }
 }
-
-

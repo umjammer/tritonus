@@ -1,8 +1,4 @@
 /*
- * MidiDeviceTestCase.java
- */
-
-/*
  *  Copyright (c) 2003 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -36,12 +32,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Class for tests of javax.sound.midi.MidiDevice.
  */
-public class MidiDeviceTestCase
-        extends BaseMidiDeviceTestCase {
+public class MidiDeviceTestCase extends BaseMidiDeviceTestCase {
 
     @Test
-    public void testGetDeviceInfo()
-            throws Exception {
+    public void testGetDeviceInfo() throws Exception {
         Check check = device -> {
             MidiDevice.Info info = device.getDeviceInfo();
             assertNotNull(info, "getDeviceInfo()");
@@ -54,8 +48,7 @@ public class MidiDeviceTestCase
     }
 
     @Test
-    public void testOpenClose()
-            throws Exception {
+    public void testOpenClose() throws Exception {
         Check check = device -> {
             assertFalse(device.isOpen(), "closed");
             device.open();
@@ -67,58 +60,54 @@ public class MidiDeviceTestCase
     }
 
     @Test
-    public void testGetMicrosecondPosition()
-            throws Exception {
+    public void testGetMicrosecondPosition() throws Exception {
         Check check = device -> {
-            long lPosition = device.getMicrosecondPosition();
-            assertTrue(lPosition == -1 || lPosition == 0, "getMicrosecondPosition() before open");
+            long position = device.getMicrosecondPosition();
+            assertTrue(position == -1 || position == 0, "getMicrosecondPosition() before open");
             device.open();
-            lPosition = device.getMicrosecondPosition();
-            assertTrue(lPosition == -1 || lPosition >= 0, "getMicrosecondPosition() after open");
+            position = device.getMicrosecondPosition();
+            assertTrue(position == -1 || position >= 0, "getMicrosecondPosition() after open");
             device.close();
-            lPosition = device.getMicrosecondPosition();
-            assertTrue(lPosition == -1 || lPosition == 0, "getMicrosecondPosition() after close");
+            position = device.getMicrosecondPosition();
+            assertTrue(position == -1 || position == 0, "getMicrosecondPosition() after close");
         };
         checkMidiDevice(check);
     }
 
     @Test
-    public void testGetMaxReceivers()
-            throws Exception {
+    public void testGetMaxReceivers() throws Exception {
         Check check = device -> {
-            int nMax = device.getMaxReceivers();
-            assertTrue(nMax == -1 || nMax == 0, "getMaxReceivers()");
+            int max = device.getMaxReceivers();
+            assertTrue(max == -1 || max == 0, "getMaxReceivers()");
         };
         checkMidiDevice(check);
     }
 
     @Test
-    public void testGetMaxTransmitters()
-            throws Exception {
+    public void testGetMaxTransmitters() throws Exception {
         Check check = device -> {
-            int nMax = device.getMaxTransmitters();
-            assertTrue(nMax == -1 || nMax == 0, "getMaxTransmitters()");
+            int max = device.getMaxTransmitters();
+            assertTrue(max == -1 || max == 0, "getMaxTransmitters()");
         };
         checkMidiDevice(check);
     }
 
     @Test
-    public void testGetReceiver()
-            throws Exception {
+    public void testGetReceiver() throws Exception {
         Check check = device -> {
-            int nMax = device.getMaxReceivers();
-            if (nMax != 0) {
-                nMax = (nMax == -1) ? 100 : nMax;
-                Receiver[] aReceivers = new Receiver[nMax];
-                for (int i = 0; i < nMax; i++) {
-                    aReceivers[i] = device.getReceiver();
-                    assertNotNull(aReceivers[i], "getReceiver()");
+            int max = device.getMaxReceivers();
+            if (max != 0) {
+                max = (max == -1) ? 100 : max;
+                Receiver[] receivers = new Receiver[max];
+                for (int i = 0; i < max; i++) {
+                    receivers[i] = device.getReceiver();
+                    assertNotNull(receivers[i], "getReceiver()");
                     for (int j = 0; j < i - 1; j++) {
-                        assertNotSame(aReceivers[i], aReceivers[j], "Receiver objects unique");
+                        assertNotSame(receivers[i], receivers[j], "Receiver objects unique");
                     }
                 }
-                for (int i = 0; i < nMax; i++) {
-                    aReceivers[i].close();
+                for (int i = 0; i < max; i++) {
+                    receivers[i].close();
                 }
             }
         };
@@ -126,23 +115,21 @@ public class MidiDeviceTestCase
     }
 
     @Test
-    public void testGetReceivers()
-            throws Exception {
+    public void testGetReceivers() throws Exception {
         Check check = device -> {
             assertEquals(0, device.getReceivers().size(), "getReceivers() length");
-            int nMax = device.getMaxReceivers();
-            if (nMax != 0) {
-                nMax = (nMax == -1) ? 100 : nMax;
-                Receiver[] aReceivers = new Receiver[nMax];
-                for (int i = 0; i < nMax; i++) {
-                    aReceivers[i] = device.getReceiver();
-                    assertTrue(device.getReceivers().contains(aReceivers[i]),
-                            "Receiver in getReceivers()");
+            int max = device.getMaxReceivers();
+            if (max != 0) {
+                max = (max == -1) ? 100 : max;
+                Receiver[] receivers = new Receiver[max];
+                for (int i = 0; i < max; i++) {
+                    receivers[i] = device.getReceiver();
+                    assertTrue(device.getReceivers().contains(receivers[i]), "Receiver in getReceivers()");
                 }
-                assertEquals(nMax, device.getReceivers().size(), "getReceivers() length");
-                for (int i = 0; i < nMax; i++) {
-                    aReceivers[i].close();
-                    assertFalse(device.getReceivers().contains(aReceivers[i]), "Receiver not in getReceivers()");
+                assertEquals(max, device.getReceivers().size(), "getReceivers() length");
+                for (int i = 0; i < max; i++) {
+                    receivers[i].close();
+                    assertFalse(device.getReceivers().contains(receivers[i]), "Receiver not in getReceivers()");
                 }
             }
             assertEquals(0, device.getReceivers().size(), "getReceivers() length");
@@ -151,22 +138,21 @@ public class MidiDeviceTestCase
     }
 
     @Test
-    public void testGetTransmitter()
-            throws Exception {
+    public void testGetTransmitter() throws Exception {
         Check check = device -> {
-            int nMax = device.getMaxTransmitters();
-            if (nMax != 0) {
-                nMax = (nMax == -1) ? 100 : nMax;
-                Transmitter[] aTransmitters = new Transmitter[nMax];
-                for (int i = 0; i < nMax; i++) {
-                    aTransmitters[i] = device.getTransmitter();
-                    assertNotNull(aTransmitters[i], "getTransmitter()");
+            int max = device.getMaxTransmitters();
+            if (max != 0) {
+                max = (max == -1) ? 100 : max;
+                Transmitter[] transmitters = new Transmitter[max];
+                for (int i = 0; i < max; i++) {
+                    transmitters[i] = device.getTransmitter();
+                    assertNotNull(transmitters[i], "getTransmitter()");
                     for (int j = 0; j < i - 1; j++) {
-                        assertNotSame(aTransmitters[i], aTransmitters[j], "Transmitter objects unique");
+                        assertNotSame(transmitters[i], transmitters[j], "Transmitter objects unique");
                     }
                 }
-                for (int i = 0; i < nMax; i++) {
-                    aTransmitters[i].close();
+                for (int i = 0; i < max; i++) {
+                    transmitters[i].close();
                 }
             }
         };
@@ -174,23 +160,21 @@ public class MidiDeviceTestCase
     }
 
     @Test
-    public void testGetTransmitters()
-            throws Exception {
+    public void testGetTransmitters() throws Exception {
         Check check = device -> {
             assertEquals(0, device.getTransmitters().size(), "getTransmitters() length");
-            int nMax = device.getMaxTransmitters();
-            if (nMax != 0) {
-                nMax = (nMax == -1) ? 100 : nMax;
-                Transmitter[] aTransmitters = new Transmitter[nMax];
-                for (int i = 0; i < nMax; i++) {
-                    aTransmitters[i] = device.getTransmitter();
-                    assertTrue(device.getTransmitters().contains(aTransmitters[i]),
-                            "Transmitter in getTransmitters()");
+            int max = device.getMaxTransmitters();
+            if (max != 0) {
+                max = (max == -1) ? 100 : max;
+                Transmitter[] transmitters = new Transmitter[max];
+                for (int i = 0; i < max; i++) {
+                    transmitters[i] = device.getTransmitter();
+                    assertTrue(device.getTransmitters().contains(transmitters[i]), "Transmitter in getTransmitters()");
                 }
-                assertEquals(nMax, device.getTransmitters().size(), "getTransmitters() length");
-                for (int i = 0; i < nMax; i++) {
-                    aTransmitters[i].close();
-                    assertFalse(device.getTransmitters().contains(aTransmitters[i]), "Transmitter not in getTransmitters()");
+                assertEquals(max, device.getTransmitters().size(), "getTransmitters() length");
+                for (int i = 0; i < max; i++) {
+                    transmitters[i].close();
+                    assertFalse(device.getTransmitters().contains(transmitters[i]), "Transmitter not in getTransmitters()");
                 }
             }
             assertEquals(0, device.getTransmitters().size(), "getTransmitters() length");
@@ -198,5 +182,3 @@ public class MidiDeviceTestCase
         checkMidiDevice(check);
     }
 }
-
-

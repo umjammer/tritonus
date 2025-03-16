@@ -27,5 +27,3 @@ public class VorbisFormatConversionProviderTest
         setResourcePrefix("vorbis");
     }
 }
-
-

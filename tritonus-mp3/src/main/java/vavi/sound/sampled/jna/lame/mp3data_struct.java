@@ -1,6 +1,5 @@
 package vavi.sound.sampled.jna.lame;
 
-import java.util.Arrays;
 import java.util.List;
 
 import com.sun.jna.NativeLong;
@@ -46,7 +45,7 @@ public class mp3data_struct extends Structure {
 
     @Override
     protected List<String> getFieldOrder() {
-        return Arrays.asList("header_parsed", "stereo", "samplerate", "bitrate", "mode", "mode_ext", "framesize", "nsamp", "totalframes", "framenum");
+        return List.of("header_parsed", "stereo", "samplerate", "bitrate", "mode", "mode_ext", "framesize", "nsamp", "totalframes", "framenum");
     }
 
     public mp3data_struct(Pointer peer) {

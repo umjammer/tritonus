@@ -1,6 +1,5 @@
 package vavi.sound.sampled.jna.ogg;
 
-import java.util.Arrays;
 import java.util.List;
 
 import com.sun.jna.Pointer;
@@ -30,7 +29,7 @@ public class ogg_sync_state extends Structure {
 
     @Override
     protected List<String> getFieldOrder() {
-        return Arrays.asList("data", "storage", "fill", "returned", "unsynced", "headerbytes", "bodybytes");
+        return List.of("data", "storage", "fill", "returned", "unsynced", "headerbytes", "bodybytes");
     }
 
     /** @param data C type : unsigned char* */

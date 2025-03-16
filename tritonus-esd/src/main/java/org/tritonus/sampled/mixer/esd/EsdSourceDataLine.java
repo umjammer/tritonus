@@ -40,39 +40,39 @@ public class EsdSourceDataLine extends TBaseDataLine implements SourceDataLine {
 
     private static final Logger logger = getLogger("org.tritonus.TraceSourceDataLine");
 
-    private EsdStream m_esdStream;
-    private boolean m_bSwapBytes;
-    private byte[] m_abSwapBuffer;
+    private EsdStream esdStream;
+    private boolean swapBytes;
+    private byte[] swapBuffer;
 
     /*
-     * Only used if m_bSwapBytes is true.
+     * Only used if swapBytes is true.
      */
-    private int m_nBytesPerSample;
+    private int bytesPerSample;
 
     /*
      * Used to store the muted state.
      */
-    private boolean m_bMuted;
+    private boolean muted;
 
     /*
      * Used to store the gain while the channel is muted.
      */
-    private float m_fGain;
+    private float gain;
 
     /*
      * Used to store the pan while the channel is muted.
      */
-    private float m_fPan;
+    private float pan;
 
     // TODO has info object to change if format or buffer size are changed later?
     //  no, but it has to represent the mixer's capabilities. So a fixed info per mixer.
-    public EsdSourceDataLine(TMixer mixer, AudioFormat format, int nBufferSize) throws LineUnavailableException {
-        super(mixer, new DataLine.Info(SourceDataLine.class, format, nBufferSize));
+    public EsdSourceDataLine(TMixer mixer, AudioFormat format, int bufferSize) throws LineUnavailableException {
+        super(mixer, new DataLine.Info(SourceDataLine.class, format, bufferSize));
         addControl(new EsdSourceDataLineGainControl());
         addControl(new EsdSourceDataLinePanControl());
         addControl(new EsdSourceDataLineMuteControl());
 
-//        logger.log(Level.TRACE, "EsdSourceDataLine.<init>(): buffer size: " + nBufferSize);
+//logger.log(Level.TRACE, "EsdSourceDataLine.<init>(): buffer size: " + bufferSize);
     }
 
     @Override
@@ -85,13 +85,13 @@ public class EsdSourceDataLine extends TBaseDataLine implements SourceDataLine {
         checkOpen();
         AudioFormat format = getFormat();
         AudioFormat.Encoding encoding = format.getEncoding();
-        boolean bBigEndian = format.isBigEndian();
-        m_bSwapBytes = false;
-        if (format.getSampleSizeInBits() == 16 && bBigEndian) {
-            m_bSwapBytes = true;
-            bBigEndian = false;
+        boolean bigEndian = format.isBigEndian();
+        swapBytes = false;
+        if (format.getSampleSizeInBits() == 16 && bigEndian) {
+            swapBytes = true;
+            bigEndian = false;
         } else if (format.getSampleSizeInBits() == 8 && encoding.equals(AudioFormat.Encoding.PCM_SIGNED)) {
-            m_bSwapBytes = true;
+            swapBytes = true;
             encoding = AudioFormat.Encoding.PCM_UNSIGNED;
         }
         // Ugly hack, should fade as soon as possible.
@@ -102,22 +102,22 @@ public class EsdSourceDataLine extends TBaseDataLine implements SourceDataLine {
         // in the source code.
         // TODO does 8 bit work? (perhaps problem inside esd?)
         if (System.getProperty("os.arch").equals("ppc") && format.getSampleSizeInBits() == 16) {
-            m_bSwapBytes ^= true;
+            swapBytes ^= true;
         }
-        if (m_bSwapBytes) {
+        if (swapBytes) {
             format = new AudioFormat(encoding,
                     format.getSampleRate(),
                     format.getSampleSizeInBits(),
                     format.getChannels(),
                     format.getFrameSize(),
                     format.getFrameRate(),
-                    bBigEndian);
-            m_nBytesPerSample = format.getFrameSize() / format.getChannels();
+                    bigEndian);
+            bytesPerSample = format.getFrameSize() / format.getChannels();
         }
-        int nOutFormat = Esd.ESD_STREAM | Esd.ESD_PLAY | EsdUtils.getEsdFormat(format);
+        int outFormat = Esd.ESD_STREAM | Esd.ESD_PLAY | EsdUtils.getEsdFormat(format);
 
-        m_esdStream = new EsdStream();
-        m_esdStream.open(nOutFormat, (int) format.getSampleRate());
+        esdStream = new EsdStream();
+        esdStream.open(outFormat, (int) format.getSampleRate());
     }
 
     @Override
@@ -128,70 +128,70 @@ public class EsdSourceDataLine extends TBaseDataLine implements SourceDataLine {
 
     // TODO check if should block
     @Override
-    public int write(byte[] abData, int nOffset, int nLength) {
-        logger.log(Level.TRACE, "EsdSourceDataLine.write(): called.");
+    public int write(byte[] data, int offset, int length) {
+        logger.log(Level.TRACE, "called.");
 
-        if (m_bSwapBytes) {
-            if (m_abSwapBuffer == null || m_abSwapBuffer.length < nOffset + nLength) {
-                m_abSwapBuffer = new byte[nOffset + nLength];
+        if (swapBytes) {
+            if (swapBuffer == null || swapBuffer.length < offset + length) {
+                swapBuffer = new byte[offset + length];
             }
-            TConversionTool.changeOrderOrSign(abData, nOffset, m_abSwapBuffer, nOffset, nLength, m_nBytesPerSample);
-            abData = m_abSwapBuffer;
+            TConversionTool.changeOrderOrSign(data, offset, swapBuffer, offset, length, bytesPerSample);
+            data = swapBuffer;
         }
-        if (nLength > 0 && !isActive()) {
+        if (length > 0 && !isActive()) {
             start();
         }
-        int nRemaining = nLength;
-        while (nRemaining > 0 && isOpen()) {
+        int remaining = length;
+        while (remaining > 0 && isOpen()) {
             synchronized (this) {
 //        while ((availableWrite() == 0 || isPaused()) && isOpen()) {
 //            try {
 //                wait();
 //            } catch (InterruptedException e) {
-//                logger.log(Level.ERROR, e.getMessage(), e);
+//logger.log(Level.ERROR, e.getMessage(), e);
 //            }
 //        }
                 if (!isOpen()) {
-                    return nLength - nRemaining;
+                    return length - remaining;
                 }
                 // TODO check return
-                int nWritten = m_esdStream.write(abData, nOffset, nRemaining);
-                nOffset += nWritten;
-                nRemaining -= nWritten;
+                int written = esdStream.write(data, offset, remaining);
+                offset += written;
+                remaining -= written;
             }
         }
-        return nLength;
+        return length;
     }
 
     @Override
     protected void closeImpl() {
-        logger.log(Level.TRACE, "EsdSourceDataLine.closeImpl(): called.");
+        logger.log(Level.TRACE, "called.");
 
-        m_esdStream.close();
+        esdStream.close();
     }
 
     @Override
     public void drain() {
-        logger.log(Level.TRACE, "EsdSourceDataLine.drain(): called.");
+        logger.log(Level.TRACE, "called.");
 
         // TODO
     }
 
     @Override
     public void flush() {
-        logger.log(Level.TRACE, "EsdSourceDataLine.flush(): called.");
+        logger.log(Level.TRACE, "called.");
 
         // TODO
     }
 
     /**
-     * fGain is logarithmic!!
+     * gain is logarithmic!!
      */
-    protected void setGain(float fGain) {
-        logger.log(Level.TRACE, "EsdSourceDataLine.setGain(): gain: " + fGain);
+    protected void setGain(float gain) {
+        logger.log(Level.TRACE, "gain: " + gain);
 
-        m_fGain = fGain;
-        if (!m_bMuted) {
+        this.gain = gain;
+        if (!muted) {
             setGainImpl();
         }
     }
@@ -199,11 +199,11 @@ public class EsdSourceDataLine extends TBaseDataLine implements SourceDataLine {
     /**
      *
      */
-    protected void setPan(float fPan) {
-        logger.log(Level.TRACE, "EsdSourceDataLine.setPan(): pan: " + fPan);
+    protected void setPan(float pan) {
+        logger.log(Level.TRACE, "pan: " + pan);
 
-        m_fPan = fPan;
-        if (!m_bMuted) {
+        this.pan = pan;
+        if (!muted) {
             setGainImpl();
         }
     }
@@ -211,12 +211,12 @@ public class EsdSourceDataLine extends TBaseDataLine implements SourceDataLine {
     /**
      *
      */
-    protected void setMuted(boolean bMuted) {
-        logger.log(Level.TRACE, "EsdSourceDataLine.setMuted(): muted: " + bMuted);
+    protected void setMuted(boolean muted) {
+        logger.log(Level.TRACE, "muted: " + muted);
 
-        m_bMuted = bMuted;
-        if (m_bMuted) {
-            // m_esdStream.setVolume(0, 0);
+        this.muted = muted;
+        if (this.muted) {
+            // esdStream.setVolume(0, 0);
         } else {
             setGainImpl();
         }
@@ -226,14 +226,14 @@ public class EsdSourceDataLine extends TBaseDataLine implements SourceDataLine {
      *
      */
     private void setGainImpl() {
-        logger.log(Level.TRACE, "EsdSourceDataLine.setGainImpl(): called: ");
+        logger.log(Level.TRACE, "called: ");
 
-//        float fLeftDb = m_fGain + m_fPan * 15.0F;
-//        float fRightDb = m_fGain - m_fPan * 15.0F;
-//        float fLeftLinear = (float) TVolumeUtils.log2lin(fLeftDb);
-//        float fRightLinear = (float) TVolumeUtils.log2lin(fRightDb);
+//        float leftDb = gain + pan * 15.0F;
+//        float rightDb = gain - pan * 15.0F;
+//        float leftLinear = (float) TVolumeUtils.log2lin(leftDb);
+//        float rightLinear = (float) TVolumeUtils.log2lin(rightDb);
 
-// 		  m_esdStream.setVolume((int) (fLeftLinear * 256), (int) (fRightLinear * 256));
+// 		  esdStream.setVolume((int) (leftLinear * 256), (int) (rightLinear * 256));
     }
 
     // IDEA: move inner classes to TBaseDataLine
@@ -253,17 +253,17 @@ public class EsdSourceDataLine extends TBaseDataLine implements SourceDataLine {
                     "-96.0",
                     "",
                     "+24.0");
-//            m_bMuted = false; // should be included in a compund control?
+//            muted = false; // should be included in a compund control?
         }
 
         @Override
-        public void setValue(float fGain) {
-            logger.log(Level.TRACE, "EsdSourceDataLineGainControl.setValue(): gain: " + fGain);
+        public void setValue(float gain) {
+            logger.log(Level.TRACE, "gain: " + gain);
 
-            float fOldGain = getValue();
-            super.setValue(fGain);
-            if (Math.abs(fOldGain - getValue()) > 1.0E-9) {
-                logger.log(Level.TRACE, "EsdSourceDataLineGainControl.setValue(): really changing gain");
+            float oldGain = getValue();
+            super.setValue(gain);
+            if (Math.abs(oldGain - getValue()) > 1.0E-9) {
+                logger.log(Level.TRACE, "really changing gain");
 
                 EsdSourceDataLine.this.setGain(getValue());
             }
@@ -287,13 +287,13 @@ public class EsdSourceDataLine extends TBaseDataLine implements SourceDataLine {
         }
 
         @Override
-        public void setValue(float fPan) {
-            logger.log(Level.TRACE, "EsdSourceDataLinePanControl.setValue(): pan: " + fPan);
+        public void setValue(float pan) {
+            logger.log(Level.TRACE, "pan: " + pan);
 
-            float fOldPan = getValue();
-            super.setValue(fPan);
-            if (Math.abs(fOldPan - getValue()) > 1.0E-9) {
-                logger.log(Level.TRACE, "EsdSourceDataLinePanControl.setValue(): really changing pan");
+            float oldPan = getValue();
+            super.setValue(pan);
+            if (Math.abs(oldPan - getValue()) > 1.0E-9) {
+                logger.log(Level.TRACE, "really changing pan");
 
                 EsdSourceDataLine.this.setPan(getValue());
             }
@@ -310,24 +310,24 @@ public class EsdSourceDataLine extends TBaseDataLine implements SourceDataLine {
         }
 
         @Override
-        public void setValue(boolean bMuted) {
-            logger.log(Level.TRACE, "EsdSourceDataLineMuteControl.setValue(): muted: " + bMuted);
+        public void setValue(boolean muted) {
+            logger.log(Level.TRACE, "muted: " + muted);
 
-            if (bMuted != getValue()) {
-                logger.log(Level.TRACE, "EsdSourceDataLineMuteControl.setValue(): really changing mute status");
+            if (muted != getValue()) {
+                logger.log(Level.TRACE, "really changing mute status");
 
-                super.setValue(bMuted);
+                super.setValue(muted);
                 EsdSourceDataLine.this.setMuted(getValue());
             }
         }
 
 //        public boolean getMute() {
-//            return m_bMuted;
+//            return muted;
 //        }
 //
-//        public void setMute(boolean bMuted) {
-//            if (bMuted != getMute()) {
-//                m_bMuted = bMuted;
+//        public void setMute(boolean mutes) {
+//            if (mutes != getMute()) {
+//                this.muted = mutes;
 //                if (getMute()) {
 //                    EsdSourceDataLine.this.setGain(getMinimum());
 //                } else {

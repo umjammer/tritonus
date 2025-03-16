@@ -16,8 +16,6 @@
 
 package org.tritonus.saol.compiler;
 
-import java.io.IOException;
-
 import org.apache.bcel.Const;
 import org.apache.bcel.classfile.JavaClass;
 import org.apache.bcel.generic.ClassGen;
@@ -42,16 +40,16 @@ import org.apache.bcel.generic.Type;
  */
 public class BCELTest {
 
-    public static void main(String[] args) {
-        String strClassName = "tone";
-        ClassGen classGen = new ClassGen(strClassName,
+    public static void main(String[] args) throws Exception {
+        String className = "tone";
+        ClassGen classGen = new ClassGen(className,
                 "AbstractInstrument",
                 "<generated>",
                 Const.ACC_PUBLIC | Const.ACC_SUPER,
                 null);
         ConstantPoolGen constantPoolGen = classGen.getConstantPool();
-        int nAInitValueIndex = constantPoolGen.addFloat(0.196307F);
-        int nXInitValueIndex = constantPoolGen.addFloat(0.5F);
+        int aInitValueIndex = constantPoolGen.addFloat(0.196307F);
+        int xInitValueIndex = constantPoolGen.addFloat(0.5F);
         FieldGen fieldGen;
         fieldGen = new FieldGen(Const.ACC_PRIVATE, Type.FLOAT, "a", constantPoolGen);
         classGen.addField(fieldGen.getField());
@@ -66,73 +64,63 @@ public class BCELTest {
         MethodGen methodGen;
         methodGen = new MethodGen(Const.ACC_PUBLIC,
                 Type.VOID,
-                new Type[] {
-                        new ObjectType("RTSystem")
-                },
-                new String[] {
-                        "rtSystem"
-                },
+                new Type[] { new ObjectType("RTSystem") },
+                new String[] { "rtSystem" },
                 "doAPass",
-                strClassName,
+                className,
                 il,
                 constantPoolGen);
 
         InstructionFactory ifac = new InstructionFactory(constantPoolGen);
         il.append(InstructionConst.ALOAD_0);
-        il.append(new LDC(nAInitValueIndex));
-        il.append(ifac.createPutField(strClassName, "a", Type.FLOAT));
+        il.append(new LDC(aInitValueIndex));
+        il.append(ifac.createPutField(className, "a", Type.FLOAT));
         il.append(InstructionConst.ALOAD_0);
-        il.append(ifac.createGetField(strClassName, "init", Type.FLOAT));
+        il.append(ifac.createGetField(className, "init", Type.FLOAT));
         il.append(InstructionConst.FCONST_0);
         il.append(InstructionConst.FCMPL);
         IFNE ifne0 = new IFNE(null);
         il.append(ifne0);
         il.append(InstructionConst.ALOAD_0);
         il.append(InstructionConst.FCONST_1);
-        il.append(ifac.createPutField(strClassName, "init", Type.FLOAT));
+        il.append(ifac.createPutField(className, "init", Type.FLOAT));
         il.append(InstructionConst.ALOAD_0);
-        il.append(new LDC(nXInitValueIndex));
-        il.append(ifac.createPutField(strClassName, "x", Type.FLOAT));
+        il.append(new LDC(xInitValueIndex));
+        il.append(ifac.createPutField(className, "x", Type.FLOAT));
         InstructionHandle ih0 = il.append(InstructionConst.ALOAD_0);
         ifne0.setTarget(ih0);
         il.append(InstructionConst.ALOAD_0);
-        il.append(ifac.createGetField(strClassName, "x", Type.FLOAT));
+        il.append(ifac.createGetField(className, "x", Type.FLOAT));
         il.append(InstructionConst.ALOAD_0);
-        il.append(ifac.createGetField(strClassName, "a", Type.FLOAT));
+        il.append(ifac.createGetField(className, "a", Type.FLOAT));
         il.append(InstructionConst.ALOAD_0);
-        il.append(ifac.createGetField(strClassName, "y", Type.FLOAT));
+        il.append(ifac.createGetField(className, "y", Type.FLOAT));
         il.append(InstructionConst.FMUL);
         il.append(InstructionConst.FSUB);
-        il.append(ifac.createPutField(strClassName, "x", Type.FLOAT));
+        il.append(ifac.createPutField(className, "x", Type.FLOAT));
         il.append(InstructionConst.ALOAD_0);
         il.append(InstructionConst.ALOAD_0);
-        il.append(ifac.createGetField(strClassName, "y", Type.FLOAT));
+        il.append(ifac.createGetField(className, "y", Type.FLOAT));
         il.append(InstructionConst.ALOAD_0);
-        il.append(ifac.createGetField(strClassName, "a", Type.FLOAT));
+        il.append(ifac.createGetField(className, "a", Type.FLOAT));
         il.append(InstructionConst.ALOAD_0);
-        il.append(ifac.createGetField(strClassName, "x", Type.FLOAT));
+        il.append(ifac.createGetField(className, "x", Type.FLOAT));
         il.append(InstructionConst.FMUL);
         il.append(InstructionConst.FADD);
-        il.append(ifac.createPutField(strClassName, "y", Type.FLOAT));
+        il.append(ifac.createPutField(className, "y", Type.FLOAT));
         il.append(InstructionConst.ALOAD_1);
         il.append(InstructionConst.ALOAD_0);
-        il.append(ifac.createGetField(strClassName, "y", Type.FLOAT));
+        il.append(ifac.createGetField(className, "y", Type.FLOAT));
         il.append(ifac.createInvoke("RTSystem",
                 "output",
                 Type.VOID,
-                new Type[] {
-                        Type.FLOAT
-                },
+                new Type[] { Type.FLOAT },
                 Const.INVOKEVIRTUAL));
         il.append(InstructionConst.RETURN);
         methodGen.setMaxStack();
         classGen.addMethod(methodGen.getMethod());
         classGen.addEmptyConstructor(Const.ACC_PUBLIC);
         JavaClass javaClass = classGen.getJavaClass();
-        try {
-            javaClass.dump("tmp/tone.class");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        javaClass.dump("tmp/tone.class");
     }
 }

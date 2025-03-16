@@ -26,45 +26,42 @@ import java.io.IOException;
 
 public class Util {
 
-    public static void dumpByteArray(byte[] ab) {
-        for (byte b : ab) {
+    public static void dumpByteArray(byte[] buf) {
+        for (byte b : buf) {
             System.out.print(" " + b);
         }
         System.out.println();
     }
 
     // returns true if equal
-    public static boolean compareByteArrays(byte[] ab1, int nOffset1, byte[] ab2, int nOffset2, int nLength) {
-        for (int i = 0; i < nLength; i++) {
-            if (ab1[i + nOffset1] != ab2[i + nOffset2]) {
+    public static boolean compareByteArrays(byte[] b1, int offset1, byte[] b2, int offset2, int length) {
+        for (int i = 0; i < length; i++) {
+            if (b1[i + offset1] != b2[i + offset2]) {
                 return false;
             }
         }
         return true;
     }
 
-    public static byte[] getByteArrayFromFile(File file)
-            throws IOException {
-        long lLength = file.length();
-        byte[] abData = new byte[(int) lLength];
+    public static byte[] getByteArrayFromFile(File file) throws IOException {
+        long length = file.length();
+        byte[] data = new byte[(int) length];
         FileInputStream fis = new FileInputStream(file);
-        int nBytesRemaining = (int) lLength;
-        int nWriteStart = 0;
-        while (nBytesRemaining > 0) {
-            int nBytesRead = fis.read(abData, nWriteStart, nBytesRemaining);
-            nBytesRemaining -= nBytesRead;
-            nWriteStart += nBytesRead;
+        int bytesRemaining = (int) length;
+        int writeStart = 0;
+        while (bytesRemaining > 0) {
+            int bytesRead = fis.read(data, writeStart, bytesRemaining);
+            bytesRemaining -= bytesRead;
+            writeStart += bytesRead;
         }
         fis.close();
-        return abData;
+        return data;
     }
 
     public static void sleep(long milliseconds) {
         try {
             Thread.sleep(milliseconds);
-        } catch (InterruptedException e) {
+        } catch (InterruptedException ignored) {
         }
     }
 }
-
-

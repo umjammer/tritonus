@@ -32,10 +32,10 @@ public final class PitchOpcodes {
 
     private static final float DEFAULT_TUNE = 440.0F;
 
-    private float m_fTune;
+    private float tune;
 
     public PitchOpcodes() {
-        m_fTune = DEFAULT_TUNE;
+        tune = DEFAULT_TUNE;
     }
 
     public static void buildOpcodeTable(OpcodeTable opcodeTable) {
@@ -59,12 +59,12 @@ public final class PitchOpcodes {
         opcodeTable.addEntry(new OpcodeEntry("cpsmidi", instanceClass, WidthAndRate.RATE_X));
     }
 
-    public float gettune() {
-        return m_fTune;
+    public float getTune() {
+        return tune;
     }
 
-    public float settune(float x) {
-        m_fTune = x;
+    public float setTune(float x) {
+        tune = x;
         return x;
     }
 
@@ -147,61 +147,59 @@ public final class PitchOpcodes {
    11 B
  */
 
-    private float getCpsValue(int nOctave, int nNote) {
-        return gettune() * (float) Math.pow(2.0, (nOctave - 8) + (nNote - 9) / 12.0);
+    private float getCpsValue(int octave, int note) {
+        return getTune() * (float) Math.pow(2.0, (octave - 8) + (note - 9) / 12.0);
     }
 
-    private int getCpsOctave(float fCps) {
-        double dRelativePitch = fCps / gettune();
+    private int getCpsOctave(float cps) {
+        double dRelativePitch = cps / getTune();
         double dTone = Math.log(dRelativePitch) * (1.0 / Math.log(2.0));
         return (int) dTone + 8;
     }
 
-    private int getCpsNote(float fCps) {
-        double dRelativePitch = fCps / gettune();
+    private int getCpsNote(float cps) {
+        double dRelativePitch = cps / getTune();
         double dTone = Math.log(dRelativePitch) * (1.0 / Math.log(2.0));
         return (int) ((dTone - (int) dTone) * 12.0);
     }
 
-    private static float getMidiValue(int nOctave, int nNote) {
-        return (nOctave - 3) * 12 + nNote;
+    private static float getMidiValue(int octave, int note) {
+        return (octave - 3) * 12 + note;
     }
 
-    private static int getMidiOctave(float fMidi) {
-        return (int) fMidi / 12 + 3;
+    private static int getMidiOctave(float midi) {
+        return (int) midi / 12 + 3;
     }
 
-    private static int getMidiNote(float fMidi) {
-        return (int) fMidi % 12;
+    private static int getMidiNote(float midi) {
+        return (int) midi % 12;
     }
 
-    private static float getOctValue(int nOctave, int nNote) {
-        return nOctave + nNote * (1.0F / 12.0F);
+    private static float getOctValue(int octave, int note) {
+        return octave + note * (1.0F / 12.0F);
     }
 
-    private static int getOctOctave(float fOct) {
-        return (int) fOct;
+    private static int getOctOctave(float oct) {
+        return (int) oct;
     }
 
-    private static int getOctNote(float fOct) {
-        return (int) ((fOct - getOctOctave(fOct)) * 12.0F);
+    private static int getOctNote(float oct) {
+        return (int) ((oct - getOctOctave(oct)) * 12.0F);
     }
 
-    private static float getPchValue(int nOctave, int nNote) {
-        return nOctave + nNote * 0.01F;
+    private static float getPchValue(int octave, int note) {
+        return octave + note * 0.01F;
     }
 
-    private static int getPchOctave(float fPch) {
-        return (int) fPch;
+    private static int getPchOctave(float pch) {
+        return (int) pch;
     }
 
-    private static int getPchNote(float fPch) {
-        return (int) ((fPch - getPchOctave(fPch)) * 100.0F);
+    private static int getPchNote(float pch) {
+        return (int) ((pch - getPchOctave(pch)) * 100.0F);
     }
 
     private static float notImplemented() {
         throw new RuntimeException("opcode not implemented");
     }
 }
-
-

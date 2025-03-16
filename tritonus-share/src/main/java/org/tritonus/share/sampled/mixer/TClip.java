@@ -50,64 +50,63 @@ public class TClip extends TDataLine implements Clip {
     }
 
     @Override
-    public void open(AudioFormat audioFormat, byte[] abData, int nOffset, int nLength) throws LineUnavailableException {
-//        int nBufferLength = nNumFrames * audioFormat.getFrameSize();
-        // TODO check if nOffset + nBufferLength <= abData.length
+    public void open(AudioFormat audioFormat, byte[] data, int offset, int length) throws LineUnavailableException {
+//        int bufferLength = frames * audioFormat.getFrameSize();
+        // TODO check if offset + nBufferLength <= data.length
         // perhaps truncate automatically
-        ByteArrayInputStream bais = new ByteArrayInputStream(abData, nOffset, nLength);
+        ByteArrayInputStream bais = new ByteArrayInputStream(data, offset, length);
         AudioInputStream audioInputStream = new AudioInputStream(bais, audioFormat, AudioSystem.NOT_SPECIFIED);
         try {
             open(audioInputStream);
         } catch (IOException e) {
             logger.log(Level.ERROR, e.getMessage(), e);
 
-            throw new LineUnavailableException("IOException occured");
+            throw new LineUnavailableException("IOException occurred");
         }
     }
 
     @Override
-    public void open(AudioInputStream audioInputStream)
-            throws LineUnavailableException, IOException {
+    public void open(AudioInputStream audioInputStream) throws LineUnavailableException, IOException {
         AudioFormat audioFormat = audioInputStream.getFormat();
         // TODO
         DataLine.Info info = new DataLine.Info(Clip.class, audioFormat, -1);
         setLineInfo(info);
-//        int nFrameSize = audioFormat.getFrameSize();
-//        long lTotalLength = audioInputStream.getFrameLength() * nFrameSize;
-//        int nFormat = Esd.ESD_STREAM | Esd.ESD_PLAY | EsdUtils.getEsdFormat(audioFormat);
-//        if (TDebug.TraceClip) {
-//            logger.log(Level.TRACE, "format: " + nFormat);
-//            logger.log(Level.TRACE, "sample rate: " + audioFormat.getSampleRate());
+//        int frameSize = audioFormat.getFrameSize();
+//        long totalLength = audioInputStream.getFrameLength() * frameSize;
+//        int format = Esd.ESD_STREAM | Esd.ESD_PLAY | EsdUtils.getEsdFormat(audioFormat);
+//        if (logger.isLoggable(Level.TRACE)) {
+//logger.log(Level.TRACE, "format: " + format);
+//logger.log(Level.TRACE, "sample rate: " + audioFormat.getSampleRate());
 //        }
-//        // m_esdSample.open(nFormat, (int) audioFormat.getSampleRate(), (int) lTotalLength);
-//        if (TDebug.TraceClip) {
-//            logger.log(Level.TRACE, "size in esd: " + audioInputStream.getFrameLength() * nFrameSize);
+//        // esdSample.open(format, (int) audioFormat.getSampleRate(), (int) totalLength);
+//        if (logger.isLoggable(Level.TRACE)) {
+//logger.log(Level.TRACE, "size in esd: " + audioInputStream.getFrameLength() * frameSize);
 //        }
-//        int nBufferLength = BUFFER_FRAMES * nFrameSize;
-//        byte[] abData = new byte[nBufferLength];
-//        int nBytesRead = 0;
-//        int nTotalBytes = 0;
-//        while (nBytesRead != -1) {
+//        int bufferLength = BUFFER_FRAMES * frameSize;
+//        byte[] data = new byte[bufferLength];
+//        int bytesRead = 0;
+//        int totalBytes = 0;
+//        while (bytesRead != -1) {
 //            try {
-//                nBytesRead = audioInputStream.read(abData, 0, abData.length);
+//                bytesRead = audioInputStream.read(data, 0, data.length);
 //            } catch (IOException e) {
 //                if (TDebug.TraceClip || TDebug.TraceAllExceptions) {
-//                    logger.log(Level.TRACE, e);
+//logger.log(Level.TRACE, e);
 //                }
 //            }
-//            if (nBytesRead >= 0) {
-//                nTotalBytes += nBytesRead;
-//                if (TDebug.TraceClip) {
-//                    logger.log(Level.TRACE, "TClip.open(): total bytes: " + nTotalBytes);
-//                    logger.log(Level.TRACE, "TClip.open(): Trying to write: " + nBytesRead);
+//            if (bytesRead >= 0) {
+//                totalBytes += bytesRead;
+//                if (logger.isLoggable(Level.TRACE)) {
+//logger.log(Level.TRACE, "TClip.open(): total bytes: " + totalBytes);
+//logger.log(Level.TRACE, "TClip.open(): Trying to write: " + bytesRead);
 //                }
-//                int nBytesWritten = 0; //m_esdSample.write(abData, 0, nBytesRead);
-//                if (TDebug.TraceClip) {
-//                    logger.log(Level.TRACE, "TClip.open(): Written: " + nBytesWritten);
+//                int bytesWritten = 0; // esdSample.write(data, 0, bytesRead);
+//                if (logger.isLoggable(Level.TRACE)) {
+//logger.log(Level.TRACE, "TClip.open(): Written: " + nBytesWritten);
 //                }
 //            }
 //        }
-        // to trigger the events
+//        // to trigger the events
 //        open();
     }
 
@@ -124,12 +123,12 @@ public class TClip extends TDataLine implements Clip {
     }
 
     @Override
-    public void setFramePosition(int nPosition) {
+    public void setFramePosition(int position) {
         // TODO
     }
 
     @Override
-    public void setMicrosecondPosition(long lPosition) {
+    public void setMicrosecondPosition(long position) {
         // TODO
     }
 
@@ -146,34 +145,34 @@ public class TClip extends TDataLine implements Clip {
     }
 
     @Override
-    public void setLoopPoints(int nStart, int nEnd) {
+    public void setLoopPoints(int start, int end) {
         // TODO
     }
 
     @Override
-    public void loop(int nCount) {
-        logger.log(Level.TRACE, "TClip.loop(int): called; count = " + nCount);
+    public void loop(int count) {
+        logger.log(Level.TRACE, "called; count = " + count);
 
         if (false /* isStarted() */) {
             // only allow zero count to stop the looping
             // at the end of an iteration.
-            if (nCount == 0) {
-                logger.log(Level.TRACE, "TClip.loop(int): stopping sample");
+            if (count == 0) {
+                logger.log(Level.TRACE, "stopping sample");
 
-//                 m_esdSample.stop();
+//                 esdSample.stop();
             }
         } else {
-            if (nCount == 0) {
-                logger.log(Level.TRACE, "TClip.loop(int): starting sample (once)");
+            if (count == 0) {
+                logger.log(Level.TRACE, "starting sample (once)");
 
-//                m_esdSample.play();
+//                esdSample.play();
             } else {
                 // we're ignoring the count, because esd
                 // cannot loop for a fixed number of times.
-//                logger.log(Level.TRACE, "hallo");
-                logger.log(Level.TRACE, "TClip.loop(int): starting sample (forever)");
+//logger.log(Level.TRACE, "hallo");
+                logger.log(Level.TRACE, "starting sample (forever)");
 
-//                m_esdSample.loop();
+//                esdSample.loop();
             }
         }
         // TODO
@@ -191,8 +190,8 @@ public class TClip extends TDataLine implements Clip {
 
     @Override
     public void close() {
-//        m_esdSample.free();
-//        m_esdSample.close();
+//        esdSample.free();
+//        esdSample.close();
         // TODO
     }
 
@@ -203,11 +202,11 @@ public class TClip extends TDataLine implements Clip {
 
     @Override
     public void start() {
-        logger.log(Level.TRACE, "TClip.start(): called");
+        logger.log(Level.TRACE, "esdSamplecalled");
 
         // This is a hack. What start() really should do is
         // start playing at the position playback was stopped.
-        logger.log(Level.TRACE, "TClip.start(): calling 'loop(0)' [hack]");
+        logger.log(Level.TRACE, "esdSamplecalling 'loop(0)' [hack]");
 
         loop(0);
     }
@@ -215,7 +214,7 @@ public class TClip extends TDataLine implements Clip {
     @Override
     public void stop() {
         // TODO
-//        m_esdSample.kill();
+//        esdSample.kill();
     }
 
     /**

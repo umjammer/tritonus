@@ -74,100 +74,99 @@ public class AlsaPortMixer extends TMixer {
      * element. For now, the following two lists should have the same size
      * and related elements at the same index position.
      */
-    private List<AlsaMixerElement> m_mixerElements;
+    private final List<AlsaMixerElement> mixerElements;
 
     /**
      * Port.Infos are keys, Port instances are values.
      */
-    private Map<Port.Info, Port> m_portMap;
+    private final Map<Port.Info, Port> portMap;
 
     /**
      * Port.Infos are keys, AlsaMixerElement instances are values.
      */
-    private Map<Port.Info, AlsaMixerElement> m_mixerElementMap;
+    private final Map<Port.Info, AlsaMixerElement> mixerElementMap;
 
-    public AlsaPortMixer(int nCard) {
-        this("hw:" + nCard);
+    public AlsaPortMixer(int card) {
+        this("hw:" + card);
     }
 
-    public AlsaPortMixer(String strDeviceName) {
-        super(new TMixerInfo(
-                        "Alsa Port Mixer (" + strDeviceName + ")",
+    public AlsaPortMixer(String deviceName) {
+        super(new TMixerInfo("Alsa Port Mixer (" + deviceName + ")",
                         GlobalInfo.getVendor(),
-                        "System Mixer for the Advanced Linux Sound System (card " + strDeviceName + ")",
+                        "System Mixer for the Advanced Linux Sound System (card " + deviceName + ")",
                         GlobalInfo.getVersion()),
                 new Line.Info(Mixer.class));
-        logger.log(Level.TRACE, "AlsaPortMixer.<init>: begin");
+        logger.log(Level.TRACE, "begin");
 
-        m_mixerElements = new ArrayList<>();
-        m_mixerElementMap = new HashMap<>();
-        m_portMap = new HashMap<>();
+        mixerElements = new ArrayList<>();
+        mixerElementMap = new HashMap<>();
+        portMap = new HashMap<>();
         AlsaMixer alsaMixer = null;
         try {
-            alsaMixer = new AlsaMixer(strDeviceName);
-            logger.log(Level.TRACE, "AlsaPortMixer.<init>: successfully created AlsaMixer instance");
+            alsaMixer = new AlsaMixer(deviceName);
+            logger.log(Level.TRACE, "successfully created AlsaMixer instance");
 
         } catch (Exception e) {
             logger.log(Level.ERROR, e.getMessage(), e);
         }
-        int nArraySize = 150; // TODO original value: 128. With this value, a vm crash occurs
-        int[] anIndices;
-        String[] astrNames;
-        int nControlCount;
+        int arraySize = 150; // TODO original value: 128. With this value, a vm crash occurs
+        int[] indices;
+        String[] names;
+        int controlCount;
         while (true) {
-            anIndices = new int[nArraySize];
-            astrNames = new String[nArraySize];
-            nControlCount = alsaMixer.readControlList(anIndices, astrNames);
-            if (nControlCount >= 0) {
+            indices = new int[arraySize];
+            names = new String[arraySize];
+            controlCount = alsaMixer.readControlList(indices, names);
+            if (controlCount >= 0) {
                 break;
             }
-            logger.log(Level.TRACE, "AlsaPortMixer.<init>: increasing array size for AlsaMixer.readControlList(): now " + nArraySize * 2);
+            logger.log(Level.TRACE, "increasing array size for AlsaMixer.readControlList(): now " + arraySize * 2);
 
-            nArraySize *= 2;
+            arraySize *= 2;
         }
         List<Line.Info> sourcePortInfos = new ArrayList<>();
         List<Line.Info> targetPortInfos = new ArrayList<>();
-        for (int i = 0; i < nControlCount; i++) {
-            logger.log(Level.TRACE, "AlsaPortMixer.<init>(): control " + i + ": " + anIndices[i] + " " + astrNames[i]);
+        for (int i = 0; i < controlCount; i++) {
+            logger.log(Level.TRACE, "AlsaPortMixer.<init>(): control " + i + ": " + indices[i] + " " + names[i]);
 
-            AlsaMixerElement element = new AlsaMixerElement(alsaMixer, anIndices[i], astrNames[i]);
+            AlsaMixerElement element = new AlsaMixerElement(alsaMixer, indices[i], names[i]);
             if (element.isActive()) {
-                m_mixerElements.add(element);
+                mixerElements.add(element);
                 if (hasPlaybackChannels(element)) {
                     Port.Info info = new Port.Info(Port.class, element.getName(), true);
                     sourcePortInfos.add(info);
-                    m_mixerElementMap.put(info, element);
+                    mixerElementMap.put(info, element);
                 }
                 if (hasCaptureChannels(element)) {
                     Port.Info info = new Port.Info(Port.class, element.getName(), false);
                     targetPortInfos.add(info);
-                    m_mixerElementMap.put(info, element);
+                    mixerElementMap.put(info, element);
                 }
             }
         }
         setSupportInformation(new ArrayList<>(), new ArrayList<>(), sourcePortInfos, targetPortInfos);
 
-        logger.log(Level.TRACE, "AlsaPortMixer.<init>: end.");
+        logger.log(Level.TRACE, "end");
     }
 
     private static boolean hasPlaybackChannels(AlsaMixerElement element) {
-        boolean bHasChannels = false;
-        for (int nChannel = AlsaMixerElement.SND_MIXER_SCHN_FRONT_LEFT;
-             nChannel <= AlsaMixerElement.SND_MIXER_SCHN_WOOFER;
-             nChannel++) {
-            bHasChannels |= element.hasPlaybackChannel(nChannel);
+        boolean hasChannels = false;
+        for (int channel = AlsaMixerElement.SND_MIXER_SCHN_FRONT_LEFT;
+             channel <= AlsaMixerElement.SND_MIXER_SCHN_WOOFER;
+             channel++) {
+            hasChannels |= element.hasPlaybackChannel(channel);
         }
-        return bHasChannels;
+        return hasChannels;
     }
 
     private static boolean hasCaptureChannels(AlsaMixerElement element) {
-        boolean bHasChannels = false;
-        for (int nChannel = AlsaMixerElement.SND_MIXER_SCHN_FRONT_LEFT;
-             nChannel <= AlsaMixerElement.SND_MIXER_SCHN_WOOFER;
-             nChannel++) {
-            bHasChannels |= element.hasCaptureChannel(nChannel);
+        boolean hasChannels = false;
+        for (int channel = AlsaMixerElement.SND_MIXER_SCHN_FRONT_LEFT;
+             channel <= AlsaMixerElement.SND_MIXER_SCHN_WOOFER;
+             channel++) {
+            hasChannels |= element.hasCaptureChannel(channel);
         }
-        return bHasChannels;
+        return hasChannels;
     }
 
     // Line ----
@@ -175,20 +174,20 @@ public class AlsaPortMixer extends TMixer {
     // TODO allow real close and reopen of mixer
     @Override
     public void open() {
-        logger.log(Level.TRACE, "AlsaPortMixer.open(): begin");
+        logger.log(Level.TRACE, "begin");
 
         // currently does nothing
 
-        logger.log(Level.TRACE, "AlsaPortMixer.open(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     @Override
     public void close() {
-        logger.log(Level.TRACE, "AlsaPortMixer.close(): begin");
+        logger.log(Level.TRACE, "begin");
 
         // currently does nothing
 
-        logger.log(Level.TRACE, "AlsaPortMixer.close(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     // Mixer ----
@@ -207,39 +206,39 @@ public class AlsaPortMixer extends TMixer {
 
     @Override
     protected Port getPort(Port.Info info) throws LineUnavailableException {
-        logger.log(Level.TRACE, "AlsaPortMixer.getPort(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        Port port = m_portMap.get(info);
+        Port port = portMap.get(info);
         if (port == null) {
             port = createPort(info);
-            m_portMap.put(info, port);
+            portMap.put(info, port);
         }
 
-        logger.log(Level.TRACE, "AlsaPortMixer.getPort(): end");
+        logger.log(Level.TRACE, "end");
 
         return port;
     }
 
     private Port createPort(Port.Info info) {
-        logger.log(Level.TRACE, "AlsaPortMixer.createPort(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        AlsaMixerElement element = m_mixerElementMap.get(info);
+        AlsaMixerElement element = mixerElementMap.get(info);
         if (element == null) {
             throw new IllegalArgumentException("no port for this info");
         }
         List<Control> controls;
 //        Control c;
-//        int nDirection;
+//        int direction;
         if (info.isSource()) {
             controls = createSourcePortControls(element);
         } else {
-//            nDirection = DIRECTION_CAPTURE;
+//            direction = DIRECTION_CAPTURE;
 //            controls = createTargetPortControls(element);
             controls = new ArrayList<>();
         }
         Port port = new TPort(this, info, controls);
 
-        logger.log(Level.TRACE, "AlsaPortMixer.createPort(): end");
+        logger.log(Level.TRACE, "end");
 
         return port;
     }
@@ -247,55 +246,55 @@ public class AlsaPortMixer extends TMixer {
     /**
      * TODO
      */
-    private List<Control> createSourcePortControls(AlsaMixerElement element) {
-        int nDirection = DIRECTION_PLAYBACK;
+    private static List<Control> createSourcePortControls(AlsaMixerElement element) {
+        int direction = DIRECTION_PLAYBACK;
         List<Control> controls = new ArrayList<>();
         Control c;
         if (element.hasPlaybackVolume() ||
                 element.hasCommonVolume()) {
             if (element.isPlaybackMono() ||
                     element.hasPlaybackVolumeJoined()) {
-                c = createVolumeControl(element, AlsaMixerElement.SND_MIXER_SCHN_FRONT_LEFT, nDirection);
+                c = createVolumeControl(element, AlsaMixerElement.SND_MIXER_SCHN_FRONT_LEFT, direction);
                 controls.add(c);
             } else {
                 List<Control> volumeControls = new ArrayList<>();
-                for (int nChannel = AlsaMixerElement.SND_MIXER_SCHN_FRONT_LEFT; nChannel < AlsaMixerElement.SND_MIXER_SCHN_LAST; nChannel++) {
-                    if (element.hasPlaybackChannel(nChannel)) {
-//                        logger.log(Level.TRACE, "adding channel " + nChannel);
-                        c = createVolumeControl(element, nChannel, nDirection);
-//                        logger.log(Level.DEBUG, "control to add: " + c);
+                for (int channel = AlsaMixerElement.SND_MIXER_SCHN_FRONT_LEFT; channel < AlsaMixerElement.SND_MIXER_SCHN_LAST; channel++) {
+                    if (element.hasPlaybackChannel(channel)) {
+//logger.log(Level.TRACE, "adding channel " + channel);
+                        c = createVolumeControl(element, channel, direction);
+//logger.log(Level.DEBUG, "control to add: " + c);
                         volumeControls.add(c);
                     }
                 }
                 // list should not be empty
                 CompoundControl.Type type = new TCompoundControlType("test");
-                Control[] aMemberControls = volumeControls.toArray(new Control[0]);
-//                logger.log(Level.DEBUG, "member controls: " + aMemberControls);
-//                logger.log(Level.DEBUG, "# member controls: " + aMemberControls.length);
-                c = new AlsaCompoundControl(type, aMemberControls);
+                Control[] memberControls = volumeControls.toArray(new Control[0]);
+//logger.log(Level.DEBUG, "member controls: " + memberControls);
+//logger.log(Level.DEBUG, "# member controls: " + memberControls.length);
+                c = new AlsaCompoundControl(type, memberControls);
                 controls.add(c);
             }
         }
         if (element.hasPlaybackSwitch() || element.hasCommonSwitch()) {
             if (element.isPlaybackMono() || element.hasPlaybackSwitchJoined()) {
-                c = createSwitchControl(element, AlsaMixerElement.SND_MIXER_SCHN_FRONT_LEFT, nDirection);
+                c = createSwitchControl(element, AlsaMixerElement.SND_MIXER_SCHN_FRONT_LEFT, direction);
                 controls.add(c);
             } else {
                 List<Control> volumeControls = new ArrayList<>();
-                for (int nChannel = AlsaMixerElement.SND_MIXER_SCHN_FRONT_LEFT; nChannel < AlsaMixerElement.SND_MIXER_SCHN_LAST; nChannel++) {
-                    if (element.hasPlaybackChannel(nChannel)) {
-//                        logger.log(Level.TRACE, "adding channel " + nChannel);
-                        c = createSwitchControl(element, nChannel, nDirection);
-//                        logger.log(Level.DEBUG, "control to add: " + c);
+                for (int channel = AlsaMixerElement.SND_MIXER_SCHN_FRONT_LEFT; channel < AlsaMixerElement.SND_MIXER_SCHN_LAST; channel++) {
+                    if (element.hasPlaybackChannel(channel)) {
+//logger.log(Level.TRACE, "adding channel " + channel);
+                        c = createSwitchControl(element, channel, direction);
+//logger.log(Level.DEBUG, "control to add: " + c);
                         volumeControls.add(c);
                     }
                 }
                 // list should not be empty
                 CompoundControl.Type type = new TCompoundControlType("test");
-                Control[] aMemberControls = volumeControls.toArray(new Control[0]);
-//                logger.log(Level.DEBUG, "member controls: " + aMemberControls);
-//                logger.log(Level.DEBUG, "# member controls: " + aMemberControls.length);
-                c = new AlsaCompoundControl(type, aMemberControls);
+                Control[] memberControls = volumeControls.toArray(new Control[0]);
+//logger.log(Level.DEBUG, "member controls: " + memberControls);
+//logger.log(Level.DEBUG, "# member controls: " + memberControls.length);
+                c = new AlsaCompoundControl(type, memberControls);
                 controls.add(c);
             }
         }
@@ -305,189 +304,188 @@ public class AlsaPortMixer extends TMixer {
     /**
      * TODO
      */
-    private FloatControl createVolumeControl(AlsaMixerElement element, int nChannel, int nDirection) {
-        int[] anValues = new int[2];
-        switch (nDirection) {
+    private static FloatControl createVolumeControl(AlsaMixerElement element, int channel, int direction) {
+        int[] values = new int[2];
+        switch (direction) {
         case DIRECTION_COMMON:
         case DIRECTION_PLAYBACK:
-            element.getPlaybackVolumeRange(anValues);
+            element.getPlaybackVolumeRange(values);
             break;
 
         case DIRECTION_CAPTURE:
-            element.getCaptureVolumeRange(anValues);
+            element.getCaptureVolumeRange(values);
             break;
         }
         FloatControl control = new AlsaVolumeControl(
                 FloatControl.Type.VOLUME,
-                anValues[0],
-                anValues[1],
+                values[0],
+                values[1],
                 1.0F,
                 -1,
-                anValues[0],
+                values[0],
                 "", "", "", "",
                 element,
-                nChannel,
-                nDirection);
+                channel,
+                direction);
         return control;
     }
 
     /**
      * TODO
      */
-    private BooleanControl createSwitchControl(AlsaMixerElement element, int nChannel, int nDirection) {
+    private static BooleanControl createSwitchControl(AlsaMixerElement element, int channel, int direction) {
         BooleanControl control = new AlsaSwitchControl(
                 BooleanControl.Type.MUTE,
                 false,
                 "", "",
                 element,
-                nChannel,
-                nDirection);
+                channel,
+                direction);
         return control;
     }
 
     // inner classes ----
 
-    private static class AlsaVolumeControl
-            extends FloatControl {
+    private static class AlsaVolumeControl extends FloatControl {
 
-        private AlsaMixerElement m_element;
-        private int m_nChannel;
+        private final AlsaMixerElement element;
+        private final int channel;
 
         /**
          * One of the constants DIRECTION_*.
          */
-        private int m_nDirection;
+        private final int direction;
 
         /**
-         * @param nDirection One of the constants DIRECTION_*.
+         * @param direction One of the constants DIRECTION_*.
          */
         public AlsaVolumeControl(Type type,
-                                 float fMinimum,
-                                 float fMaximum,
-                                 float fPrecision,
-                                 int nUpdatePeriod,
-                                 float fInitialValue,
-                                 String strUnits,
-                                 String strMinLabel,
-                                 String strMidLabel,
-                                 String strMaxLabel,
+                                 float minimum,
+                                 float maximum,
+                                 float precision,
+                                 int updatePeriod,
+                                 float initialValue,
+                                 String units,
+                                 String minLabel,
+                                 String midLabel,
+                                 String maxLabel,
                                  AlsaMixerElement element,
-                                 int nChannel,
-                                 int nDirection) {
+                                 int channel,
+                                 int direction) {
             super(type,
-                    fMinimum,
-                    fMaximum,
-                    fPrecision,
-                    nUpdatePeriod,
-                    fInitialValue,
-                    strUnits,
-                    strMinLabel,
-                    strMidLabel,
-                    strMaxLabel);
-            logger.log(Level.TRACE, "AlsaPortMixer.AlsaFloatControl.<init>(): begin");
+                    minimum,
+                    maximum,
+                    precision,
+                    updatePeriod,
+                    initialValue,
+                    units,
+                    minLabel,
+                    midLabel,
+                    maxLabel);
+            logger.log(Level.TRACE, "begin");
 
-            m_element = element;
-            m_nChannel = nChannel;
-            m_nDirection = nDirection;
+            this.element = element;
+            this.channel = channel;
+            this.direction = direction;
             setValue(getValueImpl());
 
-            logger.log(Level.TRACE, "AlsaPortMixer.AlsaFloatControl.<init>(): end");
+            logger.log(Level.TRACE, "end");
         }
 
         private AlsaMixerElement getElement() {
-            return m_element;
+            return element;
         }
 
         private int getChannel() {
-            return m_nChannel;
+            return channel;
         }
 
         private int getDirection() {
-            return m_nDirection;
+            return direction;
         }
 
         // TODO respect channels
         @Override
         public void setValue(float fValue) {
             super.setValue(fValue);
-            int nValue = (int) fValue;
+            int value = (int) fValue;
             switch (getDirection()) {
             case DIRECTION_COMMON:
             case DIRECTION_PLAYBACK:
-                getElement().setPlaybackVolumeAll(nValue);
+                getElement().setPlaybackVolumeAll(value);
                 break;
 
             case DIRECTION_CAPTURE:
-                getElement().setCaptureVolumeAll(nValue);
+                getElement().setCaptureVolumeAll(value);
                 break;
             }
         }
 
         private float getValueImpl() {
-            int nChannel = getChannel();
-            float fValue = switch (getDirection()) {
-                case DIRECTION_COMMON, DIRECTION_PLAYBACK -> getElement().getPlaybackVolume(nChannel);
-                case DIRECTION_CAPTURE -> getElement().getCaptureVolume(nChannel);
+            int channel = getChannel();
+            float value = switch (getDirection()) {
+                case DIRECTION_COMMON, DIRECTION_PLAYBACK -> getElement().getPlaybackVolume(channel);
+                case DIRECTION_CAPTURE -> getElement().getCaptureVolume(channel);
                 default -> 0.0F;
             };
-            return fValue;
+            return value;
         }
     }
 
     private static class AlsaSwitchControl extends BooleanControl {
 
-        private AlsaMixerElement m_element;
-        private int m_nChannel;
+        private final AlsaMixerElement element;
+        private final int channel;
 
         /**
          * One of the constants DIRECTION_*.
          */
-        private int m_nDirection;
+        private final int direction;
 
         /**
-         * @param nDirection One of the constants DIRECTION_*.
+         * @param direction One of the constants DIRECTION_*.
          */
         public AlsaSwitchControl(Type type,
-                                 boolean bInitialValue,
-                                 String strTrueLabel,
-                                 String strFalseLabel,
+                                 boolean initialValue,
+                                 String trueLabel,
+                                 String falseLabel,
                                  AlsaMixerElement element,
-                                 int nChannel,
-                                 int nDirection) {
-            super(type, bInitialValue, strTrueLabel, strFalseLabel);
-            logger.log(Level.TRACE, "AlsaPortMixer.AlsaFloatControl.<init>(): begin");
+                                 int channel,
+                                 int direction) {
+            super(type, initialValue, trueLabel, falseLabel);
+            logger.log(Level.TRACE, "begin");
 
-            m_element = element;
-            m_nChannel = nChannel;
-            m_nDirection = nDirection;
+            this.element = element;
+            this.channel = channel;
+            this.direction = direction;
 
-            logger.log(Level.TRACE, "AlsaPortMixer.AlsaFloatControl.<init>(): end");
+            logger.log(Level.TRACE, "end");
         }
 
         private AlsaMixerElement getElement() {
-            return m_element;
+            return element;
         }
 
         private int getChannel() {
-            return m_nChannel;
+            return channel;
         }
 
         private int getDirection() {
-            return m_nDirection;
+            return direction;
         }
 
         // TODO respect channels
         @Override
-        public void setValue(boolean bValue) {
-            super.setValue(bValue);
+        public void setValue(boolean value) {
+            super.setValue(value);
             switch (getDirection()) {
             case DIRECTION_COMMON:
             case DIRECTION_PLAYBACK:
-                getElement().setPlaybackSwitchAll(bValue);
+                getElement().setPlaybackSwitchAll(value);
                 break;
 
             case DIRECTION_CAPTURE:
-                getElement().setCaptureSwitchAll(bValue);
+                getElement().setCaptureSwitchAll(value);
                 break;
             }
         }
@@ -500,8 +498,8 @@ public class AlsaPortMixer extends TMixer {
      */
     public static class AlsaCompoundControl extends CompoundControl {
 
-        public AlsaCompoundControl(CompoundControl.Type type, Control[] aMemberControls) {
-            super(type, aMemberControls);
+        public AlsaCompoundControl(CompoundControl.Type type, Control[] memberControls) {
+            super(type, memberControls);
         }
     }
 }

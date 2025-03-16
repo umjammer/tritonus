@@ -27,10 +27,10 @@ import org.tritonus.share.sampled.AudioFormats;
 
 public class AlsaUtils {
 
-    private static AudioFormat[] sm_aFormatTable = new AudioFormat[32];
+    private static AudioFormat[] formatTable = new AudioFormat[32];
 
     static {
-        sm_aFormatTable[AlsaPcm.SND_PCM_FORMAT_S8] = new AudioFormat(
+        formatTable[AlsaPcm.SND_PCM_FORMAT_S8] = new AudioFormat(
                 AudioFormat.Encoding.PCM_SIGNED,
                 AudioSystem.NOT_SPECIFIED,
                 8,
@@ -38,7 +38,7 @@ public class AlsaUtils {
                 AudioSystem.NOT_SPECIFIED,
                 AudioSystem.NOT_SPECIFIED,
                 true);
-        sm_aFormatTable[AlsaPcm.SND_PCM_FORMAT_U8] = new AudioFormat(
+        formatTable[AlsaPcm.SND_PCM_FORMAT_U8] = new AudioFormat(
                 AudioFormat.Encoding.PCM_UNSIGNED,
                 AudioSystem.NOT_SPECIFIED,
                 8,
@@ -46,7 +46,7 @@ public class AlsaUtils {
                 AudioSystem.NOT_SPECIFIED,
                 AudioSystem.NOT_SPECIFIED,
                 true);
-        sm_aFormatTable[AlsaPcm.SND_PCM_FORMAT_S16_LE] = new AudioFormat(
+        formatTable[AlsaPcm.SND_PCM_FORMAT_S16_LE] = new AudioFormat(
                 AudioFormat.Encoding.PCM_SIGNED,
                 AudioSystem.NOT_SPECIFIED,
                 16,
@@ -54,7 +54,7 @@ public class AlsaUtils {
                 AudioSystem.NOT_SPECIFIED,
                 AudioSystem.NOT_SPECIFIED,
                 false);
-        sm_aFormatTable[AlsaPcm.SND_PCM_FORMAT_S16_BE] = new AudioFormat(
+        formatTable[AlsaPcm.SND_PCM_FORMAT_S16_BE] = new AudioFormat(
                 AudioFormat.Encoding.PCM_SIGNED,
                 AudioSystem.NOT_SPECIFIED,
                 16,
@@ -62,7 +62,7 @@ public class AlsaUtils {
                 AudioSystem.NOT_SPECIFIED,
                 AudioSystem.NOT_SPECIFIED,
                 true);
-        sm_aFormatTable[AlsaPcm.SND_PCM_FORMAT_U16_LE] = new AudioFormat(
+        formatTable[AlsaPcm.SND_PCM_FORMAT_U16_LE] = new AudioFormat(
                 AudioFormat.Encoding.PCM_UNSIGNED,
                 AudioSystem.NOT_SPECIFIED,
                 16,
@@ -70,7 +70,7 @@ public class AlsaUtils {
                 AudioSystem.NOT_SPECIFIED,
                 AudioSystem.NOT_SPECIFIED,
                 false);
-        sm_aFormatTable[AlsaPcm.SND_PCM_FORMAT_U16_BE] = new AudioFormat(
+        formatTable[AlsaPcm.SND_PCM_FORMAT_U16_BE] = new AudioFormat(
                 AudioFormat.Encoding.PCM_UNSIGNED,
                 AudioSystem.NOT_SPECIFIED,
                 16,
@@ -78,7 +78,7 @@ public class AlsaUtils {
                 AudioSystem.NOT_SPECIFIED,
                 AudioSystem.NOT_SPECIFIED,
                 true);
-        sm_aFormatTable[AlsaPcm.SND_PCM_FORMAT_S24_LE] = new AudioFormat(
+        formatTable[AlsaPcm.SND_PCM_FORMAT_S24_LE] = new AudioFormat(
                 AudioFormat.Encoding.PCM_SIGNED,
                 AudioSystem.NOT_SPECIFIED,
                 24,
@@ -86,7 +86,7 @@ public class AlsaUtils {
                 AudioSystem.NOT_SPECIFIED,
                 AudioSystem.NOT_SPECIFIED,
                 false);
-        sm_aFormatTable[AlsaPcm.SND_PCM_FORMAT_S24_BE] = new AudioFormat(
+        formatTable[AlsaPcm.SND_PCM_FORMAT_S24_BE] = new AudioFormat(
                 AudioFormat.Encoding.PCM_SIGNED,
                 AudioSystem.NOT_SPECIFIED,
                 24,
@@ -94,7 +94,7 @@ public class AlsaUtils {
                 AudioSystem.NOT_SPECIFIED,
                 AudioSystem.NOT_SPECIFIED,
                 true);
-        sm_aFormatTable[AlsaPcm.SND_PCM_FORMAT_U24_LE] = new AudioFormat(
+        formatTable[AlsaPcm.SND_PCM_FORMAT_U24_LE] = new AudioFormat(
                 AudioFormat.Encoding.PCM_UNSIGNED,
                 AudioSystem.NOT_SPECIFIED,
                 24,
@@ -102,7 +102,7 @@ public class AlsaUtils {
                 AudioSystem.NOT_SPECIFIED,
                 AudioSystem.NOT_SPECIFIED,
                 false);
-        sm_aFormatTable[AlsaPcm.SND_PCM_FORMAT_U24_BE] = new AudioFormat(
+        formatTable[AlsaPcm.SND_PCM_FORMAT_U24_BE] = new AudioFormat(
                 AudioFormat.Encoding.PCM_UNSIGNED,
                 AudioSystem.NOT_SPECIFIED,
                 24,
@@ -110,7 +110,7 @@ public class AlsaUtils {
                 AudioSystem.NOT_SPECIFIED,
                 AudioSystem.NOT_SPECIFIED,
                 true);
-        sm_aFormatTable[AlsaPcm.SND_PCM_FORMAT_S32_LE] = new AudioFormat(
+        formatTable[AlsaPcm.SND_PCM_FORMAT_S32_LE] = new AudioFormat(
                 AudioFormat.Encoding.PCM_SIGNED,
                 AudioSystem.NOT_SPECIFIED,
                 32,
@@ -118,7 +118,7 @@ public class AlsaUtils {
                 AudioSystem.NOT_SPECIFIED,
                 AudioSystem.NOT_SPECIFIED,
                 false);
-        sm_aFormatTable[AlsaPcm.SND_PCM_FORMAT_S32_BE] = new AudioFormat(
+        formatTable[AlsaPcm.SND_PCM_FORMAT_S32_BE] = new AudioFormat(
                 AudioFormat.Encoding.PCM_SIGNED,
                 AudioSystem.NOT_SPECIFIED,
                 32,
@@ -126,7 +126,7 @@ public class AlsaUtils {
                 AudioSystem.NOT_SPECIFIED,
                 AudioSystem.NOT_SPECIFIED,
                 true);
-        sm_aFormatTable[AlsaPcm.SND_PCM_FORMAT_U32_LE] = new AudioFormat(
+        formatTable[AlsaPcm.SND_PCM_FORMAT_U32_LE] = new AudioFormat(
                 AudioFormat.Encoding.PCM_UNSIGNED,
                 AudioSystem.NOT_SPECIFIED,
                 32,
@@ -134,7 +134,7 @@ public class AlsaUtils {
                 AudioSystem.NOT_SPECIFIED,
                 AudioSystem.NOT_SPECIFIED,
                 false);
-        sm_aFormatTable[AlsaPcm.SND_PCM_FORMAT_U32_BE] = new AudioFormat(
+        formatTable[AlsaPcm.SND_PCM_FORMAT_U32_BE] = new AudioFormat(
                 AudioFormat.Encoding.PCM_UNSIGNED,
                 AudioSystem.NOT_SPECIFIED,
                 32,
@@ -142,7 +142,7 @@ public class AlsaUtils {
                 AudioSystem.NOT_SPECIFIED,
                 AudioSystem.NOT_SPECIFIED,
                 true);
-        sm_aFormatTable[AlsaPcm.SND_PCM_FORMAT_MU_LAW] = new AudioFormat(
+        formatTable[AlsaPcm.SND_PCM_FORMAT_MU_LAW] = new AudioFormat(
                 AudioFormat.Encoding.ULAW,
                 AudioSystem.NOT_SPECIFIED,
                 8,
@@ -150,7 +150,7 @@ public class AlsaUtils {
                 AudioSystem.NOT_SPECIFIED,
                 AudioSystem.NOT_SPECIFIED,
                 true);
-        sm_aFormatTable[AlsaPcm.SND_PCM_FORMAT_A_LAW] = new AudioFormat(
+        formatTable[AlsaPcm.SND_PCM_FORMAT_A_LAW] = new AudioFormat(
                 AudioFormat.Encoding.ALAW,
                 AudioSystem.NOT_SPECIFIED,
                 8,
@@ -160,18 +160,16 @@ public class AlsaUtils {
                 true);
     }
 
-    public static AudioFormat getAlsaFormat(int nAudioFormat) {
-        return sm_aFormatTable[nAudioFormat];
+    public static AudioFormat getAlsaFormat(int audioFormat) {
+        return formatTable[audioFormat];
     }
 
     public static int getAlsaFormat(AudioFormat audioFormat) {
-        for (int nFormat = 0; nFormat < sm_aFormatTable.length; nFormat++) {
-            if (sm_aFormatTable[nFormat] != null && AudioFormats.matches(sm_aFormatTable[nFormat], audioFormat)) {
-                return nFormat;
+        for (int format = 0; format < formatTable.length; format++) {
+            if (formatTable[format] != null && AudioFormats.matches(formatTable[format], audioFormat)) {
+                return format;
             }
         }
         return AlsaPcm.SND_PCM_FORMAT_UNKNOWN;
     }
 }
-
-

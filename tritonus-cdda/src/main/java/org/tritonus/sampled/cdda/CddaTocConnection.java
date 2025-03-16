@@ -36,49 +36,49 @@ public class CddaTocConnection extends URLConnection {
     /**
      * The cdda device name to read from.
      */
-    private String m_strDevice;
+    private String device;
 
-    private CddaMidLevel m_cddaMidLevel;
+    private CddaMidLevel cddaMidLevel;
 
     // TODO m_cdda.close();
     public CddaTocConnection(URL url) {
         super(url);
-        logger.log(Level.TRACE, "CddaTocConnection.<init>(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        m_strDevice = url.getPath();
+        device = url.getPath();
 
-        logger.log(Level.TRACE, "CddaTocConnection.<init>(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     @Override
     public void connect() {
-        logger.log(Level.TRACE, "CddaTocConnection.connect(): begin");
+        logger.log(Level.TRACE, "begin");
 
         if (!connected) {
-            m_cddaMidLevel = CddaUtils.getCddaMidLevel();
-            if (m_strDevice.isEmpty()) {
-                m_strDevice = m_cddaMidLevel.getDefaultDevice();
+            cddaMidLevel = CddaUtils.getCddaMidLevel();
+            if (device.isEmpty()) {
+                device = cddaMidLevel.getDefaultDevice();
             }
             connected = true;
         }
 
-        logger.log(Level.TRACE, "CddaTocConnection.connect(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     @Override
     public InputStream getInputStream() throws IOException {
-        logger.log(Level.TRACE, "CddaTocConnection.getInputStream(): begin");
+        logger.log(Level.TRACE, "begin");
 
         connect();
-        String strDevice = getDevice();
-        InputStream inputStream = m_cddaMidLevel.getTocAsXml(strDevice);
+        String device = getDevice();
+        InputStream inputStream = cddaMidLevel.getTocAsXml(device);
 
-        logger.log(Level.TRACE, "CddaTocConnection.getInputStream(): end");
+        logger.log(Level.TRACE, "end");
 
         return inputStream;
     }
 
     private String getDevice() {
-        return m_strDevice;
+        return device;
     }
 }

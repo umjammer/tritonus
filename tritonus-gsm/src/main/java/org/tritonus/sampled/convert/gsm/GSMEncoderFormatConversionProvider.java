@@ -15,16 +15,12 @@
  *   limitations under the License.
  */
 
-/*
- |<---            this code is formatted to fit into 80 columns             --->|
- */
-
 package org.tritonus.sampled.convert.gsm;
 
 import java.io.IOException;
 import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
-import java.util.Arrays;
+import java.util.List;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -69,15 +65,14 @@ public class GSMEncoderFormatConversionProvider extends TSimpleFormatConversionP
      * Constructor.
      */
     public GSMEncoderFormatConversionProvider() {
-        super(Arrays.asList(SOURCE_FORMATS), Arrays.asList(TARGET_FORMATS));
+        super(List.of(SOURCE_FORMATS), List.of(TARGET_FORMATS));
         logger.log(Level.TRACE, "GSMFormatConversionProvider.<init>(): begin");
 
         logger.log(Level.TRACE, "GSMFormatConversionProvider.<init>(): end");
     }
 
     @Override
-    public AudioInputStream getAudioInputStream(AudioFormat targetFormat,
-                                                AudioInputStream audioInputStream) {
+    public AudioInputStream getAudioInputStream(AudioFormat targetFormat, AudioInputStream audioInputStream) {
         logger.log(Level.TRACE, "GSMFormatConversionProvider.getAudioInputStream(): begin");
         logger.log(Level.TRACE, "GSMFormatConversionProvider.getAudioInputStream():");
         logger.log(Level.TRACE, "checking if conversion supported");
@@ -95,7 +90,7 @@ public class GSMEncoderFormatConversionProvider extends TSimpleFormatConversionP
             throw new IllegalArgumentException("conversion not supported");
         }
         // TODO this is unreachable
-//        logger.log(Level.TRACE, "GSMFormatConversionProvider.getAudioInputStream(): end");
+//logger.log(Level.TRACE, "end");
     }
 
     protected AudioFormat getDefaultTargetFormat(AudioFormat targetFormat, AudioFormat sourceFormat) {
@@ -118,48 +113,47 @@ public class GSMEncoderFormatConversionProvider extends TSimpleFormatConversionP
      */
     private static class EncodedGSMAudioInputStream extends TAsynchronousFilteredAudioInputStream {
 
-        private final AudioInputStream m_decodedStream;
+        private final AudioInputStream decodedStream;
         private final GsmFrameFormat gsmFrameFormat;
-        private final Encoder m_encoder;
+        private final Encoder encoder;
 
         /**
          * Holds one block of decoded data.
          */
-        private final byte[] m_abBuffer;
+        private final byte[] buffer;
 
         /**
          * Holds one block of decoded data.
          */
-        private final short[] m_asBuffer;
+        private final short[] bufferS;
 
         /**
          * Holds one encoded GSM frame.
          */
-        private final byte[] m_abFrameBuffer;
+        private final byte[] frameBuffer;
 
         public EncodedGSMAudioInputStream(AudioFormat targetFormat, AudioInputStream inputStream) {
             super(targetFormat, getTargetFrameLength(inputStream.getFrameLength(), targetFormat));
-            logger.log(Level.TRACE, "EncodedGSMAudioInputStream.<init>(): begin");
+            logger.log(Level.TRACE, "begin");
 
-            m_decodedStream = inputStream;
+            decodedStream = inputStream;
             gsmFrameFormat = getGsmFrameFormat(targetFormat);
-            m_encoder = new Encoder(gsmFrameFormat);
-            m_abBuffer = new byte[gsmFrameFormat.getSamplesPerFrame()
-                    * DECODED_BYTES_PER_FRAME];
-            m_asBuffer = new short[gsmFrameFormat.getSamplesPerFrame()];
-            m_abFrameBuffer = new byte[targetFormat.getFrameSize()];
+            encoder = new Encoder(gsmFrameFormat);
+            buffer = new byte[gsmFrameFormat.getSamplesPerFrame() * DECODED_BYTES_PER_FRAME];
+            bufferS = new short[gsmFrameFormat.getSamplesPerFrame()];
+            frameBuffer = new byte[targetFormat.getFrameSize()];
 
-            logger.log(Level.TRACE, "EncodedGSMAudioInputStream.<init>(): end");
+            logger.log(Level.TRACE, "end");
         }
 
-        private static long getTargetFrameLength(long lSourceFrameLength, AudioFormat targetFormat) {
+        private static long getTargetFrameLength(long sourceFrameLength, AudioFormat targetFormat) {
             // $$fb 2001-04-16: FrameLength gives the number of 33-byte blocks !
 //            inputStream.getFrameLength() == AudioSystem.NOT_SPECIFIED
 //                    ? AudioSystem.NOT_SPECIFIED
 //                    : inputStream.getFrameLength() / 160 * 33);
-            return lSourceFrameLength == AudioSystem.NOT_SPECIFIED
+            return sourceFrameLength == AudioSystem.NOT_SPECIFIED
                     ? AudioSystem.NOT_SPECIFIED
-                    : lSourceFrameLength / getGsmFrameFormat(targetFormat).getSamplesPerFrame();
+                    : sourceFrameLength / getGsmFrameFormat(targetFormat).getSamplesPerFrame();
         }
 
         private static GsmFrameFormat getGsmFrameFormat(AudioFormat targetFormat) {
@@ -172,13 +166,13 @@ public class GSMEncoderFormatConversionProvider extends TSimpleFormatConversionP
 
         @Override
         public void execute() {
-            logger.log(Level.TRACE, ">EncodedGSMAudioInputStream.execute(): begin");
+            logger.log(Level.TRACE, "begin");
 
             try {
-                int nRead = m_decodedStream.read(m_abBuffer);
+                int read = decodedStream.read(buffer);
                 // Currently, we take all kinds of errors as end of stream.
-                if (nRead != m_abBuffer.length) {
-                    logger.log(Level.TRACE, "<EncodedGSMAudioInputStream.execute(): not read whole 160 sample block (" + nRead + ")");
+                if (read != buffer.length) {
+                    logger.log(Level.TRACE, "not read whole 160 sample block (" + read + ")");
                     getCircularBuffer().close();
                     return;
                 }
@@ -191,24 +185,23 @@ public class GSMEncoderFormatConversionProvider extends TSimpleFormatConversionP
                 return;
             }
             for (int i = 0; i < gsmFrameFormat.getSamplesPerFrame(); i++) {
-                m_asBuffer[i] = TConversionTool.bytesToShort16(m_abBuffer, i
-                        * DECODED_BYTES_PER_FRAME, isBigEndian());
+                bufferS[i] = TConversionTool.bytesToShort16(buffer, i * DECODED_BYTES_PER_FRAME, isBigEndian());
             }
-            m_encoder.encode(m_asBuffer, m_abFrameBuffer);
-            getCircularBuffer().write(m_abFrameBuffer);
-            logger.log(Level.TRACE, "<EncodedGSMAudioInputStream.execute(): encoded GSM frame written");
+            encoder.encode(bufferS, frameBuffer);
+            getCircularBuffer().write(frameBuffer);
+            logger.log(Level.TRACE, "encoded GSM frame written");
 
-            logger.log(Level.TRACE, ">EncodedGSMAudioInputStream.execute(): end");
+            logger.log(Level.TRACE, "end");
         }
 
         private boolean isBigEndian() {
-            return m_decodedStream.getFormat().isBigEndian();
+            return decodedStream.getFormat().isBigEndian();
         }
 
         @Override
         public void close() throws IOException {
             super.close();
-            m_decodedStream.close();
+            decodedStream.close();
         }
     }
 }

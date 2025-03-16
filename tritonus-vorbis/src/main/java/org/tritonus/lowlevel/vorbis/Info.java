@@ -14,10 +14,6 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --.|
-*/
-
 package org.tritonus.lowlevel.vorbis;
 
 import java.lang.System.Logger;
@@ -53,55 +49,55 @@ public class Info {
     }
 
     public Info() {
-        logger.log(Level.TRACE, "Info.<init>(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        int nReturn = malloc();
-        if (nReturn < 0) {
+        int ret = malloc();
+        if (ret < 0) {
             throw new RuntimeException("malloc of vorbis_info failed");
         }
 
-        logger.log(Level.TRACE, "Info.<init>(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     private int malloc() {
-        logger.log(Level.TRACE, "malloc(): begin");
+        logger.log(Level.TRACE, "begin");
 
         handle = new vorbis_info();
-        logger.log(Level.TRACE, String.format("malloc(): handle: %s", handle));
+        logger.log(Level.TRACE, "handle: %s".formatted(handle));
 
-        logger.log(Level.TRACE, "malloc(): end");
+        logger.log(Level.TRACE, "end");
 
         return 0;
     }
 
     public void free() {
-        logger.log(Level.TRACE, "free(): begin");
+        logger.log(Level.TRACE, "begin");
 
         handle = null;
 
-        logger.log(Level.TRACE, "free(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     /**
      * Calls vorbis_info_init().
      */
     public void init() {
-        logger.log(Level.TRACE, "init(): begin");
+        logger.log(Level.TRACE, "begin");
 
         CodecLibrary.INSTANCE.vorbis_info_init(handle);
 
-        logger.log(Level.TRACE, "init(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     /**
      * Calls vorbis_info_clear().
      */
     public void clear() {
-        logger.log(Level.TRACE, "clear(): begin");
+        logger.log(Level.TRACE, "begin");
 
         CodecLibrary.INSTANCE.vorbis_info_clear(handle);
 
-        logger.log(Level.TRACE, "clear(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     // blocksize?
@@ -110,24 +106,24 @@ public class Info {
      * Accesses channels.
      */
     public int getChannels() {
-        logger.log(Level.TRACE, "getChannels(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        int nReturn = handle.channels;
+        int ret = handle.channels;
 
-        logger.log(Level.TRACE, "getChannels(): end");
+        logger.log(Level.TRACE, "end");
 
-        return nReturn;
+        return ret;
     }
 
     /**
      * Accesses rate.
      */
     public int getRate() {
-        logger.log(Level.TRACE, "getRate(): begin");
+        logger.log(Level.TRACE, "begin");
 
         NativeLong nReturn = handle.rate;
 
-        logger.log(Level.TRACE, "getRate(): end");
+        logger.log(Level.TRACE, "end");
 
         return nReturn.intValue();
     }
@@ -136,49 +132,49 @@ public class Info {
      * Calls vorbis_encode_init().
      */
     public int encodeInit(
-            int nChannels,
-            int nRate,
-            int nMaxBitrate,
-            int nNominalBitrate,
-            int nMinBitrate) {
-        logger.log(Level.TRACE, "encodeInit(): begin");
+            int channels,
+            int rate,
+            int maxBitrate,
+            int nominalBitrate,
+            int minBitrate) {
+        logger.log(Level.TRACE, "begin");
 
-        int nReturn = VorbisencLibrary.INSTANCE.vorbis_encode_init(handle, new NativeLong(nChannels), new NativeLong(nRate),
-                new NativeLong(nMaxBitrate), new NativeLong(nNominalBitrate), new NativeLong(nMinBitrate));
+        int ret = VorbisencLibrary.INSTANCE.vorbis_encode_init(handle, new NativeLong(channels), new NativeLong(rate),
+                new NativeLong(maxBitrate), new NativeLong(nominalBitrate), new NativeLong(minBitrate));
 
-        logger.log(Level.TRACE, "encodeInit(): end");
+        logger.log(Level.TRACE, "end");
 
-        return nReturn;
+        return ret;
     }
 
     /**
      * Calls vorbis_encode_init_vbr().
      */
     public int encodeInitVBR(
-            int nChannels,
-            int nRate,
-            float fQuality) {
-        logger.log(Level.TRACE, "encodeInitVBR(): begin");
+            int channels,
+            int rate,
+            float quality) {
+        logger.log(Level.TRACE, "begin");
 
-        int nReturn = VorbisencLibrary.INSTANCE.vorbis_encode_init_vbr(handle, new NativeLong(nChannels), new NativeLong(nRate), fQuality);
+        int ret = VorbisencLibrary.INSTANCE.vorbis_encode_init_vbr(handle, new NativeLong(channels), new NativeLong(rate), quality);
 
-        logger.log(Level.TRACE, "encodeInitVBR(): end");
+        logger.log(Level.TRACE, "end");
 
-        return nReturn;
+        return ret;
     }
 
     /**
      * Calls vorbis_synthesis_headerin().
      */
     public int headerIn(Comment comment, Packet packet) {
-        logger.log(Level.TRACE, "headerIn(): begin");
+        logger.log(Level.TRACE, "begin");
 
         vorbis_comment commentHandle = comment.getHandle();
         ogg_packet packetHandle = packet.getHandle();
-        int nReturn = CodecLibrary.INSTANCE.vorbis_synthesis_headerin(handle, commentHandle, packetHandle);
+        int ret = CodecLibrary.INSTANCE.vorbis_synthesis_headerin(handle, commentHandle, packetHandle);
 
-        logger.log(Level.TRACE, "headerIn(): end");
+        logger.log(Level.TRACE, "end");
 
-        return nReturn;
+        return ret;
     }
 }

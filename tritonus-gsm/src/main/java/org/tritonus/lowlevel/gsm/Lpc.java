@@ -20,33 +20,36 @@
 
 package org.tritonus.lowlevel.gsm;
 
+import static org.tritonus.lowlevel.gsm.GsmDef.MIN_WORD;
+
+
 public class Lpc {
 
-    private int[] L_ACF = new int[9];
+    private final int[] L_ACF = new int[9];
 
     /**
      * @param so 0..159 signals IN/OUT
      * @param LARc 0..7 LARc's OUT
      */
-    public void Gsm_LPC_Analysis(short[] so, short[] LARc) {
-        Autocorrelation(so);
-        Reflection_coefficients(LARc);
-        Transformation_to_Log_Area_Ratios(LARc);
-        Quantization_and_coding(LARc);
+    public void analyzeLPC(short[] so, short[] LARc) {
+        correlateAuto(so);
+        reflectCoefficients(LARc);
+        transformeToLogAreaRatios(LARc);
+        quantizeAndCode(LARc);
     }
 
     /**
      * @param so [0..159] IN/OUT
      */
-    private void Autocorrelation(short[] so) throws IllegalArgumentException {
+    private void correlateAuto(short[] so) throws IllegalArgumentException {
         int i, sp_index = 0;
-        short temp, smax = 0, scalauto;
+        short smax = 0, scalauto;
 
         // Dynamic scaling of the array s[0..159]
 
         // Search for the maximum.
         for (int k = 0; k <= 159; k++) {
-            temp = Add.GSM_ADD(so[k], (short) 0);
+            short temp = GsmMath.add(so[k], (short) 0);
             if (temp > smax)
                 smax = temp;
         }
@@ -56,39 +59,39 @@ public class Lpc {
             scalauto = 0;
         } else {
             if (!(smax > 0)) {
-                throw new IllegalArgumentException("Autocorrelation: smax = " + smax + " should be > 0.");
+                throw new IllegalArgumentException("smax = " + smax + " should be > 0.");
             }
-            scalauto = (short) (4 - Add.gsm_norm(smax << 16)); // sub(4, ..)
+            scalauto = (short) (4 - GsmMath.norm(smax << 16)); // sub(4, ..)
         }
 
         // Scaling of the array s[0...159]
 
         if (scalauto > 0) {
             if (!(scalauto <= 4)) {
-                throw new IllegalArgumentException("Autocorrelation: scalauto = " + scalauto + " should be <= 4.");
+                throw new IllegalArgumentException("scalauto = " + scalauto + " should be <= 4.");
             }
             switch (scalauto) {
             case 1:
                 for (int k = 0; k <= 159; k++) {
-                    so[k] = Add.GSM_MULT_R(so[k], (short) 16384);
+                    so[k] = GsmMath.multR(so[k], (short) 16384);
                 }
                 break;
 
             case 2:
                 for (int k = 0; k <= 159; k++) {
-                    so[k] = Add.GSM_MULT_R(so[k], (short) (16384 >> 1));
+                    so[k] = GsmMath.multR(so[k], (short) (16384 >> 1));
                 }
                 break;
 
             case 3:
                 for (int k = 0; k <= 159; k++) {
-                    so[k] = Add.GSM_MULT_R(so[k], (short) (16384 >> 2));
+                    so[k] = GsmMath.multR(so[k], (short) (16384 >> 2));
                 }
                 break;
 
             case 4:
                 for (int k = 0; k <= 159; k++) {
-                    so[k] = Add.GSM_MULT_R(so[k], (short) (16384 >> 3));
+                    so[k] = GsmMath.multR(so[k], (short) (16384 >> 3));
                 }
                 break;
             }
@@ -100,8 +103,8 @@ public class Lpc {
         short sl = sp[sp_index];
 
         // Zero out L_ACF
-        int[] temp_arr = {0, 0, 0, 0, 0, 0, 0, 0, 0};
-        System.arraycopy(temp_arr, 0, L_ACF, 0, L_ACF.length);
+        int[] temp = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+        System.arraycopy(temp, 0, L_ACF, 0, L_ACF.length);
 
         L_ACF[0] += sl * sp[(sp_index - 0)];
 
@@ -178,7 +181,7 @@ public class Lpc {
         // Rescaling of the array s[0..159]
         if (scalauto > 0) {
             if (!(scalauto <= 4)) {
-                throw new IllegalArgumentException("Autocorrelation: scalauto = " + scalauto + " should be <= 4.");
+                throw new IllegalArgumentException("scalauto = " + scalauto + " should be <= 4.");
             }
 
             for (int k = 0; k < 160; k++) {
@@ -188,9 +191,9 @@ public class Lpc {
     }
 
     /** @param r OUT 0...7 */
-    private void Reflection_coefficients(short[] r) throws IllegalArgumentException {
+    private void reflectCoefficients(short[] r) throws IllegalArgumentException {
         short temp;
-        int r_index = 0;
+        int rIndex = 0;
 
         short[] ACF = new short[9]; // 0..8
         short[] P = new short[9]; // 0..8
@@ -206,18 +209,18 @@ public class Lpc {
         }
 
         if (L_ACF[0] == 0) {
-            throw new IllegalArgumentException("Reflection_coefficients: L_ACF[0] = " + L_ACF[0] + " should not = 0.");
+            throw new IllegalArgumentException("L_ACF[0] = " + L_ACF[0] + " should not = 0.");
         }
 
-        temp = Add.gsm_norm(L_ACF[0]);
+        temp = GsmMath.norm(L_ACF[0]);
 
         if (!(temp >= 0 && temp < 32)) {
-            throw new IllegalArgumentException("Reflection_coefficients: temp = " + temp + " should be >= 0 and < 32.");
+            throw new IllegalArgumentException("temp = " + temp + " should be >= 0 and < 32.");
         }
 
         // ? overflow ?
         for (int i = 0; i <= 8; i++) {
-            ACF[i] = Add.SASR(L_ACF[i] << temp, 16);
+            ACF[i] = GsmMath.sasr(L_ACF[i] << temp, 16);
         }
 
         // Initialize array P[..] and K[..] for the recursion.
@@ -227,10 +230,10 @@ public class Lpc {
         System.arraycopy(ACF, 0, P, 0, 8);
 
         // Compute reflection coefficients
-        for (int n = 1; n <= 8; n++, r_index++) {
+        for (int n = 1; n <= 8; n++, rIndex++) {
 
             temp = P[1];
-            temp = Add.GSM_ABS(temp);
+            temp = GsmMath.abs(temp);
             if (P[0] < temp) {
                 for (int i = n; i < 8; i++) {
                     r[i] = 0;
@@ -238,35 +241,33 @@ public class Lpc {
                 return;
             }
 
-            r[r_index] = Add.gsm_div(temp, P[0]);
+            r[rIndex] = GsmMath.div(temp, P[0]);
 
-            if (!(r[r_index] >= 0)) {
-                throw new IllegalArgumentException("Reflection_coefficients: r[" + r_index + "] = " + r[r_index] +
-                        " should be >= 0");
+            if (!(r[rIndex] >= 0)) {
+                throw new IllegalArgumentException("r[" + rIndex + "] = " + r[rIndex] + " should be >= 0");
             }
 
             if (P[1] > 0) {
                 // r[n] = sub(0, r[n])
-                r[r_index] = (short) (-(r[r_index]));
+                r[rIndex] = (short) (-(r[rIndex]));
             }
 
-            if (r[r_index] == Gsm_Def.MIN_WORD) {
-                throw new IllegalArgumentException("Reflection_coefficients: r[" + r_index + "] = " +
-                        r[r_index] + " should not be " + Gsm_Def.MIN_WORD);
+            if (r[rIndex] == MIN_WORD) {
+                throw new IllegalArgumentException("r[" + rIndex + "] = " + r[rIndex] + " should not be " + MIN_WORD);
             }
             if (n == 8)
                 return;
 
             // Schur recursion
-            temp = Add.GSM_MULT_R(P[1], r[r_index]);
-            P[0] = Add.GSM_ADD(P[0], temp);
+            temp = GsmMath.multR(P[1], r[rIndex]);
+            P[0] = GsmMath.add(P[0], temp);
 
             for (int m = 1; m <= 8 - n; m++) {
-                temp = Add.GSM_MULT_R(K[m], r[r_index]);
-                P[m] = Add.GSM_ADD(P[m + 1], temp);
+                temp = GsmMath.multR(K[m], r[rIndex]);
+                P[m] = GsmMath.add(P[m + 1], temp);
 
-                temp = Add.GSM_MULT_R(P[m + 1], r[r_index]);
-                K[m] = Add.GSM_ADD(K[m], temp);
+                temp = GsmMath.multR(P[m + 1], r[rIndex]);
+                K[m] = GsmMath.add(K[m], temp);
             }
         }
     }
@@ -280,18 +281,16 @@ public class Lpc {
      * @param r IN/OUT 0..7
      * @since 4.2.6
      */
-    private void Transformation_to_Log_Area_Ratios(short[] r) throws IllegalArgumentException {
-
-        short temp;
+    private static void transformeToLogAreaRatios(short[] r) throws IllegalArgumentException {
 
         // Computation of the LAR[0..7] from the r[0..7]
         for (int i = 0; i < 8; i++) {
 
-            temp = r[i];
-            temp = Add.GSM_ABS(temp);
+            short temp = r[i];
+            temp = GsmMath.abs(temp);
 
             if (!(temp >= 0)) {
-                throw new IllegalArgumentException("Transformation_to_Log_Area_Ratios: temp = " + temp + " should be >= 0 ");
+                throw new IllegalArgumentException("temp = " + temp + " should be >= 0 ");
             }
 
             if (temp < 22118) {
@@ -299,13 +298,13 @@ public class Lpc {
             } else if (temp < 31130) {
 
                 if (!(temp >= 11059)) {
-                    throw new IllegalArgumentException("Transformation_to_Log_Area_Ratios: temp = " + temp + " should be >= 11059 ");
+                    throw new IllegalArgumentException("temp = " + temp + " should be >= 11059 ");
                 }
 
                 temp = (short) (temp - 11059);
             } else {
                 if (!(temp >= 26112)) {
-                    throw new IllegalArgumentException("Transformation_to_Log_Area_Ratios: temp = " + temp + " should be >= 26112 ");
+                    throw new IllegalArgumentException("temp = " + temp + " should be >= 26112 ");
                 }
 
                 temp = (short) (temp - 26112);
@@ -314,9 +313,8 @@ public class Lpc {
 
             r[i] = (short) (r[i] < 0 ? -temp : temp);
 
-            if (r[i] == Gsm_Def.MIN_WORD) {
-                throw new IllegalArgumentException("Transformation_to_Log_Area_Ratios: r[" + i + "] = "
-                        + r[i] + " should not be = " + Gsm_Def.MIN_WORD);
+            if (r[i] == MIN_WORD) {
+                throw new IllegalArgumentException("r[" + i + "] = " + r[i] + " should not be = " + MIN_WORD);
             }
         }
     }
@@ -332,27 +330,27 @@ public class Lpc {
      * @param LAR IN/OUT [0..7]
      * @since 4.2.7
      */
-    private void Quantization_and_coding(short[] LAR) {
+    private static void quantizeAndCode(short[] LAR) {
         int index = 0;
 
-        STEP2(20480, 0, 31, -32, LAR, index++);
-        STEP2(20480, 0, 31, -32, LAR, index++);
-        STEP2(20480, 2048, 15, -16, LAR, index++);
-        STEP2(20480, -2560, 15, -16, LAR, index++);
+        step2(20480, 0, 31, -32, LAR, index++);
+        step2(20480, 0, 31, -32, LAR, index++);
+        step2(20480, 2048, 15, -16, LAR, index++);
+        step2(20480, -2560, 15, -16, LAR, index++);
 
-        STEP2(13964, 94, 7, -8, LAR, index++);
-        STEP2(15360, -1792, 7, -8, LAR, index++);
-        STEP2(8534, -341, 3, -4, LAR, index++);
-        STEP2(9036, -1144, 3, -4, LAR, index++);
+        step2(13964, 94, 7, -8, LAR, index++);
+        step2(15360, -1792, 7, -8, LAR, index++);
+        step2(8534, -341, 3, -4, LAR, index++);
+        step2(9036, -1144, 3, -4, LAR, index++);
     }
 
-    private void STEP2(int A, int B, int MAC, int MIC, short[] LAR, int index) {
+    private static void step2(int A, int B, int MAC, int MIC, short[] LAR, int index) {
         short temp;
 
-        temp = Add.GSM_MULT((short) A, LAR[index]);
-        temp = Add.GSM_ADD(temp, (short) B);
-        temp = Add.GSM_ADD(temp, (short) 256);
-        temp = Add.SASR(temp, 9);
+        temp = GsmMath.mult((short) A, LAR[index]);
+        temp = GsmMath.add(temp, (short) B);
+        temp = GsmMath.add(temp, (short) 256);
+        temp = GsmMath.sasr(temp, 9);
         LAR[index] = (short) (temp > MAC ? MAC - MIC : (temp < MIC ? 0 : temp - MIC));
     }
 }

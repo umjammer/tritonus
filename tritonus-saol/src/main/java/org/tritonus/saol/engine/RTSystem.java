@@ -37,38 +37,38 @@ public class RTSystem extends Thread {
 
     private static final Logger logger = getLogger(RTSystem.class.getName());
     
-    private SystemOutput m_output;
-    private Map<String, Class<AbstractInstrument>> m_instrumentMap;
-    private boolean m_bRunning;
-    private int m_nTime;
-    private float m_fTimeStep;
-    private int m_nARate;
-    private int m_nKRate;
-    private int m_nAToKRateFactor;
-    private List<AbstractInstrument> m_activeInstruments;
-    private final List<AbstractInstrument> m_scheduledInstruments;
-    private int m_nScheduledEndTime;
-    private float m_fFloatToIntTimeFactor;
-    private float m_fIntToFloatTimeFactor;
+    private final SystemOutput output;
+    private final Map<String, Class<AbstractInstrument>> instrumentMap;
+    private boolean running;
+    private int time;
+    private float timeStep;
+    private int aRate;
+    private int kRate;
+    private int aToKRateFactor;
+    private final List<AbstractInstrument> activeInstruments;
+    private final List<AbstractInstrument> scheduledInstruments;
+    private int scheduledEndTime;
+    private float floatToIntTimeFactor;
+    private float intToFloatTimeFactor;
 
     public RTSystem(SystemOutput output, Map<String, Class<AbstractInstrument>> instrumentMap) {
-        m_output = output;
-        m_instrumentMap = instrumentMap;
+        this.output = output;
+        this.instrumentMap = instrumentMap;
         // TODO
         setRates(44100, 100);
-        m_activeInstruments = new LinkedList<>();
-        m_scheduledInstruments = new LinkedList<>();
-        m_nScheduledEndTime = Integer.MAX_VALUE;
+        activeInstruments = new LinkedList<>();
+        scheduledInstruments = new LinkedList<>();
+        scheduledEndTime = Integer.MAX_VALUE;
     }
 
-    private void setRates(int nARate, int nKRate) {
-        m_nARate = nARate;
-        m_nKRate = nKRate;
-        m_nAToKRateFactor = nARate / nKRate;
-        m_fTimeStep = 1.0F / nKRate;
+    private void setRates(int aRate, int kRate) {
+        this.aRate = aRate;
+        this.kRate = kRate;
+        aToKRateFactor = aRate / kRate;
+        timeStep = 1.0F / kRate;
         // following is only correct for 60 BPM
-        m_fFloatToIntTimeFactor = nKRate;
-        m_fIntToFloatTimeFactor = m_fTimeStep;
+        floatToIntTimeFactor = kRate;
+        intToFloatTimeFactor = timeStep;
     }
 
     @Override
@@ -76,29 +76,29 @@ public class RTSystem extends Thread {
         try {
             runImpl();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.log(Level.ERROR, e.getMessage(), e);
         }
     }
 
     private void runImpl() throws IOException {
-        m_bRunning = true;
-        m_nTime = 0;
-        while (m_bRunning) {
+        running = true;
+        time = 0;
+        while (running) {
             doI();
             doK();
-            for (int i = 0; i < m_nAToKRateFactor; i++) {
+            for (int i = 0; i < aToKRateFactor; i++) {
                 doA();
             }
             advanceTime();
         }
-        m_output.close();
+        output.close();
     }
 
     private void doI() {
-        logger.log(Level.DEBUG, "doI()");
+        logger.log(Level.DEBUG, "begin");
         logger.log(Level.DEBUG, "time: " + getTime());
-        synchronized (m_scheduledInstruments) {
-            Iterator<AbstractInstrument> scheduledInstruments = m_scheduledInstruments.iterator();
+        synchronized (scheduledInstruments) {
+            Iterator<AbstractInstrument> scheduledInstruments = this.scheduledInstruments.iterator();
             while (scheduledInstruments.hasNext()) {
                 logger.log(Level.DEBUG, "scheduled instrument");
                 AbstractInstrument instrument = scheduledInstruments.next();
@@ -107,11 +107,11 @@ public class RTSystem extends Thread {
                     logger.log(Level.DEBUG, "...activating");
                     scheduledInstruments.remove();
                     instrument.doIPass(this);
-                    m_activeInstruments.add(instrument);
+                    activeInstruments.add(instrument);
                 }
             }
         }
-        Iterator<AbstractInstrument> activeInstruments = m_activeInstruments.iterator();
+        Iterator<AbstractInstrument> activeInstruments = this.activeInstruments.iterator();
         while (activeInstruments.hasNext()) {
             AbstractInstrument instrument = activeInstruments.next();
             if (getTime() > instrument.getEndTime()) {
@@ -125,67 +125,67 @@ public class RTSystem extends Thread {
     }
 
     private void doK() {
-        for (AbstractInstrument instrument : m_activeInstruments) {
+        for (AbstractInstrument instrument : activeInstruments) {
             instrument.doKPass(this);
         }
     }
 
     private void doA() throws IOException {
-//        logger.log(Level.TRACE, "doA()");
-        m_output.clear();
-        for (AbstractInstrument instrument : m_activeInstruments) {
-//            logger.log(Level.TRACE, "doA(): has active Instrument");
+//logger.log(Level.TRACE, "begin");
+        output.clear();
+        for (AbstractInstrument instrument : activeInstruments) {
+//logger.log(Level.TRACE, "has active Instrument");
             instrument.doAPass(this);
         }
-        m_output.emit();
+        output.emit();
     }
 
-    public void scheduleInstrument(String strInstrumentName, float fStartTime, float fDuration) {
-        AbstractInstrument instrument = createInstrumentInstance(strInstrumentName);
-        int nStartTime = Math.round(fStartTime * m_fFloatToIntTimeFactor);
-        int nEndTime = Math.round((fStartTime + fDuration) * m_fFloatToIntTimeFactor);
-        instrument.setStartAndEndTime(nStartTime, nEndTime);
-        synchronized (m_scheduledInstruments) {
-            m_scheduledInstruments.add(instrument);
+    public void scheduleInstrument(String instrumentName, float startTime, float duration) {
+        AbstractInstrument instrument = createInstrumentInstance(instrumentName);
+        int _startTime = Math.round(startTime * floatToIntTimeFactor);
+        int endTime = Math.round((startTime + duration) * floatToIntTimeFactor);
+        instrument.setStartAndEndTime(_startTime, endTime);
+        synchronized (scheduledInstruments) {
+            scheduledInstruments.add(instrument);
             logger.log(Level.DEBUG, "adding instrument");
-            logger.log(Level.DEBUG, "start: " + nStartTime);
-            logger.log(Level.DEBUG, "end: " + nEndTime);
+            logger.log(Level.DEBUG, "start: " + _startTime);
+            logger.log(Level.DEBUG, "end: " + endTime);
         }
     }
 
-    public void scheduleEnd(float fEndTime) {
-        m_nScheduledEndTime = Math.round(fEndTime * m_fFloatToIntTimeFactor);
+    public void scheduleEnd(float endTime) {
+        scheduledEndTime = Math.round(endTime * floatToIntTimeFactor);
         // TODO
     }
 
     public void stopEngine() {
-        m_bRunning = false;
+        running = false;
     }
 
     private void advanceTime() {
-        m_nTime++;
+        time++;
     }
 
     public int getTime() {
-        return m_nTime;
+        return time;
     }
 
     public void output(float fValue) {
-        m_output.output(fValue);
+        output.output(fValue);
     }
 
     private int getScheduledEndTime() {
-        return m_nScheduledEndTime;
+        return scheduledEndTime;
     }
 
-    private AbstractInstrument createInstrumentInstance(String strInstrumentName) {
+    private AbstractInstrument createInstrumentInstance(String instrumentName) {
         AbstractInstrument instrument = null;
-        Class<AbstractInstrument> instrumentClass = m_instrumentMap.get(strInstrumentName);
+        Class<AbstractInstrument> instrumentClass = instrumentMap.get(instrumentName);
         try {
             Constructor<AbstractInstrument> constructor = instrumentClass.getConstructor(RTSystem.class);
             instrument = constructor.newInstance(this);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.log(Level.ERROR, e.getMessage(), e);
         }
         return instrument;
     }

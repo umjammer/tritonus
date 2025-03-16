@@ -14,15 +14,14 @@ public class SawtoothGenerator extends AbstractPeriodicGenerator {
         super(sampleRate, channelCount);
     }
 
-    /** {@inheritDoc} */
     @Override
-    protected float generateSample(float fPeriodPosition) {
-        float fValue;
-        if (fPeriodPosition < 0.5F) {
-            fValue = 2.0F * fPeriodPosition;
+    protected float generateSample(float periodPosition) {
+        float value;
+        if (periodPosition < 0.5f) {
+            value = 2.0f * periodPosition;
         } else {
-            fValue = 2.0F * (fPeriodPosition - 1.0F);
+            value = 2.0f * (periodPosition - 1.0f);
         }
-        return fValue;
+        return value;
     }
 }

@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 2000,2001 by Florian Bomers
  *
@@ -55,33 +54,31 @@ public class AuTool {
         // endianness is converted in audio output stream
         // sign is converted for 8-bit files
         AudioFormat.Encoding encoding = format.getEncoding();
-        int nSampleSize = format.getSampleSizeInBits();
+        int sampleSize = format.getSampleSizeInBits();
         // $$fb 2000-08-16: check the frame size, too.
         boolean frameSizeOK = (format.getFrameSize() == AudioSystem.NOT_SPECIFIED
                 || format.getChannels() != AudioSystem.NOT_SPECIFIED
-                || format.getFrameSize() == nSampleSize / 8 * format.getChannels());
+                || format.getFrameSize() == sampleSize / 8 * format.getChannels());
         boolean signed = encoding.equals(AudioFormat.Encoding.PCM_SIGNED);
         boolean unsigned = encoding.equals(AudioFormat.Encoding.PCM_UNSIGNED);
 
-        if (encoding.equals(AudioFormat.Encoding.ULAW) && nSampleSize == 8 && frameSizeOK) {
+        if (encoding.equals(AudioFormat.Encoding.ULAW) && sampleSize == 8 && frameSizeOK) {
             return SND_FORMAT_MULAW_8;
-        } else if (nSampleSize == 8 && frameSizeOK && (signed || unsigned)) {
+        } else if (sampleSize == 8 && frameSizeOK && (signed || unsigned)) {
             // support signed and unsigned PCM for 8 bit
             return SND_FORMAT_LINEAR_8;
         } else if (signed && frameSizeOK) {
             // support only signed PCM for > 8 bit
-            if (nSampleSize == 16) {
+            if (sampleSize == 16) {
                 return SND_FORMAT_LINEAR_16;
-            } else if (nSampleSize == 24) {
+            } else if (sampleSize == 24) {
                 return SND_FORMAT_LINEAR_24;
-            } else if (nSampleSize == 32) {
+            } else if (sampleSize == 32) {
                 return SND_FORMAT_LINEAR_32;
             }
-        } else if (encoding.equals(AudioFormat.Encoding.ALAW) && nSampleSize == 8 && frameSizeOK) {
+        } else if (encoding.equals(AudioFormat.Encoding.ALAW) && sampleSize == 8 && frameSizeOK) {
             return SND_FORMAT_ALAW_8;
         }
         return SND_FORMAT_UNSPECIFIED;
     }
 }
-
-

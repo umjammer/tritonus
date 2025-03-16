@@ -14,10 +14,6 @@
  *   limitations under the License.
  */
 
-/*
-|<---            this code is formatted to fit into 80 columns             --.|
-*/
-
 package org.tritonus.lowlevel.ogg;
 
 import java.lang.System.Logger;
@@ -48,85 +44,85 @@ public class Packet {
     }
 
     public Packet() {
-        logger.log(Level.TRACE, "<init>: begin");
+        logger.log(Level.TRACE, "begin");
 
-        int nReturn = malloc();
-        if (nReturn < 0) {
+        int ret = malloc();
+        if (ret < 0) {
             throw new RuntimeException("malloc of ogg_packet failed");
         }
 
-        logger.log(Level.TRACE, "<init>: end");
+        logger.log(Level.TRACE, "end");
     }
 
     private int malloc() {
-        logger.log(Level.TRACE, "malloc: begin");
+        logger.log(Level.TRACE, "begin");
 
         handle = new ogg_packet();
-        logger.log(Level.TRACE, String.format("malloc: handle: %s", handle));
+        logger.log(Level.TRACE, "malloc: handle: %s".formatted(handle));
 
-        logger.log(Level.TRACE, "malloc: end");
+        logger.log(Level.TRACE, "end");
 
         return 0;
     }
 
     public void free() {
-        logger.log(Level.TRACE, "free: begin");
+        logger.log(Level.TRACE, "begin");
 
         handle = null;
 
-        logger.log(Level.TRACE, "free: end");
+        logger.log(Level.TRACE, "end");
     }
 
     /**
      * Calls ogg_packet_clear().
      */
     public void clear() {
-        logger.log(Level.TRACE, "clear: begin");
+        logger.log(Level.TRACE, "begin");
 
         OggLibrary.INSTANCE.ogg_packet_clear(handle);
 
-        logger.log(Level.TRACE, "clear: end");
+        logger.log(Level.TRACE, "end");
     }
 
     /**
      * Accesses packet and bytes.
      */
     public byte[] getData() {
-        logger.log(Level.TRACE, "getData: begin");
+        logger.log(Level.TRACE, "begin");
 
-        byte[] abData = new byte[handle.bytes.intValue()];
-        handle.packet.read(0, abData, 0, handle.bytes.intValue());
+        byte[] data = new byte[handle.bytes.intValue()];
+        handle.packet.read(0, data, 0, handle.bytes.intValue());
 
-        logger.log(Level.TRACE, "getData: end");
+        logger.log(Level.TRACE, "end");
 
-        return abData;
+        return data;
     }
 
     /**
      * Accesses b_o_s.
      */
     public boolean isBos() {
-        logger.log(Level.TRACE, "isBos: begin");
+        logger.log(Level.TRACE, "begin");
 
-        logger.log(Level.TRACE, String.format("isBos: b_o_s: %d", handle.b_o_s.intValue()));
+        logger.log(Level.TRACE, "b_o_s: %d".formatted(handle.b_o_s.intValue()));
 
-        boolean bReturn = handle.b_o_s.intValue() != 0;
+        boolean ret = handle.b_o_s.intValue() != 0;
 
-        logger.log(Level.TRACE, "isBos: end");
+        logger.log(Level.TRACE, "end");
 
-        return bReturn;
+        return ret;
     }
 
     /**
      * Accesses e_o_s.
      */
     public boolean isEos() {
-        logger.log(Level.TRACE, "isEos: begin");
+        logger.log(Level.TRACE, "begin");
 
-        boolean bReturn = handle.e_o_s.intValue() != 0;
+        boolean ret = handle.e_o_s.intValue() != 0;
 
-        logger.log(Level.TRACE, "isEos: end");
+        logger.log(Level.TRACE, "end");
 
-        return bReturn;
+        return ret;
     }
 }

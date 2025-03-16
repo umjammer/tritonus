@@ -53,8 +53,8 @@ import vavi.sound.midi.fluidsynth.jna.synth.SynthLibrary;
 import static java.lang.System.getLogger;
 
 
-/*
- * FluidSynthesizer.java
+/**
+ * FluidSynthesizer.
  *
  * This file is part of Tritonus: http://www.tritonus.org/
  */
@@ -98,9 +98,9 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
         if (sfontFile != null && !sfontFile.isEmpty()) {
             int sfontID = loadSoundFont(sfontFile);
             setDefaultSoundBank(sfontID);
-            String strBankOffset = System.getProperty("tritonus.fluidsynth.defaultsoundbankoffset");
-            if (strBankOffset != null && !strBankOffset.isEmpty()) {
-                setBankOffset(sfontID, Integer.parseInt(strBankOffset));
+            String bankOffset = System.getProperty("tritonus.fluidsynth.defaultsoundbankoffset");
+            if (bankOffset != null && !bankOffset.isEmpty()) {
+                setBankOffset(sfontID, Integer.parseInt(bankOffset));
             }
         }
     }
@@ -202,13 +202,13 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
      * <p>
      * The implementation calls fluid_synth_noteoff().
      *
-     * @param nChannel    the channel
-     * @param nNoteNumber the note
-     * @param nVelocity   the velocity
+     * @param channel    the channel
+     * @param noteNumber the note
+     * @param velocity   the velocity
      */
-    void noteOn(int nChannel, int nNoteNumber, int nVelocity) {
+    void noteOn(int channel, int noteNumber, int velocity) {
         if (synth != null) {
-            SynthLibrary.INSTANCE.fluid_synth_noteon(synth, nChannel, nNoteNumber, nVelocity);
+            SynthLibrary.INSTANCE.fluid_synth_noteon(synth, channel, noteNumber, velocity);
         }
     }
 
@@ -217,15 +217,15 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
      * <p>
      * The implementation calls fluid_synth_noteon().
      *
-     * @param nChannel    the channel
-     * @param nNoteNumber the note
-     * @param nVelocity   the velocity
+     * @param channel    the channel
+     * @param noteNumber the note
+     * @param velocity   the velocity
      */
-    void noteOff(int nChannel, int nNoteNumber, int nVelocity) {
+    void noteOff(int channel, int noteNumber, int velocity) {
         if (synth != null) {
             // There is no method noteoff that takes a velocity param.
 //            fluid_synth_noteoff(synth, channel, key, velocity);
-            SynthLibrary.INSTANCE.fluid_synth_noteoff(synth, nChannel, nNoteNumber);
+            SynthLibrary.INSTANCE.fluid_synth_noteoff(synth, channel, noteNumber);
         }
     }
 
@@ -234,13 +234,13 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
      * <p>
      * The implementation calls fluid_synth_cc().
      *
-     * @param nChannel    the channel
-     * @param nController the controller number
-     * @param nValue      the controller value
+     * @param channel    the channel
+     * @param controller the controller number
+     * @param value      the controller value
      */
-    void controlChange(int nChannel, int nController, int nValue) {
+    void controlChange(int channel, int controller, int value) {
         if (synth != null) {
-            SynthLibrary.INSTANCE.fluid_synth_cc(synth, nChannel, nController, nValue);
+            SynthLibrary.INSTANCE.fluid_synth_cc(synth, channel, controller, value);
         }
     }
 
@@ -249,14 +249,14 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
      * <p>
      * The implementation calls fluid_synth_get_cc().
      *
-     * @param nChannel    the channel
-     * @param nController the controller number
+     * @param channel    the channel
+     * @param controller the controller number
      * @return the controller value
      */
-    int getController(int nChannel, int nController) {
+    int getController(int channel, int controller) {
         IntByReference value = new IntByReference();
         if (synth != null) {
-            SynthLibrary.INSTANCE.fluid_synth_get_cc(synth, nChannel, nController, value);
+            SynthLibrary.INSTANCE.fluid_synth_get_cc(synth, channel, controller, value);
         }
         return value.getValue();
     }
@@ -266,12 +266,12 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
      * <p>
      * The implementation calls fluid_synth_program_change().
      *
-     * @param nChannel the channel
-     * @param nProgram the program number
+     * @param channel the channel
+     * @param program the program number
      */
-    void programChange(int nChannel, int nProgram) {
+    void programChange(int channel, int program) {
         if (synth != null) {
-            SynthLibrary.INSTANCE.fluid_synth_program_change(synth, nChannel, nProgram);
+            SynthLibrary.INSTANCE.fluid_synth_program_change(synth, channel, program);
         }
     }
 
@@ -280,15 +280,15 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
      * <p>
      * The implementation calls fluid_synth_get_program().
      *
-     * @param nChannel the channel
+     * @param channel the channel
      * @return the program number set for this channel
      */
-    int getProgram(int nChannel) {
+    int getProgram(int channel) {
         IntByReference sfont = new IntByReference();
         IntByReference bank = new IntByReference();
         IntByReference program = new IntByReference();
         if (synth != null) {
-            SynthLibrary.INSTANCE.fluid_synth_get_program(synth, nChannel, sfont, bank, program);
+            SynthLibrary.INSTANCE.fluid_synth_get_program(synth, channel, sfont, bank, program);
         }
         return program.getValue();
     }
@@ -298,12 +298,12 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
      * <p>
      * The implementation calls fluid_synth_pitch_bend().
      *
-     * @param nChannel the channel
-     * @param nBend    the pitch bend value
+     * @param channel the channel
+     * @param bend    the pitch bend value
      */
-    void setPitchBend(int nChannel, int nBend) {
+    void setPitchBend(int channel, int bend) {
         if (synth != null) {
-            SynthLibrary.INSTANCE.fluid_synth_pitch_bend(synth, nChannel, nBend);
+            SynthLibrary.INSTANCE.fluid_synth_pitch_bend(synth, channel, bend);
         }
     }
 
@@ -312,13 +312,13 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
      * <p>
      * The implementations calls fluid_synth_get_pitch_bend().
      *
-     * @param nChannel the channel
+     * @param channel the channel
      * @return the pitch bend value.
      */
-    int getPitchBend(int nChannel) {
+    int getPitchBend(int channel) {
         IntByReference bend = new IntByReference();
         if (synth != null) {
-            SynthLibrary.INSTANCE.fluid_synth_get_pitch_bend(synth, nChannel, bend);
+            SynthLibrary.INSTANCE.fluid_synth_get_pitch_bend(synth, channel, bend);
         }
         return bend.getValue();
     }
@@ -423,23 +423,23 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
 
     private class NewFluidMidiChannel extends TMidiChannel {
 
-        public NewFluidMidiChannel(int nChannel) {
-            super(nChannel);
+        public NewFluidMidiChannel(int channel) {
+            super(channel);
         }
 
         @Override
-        public void noteOn(int nNoteNumber, int nVelocity) {
-            FluidSynthesizer.this.noteOn(getChannel(), nNoteNumber, nVelocity);
+        public void noteOn(int noteNumber, int velocity) {
+            FluidSynthesizer.this.noteOn(getChannel(), noteNumber, velocity);
         }
 
         @Override
-        public void noteOff(int nNoteNumber, int nVelocity) {
-            FluidSynthesizer.this.noteOff(getChannel(), nNoteNumber, nVelocity);
+        public void noteOff(int noteNumber, int velocity) {
+            FluidSynthesizer.this.noteOff(getChannel(), noteNumber, velocity);
         }
 
         @Override
-        public void noteOff(int nNoteNumber) {
-            noteOff(nNoteNumber, 0);
+        public void noteOff(int noteNumber) {
+            noteOff(noteNumber, 0);
         }
 
         /**
@@ -447,7 +447,7 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
          * this method does nothing.
          */
         @Override
-        public void setPolyPressure(int nNoteNumber, int nPressure) {
+        public void setPolyPressure(int noteNumber, int pressure) {
         }
 
         /**
@@ -455,7 +455,7 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
          * this method always return 0.
          */
         @Override
-        public int getPolyPressure(int nNoteNumber) {
+        public int getPolyPressure(int noteNumber) {
             return 0;
         }
 
@@ -464,7 +464,7 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
          * this method does nothing.
          */
         @Override
-        public void setChannelPressure(int nPressure) {
+        public void setChannelPressure(int pressure) {
         }
 
         /**
@@ -477,18 +477,18 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
         }
 
         @Override
-        public void controlChange(int nController, int nValue) {
-            FluidSynthesizer.this.controlChange(getChannel(), nController, nValue);
+        public void controlChange(int controller, int value) {
+            FluidSynthesizer.this.controlChange(getChannel(), controller, value);
         }
 
         @Override
-        public int getController(int nController) {
-            return FluidSynthesizer.this.getController(getChannel(), nController);
+        public int getController(int controller) {
+            return FluidSynthesizer.this.getController(getChannel(), controller);
         }
 
         @Override
-        public void programChange(int nProgram) {
-            FluidSynthesizer.this.programChange(getChannel(), nProgram);
+        public void programChange(int program) {
+            FluidSynthesizer.this.programChange(getChannel(), program);
         }
 
         @Override
@@ -497,8 +497,8 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
         }
 
         @Override
-        public void setPitchBend(int nBend) {
-            FluidSynthesizer.this.setPitchBend(getChannel(), nBend);
+        public void setPitchBend(int bend) {
+            FluidSynthesizer.this.setPitchBend(getChannel(), bend);
         }
 
         @Override
@@ -508,7 +508,7 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
 
         // TODO emulate by manipulating volume
         @Override
-        public void setMute(boolean bMute) {
+        public void setMute(boolean mute) {
         }
 
         @Override
@@ -517,7 +517,7 @@ public class FluidSynthesizer extends TDirectSynthesizer implements Synthesizer 
         }
 
         @Override
-        public void setSolo(boolean bSolo) {
+        public void setSolo(boolean solo) {
         }
 
         @Override

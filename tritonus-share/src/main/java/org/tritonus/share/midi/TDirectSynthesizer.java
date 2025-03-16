@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 2004 by Matthias Pfisterer
  *
@@ -38,9 +37,7 @@ import javax.sound.midi.Synthesizer;
  * @author Matthias Pfisterer
  * @see javax.sound.midi.MidiChannel
  */
-public abstract class TDirectSynthesizer
-        extends TMidiDevice
-        implements Synthesizer {
+public abstract class TDirectSynthesizer extends TMidiDevice implements Synthesizer {
 
     /**
      * Initialize this class.
@@ -58,51 +55,50 @@ public abstract class TDirectSynthesizer
     /**
      * Obtains the MidiChannel with the specified number.
      *
-     * @param nChannel the requested channel number (0..15)
+     * @param channel the requested channel number (0..15)
      * @return the respective <code>MidiChannel</code> object
      */
-    private MidiChannel getChannel(int nChannel) {
-        return getChannels()[nChannel];
+    private MidiChannel getChannel(int channel) {
+        return getChannels()[channel];
     }
 
     /**
      * Handles MIDI messages coming in from Receivers.
      */
     @Override
-    protected void receive(MidiMessage message, long lTimeStamp) {
-        if (message instanceof ShortMessage) {
-            ShortMessage shortMsg = (ShortMessage) message;
-            int nChannel = shortMsg.getChannel();
-            int nCommand = shortMsg.getCommand();
-            int nData1 = shortMsg.getData1();
-            int nData2 = shortMsg.getData2();
-            switch (nCommand) {
+    protected void receive(MidiMessage message, long timeStamp) {
+        if (message instanceof ShortMessage shortMessage) {
+            int channel = shortMessage.getChannel();
+            int command = shortMessage.getCommand();
+            int data1 = shortMessage.getData1();
+            int data2 = shortMessage.getData2();
+            switch (command) {
             case ShortMessage.NOTE_OFF:
-                getChannel(nChannel).noteOff(nData1, nData2);
+                getChannel(channel).noteOff(data1, data2);
                 break;
 
             case ShortMessage.NOTE_ON:
-                getChannel(nChannel).noteOn(nData1, nData2);
+                getChannel(channel).noteOn(data1, data2);
                 break;
 
             case ShortMessage.POLY_PRESSURE:
-                getChannel(nChannel).setPolyPressure(nData1, nData2);
+                getChannel(channel).setPolyPressure(data1, data2);
                 break;
 
             case ShortMessage.CONTROL_CHANGE:
-                getChannel(nChannel).controlChange(nData1, nData2);
+                getChannel(channel).controlChange(data1, data2);
                 break;
 
             case ShortMessage.PROGRAM_CHANGE:
-                getChannel(nChannel).programChange(nData1);
+                getChannel(channel).programChange(data1);
                 break;
 
             case ShortMessage.CHANNEL_PRESSURE:
-                getChannel(nChannel).setChannelPressure(nData1);
+                getChannel(channel).setChannelPressure(data1);
                 break;
 
             case ShortMessage.PITCH_BEND:
-                getChannel(nChannel).setPitchBend(nData1 | (nData2 << 7));
+                getChannel(channel).setPitchBend(data1 | (data2 << 7));
                 break;
 
             default:
@@ -110,5 +106,3 @@ public abstract class TDirectSynthesizer
         }
     }
 }
-
-

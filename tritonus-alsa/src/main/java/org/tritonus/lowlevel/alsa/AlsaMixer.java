@@ -25,40 +25,39 @@ public class AlsaMixer {
      * not private because needed to be accessed by AlsaMixerElement.
      * (Better solution: inner classes)
      */
-    /* private */ long m_lNativeHandle;
+    /* private */ long nativeHandle;
 
     static {
         Alsa.loadNativeLibrary();
     }
 
-    public AlsaMixer(String strMixerName)
-            throws Exception {
+    public AlsaMixer(String mixerName) throws Exception {
         if (open(0) < 0) {
-            throw new Exception();
+            throw new IllegalStateException("open");
         }
-        if (attach(strMixerName) < 0) {
+        if (attach(mixerName) < 0) {
             close();
-            throw new Exception();
+            throw new IllegalStateException("attach");
         }
         if (register() < 0) {
             close();
-            throw new Exception();
+            throw new IllegalStateException("register");
         }
         if (load() < 0) {
             close();
-            throw new Exception();
+            throw new IllegalStateException("load");
         }
     }
 
     /**
      * Calls snd_mixer_open().
      */
-    private native int open(int nMode);
+    private native int open(int mode);
 
     /**
      * Calls snd_mixer_attach().
      */
-    private native int attach(String strCardName);
+    private native int attach(String cardName);
 
     /**
      * Calls snd_mixer_selem_register(.., NULL, NULL).
@@ -94,7 +93,7 @@ public class AlsaMixer {
      * <p>
      * Calls snd_mixer_first_elem() and snd_mixer_elem_next().
      */
-    public native int readControlList(int[] anIndices, String[] astrNames);
+    public native int readControlList(int[] indices, String[] names);
 
-    public static native void setTrace(boolean bTrace);
+    public static native void setTrace(boolean trace);
 }

@@ -67,32 +67,31 @@ public class AuAudioFileReader extends TAudioFileReader {
     }
 
     @Override
-    protected AudioFileFormat getAudioFileFormat(InputStream inputStream, long lFileSizeInBytes)
+    protected AudioFileFormat getAudioFileFormat(InputStream inputStream, long fileLengthInBytes)
             throws UnsupportedAudioFileException, IOException {
-        logger.log(Level.TRACE, "AuAudioFileReader.getAudioFileFormat(InputStream, long): begin");
+        logger.log(Level.TRACE, "begin");
 
         DataInputStream dataInputStream = new DataInputStream(inputStream);
-        int nMagic = dataInputStream.readInt();
-        if (nMagic != AuTool.AU_HEADER_MAGIC) {
-            throw new UnsupportedAudioFileException(
-                    "not an AU file: wrong header magic");
+        int magic = dataInputStream.readInt();
+        if (magic != AuTool.AU_HEADER_MAGIC) {
+            throw new UnsupportedAudioFileException("not an AU file: wrong header magic");
         }
-        int nDataOffset = dataInputStream.readInt();
-        logger.log(Level.TRACE, "AuAudioFileReader.getAudioFileFormat(): data offset: " + nDataOffset);
+        int dataOffset = dataInputStream.readInt();
+        logger.log(Level.TRACE, "data offset: " + dataOffset);
 
-        if (nDataOffset < AuTool.DATA_OFFSET) {
+        if (dataOffset < AuTool.DATA_OFFSET) {
             throw new UnsupportedAudioFileException("not an AU file: data offset must be 24 or greater");
         }
-        int nDataLength = dataInputStream.readInt();
-        logger.log(Level.TRACE, "AuAudioFileReader.getAudioFileFormat(): data length: " + nDataLength);
+        int dataLength = dataInputStream.readInt();
+        logger.log(Level.TRACE, "data length: " + dataLength);
 
-        if (nDataLength < 0 && nDataLength != AuTool.AUDIO_UNKNOWN_SIZE) {
+        if (dataLength < 0 && dataLength != AuTool.AUDIO_UNKNOWN_SIZE) {
             throw new UnsupportedAudioFileException("not an AU file: data length must be positive, 0 or -1 for unknown");
         }
         AudioFormat.Encoding encoding = null;
-        int nSampleSize = 0;
-        int nEncoding = dataInputStream.readInt();
-        nSampleSize = switch (nEncoding) {
+        int sampleSize = 0;
+        int _encoding = dataInputStream.readInt();
+        sampleSize = switch (_encoding) {
             case AuTool.SND_FORMAT_MULAW_8 -> {
                 encoding = AudioFormat.Encoding.ULAW;
                 yield 8; // 8-bit uLaw G.711
@@ -117,23 +116,23 @@ public class AuAudioFileReader extends TAudioFileReader {
                 encoding = AudioFormat.Encoding.ALAW;
                 yield 8; // 8-bit aLaw G.711
             }
-            default -> nSampleSize;
+            default -> sampleSize;
         };
-        if (nSampleSize == 0) {
-            throw new UnsupportedAudioFileException("unsupported AU file: unknown encoding " + nEncoding);
+        if (sampleSize == 0) {
+            throw new UnsupportedAudioFileException("unsupported AU file: unknown encoding " + _encoding);
         }
-        int nSampleRate = dataInputStream.readInt();
-        if (nSampleRate <= 0) {
+        int sampleRate = dataInputStream.readInt();
+        if (sampleRate <= 0) {
             throw new UnsupportedAudioFileException("corrupt AU file: sample rate must be positive");
         }
-        int nNumChannels = dataInputStream.readInt();
-        if (nNumChannels <= 0) {
+        int channels = dataInputStream.readInt();
+        if (channels <= 0) {
             throw new UnsupportedAudioFileException("corrupt AU file: number of channels must be positive");
         }
         // skip header information field
-//        inputStream.skip(nDataOffset - AuTool.DATA_OFFSET);
+//        inputStream.skip(dataOffset - AuTool.DATA_OFFSET);
         // read header info field
-        String desc = readDescription(dataInputStream, nDataOffset - AuTool.DATA_OFFSET);
+        String desc = readDescription(dataInputStream, dataOffset - AuTool.DATA_OFFSET);
         // add the description to the file format's properties
         Map<String, Object> properties = new HashMap<>();
         if (!desc.isEmpty()) {
@@ -141,20 +140,20 @@ public class AuAudioFileReader extends TAudioFileReader {
         }
 
         AudioFormat format = new AudioFormat(encoding,
-                nSampleRate,
-                nSampleSize,
-                nNumChannels,
-                calculateFrameSize(nSampleSize, nNumChannels),
-                nSampleRate,
-                nSampleSize > 8);
+                sampleRate,
+                sampleSize,
+                channels,
+                calculateFrameSize(sampleSize, channels),
+                sampleRate,
+                sampleSize > 8);
         AudioFileFormat audioFileFormat = new TAudioFileFormat(
                 AudioFileFormat.Type.AU,
                 format,
-                (nDataLength == AuTool.AUDIO_UNKNOWN_SIZE) ? AudioSystem.NOT_SPECIFIED : (nDataLength / format.getFrameSize()),
-                (nDataLength == AuTool.AUDIO_UNKNOWN_SIZE) ? AudioSystem.NOT_SPECIFIED : (nDataLength + nDataOffset),
+                (dataLength == AuTool.AUDIO_UNKNOWN_SIZE) ? AudioSystem.NOT_SPECIFIED : (dataLength / format.getFrameSize()),
+                (dataLength == AuTool.AUDIO_UNKNOWN_SIZE) ? AudioSystem.NOT_SPECIFIED : (dataLength + dataOffset),
                 properties);
 
-        logger.log(Level.TRACE, "AuAudioFileReader.getAudioFileFormat(InputStream, long): begin");
+        logger.log(Level.TRACE, "begin");
 
         return audioFileFormat;
     }

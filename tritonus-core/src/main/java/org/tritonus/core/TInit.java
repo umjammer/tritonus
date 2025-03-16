@@ -77,7 +77,6 @@ public class TInit {
      */
     public interface ProviderRegistrationAction {
 
-        void register(Object provider)
-                throws Exception;
+        void register(Object provider) throws Exception;
     }
 }

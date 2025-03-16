@@ -1,8 +1,4 @@
 /*
- * GetChannelsTestCase.java
- */
-
-/*
  *  Copyright (c) 2006 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,28 +26,19 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 /**
  * Test for javax.sound.midi.Synthesizer.getLatency().
  */
-public class GetChannelsTestCase
-        extends BaseSynthesizerTestCase {
+public class GetChannelsTestCase extends BaseSynthesizerTestCase {
 
     @Override
-    protected void checkSynthesizer(Synthesizer synth)
-            throws Exception {
-        MidiChannel[] channels;
+    protected void checkSynthesizer(Synthesizer synth) throws Exception {
         synth.open();
-        try {
-            channels = synth.getChannels();
-            assertNotNull(
-                    channels, constructErrorMessage(synth, "getChannels() result null", true));
+        try (synth) {
+            MidiChannel[] channels = synth.getChannels();
+            assertNotNull(channels, errmsg(synth, "getChannels() result null", true));
             int numChannels = channels.length;
-            assertEquals(16, numChannels, constructErrorMessage(synth, "getChannels() result has wrong length", true));
+            assertEquals(16, numChannels, errmsg(synth, "getChannels() result has wrong length", true));
             for (MidiChannel channel : channels) {
-                assertNotNull(
-                        channel, constructErrorMessage(synth, "getChannels() result element null", true));
+                assertNotNull(channel, errmsg(synth, "getChannels() result element null", true));
             }
-        } finally {
-            synth.close();
         }
     }
 }
-
-

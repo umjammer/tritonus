@@ -32,29 +32,29 @@ public class TEnumControl extends EnumControl implements TControllable {
 
     private static final Logger logger= getLogger("org.tritonus.TraceControl");
 
-    private final TControlController m_controller;
+    private final TControlController controller;
 
-    public TEnumControl(EnumControl.Type type, Object[] aValues, Object value) {
-        super(type, aValues, value);
-        logger.log(Level.TRACE, "TEnumControl.<init>: begin");
+    public TEnumControl(EnumControl.Type type, Object[] values, Object value) {
+        super(type, values, value);
+        logger.log(Level.TRACE, "begin");
 
-        m_controller = new TControlController();
+        controller = new TControlController();
 
-        logger.log(Level.TRACE, "TEnumControl.<init>: end");
+        logger.log(Level.TRACE, "end");
     }
 
     @Override
     public void setParentControl(TCompoundControl compoundControl) {
-        m_controller.setParentControl(compoundControl);
+        controller.setParentControl(compoundControl);
     }
 
     @Override
     public TCompoundControl getParentControl() {
-        return m_controller.getParentControl();
+        return controller.getParentControl();
     }
 
     @Override
     public void commit() {
-        m_controller.commit();
+        controller.commit();
     }
 }

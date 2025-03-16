@@ -54,9 +54,9 @@ public class FluidSoundbank implements Soundbank {
 
     private static final Logger logger = getLogger("org.tritonus.TraceFluidNative");
 
-    private FluidSynthesizer synth;
-    private int sfontID;
-    private FluidInstrument[] instruments;
+    private final FluidSynthesizer synth;
+    private final int sfontID;
+    private final FluidInstrument[] instruments;
 
     // $$mp: needs to be public for native code now
     public class FluidInstrument extends Instrument {
@@ -85,7 +85,7 @@ public class FluidSoundbank implements Soundbank {
 
         PointerByReference /* fluid_synth_t */ synth = this.synth.getSynthesizer();
 
-        logger.log(Level.TRACE, String.format("nGetInstruments: synth: %s\n", synth));
+        logger.log(Level.TRACE, "nGetInstruments: synth: %s\n".formatted(synth));
 
         if (synth != null) {
 

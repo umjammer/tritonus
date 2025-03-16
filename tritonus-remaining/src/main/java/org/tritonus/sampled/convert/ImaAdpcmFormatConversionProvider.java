@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (c) 2003 by Matthias Pfisterer
  *
@@ -13,39 +12,40 @@
  *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
+ *
+ * ---
+ *
+ * The code doing the encoding and decoding is based on C code with the
+ * following copyright:
+ *
+ * Copyright 1992 by Stichting Mathematisch Centrum, Amsterdam, The
+ * Netherlands.
+ *
+ *                        All Rights Reserved
+ *
+ * Permission to use, copy, modify, and distribute this software and its
+ * documentation for any purpose and without fee is hereby granted,
+ * provided that the above copyright notice appear in all copies and that
+ * both that copyright notice and this permission notice appear in
+ * supporting documentation, and that the names of Stichting Mathematisch
+ * Centrum or CWI not be used in advertising or publicity pertaining to
+ * distribution of the software without specific, written prior permission.
+ *
+ * STICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+ * THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ * FITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
+ * FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+ * OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ *
  */
-
-/* The code doing the encoding and decoding is based on C code with the
-   following copyright:
- ***********************************************************
-Copyright 1992 by Stichting Mathematisch Centrum, Amsterdam, The
-Netherlands.
-
-                        All Rights Reserved
-
-Permission to use, copy, modify, and distribute this software and its 
-documentation for any purpose and without fee is hereby granted, 
-provided that the above copyright notice appear in all copies and that
-both that copyright notice and this permission notice appear in 
-supporting documentation, and that the names of Stichting Mathematisch
-Centrum or CWI not be used in advertising or publicity pertaining to
-distribution of the software without specific, written prior permission.
-
-STICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
-THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
-FITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE
-FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
-OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-
-******************************************************************/
 
 package org.tritonus.sampled.convert;
 
 import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
-import java.util.Arrays;
+import java.util.List;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 
@@ -63,7 +63,7 @@ import static java.lang.System.getLogger;
  */
 public class ImaAdpcmFormatConversionProvider extends TEncodingFormatConversionProvider {
 
-    private static final Logger logger= getLogger("org.tritonus.TraceAudioConverter");
+    private static final Logger logger = getLogger("org.tritonus.TraceAudioConverter");
 
     // only used as abbreviation
     private static final AudioFormat.Encoding IMA_ADPCM = new AudioFormat.Encoding("IMA_ADPCM");
@@ -89,7 +89,7 @@ public class ImaAdpcmFormatConversionProvider extends TEncodingFormatConversionP
             -1, -1, -1, -1, 2, 4, 6, 8,
     };
 
-    static final int[] stepsizeTable = {
+    static final int[] stepSizeTable = {
             7, 8, 9, 10, 11, 12, 13, 14, 16, 17,
             19, 21, 23, 25, 28, 31, 34, 37, 41, 45,
             50, 55, 60, 66, 73, 80, 88, 97, 107, 118,
@@ -105,8 +105,8 @@ public class ImaAdpcmFormatConversionProvider extends TEncodingFormatConversionP
      * Constructor.
      */
     public ImaAdpcmFormatConversionProvider() {
-        super(Arrays.asList(INPUT_FORMATS),
-                Arrays.asList(INPUT_FORMATS)
+        super(List.of(INPUT_FORMATS),
+                List.of(INPUT_FORMATS)
                 // true, // new behaviour
                 // false // bidirectional .. constants UNIDIR../BIDIR..?
         );
@@ -147,9 +147,9 @@ public class ImaAdpcmFormatConversionProvider extends TEncodingFormatConversionP
 
     // TODO recheck !!
     protected AudioFormat getDefaultTargetFormat(AudioFormat targetFormat, AudioFormat sourceFormat) {
-        logger.log(Level.TRACE, "ImaAdpcmFormatConversionProvider.getDefaultTargetFormat(): target format: " + targetFormat);
+        logger.log(Level.TRACE, "target format: " + targetFormat);
 
-        logger.log(Level.TRACE, "ImaAdpcmFormatConversionProvider.getDefaultTargetFormat(): source format: " + sourceFormat);
+        logger.log(Level.TRACE, "source format: " + sourceFormat);
 
         AudioFormat newTargetFormat = null;
         // return first of the matching formats
@@ -163,7 +163,7 @@ public class ImaAdpcmFormatConversionProvider extends TEncodingFormatConversionP
             throw new IllegalArgumentException("conversion not supported");
         }
 
-        logger.log(Level.TRACE, "ImaAdpcmFormatConversionProvider.getDefaultTargetFormat(): new target format: " + newTargetFormat);
+        logger.log(Level.TRACE, "new target format: " + newTargetFormat);
 
         // hacked together...
         // ... only works for PCM target encoding ...
@@ -175,7 +175,7 @@ public class ImaAdpcmFormatConversionProvider extends TEncodingFormatConversionP
                 sourceFormat.getSampleRate(),
                 newTargetFormat.isBigEndian());
 
-        logger.log(Level.TRACE, "ImaAdpcmFormatConversionProvider.getDefaultTargetFormat(): really new target format: " + newTargetFormat);
+        logger.log(Level.TRACE, "really new target format: " + newTargetFormat);
 
         return newTargetFormat;
     }
@@ -191,55 +191,55 @@ public class ImaAdpcmFormatConversionProvider extends TEncodingFormatConversionP
      */
     /* private */ public static class DecodedImaAdpcmAudioInputStream extends TSynchronousFilteredAudioInputStream {
 
-        private ImaAdpcmState m_state;
+        private final ImaAdpcmState state;
 
         /**
          * Constructor.
          */
         public DecodedImaAdpcmAudioInputStream(AudioInputStream encodedStream, AudioFormat outputFormat) {
             super(encodedStream, outputFormat);
-            logger.log(Level.TRACE, "DecodedImaAdpcmAudioInputStream.<init>(): begin");
+            logger.log(Level.TRACE, "begin");
 
-            m_state = new ImaAdpcmState();
+            state = new ImaAdpcmState();
 
-            logger.log(Level.TRACE, "DecodedImaAdpcmAudioInputStream.<init>(): end");
+            logger.log(Level.TRACE, "end");
         }
 
         @Override
         protected int convert(byte[] inBuffer, byte[] outBuffer, int outByteOffset, int inFrameCount) {
-            logger.log(Level.TRACE, "DecodedImaAdpcmAudioInputStream.convert(): begin");
+            logger.log(Level.TRACE, "begin");
 
             int inp; // Input buffer pointer
-            int outp; // output buffer pointer
+            int outP; // output buffer pointer
             int sign; // Current adpcm sign bit
             int delta; // Current adpcm output value
-            int step; // Stepsize
-            int valpred; // Predicted value
-            int vpdiff; // Current change to valpred
+            int step; // Step size
+            int pred; // Predicted value
+            int vpDiff; // Current change to pred
             int index; // Current step change index
-            int inputbuffer = 0; // place to keep next 4-bit value
-            boolean bufferstep; // toggle between inputbuffer/input
+            int inputBuffer = 0; // place to keep next 4-bit value
+            boolean bufferStep; // toggle between inputBuffer/input
             int len = inFrameCount;
 
             inp = 0;
-            outp = outByteOffset;
+            outP = outByteOffset;
 
-            valpred = m_state.valprev;
-            index = m_state.index;
-            step = stepsizeTable[index];
+            pred = state.prev;
+            index = state.index;
+            step = stepSizeTable[index];
 
-            bufferstep = false;
+            bufferStep = false;
 
             for (; len > 0; len--) {
                 // Step 1 - get the delta value
-                if (bufferstep) {
-                    delta = inputbuffer & 0xf;
+                if (bufferStep) {
+                    delta = inputBuffer & 0xf;
                 } else {
-                    inputbuffer = inBuffer[inp];
+                    inputBuffer = inBuffer[inp];
                     inp++;
-                    delta = (inputbuffer >> 4) & 0xf;
+                    delta = (inputBuffer >> 4) & 0xf;
                 }
-                bufferstep = !bufferstep;
+                bufferStep = !bufferStep;
 
                 // Step 2 - Find new index value (for later)
                 index += indexTable[delta];
@@ -252,55 +252,55 @@ public class ImaAdpcmFormatConversionProvider extends TEncodingFormatConversionP
 
                 // Step 4 - Compute difference and new predicted value
                 //
-                // Computes 'vpdiff = (delta+0.5)*step/4', but see comment
+                // Computes 'vpDiff = (delta+0.5)*step/4', but see comment
                 // in adpcm_coder.
-                vpdiff = step >> 3;
+                vpDiff = step >> 3;
                 if ((delta & 4) != 0)
-                    vpdiff += step;
+                    vpDiff += step;
                 if ((delta & 2) != 0)
-                    vpdiff += step >> 1;
+                    vpDiff += step >> 1;
                 if ((delta & 1) != 0)
-                    vpdiff += step >> 2;
+                    vpDiff += step >> 2;
 
                 if (sign != 0)
-                    valpred -= vpdiff;
+                    pred -= vpDiff;
                 else
-                    valpred += vpdiff;
+                    pred += vpDiff;
 
                 // Step 5 - clamp output value
-                if (valpred > 32767)
-                    valpred = 32767;
-                else if (valpred < -32768)
-                    valpred = -32768;
+                if (pred > 32767)
+                    pred = 32767;
+                else if (pred < -32768)
+                    pred = -32768;
 
                 // Step 6 - Update step value
-                step = stepsizeTable[index];
+                step = stepSizeTable[index];
 
                 // Step 7 - Output value
-                // *outp++ = valpred;
+                // *outP++ = pred;
                 if (isBigEndian()) {
-                    outBuffer[outp++] = (byte) (valpred >> 8);
-                    outBuffer[outp++] = (byte) (valpred & 0xFF);
+                    outBuffer[outP++] = (byte) (pred >> 8);
+                    outBuffer[outP++] = (byte) (pred & 0xFF);
                 } else {
-                    outBuffer[outp++] = (byte) (valpred & 0xFF);
-                    outBuffer[outp++] = (byte) (valpred >> 8);
+                    outBuffer[outP++] = (byte) (pred & 0xFF);
+                    outBuffer[outP++] = (byte) (pred >> 8);
                 }
             }
 
-            m_state.valprev = valpred;
-            m_state.index = index;
+            state.prev = pred;
+            state.index = index;
 
-            logger.log(Level.TRACE, "DecodedImaAdpcmAudioInputStream.convert(): end");
+            logger.log(Level.TRACE, "end");
 
             return inFrameCount;
         }
 
-        /** */
+        /**  */
         protected int getSampleSizeInBytes() {
             return getFormat().getFrameSize() / getFormat().getChannels();
         }
 
-        /** */
+        /**  */
         protected int getFrameSize() {
             return getFormat().getFrameSize();
         }
@@ -320,55 +320,52 @@ public class ImaAdpcmFormatConversionProvider extends TEncodingFormatConversionP
      * An instance of this class is returned if you call
      * AudioSystem.getAudioInputStream(AudioFormat, AudioInputStream)
      * to encode to a IMA ADPCM stream.
+     * <p>
+     * TODO Class should be private, but is public due to a bug (?) in the
+     *  aspectj compiler.
      */
- /* Class should be private, but is public due to a bug (?) in the
-    aspectj compiler. */
-    /*private*/public static class EncodedImaAdpcmAudioInputStream
-            extends TSynchronousFilteredAudioInputStream {
+    /* private */ public static class EncodedImaAdpcmAudioInputStream extends TSynchronousFilteredAudioInputStream {
 
-        private ImaAdpcmState m_state;
+        private final ImaAdpcmState state;
 
         /**
          * Constructor.
          */
         public EncodedImaAdpcmAudioInputStream(AudioInputStream decodedStream, AudioFormat outputFormat) {
             super(decodedStream, outputFormat);
-            // TraceAudioConverter
-                logger.log(Level.TRACE, "EncodedImaAdpcmAudioInputStream.<init>(): begin");
+            logger.log(Level.TRACE, "begin");
 
-            m_state = new ImaAdpcmState();
-            // TraceAudioConverter
-                logger.log(Level.TRACE, "EncodedImaAdpcmAudioInputStream.<init>(): end");
+            state = new ImaAdpcmState();
+            logger.log(Level.TRACE, "end");
 
         }
 
         @Override
         protected int convert(byte[] inBuffer, byte[] outBuffer, int outByteOffset, int inFrameCount) {
-            // TraceAudioConverter
-                logger.log(Level.TRACE, "EncodedImaAdpcmAudioInputStream.convert(): begin");
+            logger.log(Level.TRACE, "begin");
 
             int inp; // Input buffer pointer
-            int outp; // output buffer pointer
+            int outP; // output buffer pointer
             int val; // Current input sample value
             int sign; // Current adpcm sign bit
             int delta; // Current adpcm output value
-            int diff; // Difference between val and valprev
-            int step; // Stepsize
-            int valpred; // Predicted output value
-            int vpdiff; // Current change to valpred
+            int diff; // Difference between val and prev
+            int step; // Step size
+            int pred; // Predicted output value
+            int vpDiff; // Current change to pred
             int index; // Current step change index
-            int outputbuffer = 0; // place to keep previous 4-bit value
-            boolean bufferstep; // toggle between outputbuffer/output
+            int outputBuffer = 0; // place to keep previous 4-bit value
+            boolean bufferStep; // toggle between outputBuffer/output
             int len = inFrameCount;
 
             inp = 0;
-            outp = outByteOffset;
+            outP = outByteOffset;
 
-            valpred = m_state.valprev;
-            index = m_state.index;
-            step = stepsizeTable[index];
+            pred = state.prev;
+            index = state.index;
+            step = stepSizeTable[index];
 
-            bufferstep = true;
+            bufferStep = true;
 
             for (; len > 0; len--) {
                 // val = *inp++;
@@ -378,7 +375,7 @@ public class ImaAdpcmFormatConversionProvider extends TEncodingFormatConversionP
                 inp += 2;
 
                 // Step 1 - compute difference with previous value
-                diff = val - valpred;
+                diff = val - pred;
                 sign = (diff < 0) ? 8 : 0;
                 if (sign != 0)
                     diff = (-diff);
@@ -387,41 +384,41 @@ public class ImaAdpcmFormatConversionProvider extends TEncodingFormatConversionP
                 // Note:
                 // This code *approximately* computes:
                 //    delta = diff*4/step;
-                //    vpdiff = (delta+0.5)*step/4;
+                //    vpDiff = (delta+0.5)*step/4;
                 // but in shift step bits are dropped. The net result of this is
                 // that even if you have fast mul/div hardware you cannot put it to
                 // good use since the fixup would be too expensive.
                 delta = 0;
-                vpdiff = (step >> 3);
+                vpDiff = (step >> 3);
 
                 if (diff >= step) {
                     delta = 4;
                     diff -= step;
-                    vpdiff += step;
+                    vpDiff += step;
                 }
                 step >>= 1;
                 if (diff >= step) {
                     delta |= 2;
                     diff -= step;
-                    vpdiff += step;
+                    vpDiff += step;
                 }
                 step >>= 1;
                 if (diff >= step) {
                     delta |= 1;
-                    vpdiff += step;
+                    vpDiff += step;
                 }
 
                 // Step 3 - Update previous value
                 if (sign != 0)
-                    valpred -= vpdiff;
+                    pred -= vpDiff;
                 else
-                    valpred += vpdiff;
+                    pred += vpDiff;
 
                 // Step 4 - Clamp previous value to 16 bits
-                if (valpred > 32767)
-                    valpred = 32767;
-                else if (valpred < -32768)
-                    valpred = -32768;
+                if (pred > 32767)
+                    pred = 32767;
+                else if (pred < -32768)
+                    pred = -32768;
 
                 // Step 5 - Assemble value, update index and step values
                 delta |= sign;
@@ -431,35 +428,35 @@ public class ImaAdpcmFormatConversionProvider extends TEncodingFormatConversionP
                     index = 0;
                 if (index > 88)
                     index = 88;
-                step = stepsizeTable[index];
+                step = stepSizeTable[index];
 
                 // Step 6 - Output value
-                if (bufferstep) {
-                    outputbuffer = (delta << 4) & 0xf0;
+                if (bufferStep) {
+                    outputBuffer = (delta << 4) & 0xf0;
                 } else {
-                    outBuffer[outp++] = (byte) ((delta & 0x0f) | outputbuffer);
+                    outBuffer[outP++] = (byte) ((delta & 0x0f) | outputBuffer);
                 }
-                bufferstep = !bufferstep;
+                bufferStep = !bufferStep;
             }
 
             // Output last step, if needed
-            if (!bufferstep)
-                outBuffer[outp++] = (byte) outputbuffer;
+            if (!bufferStep)
+                outBuffer[outP++] = (byte) outputBuffer;
 
-            m_state.valprev = valpred;
-            m_state.index = index;
+            state.prev = pred;
+            state.index = index;
 
-            logger.log(Level.TRACE, "EncodedImaAdpcmAudioInputStream.convert(): end");
+            logger.log(Level.TRACE, "end");
 
             return inFrameCount;
         }
 
-        /** */
+        /**  */
         protected int getSampleSizeInBytes() {
             return getFormat().getFrameSize() / getFormat().getChannels();
         }
 
-        /** */
+        /**  */
         protected int getFrameSize() {
             return getFormat().getFrameSize();
         }
@@ -482,7 +479,7 @@ public class ImaAdpcmFormatConversionProvider extends TEncodingFormatConversionP
      */
     private static class ImaAdpcmState {
 
-        public int valprev;
+        public int prev;
         public int index;
     }
 }

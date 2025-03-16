@@ -28,8 +28,7 @@ import javax.sound.midi.Receiver;
  * transfer events directely inside the ALSA sequencer, instead of
  * passing them by Java.
  */
-public interface AlsaReceiver
-        extends Receiver {
+public interface AlsaReceiver extends Receiver {
 
     /**
      * Establish the subscription.
@@ -39,15 +38,12 @@ public interface AlsaReceiver
      * This method is typically called by an AlsaTransmitter that
      * got an AlsaReceiver as its Receiver.
      *
-     * @param nClient The ALSA client number of the Transmitter that
-     *                a read subscription should establish to.
-     * @param nPort   The ALSA port number of the Transmitter that a
-     *                read subscription should establish to.
+     * @param client The ALSA client number of the Transmitter that
+     *               a read subscription should establish to.
+     * @param port   The ALSA port number of the Transmitter that a
+     *               read subscription should establish to.
      * @return true, if the subscription was established, false
      * otherwise.
      */
-    boolean subscribeTo(int nClient, int nPort);
+    boolean subscribeTo(int client, int port);
 }
-
-
-

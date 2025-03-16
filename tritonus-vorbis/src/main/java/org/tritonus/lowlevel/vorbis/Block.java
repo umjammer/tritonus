@@ -47,108 +47,108 @@ public class Block {
     }
 
     public Block() {
-        logger.log(Level.TRACE, "Block.<init>(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        int nReturn = malloc();
-        if (nReturn < 0) {
+        int ret = malloc();
+        if (ret < 0) {
             throw new RuntimeException("malloc of vorbis_block failed");
         }
 
-        logger.log(Level.TRACE, "Block.<init>(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     private int malloc() {
-        logger.log(Level.TRACE, "malloc(): begin");
+        logger.log(Level.TRACE, "begin");
 
         handle = new vorbis_block();
-        logger.log(Level.TRACE, String.format("malloc(): handle: %s", handle));
+        logger.log(Level.TRACE, "handle: %s".formatted(handle));
 
-        logger.log(Level.TRACE, "malloc(): end");
+        logger.log(Level.TRACE, "end");
 
         return 0;
     }
 
     public void free() {
-        logger.log(Level.TRACE, "free(): begin");
+        logger.log(Level.TRACE, "begin");
 
         handle = null;
 
-        logger.log(Level.TRACE, "free(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     /**
      * Calls vorbis_block_init().
      */
     public int init(DspState dspState) {
-        logger.log(Level.TRACE, "init(): begin");
+        logger.log(Level.TRACE, "begin");
 
         vorbis_dsp_state dspStateHandle = dspState.getHandle();
-        int nReturn = CodecLibrary.INSTANCE.vorbis_block_init(dspStateHandle, handle);
+        int ret = CodecLibrary.INSTANCE.vorbis_block_init(dspStateHandle, handle);
 
-        logger.log(Level.TRACE, "init(): end");
+        logger.log(Level.TRACE, "end");
 
-        return nReturn;
+        return ret;
     }
 
     /**
      * Calls vorbis_bitrate_addblock().
      */
     public int addBlock() {
-        logger.log(Level.TRACE, "addBlock(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        int nReturn = CodecLibrary.INSTANCE.vorbis_bitrate_addblock(handle);
+        int ret = CodecLibrary.INSTANCE.vorbis_bitrate_addblock(handle);
 
-        logger.log(Level.TRACE, "addBlock(): end");
+        logger.log(Level.TRACE, "end");
 
-        return nReturn;
+        return ret;
     }
 
     /**
      * Calls vorbis_analysis().
      */
     public int analysis(Packet packet) {
-        logger.log(Level.TRACE, "analysis(): begin");
+        logger.log(Level.TRACE, "begin");
 
         ogg_packet packetHandle = null;
         if (packet != null) {
             packetHandle = packet.getHandle();
         }
-        int nReturn = CodecLibrary.INSTANCE.vorbis_analysis(handle, packetHandle);
+        int ret = CodecLibrary.INSTANCE.vorbis_analysis(handle, packetHandle);
 
-        logger.log(Level.TRACE, "analysis(): end");
+        logger.log(Level.TRACE, "end");
 
-        return nReturn;
+        return ret;
     }
 
     /**
      * Calls vorbis_synthesis().
      */
     public int synthesis(Packet packet) {
-        logger.log(Level.TRACE, "synthesis(): begin");
+        logger.log(Level.TRACE, "begin");
 
         ogg_packet packetHandle = null;
         if (packet != null) {
             packetHandle = packet.getHandle();
         }
-        logger.log(Level.TRACE, String.format("synthesis(): packet handle: %s", packetHandle));
+        logger.log(Level.TRACE, "packet handle: %s".formatted(packetHandle));
 
-        int nReturn = CodecLibrary.INSTANCE.vorbis_synthesis(handle, packetHandle);
+        int ret = CodecLibrary.INSTANCE.vorbis_synthesis(handle, packetHandle);
 
-        logger.log(Level.TRACE, "synthesis(): end");
+        logger.log(Level.TRACE, "end");
 
-        return nReturn;
+        return ret;
     }
 
     /**
      * Calls vorbis_block_clear().
      */
     public int clear() {
-        logger.log(Level.TRACE, "clear(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        int nReturn = CodecLibrary.INSTANCE.vorbis_block_clear(handle);
+        int ret = CodecLibrary.INSTANCE.vorbis_block_clear(handle);
 
-        logger.log(Level.TRACE, "clear(): end");
+        logger.log(Level.TRACE, "end");
 
-        return nReturn;
+        return ret;
     }
 }

@@ -10,8 +10,7 @@ public class GeneratorAudioInputStream extends FloatAudioInputStream {
 
     private final AbstractGenerator generator;
 
-    public GeneratorAudioInputStream(AbstractGenerator generator,
-                                     AudioFormat targetFormat) {
+    public GeneratorAudioInputStream(AbstractGenerator generator, AudioFormat targetFormat) {
         super(null, targetFormat);
         this.generator = generator;
     }

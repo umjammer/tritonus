@@ -21,78 +21,67 @@ import org.tritonus.saol.sablecc.node.AIntListIntList;
 import org.tritonus.saol.sablecc.node.AMiditagMiditag;
 
 
-public class InstrumentSemanticsCheck
-        extends IOTCommonSemanticsCheck {
+public class InstrumentSemanticsCheck extends IOTCommonSemanticsCheck {
 
     private static final boolean DEBUG = true;
-    private static final int[] LEGAL_VARIABLE_TYPES = new int[]
-            {
-                    WidthAndRate.RATE_I,
-                    WidthAndRate.RATE_K,
-                    WidthAndRate.RATE_A,
-                    WidthAndRate.RATE_OPARRAY,
-            };
 
-    private VariableTable m_globalVariableTable;
-    private VariableTable m_localVariableTable;
+    private static final int[] LEGAL_VARIABLE_TYPES = new int[] {
+            WidthAndRate.RATE_I,
+            WidthAndRate.RATE_K,
+            WidthAndRate.RATE_A,
+            WidthAndRate.RATE_OPARRAY,
+    };
+
+    private final VariableTable globalVariableTable;
+    private final VariableTable localVariableTable;
 
     public InstrumentSemanticsCheck(VariableTable globalVariableTable,
                                     VariableTable localVariableTable,
                                     NodeSemanticsTable nodeSemanticsTable) {
         super(nodeSemanticsTable);
-        m_globalVariableTable = globalVariableTable;
-        m_localVariableTable = localVariableTable;
+        this.globalVariableTable = globalVariableTable;
+        this.localVariableTable = localVariableTable;
     }
-
-
-////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////
 
     @Override
     public void inAInstrdeclInstrdecl(AInstrdeclInstrdecl node) {
-//   String strInstrumentName = node.getIdentifier().getText();
-//   m_strClassName = PACKAGE_PREFIX + strInstrumentName;
-//   m_classGen = new ClassGen(m_strClassName,
-//        SUPERCLASS_NAME,
-//        "<generated>",
-//        Constants.ACC_PUBLIC | Constants.ACC_SUPER,
-//        null);
-//   m_constantPoolGen = m_classGen.getConstantPool();
-//   m_instructionFactory = new InstructionFactory(m_constantPoolGen);
-//   m_aMethods[METHOD_CONSTR] = new InstrumentMethod(m_classGen, "<init>");
-//   m_aMethods[METHOD_I] = new InstrumentMethod(m_classGen, "doIPass");
-//   m_aMethods[METHOD_K] = new InstrumentMethod(m_classGen, "doKPass");
-//   m_aMethods[METHOD_A] = new InstrumentMethod(m_classGen, "doAPass");
-//   m_aMethods[METHOD_CONSTR].appendInstruction(InstructionConstants.ALOAD_0);
-//   Instruction invokeSuperInstruction = m_instructionFactory.createInvoke(SUPERCLASS_NAME, "<init>", Type.VOID, Type.NO_ARGS, Constants.INVOKESPECIAL);
-// //  Instruction invokeSuperInstruction = m_instructionFactory.createInvoke(SUPERCLASS_NAME, SUPERCLASS_CONSTRUCTOR_NAME, Type.VOID, Type.NO_ARGS, Constants.INVOKESPECIAL);
-//   m_aMethods[METHOD_CONSTR].appendInstruction(invokeSuperInstruction);
+//        String instrumentName = node.getIdentifier().getText();
+//        className = PACKAGE_PREFIX + instrumentName;
+//        classGen = new ClassGen(className,
+//                SUPERCLASS_NAME,
+//                "<generated>",
+//                Constants.ACC_PUBLIC | Constants.ACC_SUPER,
+//                null);
+//        constantPoolGen = classGen.getConstantPool();
+//        instructionFactory = new InstructionFactory(constantPoolGen);
+//        methods[METHOD_CONSTR] = new InstrumentMethod(classGen, "<init>");
+//        methods[METHOD_I] = new InstrumentMethod(classGen, "doIPass");
+//        methods[METHOD_K] = new InstrumentMethod(classGen, "doKPass");
+//        methods[METHOD_A] = new InstrumentMethod(classGen, "doAPass");
+//        methods[METHOD_CONSTR].appendInstruction(InstructionConstants.ALOAD_0);
+//        Instruction invokeSuperInstruction = m_instructionFactory.createInvoke(SUPERCLASS_NAME, "<init>", Type.VOID, Type.NO_ARGS, Constants.INVOKESPECIAL);
+////        Instruction invokeSuperInstruction = m_instructionFactory.createInvoke(SUPERCLASS_NAME, SUPERCLASS_CONSTRUCTOR_NAME, Type.VOID, Type.NO_ARGS, Constants.INVOKESPECIAL);
+//        methods[METHOD_CONSTR].appendInstruction(invokeSuperInstruction);
     }
 
     @Override
     public void outAInstrdeclInstrdecl(AInstrdeclInstrdecl node) {
-//   for (int i = 0; i < m_aMethods.length; i++)
-//   {
-//    m_aMethods[i].finish();
-//   }
-//   JavaClass javaClass = m_classGen.getJavaClass();
-//   try
-//   {
-//    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//    javaClass.dump(baos);
-//    byte[] abData = baos.toByteArray();
-//    Class instrumentClass = m_classLoader.findClass(m_strClassName, abData);
-//    m_instrumentMap.put(m_strClassName, instrumentClass);
-//    if (DEBUG)
-//    {
-//     javaClass.dump(m_strClassName + CLASSFILENAME_SUFFIX);
-//    }
-//   }
-//   catch (IOException e)
-//   {
-//    e.printStackTrace();
-//   }
+//        for (int i = 0; i < methods.length; i++) {
+//            methods[i].finish();
+//        }
+//        JavaClass javaClass = classGen.getJavaClass();
+//        try {
+//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//            javaClass.dump(baos);
+//            byte[] data = baos.toByteArray();
+//            Class instrumentClass = m_classLoader.findClass(className, abData);
+//            instrumentMap.put(className, instrumentClass);
+//            if (DEBUG) {
+//                javaClass.dump(className + CLASSFILENAME_SUFFIX);
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override
@@ -111,19 +100,14 @@ public class InstrumentSemanticsCheck
     public void outAIntListIntList(AIntListIntList node) {
     }
 
-
-////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////
-
     @Override
     protected VariableTable getOwnVariableTable() {
-        return m_localVariableTable;
+        return localVariableTable;
     }
 
     @Override
     protected VariableTable getGlobalVariableTable() {
-        return m_globalVariableTable;
+        return globalVariableTable;
     }
 
     @Override
@@ -131,5 +115,3 @@ public class InstrumentSemanticsCheck
         return LEGAL_VARIABLE_TYPES;
     }
 }
-
-

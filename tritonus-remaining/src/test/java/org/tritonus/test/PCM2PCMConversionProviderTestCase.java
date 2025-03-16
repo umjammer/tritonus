@@ -27,5 +27,3 @@ public class PCM2PCMConversionProviderTestCase
         setResourcePrefix("pcm2pcm");
     }
 }
-
-

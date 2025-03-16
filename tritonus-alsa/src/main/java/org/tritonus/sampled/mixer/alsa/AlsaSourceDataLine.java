@@ -37,18 +37,18 @@ public class AlsaSourceDataLine extends AlsaBaseDataLine implements SourceDataLi
 
 //    private static final Class[] CONTROL_CLASSES = {GainControl.class};
 
-    private byte[] m_abSwapBuffer;
+    private byte[] swapBuffer;
 
     // TODO has info object to change if format or buffer size are changed later?
     // no, but it has to represent the mixer's capabilities. So a fixed info per mixer.
-    public AlsaSourceDataLine(AlsaDataLineMixer mixer, AudioFormat format, int nBufferSize)
+    public AlsaSourceDataLine(AlsaDataLineMixer mixer, AudioFormat format, int bufferSize)
             throws LineUnavailableException {
-        super(mixer, new DataLine.Info(SourceDataLine.class, format, nBufferSize));
-        logger.log(Level.TRACE, "AlsaSourceDataLine.<init>(): begin");
+        super(mixer, new DataLine.Info(SourceDataLine.class, format, bufferSize));
+        logger.log(Level.TRACE, "begin");
 
-        logger.log(Level.TRACE, "AlsaSourceDataLine.<init>(): buffer size: " + nBufferSize);
+        logger.log(Level.TRACE, "buffer size: " + bufferSize);
 
-        logger.log(Level.TRACE, "AlsaSourceDataLine.<init>(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     @Override
@@ -60,18 +60,18 @@ public class AlsaSourceDataLine extends AlsaBaseDataLine implements SourceDataLi
 //        setStarted(true);
 //        setActive(true);
 //        if (TDebug.TraceSourceDataLine) {
-//            logger.log(Level.TRACE, "AlsaSourceDataLine.start(): channel started.");
+//logger.log(Level.TRACE, "channel started.");
 //        }
 //    }
 
     @Override
     protected void stopImpl() {
-        logger.log(Level.TRACE, "AlsaSourceDataLine.stopImpl(): called");
+        logger.log(Level.TRACE, "called");
 
-        int nReturn = 0;
-//        int nReturn = getAlsaPcm().flushChannel(AlsaPcm.SND_PCM_CHANNEL_PLAYBACK);
-        if (nReturn != 0) {
-            logger.log(Level.TRACE, "flushChannel: " + Alsa.getStringError(nReturn));
+        int ret = 0;
+//        int ret = getAlsaPcm().flushChannel(AlsaPcm.SND_PCM_CHANNEL_PLAYBACK);
+        if (ret != 0) {
+            logger.log(Level.TRACE, "flushChannel: " + Alsa.getStringError(ret));
         }
 //        setStarted(false);
     }
@@ -79,75 +79,74 @@ public class AlsaSourceDataLine extends AlsaBaseDataLine implements SourceDataLi
     @Override
     public int available() {
         // TODO
-        throwNYIException();
-        return -1;
+        throw new UnsupportedOperationException("sorry, this feature is not yet implemented");
     }
 
     // TODO check if should block
     @Override
-    public int write(byte[] abData, int nOffset, int nLength) {
-        logger.log(Level.TRACE, "AlsaSourceDataLine.write(): begin");
+    public int write(byte[] data, int offset, int length) {
+        logger.log(Level.TRACE, "begin");
 
         if (getSwapBytes()) {
-            if (m_abSwapBuffer == null || m_abSwapBuffer.length < nOffset + nLength) {
-                m_abSwapBuffer = new byte[nOffset + nLength];
+            if (swapBuffer == null || swapBuffer.length < offset + length) {
+                swapBuffer = new byte[offset + length];
             }
             TConversionTool.changeOrderOrSign(
-                    abData, nOffset,
-                    m_abSwapBuffer, nOffset,
-                    nLength, getBytesPerSample());
-            abData = m_abSwapBuffer;
+                    data, offset,
+                    swapBuffer, offset,
+                    length, getBytesPerSample());
+            data = swapBuffer;
         }
-        int nReturn = writeImpl(abData, nOffset, nLength);
-        logger.log(Level.TRACE, "AlsaSourceDataLine.write(): end");
+        int ret = writeImpl(data, offset, length);
+        logger.log(Level.TRACE, "end");
 
-        return nReturn;
+        return ret;
     }
 
     /**
      * Write data to the line.
      *
-     * @param abData  The buffer to use.
-     * @param nOffset
-     * @param nLength The length of the data that should be written,
-     *                in bytes. Can be less that the length of abData.
-     * @return The number of bytes written. May be less than nLength.
+     * @param data  The buffer to use.
+     * @param offset
+     * @param length The length of the data that should be written,
+     *                in bytes. Can be less that the length of data.
+     * @return The number of bytes written. May be less than length.
      */
 
     // TODO check if should block
-    private int writeImpl(byte[] abData, int nOffset, int nLength) {
-        logger.log(Level.TRACE, "AlsaSourceDataLine.writeImpl(): begin");
+    private int writeImpl(byte[] data, int offset, int length) {
+        logger.log(Level.TRACE, "begin");
 
-        if (nLength > 0 && !isActive()) {
+        if (length > 0 && !isActive()) {
             start();
         }
-        int nFrameSize = getFormat().getFrameSize();
-        int nRemaining = nLength;
-        while (nRemaining > 0 && isOpen()) {
+        int frameSize = getFormat().getFrameSize();
+        int remaining = length;
+        while (remaining > 0 && isOpen()) {
             synchronized (this) {
                 if (!isOpen()) {
-                    return nLength - nRemaining;
+                    return length - remaining;
                 }
-                logger.log(Level.TRACE, "AlsaSourceDataLine.writeImpl(): trying to write (bytes): " + nRemaining);
+                logger.log(Level.TRACE, "trying to write (bytes): " + remaining);
 
-                int nRemainingFrames = nRemaining / nFrameSize;
-                logger.log(Level.TRACE, "AlsaSourceDataLine.writeImpl(): trying to write (frames): " + nRemainingFrames);
+                int remainingFrames = remaining / frameSize;
+                logger.log(Level.TRACE, "trying to write (frames): " + remainingFrames);
 
-                int nWrittenFrames = (int) getAlsaPcm().writei(abData, nOffset, nRemainingFrames);
-                if (nWrittenFrames < 0) {
-                    logger.log(Level.TRACE, "AlsaSourceDataLine.writeImpl(): " + Alsa.getStringError(nWrittenFrames));
-                    return nLength - nRemaining;
+                int writtenFrames = (int) getAlsaPcm().writei(data, offset, remainingFrames);
+                if (writtenFrames < 0) {
+                    logger.log(Level.TRACE, Alsa.getStringError(writtenFrames));
+                    return length - remaining;
                 }
-                logger.log(Level.TRACE, "AlsaSourceDataLine.writeImpl(): written (frames): " + nWrittenFrames);
+                logger.log(Level.TRACE, "written (frames): " + writtenFrames);
 
-                int nWrittenBytes = nWrittenFrames * nFrameSize;
-                logger.log(Level.TRACE, "AlsaSourceDataLine.writeImpl(): written (bytes): " + nWrittenBytes);
+                int writtenBytes = writtenFrames * frameSize;
+                logger.log(Level.TRACE, "written (bytes): " + writtenBytes);
 
-                nOffset += nWrittenBytes;
-                nRemaining -= nWrittenBytes;
+                offset += writtenBytes;
+                remaining -= writtenBytes;
             }
         }
-        return nLength;
+        return length;
     }
 
     @Override
@@ -164,14 +163,7 @@ public class AlsaSourceDataLine extends AlsaBaseDataLine implements SourceDataLi
      * dGain is logarithmic!!
      */
     @Override
-    protected void setGain(float dGain) {
-    }
-
-    /**
-     * Throw a RuntimeException saying "not yet implemented".
-     */
-    private void throwNYIException() {
-        throw new RuntimeException("sorry, this feature is not yet implemented");
+    protected void setGain(float gain) {
     }
 
     // IDEA: move inner classes to TBaseDataLine
@@ -183,8 +175,8 @@ public class AlsaSourceDataLine extends AlsaBaseDataLine implements SourceDataLi
         // TODO recheck this value
         private static final int GAIN_INCREMENTS = 1000;
 
-//        private float  m_fGain;
-//        private boolean  m_bMuted;
+//        private float gain;
+//        private boolean muted;
 
         /* package */ AlsaSourceDataLineGainControl() {
             super(FloatControl.Type.VOLUME, // or MASTER_GAIN ?
@@ -197,14 +189,14 @@ public class AlsaSourceDataLine extends AlsaBaseDataLine implements SourceDataLi
                     "-96.0",
                     "",
                     "+24.0");
-//            m_bMuted = false; // should be included in a compund control?
+//            muted = false; // should be included in a compound control?
         }
 
         @Override
-        public void setValue(float fGain) {
-            fGain = Math.max(Math.min(fGain, getMaximum()), getMinimum());
-            if (Math.abs(fGain - getValue()) > 1.0E9) {
-                super.setValue(fGain);
+        public void setValue(float gain) {
+            gain = Math.max(Math.min(gain, getMaximum()), getMinimum());
+            if (Math.abs(gain - getValue()) > 1.0E9) {
+                super.setValue(gain);
 //                if (!getMute()) {
                 AlsaSourceDataLine.this.setGain(getValue());
 //                }
@@ -224,7 +216,7 @@ public class AlsaSourceDataLine extends AlsaBaseDataLine implements SourceDataLi
 //            return GAIN_INCREMENTS;
 //        }
 //
-//        public void fade(float fInitialGain, float fFinalGain, int nFrames) {
+//        public void fade(float initialGain, float finalGain, int frames) {
 //            // TODO
 //        }
 //
@@ -234,12 +226,12 @@ public class AlsaSourceDataLine extends AlsaBaseDataLine implements SourceDataLi
 //        }
 //
 //        public boolean getMute() {
-//            return m_bMuted;
+//            return muted;
 //        }
 //
-//        public void setMute(boolean bMuted) {
-//            if (bMuted != getMute()) {
-//                m_bMuted = bMuted;
+//        public void setMute(boolean mutes) {
+//            if (mutes != getMute()) {
+//                this.muted = mutes;
 //                if (getMute()) {
 //                    AlsaSourceDataLine.this.setGain(getMinimum());
 //                } else {

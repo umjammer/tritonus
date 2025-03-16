@@ -1,6 +1,5 @@
 package vavi.sound.sampled.jna.codec;
 
-import java.util.Arrays;
 import java.util.List;
 
 import com.sun.jna.NativeLong;
@@ -32,7 +31,7 @@ public class vorbis_info extends Structure {
 
     @Override
     protected List<String> getFieldOrder() {
-        return Arrays.asList("version", "channels", "rate", "bitrate_upper", "bitrate_nominal", "bitrate_lower", "bitrate_window", "codec_setup");
+        return List.of("version", "channels", "rate", "bitrate_upper", "bitrate_nominal", "bitrate_lower", "bitrate_window", "codec_setup");
     }
 
     /** @param codec_setup C type : void* */

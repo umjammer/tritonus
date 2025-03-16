@@ -33,11 +33,10 @@ import javax.sound.sampled.AudioFormat;
  *
  * @author Matthias Pfisterer
  */
-public class TAudioFileFormat
-        extends AudioFileFormat {
+public class TAudioFileFormat extends AudioFileFormat {
 
-    private Map<String, Object> m_properties;
-    private Map<String, Object> m_unmodifiableProperties;
+    private Map<String, Object> properties;
+    private Map<String, Object> unmodifiableProperties;
 
     /*
      * Note that the order of the arguments is different from
@@ -45,43 +44,34 @@ public class TAudioFileFormat
      */
     public TAudioFileFormat(Type type,
                             AudioFormat audioFormat,
-                            int nLengthInFrames,
-                            int nLengthInBytes) {
-        super(type,
-                nLengthInBytes,
-                audioFormat,
-                nLengthInFrames);
+                            int lengthInFrames,
+                            int lengthInBytes) {
+        super(type, lengthInBytes, audioFormat, lengthInFrames);
     }
 
     public TAudioFileFormat(Type type,
                             AudioFormat audioFormat,
-                            int nLengthInFrames,
-                            int nLengthInBytes,
+                            int lengthInFrames,
+                            int lengthInBytes,
                             Map<String, Object> properties) {
-        super(type,
-                nLengthInBytes,
-                audioFormat,
-                nLengthInFrames);
+        super(type, lengthInBytes, audioFormat, lengthInFrames);
         initMaps(properties);
     }
 
     private void initMaps(Map<String, Object> properties) {
-  /* Here, we make a shallow copy of the map. It's unclear if this
-     is sufficient (of if a deep copy should be made).
-  */
-        m_properties = new HashMap<>();
-        m_properties.putAll(properties);
-        m_unmodifiableProperties = Collections.unmodifiableMap(m_properties);
+        // Here, we make a shallow copy of the map. It's unclear if this
+        // is sufficient (of if a deep copy should be made).
+        this.properties = new HashMap<>();
+        this.properties.putAll(properties);
+        unmodifiableProperties = Collections.unmodifiableMap(this.properties);
     }
 
     @Override
     public Map<String, Object> properties() {
-        return m_unmodifiableProperties;
+        return unmodifiableProperties;
     }
 
     protected void setProperty(String key, Object value) {
-        m_properties.put(key, value);
+        properties.put(key, value);
     }
 }
-
-

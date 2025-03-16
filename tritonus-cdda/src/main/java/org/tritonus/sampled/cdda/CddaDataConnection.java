@@ -28,6 +28,7 @@ import org.tritonus.lowlevel.cdda.CddaMidLevel;
 import org.tritonus.lowlevel.cdda.CddaUtils;
 
 import static java.lang.System.getLogger;
+import static javax.sound.sampled.AudioFormat.Encoding.PCM_SIGNED;
 
 
 public class CddaDataConnection extends URLConnection {
@@ -36,66 +37,65 @@ public class CddaDataConnection extends URLConnection {
 
     private static final int PCM_FRAMES_PER_CDDA_FRAME = 588;
     private static final AudioFormat CDDA_FORMAT = new AudioFormat(
-            AudioFormat.Encoding.PCM_SIGNED,
-            44100.0F, 16, 2, 4, 44100.0F, false);
+            PCM_SIGNED, 44100.0F, 16, 2, 4, 44100.0F, false);
 
     /**
      * The cdda device name to read from.
      */
-    private String m_strDevice;
+    private String device;
 
     /**
      * Track to read from the CD.
      */
-    private int m_nTrack;
+    private final int track;
 
-    private CddaMidLevel m_cddaMidLevel;
+    private CddaMidLevel cddaMidLevel;
 
     public CddaDataConnection(URL url) {
         super(url);
-        logger.log(Level.TRACE, "CddaDataConnection.<init>(): begin");
+        logger.log(Level.TRACE, "begin");
 
-        m_strDevice = url.getFile();
-        String strTrack = url.getRef();
-        m_nTrack = Integer.parseInt(strTrack);
+        device = url.getFile();
+        String _track = url.getRef();
+        track = Integer.parseInt(_track);
 
-        logger.log(Level.TRACE, "CddaDataConnection.<init>(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     @Override
     public void connect() {
-        logger.log(Level.TRACE, "CddaDataConnection.connect(): begin");
+        logger.log(Level.TRACE, "begin");
 
         if (!connected) {
-            m_cddaMidLevel = CddaUtils.getCddaMidLevel();
-            if (m_strDevice.isEmpty()) {
-                m_strDevice = m_cddaMidLevel.getDefaultDevice();
+            cddaMidLevel = CddaUtils.getCddaMidLevel();
+            if (device.isEmpty()) {
+                device = cddaMidLevel.getDefaultDevice();
             }
             connected = true;
         }
 
-        logger.log(Level.TRACE, "CddaDataConnection.connect(): end");
+        logger.log(Level.TRACE, "end");
     }
 
     @Override
     public InputStream getInputStream() throws IOException {
-        logger.log(Level.TRACE, "CddaDataConnection.getInputStream(): begin");
+        logger.log(Level.TRACE, "begin");
 
         connect();
-        String strDevice = getDevice();
-        int nTrack = getTrack();
-        InputStream inputStream = m_cddaMidLevel.getTrack(strDevice, nTrack);
+        String device = getDevice();
+        int track = getTrack();
+        InputStream inputStream = cddaMidLevel.getTrack(device, track);
 
-        logger.log(Level.TRACE, "CddaDataConnection.getInputStream(): end");
+        logger.log(Level.TRACE, "end");
 
         return inputStream;
     }
 
     private String getDevice() {
-        return m_strDevice;
+        return device;
     }
 
     private int getTrack() {
-        return m_nTrack;
+        return track;
     }
 }

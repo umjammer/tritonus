@@ -1,8 +1,4 @@
 /*
- * GetMaxPolyphonyTestCase.java
- */
-
-/*
  *  Copyright (c) 2006 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,28 +24,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Tests for class javax.sound.midi.Synthesizer.
  */
-public class GetMaxPolyphonyTestCase
-        extends BaseSynthesizerTestCase {
+public class GetMaxPolyphonyTestCase extends BaseSynthesizerTestCase {
 
     @Override
-    protected void checkSynthesizer(Synthesizer synth)
-            throws Exception {
-        int poly;
+    protected void checkSynthesizer(Synthesizer synth) throws Exception {
         synth.open();
-        try {
-            poly = synth.getMaxPolyphony();
-            assertTrue(poly > 0,
-                    constructErrorMessage(synth, true));
-        } finally {
-            synth.close();
+        try (synth) {
+            int poly = synth.getMaxPolyphony();
+            assertTrue(poly > 0, constructErrorMessage(synth, true));
         }
     }
 
-    private static String constructErrorMessage(Synthesizer synth,
-                                                boolean bOpen) {
-        return BaseSynthesizerTestCase.constructErrorMessage(synth,
-                "getMaxPolyphony() result not positive", bOpen);
+    private static String constructErrorMessage(Synthesizer synth, boolean open) {
+        return errmsg(synth, "getMaxPolyphony() result not positive", open);
     }
 }
-
-

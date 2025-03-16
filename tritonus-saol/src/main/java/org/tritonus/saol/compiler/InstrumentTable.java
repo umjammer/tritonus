@@ -28,9 +28,7 @@ public class InstrumentTable extends HashMap<String, InstrumentEntry> {
         put(instrumentEntry.getInstrumentName(), instrumentEntry);
     }
 
-    public InstrumentEntry getEntry(String strInstrumentName) {
-        return get(strInstrumentName);
+    public InstrumentEntry getEntry(String instrumentName) {
+        return get(instrumentName);
     }
 }
-
-

@@ -1,8 +1,4 @@
 /*
- * TAudioInputStreamTestCase.java
- */
-
-/*
  *  Copyright (c) 2003 by Matthias Pfisterer
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -35,6 +31,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 
+/**
+ * TAudioInputStreamTestCase.
+ */
 public class TAudioInputStreamTestCase {
 
     @Test
@@ -105,5 +104,3 @@ public class TAudioInputStreamTestCase {
         assertEquals("Matthias Pfisterer", propReturn.get("author"));
     }
 }
-
-

@@ -30,13 +30,13 @@ public class SaslParser implements Runnable {
 
     private static final Logger logger = getLogger(SaslParser.class.getName());
 
-    private final RTSystem m_rtSystem;
-    private boolean m_bRunning;
-    private final BufferedReader m_bufferedReader;
+    private final RTSystem rtSystem;
+    private boolean running;
+    private final BufferedReader bufferedReader;
 
     protected SaslParser(RTSystem rtSystem, InputStream inputStream) {
-        m_rtSystem = rtSystem;
-        m_bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+        this.rtSystem = rtSystem;
+        bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
     }
 
     @Override
@@ -49,37 +49,35 @@ public class SaslParser implements Runnable {
     }
 
     private void runImpl() throws IOException {
-        m_bRunning = true;
-        while (m_bRunning) {
-            String strLine = m_bufferedReader.readLine();
-            if (strLine == null) {
+        running = true;
+        while (running) {
+            String line = bufferedReader.readLine();
+            if (line == null) {
                 // EOF signaled.
                 break;
             }
-            strLine = strLine.trim();
-            if (strLine.isEmpty()) {
+            line = line.trim();
+            if (line.isEmpty()) {
                 continue;
             }
-            logger.log(Level.TRACE, "line: " + strLine);
-            String[] astrParts = strLine.split("\\s");
-            boolean bHighPriority = false;
-            int nIndex = 0;
-            if (astrParts[nIndex].equals("*")) {
-                bHighPriority = true;
-                nIndex++;
+            logger.log(Level.TRACE, "line: " + line);
+            String[] parts = line.split("\\s");
+            boolean highPriority = false;
+            int index = 0;
+            if (parts[index].equals("*")) {
+                highPriority = true;
+                index++;
             }
-            float fTime = Float.parseFloat(astrParts[nIndex]);
-            nIndex++;
-            String strCommandName = astrParts[nIndex];
-            nIndex++;
-            if (strCommandName.equals("end")) {
-                m_rtSystem.scheduleEnd(fTime);
+            float time = Float.parseFloat(parts[index]);
+            index++;
+            String commandName = parts[index];
+            index++;
+            if (commandName.equals("end")) {
+                rtSystem.scheduleEnd(time);
             } else {
-                float fDuration = Float.parseFloat(astrParts[nIndex]);
-                m_rtSystem.scheduleInstrument(strCommandName, fTime, fDuration);
+                float duration = Float.parseFloat(parts[index]);
+                rtSystem.scheduleInstrument(commandName, time, duration);
             }
         }
     }
 }
-
-

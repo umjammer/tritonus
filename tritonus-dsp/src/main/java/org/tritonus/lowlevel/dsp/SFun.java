@@ -26,7 +26,7 @@ package org.tritonus.lowlevel.dsp;
 /**
  * Collection of special functions.
  */
-public class Sfun {
+public class SFun {
 
     /** The smallest relative spacing for doubles. */
     public final static double EPSILON_SMALL = 1.1102230246252e-16;
@@ -35,22 +35,20 @@ public class Sfun {
     public final static double EPSILON_LARGE = 2.2204460492503e-16;
 
     /**
-     * Private contructor, so nobody can make an instance of this class.
+     * Private contractor, so nobody can make an instance of this class.
      */
-    private Sfun() {
+    private SFun() {
     }
 
-    /*
-     * Evaluate a Chebyschev series
+    /**
+     * Evaluates a Chebyshev series
      */
     static double csevl(double x, double[] coef) {
-        double b0, b1, b2, twox;
-        int i;
-        b1 = 0.0;
-        b0 = 0.0;
-        b2 = 0.0;
-        twox = 2.0 * x;
-        for (i = coef.length - 1; i >= 0; i--) {
+        double b1 = 0.0;
+        double b0 = 0.0;
+        double b2 = 0.0;
+        double twox = 2.0 * x;
+        for (int i = coef.length - 1; i >= 0; i--) {
             b2 = b1;
             b1 = b0;
             b0 = twox * b1 - b2 + coef[i];
@@ -58,7 +56,7 @@ public class Sfun {
         return 0.5 * (b0 - b2);
     }
 
-    // Series on [0,0.0625]
+    /** Series on [0,0.0625] */
     private static final double[] COT_COEF = {
             .240259160982956302509553617744970e+0,
             -.165330316015002278454746025255758e-1,
@@ -80,7 +78,7 @@ public class Sfun {
      */
     static public double cot(double x) {
         double ans, ainty, ainty2, prodbg, y, yrem;
-        double pi2rec = 0.011619772367581343075535053490057; //  2/PI - 0.625
+        double pi2rec = 0.011619772367581343075535053490057; // 2 / PI - 0.625
 
         y = Math.abs(x);
 
@@ -136,7 +134,7 @@ public class Sfun {
         return 0.43429448190325182765 * Math.log(x);
     }
 
-    /*
+    /**
      * Returns the value of x with the sign of y.
      */
     static private double sign(double x, double y) {
@@ -144,7 +142,7 @@ public class Sfun {
         return (y < 0.0) ? -abs_x : abs_x;
     }
 
-    // Series on the interval [0,1]
+    /** Series on the interval [0,1] */
     private static final double[] SINH_COEF = {
             0.1730421940471796,
             0.08759422192276048,
@@ -211,7 +209,7 @@ public class Sfun {
         return ans;
     }
 
-    // Series on [0,1]
+    /** Series on [0,1] */
     private static final double[] TANH_COEF = {
             -.25828756643634710,
             -.11836106330053497,
@@ -258,7 +256,7 @@ public class Sfun {
         return ans;
     }
 
-    // Series on the interval [0,1]
+    /** Series on the interval [0,1] */
     private static final double[] ASINH_COEF = {
             -.12820039911738186343372127359268e+0,
             -.58811761189951767565211757138362e-1,
@@ -332,7 +330,7 @@ public class Sfun {
         return ans;
     }
 
-    // Series on the interval [0,0.25]
+    /** Series on the interval [0,0.25] */
     private static final double[] ATANH_COEF = {
             .9439510239319549230842892218633e-1,
             .4919843705578615947200034576668e-1,
@@ -402,7 +400,7 @@ public class Sfun {
         return ans;
     }
 
-    // Series on the interval [0,1]
+    /** Series on the interval [0,1] */
     private static final double[] GAMMA_COEF = {
             .8571195590989331421920062399942e-2,
             .4415381324841006757191315771652e-2,
@@ -476,7 +474,7 @@ public class Sfun {
                     ans *= y + i;
                 }
             }
-        } else {  // gamma(x) for |x| > 10
+        } else { // gamma(x) for |x| > 10
             if (x > 171.614) {
                 ans = Double.POSITIVE_INFINITY;
             } else if (x < -170.56) {
@@ -527,19 +525,18 @@ public class Sfun {
         return ans;
     }
 
-    // Series for the interval [0,0.01]
-    private static final double[] R9LGMC_COEF =
-            {
-                    .166638948045186324720572965082e0,
-                    -.138494817606756384073298605914e-4,
-                    .981082564692472942615717154749e-8,
-                    -.180912947557249419426330626672e-10,
-                    .622109804189260522712601554342e-13,
-                    -.339961500541772194430333059967e-15,
-                    .268318199848269874895753884667e-17
-            };
+    /** Series for the interval [0,0.01] */
+    private static final double[] R9LGMC_COEF = {
+            .166638948045186324720572965082e0,
+            -.138494817606756384073298605914e-4,
+            .981082564692472942615717154749e-8,
+            -.180912947557249419426330626672e-10,
+            .622109804189260522712601554342e-13,
+            -.339961500541772194430333059967e-15,
+            .268318199848269874895753884667e-17
+    };
 
-    /*
+    /**
      * Returns the log gamma correction term for argument
      * values greater than or equal to 10.0.
      */
@@ -583,7 +580,7 @@ public class Sfun {
             ans = -0.5 * Math.log(q) + 0.918938533204672741780329736406 + corr + (p - 0.5) * Math.log(p / (p + q)) + q * temp;
         } else if (q >= 10.0) {
             // P is small, but Q is large
-            corr = Sfun.r9lgmc(q) - r9lgmc(p + q);
+            corr = SFun.r9lgmc(q) - r9lgmc(p + q);
             //  Check from underflow from r9lgmc
             ans = logGamma(p) + corr + p - p * Math.log(p + q) + (q - 0.5) * dlnrel(-p / (p + q));
         } else {
@@ -593,7 +590,7 @@ public class Sfun {
         return ans;
     }
 
-    // Series on [-0.375,0.375]
+    /** Series on [-0.375,0.375] */
     final private static double[] ALNRCS_COEF = {
             .103786935627437698006862677191e1,
             -.133643015049089180987660415531,
@@ -623,7 +620,7 @@ public class Sfun {
             -.126026241687352192520824256376e-18
     };
 
-    /*
+    /**
      * Correction term used by logBeta.
      */
     private static double dlnrel(double x) {
@@ -632,14 +629,14 @@ public class Sfun {
         if (x <= -1.0) {
             ans = Double.NaN;
         } else if (Math.abs(x) <= 0.375) {
-            ans = x * (1.0 - x * Sfun.csevl(x / .375, ALNRCS_COEF));
+            ans = x * (1.0 - x * SFun.csevl(x / .375, ALNRCS_COEF));
         } else {
             ans = Math.log(1.0 + x);
         }
         return ans;
     }
 
-    // Series on [0,1]
+    /** Series on [0,1] */
     private static final double[] ERFC_COEF = {
             -.490461212346918080399845440334e-1,
             -.142261205103713642378247418996e0,
@@ -657,7 +654,7 @@ public class Sfun {
             -.126124551191552258324954248533e-18
     };
 
-    // Series on [0.25,1.00]
+    /** Series on [0.25,1.00] */
     private static final double[] ERFC2_COEF = {
             -.69601346602309501127391508262e-1,
             -.411013393626208934898221208467e-1,
@@ -688,7 +685,7 @@ public class Sfun {
             .190081925136274520253692973329e-18
     };
 
-    // Series on [0,0.25]
+    /** Series on [0,0.25] */
     private static final double[] ERFCC_COEF = {
             .715179310202924774503697709496e-1,
             -.265324343376067157558893386681e-1,
@@ -777,5 +774,4 @@ public class Sfun {
         }
         return ans;
     }
-
 }
