@@ -19,7 +19,6 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.tritonus.sampled.convert.vorbis.VorbisFormatConversionProvider;
@@ -34,14 +33,11 @@ import static org.tritonus.sampled.file.vorbis.VorbisAudioFileWriter.OGG;
 
 /**
  * VorbisFormatConversionProviderTest.
- * <p>
- * TODO result is not consistent
  *
  * @author <a href="mailto:umjammer@gmail.com">Naohide Sano</a> (umjammer)
  * @version 0.00 2024/02/16 umjammer initial version <br>
  */
 @PropsEntity(url = "file:local.properties")
-@Disabled("TODO unstable")
 class VorbisFormatConversionProviderTest {
 
     static boolean localPropertiesExists() {

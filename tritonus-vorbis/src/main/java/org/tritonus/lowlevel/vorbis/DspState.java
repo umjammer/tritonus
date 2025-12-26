@@ -123,19 +123,19 @@ public class DspState {
     public int write(float[][] values, int count) {
         logger.log(Level.TRACE, "begin");
 
-        Pointer bufferPointer = CodecLibrary.INSTANCE.vorbis_analysis_buffer(handle, count).getValue();
-        logger.log(Level.TRACE, "bufferPointer: %s, %d".formatted(bufferPointer, count));
+        // vorbis_analysis_buffer returns float**, which is an array of pointers to float arrays
+        Pointer floatStarStar = CodecLibrary.INSTANCE.vorbis_analysis_buffer(handle, count).getPointer();
+        logger.log(Level.TRACE, "floatStarStar: %s, %d".formatted(floatStarStar, count));
 
         if (values != null) {
-            int objectArrayLength = values.length;
-            logger.log(Level.TRACE, "objectArray length: %d".formatted(objectArrayLength));
+            int channels = values.length;
+            logger.log(Level.TRACE, "channels: %d".formatted(channels));
 
-            long bufferPointerP = 0;
-            for (float[] floatArray : values) {
+            Pointer[] pointers = floatStarStar.getPointerArray(0, channels);
+            for (int i = 0; i < channels; i++) {
+                float[] floatArray = values[i];
                 logger.log(Level.TRACE, "floatArray: %d".formatted(floatArray.length));
-
-                bufferPointer.write(bufferPointerP, floatArray, 0, count);
-                bufferPointerP += ((long) count * Float.BYTES);
+                pointers[i].write(0, floatArray, 0, count);
             }
         }
         int ret = CodecLibrary.INSTANCE.vorbis_analysis_wrote(handle, count);
