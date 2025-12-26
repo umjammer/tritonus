@@ -17,7 +17,7 @@ on:
 jobs:
   analyze:
     name: Analyze
-    runs-on: macos-13
+    runs-on: macos-latest
     permissions:
       actions: read
       contents: read
@@ -65,7 +65,7 @@ jobs:
       # DON'T ADD -Dmaven.test.skip=true because this project uses test-jars
       - name: Build with Maven
         run: |
-          brew install lame fluid-synth libvorbis
+          arch -arm64 brew install lame fluid-synth libvorbis
           mvn -B install --file pom.xml
 
       - name: Perform CodeQL Analysis

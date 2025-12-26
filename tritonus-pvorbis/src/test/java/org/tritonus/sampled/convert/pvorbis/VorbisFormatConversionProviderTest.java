@@ -16,18 +16,23 @@ import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.Map;
 import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioFormat.Encoding;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import vavi.util.Debug;
 import vavi.util.properties.annotation.Property;
 import vavi.util.properties.annotation.PropsEntity;
 import vavix.util.Checksum;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.tritonus.sampled.convert.pvorbis.VorbisFormatConversionProvider.VORBIS;
 import static org.tritonus.sampled.file.pvorbis.VorbisAudioFileWriter.OGG;
 
 
@@ -63,14 +68,14 @@ class VorbisFormatConversionProviderTest {
     void test1() throws Exception {
         AudioInputStream ais = AudioSystem.getAudioInputStream(new BufferedInputStream(Files.newInputStream(Path.of(wav))));
         AudioFormat inFormat = ais.getFormat();
-        Debug.println(inFormat);
+Debug.println(inFormat);
 
         Map<String, Object> props = new HashMap<>();
         props.put("vorbis.test", true);
         props.put("quality", 1);
 
         AudioFormat outFormat = new AudioFormat(
-                VorbisFormatConversionProvider.VORBIS,
+                VORBIS,
                 -1f,
                 -1,
                 2,
@@ -78,7 +83,7 @@ class VorbisFormatConversionProviderTest {
                 -1f,
                 false,
                 props);
-        Debug.println(outFormat);
+Debug.println(outFormat);
         AudioInputStream aout = AudioSystem.getAudioInputStream(outFormat, ais);
 
         Path out = Paths.get("tmp", "out.ogg");
@@ -102,14 +107,14 @@ class VorbisFormatConversionProviderTest {
     void test4() throws Exception {
         AudioInputStream ais = AudioSystem.getAudioInputStream(new BufferedInputStream(Files.newInputStream(Path.of(wav))));
         AudioFormat inFormat = ais.getFormat();
-        Debug.println(inFormat);
+Debug.println(inFormat);
 
         Map<String, Object> props = new HashMap<>();
         props.put("vorbis.test", true);
         props.put("quality", 1);
 
         AudioFormat outFormat = new AudioFormat(
-                VorbisFormatConversionProvider.VORBIS,
+                VORBIS,
                 inFormat.getSampleRate(),
                 -1,
                 inFormat.getChannels(),
@@ -117,7 +122,7 @@ class VorbisFormatConversionProviderTest {
                 -1f,
                 false,
                 props);
-        Debug.println(outFormat);
+Debug.println(outFormat);
         AudioInputStream aout = AudioSystem.getAudioInputStream(outFormat, ais);
 
         Path out2 = Paths.get("tmp", "out2.ogg");
@@ -131,7 +136,7 @@ class VorbisFormatConversionProviderTest {
     void test3() throws Exception {
         AudioInputStream ais = AudioSystem.getAudioInputStream(new BufferedInputStream(Files.newInputStream(Path.of(ogg))));
         AudioFormat inFormat = ais.getFormat();
-        Debug.println(inFormat);
+Debug.println(inFormat);
 
         Map<String, Object> props = new HashMap<>();
         props.put("vorbis.test", true);
@@ -147,12 +152,44 @@ class VorbisFormatConversionProviderTest {
                 inFormat.getFrameRate(),
                 inFormat.isBigEndian(),
                 props);
-        Debug.println(outFormat);
+Debug.println(outFormat);
         AudioInputStream aout = AudioSystem.getAudioInputStream(outFormat, ais);
 
         Path out2 = Paths.get("tmp", "out2.ogg");
         AudioSystem.write(aout, OGG, new BufferedOutputStream(Files.newOutputStream(out2)));
 
         assertEquals(Checksum.getChecksum(out2), Checksum.getChecksum(Paths.get(ogg)));
+    }
+
+    @Test
+    void test5() throws Exception {
+        AudioFormat alaw = new AudioFormat(
+                Encoding.ALAW,
+                AudioSystem.NOT_SPECIFIED,
+                AudioSystem.NOT_SPECIFIED,
+                AudioSystem.NOT_SPECIFIED,
+                AudioSystem.NOT_SPECIFIED,
+                AudioSystem.NOT_SPECIFIED,
+                false);
+        AudioFormat spcm = new AudioFormat(
+                Encoding.PCM_SIGNED,
+                AudioSystem.NOT_SPECIFIED,
+                AudioSystem.NOT_SPECIFIED,
+                AudioSystem.NOT_SPECIFIED,
+                AudioSystem.NOT_SPECIFIED,
+                AudioSystem.NOT_SPECIFIED,
+                false);
+        AudioFormat vorbis = new AudioFormat(
+                VORBIS,
+                AudioSystem.NOT_SPECIFIED,
+                AudioSystem.NOT_SPECIFIED,
+                AudioSystem.NOT_SPECIFIED,
+                AudioSystem.NOT_SPECIFIED,
+                AudioSystem.NOT_SPECIFIED,
+                false);
+        assertTrue(AudioSystem.isConversionSupported(spcm, vorbis));
+        assertTrue(AudioSystem.isConversionSupported(vorbis, vorbis));
+        assertFalse(AudioSystem.isConversionSupported(alaw, vorbis));
+//        assertFalse(AudioSystem.isConversionSupported(vorbis, spcm)); // there is jorbis spi
     }
 }

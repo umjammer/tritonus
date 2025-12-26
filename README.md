@@ -39,7 +39,7 @@ All modules are implemented in jna or pure Java.
 | timidity      |        🚧        |                    |                         | [libtimidity](https://github.com/sezero/libtimidity)    |
 
 <sub>[1] R: reader, W: writer, C: converter, M: mixer device, D: midi driver, I: midi reader, O: midi writer, B: sound bank SPI</sub><br/>
-<sub>[2] unstable, use jorbis, pvprbis</sub>
+<sub>[2] unstable, use jorbis, pvorbis</sub>
 
 ## Installation
 
@@ -62,19 +62,19 @@ $ brew install lame fluid-synth libvorbis
 
 e.g. `-Djna.native.path=/opt/homebrew/lib`
 
-## License
+## References
+
+### License
 
 Tritonus is distributed under the terms of the Apache License,
 Version 2.0. See the file [LICENSE](LICENSE) for details.
 
-### License Exceptions
+#### License Exceptions
 
 - the low level GSM code (package org.tritonus.lowlevel.gsm)
   is licensed under the GNU GPL
 - BladeMP3EncDLL.h for Windows is licensed under the GNU LGPL.
 - the pvorbis lib is licensed under a BSD style license
-
-## References
 
 ### fluidsynth
 
@@ -104,4 +104,5 @@ Version 2.0. See the file [LICENSE](LICENSE) for details.
   * sub modules for linux only 
 * make logging use lazy evaluation
 * check midi reader is buggy
-  * adhoc fix (remove from spi) 
+  * adhoc fix (remove from spi)
+  * midi reader consume 4 bytes? (mark/reset doesn't work well???)

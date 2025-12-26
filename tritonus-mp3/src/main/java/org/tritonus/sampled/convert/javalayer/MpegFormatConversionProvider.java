@@ -374,7 +374,7 @@ public class MpegFormatConversionProvider extends TEncodingFormatConversionProvi
             }
 
             @Override
-            public void set_stop_flag() {
+            public void setStopFlag() {
             }
 
             @Override
@@ -382,11 +382,11 @@ public class MpegFormatConversionProvider extends TEncodingFormatConversionProvi
             }
 
             @Override
-            public void write_buffer(int value) {
+            public void writeBuffer(int value) {
             }
 
             @Override
-            public void clear_buffer() {
+            public void clearBuffer() {
             }
 
             public byte[] getBuffer() {

@@ -79,17 +79,17 @@ public class VorbisFormatConversionProvider extends TEncodingFormatConversionPro
             // TODO other channel configurations
     };
 
-//    private static final AudioFormat[] OUTPUT_FORMATS = {
-//            // mono
-//            // TODO mechanism to make the double specification with
-//            // different endianess obsolete.
-//            new AudioFormat(VORBIS, -1.0F, -1, 1, -1, -1.0F, false),
-//            new AudioFormat(VORBIS, -1.0F, -1, 1, -1, -1.0F, true),
-//            // stereo
-//            new AudioFormat(VORBIS, -1.0F, -1, 2, -1, -1.0F, false),
-//            new AudioFormat(VORBIS, -1.0F, -1, 2, -1, -1.0F, true),
-//            // TODO other channel configurations
-//    };
+    private static final AudioFormat[] OUTPUT_FORMATS = {
+            // mono
+            // TODO mechanism to make the double specification with
+            // different endianess obsolete.
+            new AudioFormat(VORBIS, -1.0F, -1, 1, -1, -1.0F, false),
+            new AudioFormat(VORBIS, -1.0F, -1, 1, -1, -1.0F, true),
+            // stereo
+            new AudioFormat(VORBIS, -1.0F, -1, 2, -1, -1.0F, false),
+            new AudioFormat(VORBIS, -1.0F, -1, 2, -1, -1.0F, true),
+            // TODO other channel configurations
+    };
 
     // Default settings for encoding.
     private static final boolean DEFAULT_VBR = true;
@@ -103,8 +103,8 @@ public class VorbisFormatConversionProvider extends TEncodingFormatConversionPro
      */
     public VorbisFormatConversionProvider() {
         super(List.of(INPUT_FORMATS),
-                List.of(INPUT_FORMATS)
-//                List.of(OUTPUT_FORMATS),
+//                List.of(INPUT_FORMATS)
+                List.of(OUTPUT_FORMATS)
 //                true, // new behaviour
 //                false  // bidirectional .. constants UNIDIR../BIDIR..?
         );
