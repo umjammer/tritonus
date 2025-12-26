@@ -32,7 +32,7 @@ import vavi.util.properties.annotation.PropsEntity;
  * @version 0.00 2024/03/16 umjammer initial version <br>
  */
 @PropsEntity(url = "file://${user.dir}/local.properties")
-class Test3 {
+class TestEncoder {
 
     static boolean localPropertiesExists() {
         return Files.exists(Paths.get("local.properties"));
@@ -62,7 +62,7 @@ class Test3 {
         for (AudioFileFormat.Type type : AudioSystem.getAudioFileTypes()) {
             System.err.println(type);
         }
-        Test3 app = new Test3();
+        TestEncoder app = new TestEncoder();
         PropsEntity.Util.bind(app);
         app.test2();
     }

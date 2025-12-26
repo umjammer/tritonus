@@ -43,7 +43,7 @@ import static vavi.sound.SoundUtil.volume;
  */
 @PropsEntity(url = "file://${user.dir}/local.properties")
 @DisabledIfEnvironmentVariable(named = "GITHUB_WORKFLOW", matches = ".*")
-class Test3 {
+class TestEncoder {
 
     static boolean localPropertiesExists() {
         return Files.exists(Paths.get("local.properties"));
@@ -76,7 +76,7 @@ class Test3 {
         for (AudioFileFormat.Type type : AudioSystem.getAudioFileTypes()) {
             System.err.println(type);
         }
-        Test3 app = new Test3();
+        TestEncoder app = new TestEncoder();
         PropsEntity.Util.bind(app);
         app.test2();
     }
