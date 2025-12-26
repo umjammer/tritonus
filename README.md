@@ -102,6 +102,6 @@ Version 2.0. See the file [LICENSE](LICENSE) for details.
 * ~~use jna instead of jni~~
   * sub modules for linux only 
 * make logging use lazy evaluation
-* check midi reader is buggy
-  * adhoc fix (remove from spi)
-  * midi reader consume 4 bytes? (mark/reset doesn't work well???)
+* ~~check midi reader is buggy~~
+  * ~~adhoc fix (remove from spi)~~
+  * ~~midi reader consume 4 bytes? (mark/reset doesn't work well???)~~
