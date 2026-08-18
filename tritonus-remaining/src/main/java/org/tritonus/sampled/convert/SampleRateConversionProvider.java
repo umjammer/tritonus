@@ -172,6 +172,9 @@ public class SampleRateConversionProvider extends TSimpleFormatConversionProvide
 
     @Override
     public boolean isConversionSupported(AudioFormat targetFormat, AudioFormat sourceFormat) {
+        if (!Boolean.parseBoolean(System.getProperty("org.tritonus.sampled.spi.src", "false"))) {
+            return false;
+        }
         // do not match when targetSampleRate set and sourceSamplerate set and
         // NOT both the same
         boolean result = (targetFormat.getSampleRate() == AudioSystem.NOT_SPECIFIED
