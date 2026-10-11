@@ -92,6 +92,7 @@
             -Djava.util.logging.config.file=src/test/resources/logging.properties
             -Djna.library.path=@{native.library.path}
             -Dvavi.test.volume.midi=@{vavi.test.volume.midi}
+            -Djavax.sound.midi.Synthesizer=org.tritonus.midi.device.fluidsynth.FluidSynthesizerProvider
           </argLine>
           <systemProperties>
           </systemProperties>

@@ -119,15 +119,16 @@ public class MidiChannelTestCase extends BaseSynthesizerTestCase {
         checkPitchbend(synth, channel, 127);
         checkPitchbend(synth, channel, 128);
         checkPitchbend(synth, channel, 8192);
-        System.err.println(synth.getDeviceInfo().getName());
-        if (!synth.getDeviceInfo().getName().contains("Gervill")) {
-            checkPitchbend(synth, channel, 16383);
-        }
+        checkPitchbend(synth, channel, 16383);
     }
+
+    /** Gervill caps the pitch bend at 16256 (127 * 128), so does a synthesizer playing through it */
+    private static final int PITCHBEND_MAX_GERVILL = 16256;
 
     private static void checkPitchbend(Synthesizer synth, MidiChannel channel, int bend) {
         channel.setPitchBend(bend);
         int value = channel.getPitchBend();
-        assertTrue(bend == value || value == 8192, errmsg(synth, "pitch bend [" + bend + "]", true));
+        assertTrue(bend == value || value == 8192 || (bend > PITCHBEND_MAX_GERVILL && value == PITCHBEND_MAX_GERVILL),
+                errmsg(synth, "pitch bend [" + bend + "]", true));
     }
 }
