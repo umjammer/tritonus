@@ -278,12 +278,16 @@ public abstract class TAudioFileReader extends AudioFileReader {
         inputStream.mark(getMarkLimit());
         try {
             audioInputStream = getAudioInputStream(inputStream, fileLengthInBytes);
-        } finally {
+        } catch (UnsupportedAudioFileException | IOException | RuntimeException e) {
+            // rewind only on failure, so that the next reader can try.
+            // on success the stream must stay positioned at the audio data,
+            // otherwise the header is played as pcm data (click noise).
             try {
                 inputStream.reset();
             } catch (IOException f) {
                 logger.log(Level.WARNING, f.toString());
             }
+            throw e;
         }
 
         logger.log(Level.TRACE, "end");
