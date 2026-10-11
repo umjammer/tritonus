@@ -36,6 +36,7 @@ import org.junit.jupiter.api.Test;
 import org.tritonus.share.sampled.AudioFileTypes;
 import org.tritonus.share.sampled.Encodings;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
@@ -152,6 +153,18 @@ public class BaseAudioFileReaderTestCase extends BaseProviderTestCase {
         if (getTestAudioSystem()) {
             audioInputStream = AudioSystem.getAudioInputStream(bufferedInputStream);
             checkAudioInputStream(audioInputStream, false, false);
+        }
+    }
+
+    /** the stream must be positioned at the audio data, not at the header */
+    @Test
+    public void testAudioInputStreamInputStreamContent() throws Exception {
+        if (getTestProvider()) {
+            File file = new File("src/test/resources/" + getFilename());
+            byte[] expected = getAudioFileReader().getAudioInputStream(file).readAllBytes();
+            InputStream inputStream = new BufferedInputStream(Files.newInputStream(file.toPath()));
+            byte[] actual = getAudioFileReader().getAudioInputStream(inputStream).readAllBytes();
+            assertArrayEquals(expected, actual, PROVIDER_PREFIX + "data content");
         }
     }
 

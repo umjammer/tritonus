@@ -34,7 +34,7 @@ import org.tritonus.share.sampled.file.TSeekableDataOutputStream;
 
 
 /**
- * Experminatal area for AudioSystem.
+ * Experimental area for AudioSystem.
  * This class is used to host features that may become part of the
  * Java Sound API (In which case they will be moved to AudioSystem).
  */
