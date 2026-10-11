@@ -32,7 +32,7 @@ import javazoom.jl.decoder.BitstreamException;
 import javazoom.jl.decoder.Decoder;
 import javazoom.jl.decoder.DecoderException;
 import javazoom.jl.decoder.Header;
-import javazoom.jl.decoder.Obuffer;
+import javazoom.jl.decoder.OBuffer;
 import org.tritonus.share.sampled.AudioUtils;
 import org.tritonus.share.sampled.convert.TAsynchronousFilteredAudioInputStream;
 import org.tritonus.share.sampled.convert.TEncodingFormatConversionProvider;
@@ -352,7 +352,7 @@ public class MpegFormatConversionProvider extends TEncodingFormatConversionProvi
             encodedStream.close();
         }
 
-        private class DMAISObuffer extends Obuffer {
+        private class DMAISObuffer extends OBuffer {
 
             private final int channels;
             private final byte[] buffer;
@@ -361,7 +361,7 @@ public class MpegFormatConversionProvider extends TEncodingFormatConversionProvi
 
             public DMAISObuffer(int channels) {
                 this.channels = channels;
-                buffer = new byte[OBUFFERSIZE * channels];
+                buffer = new byte[O_BUFFER_SIZE * channels];
                 bufferPointers = new int[channels];
                 reset();
                 isBigEndian = DecodedMpegAudioInputStream.this.isBigEndian();
