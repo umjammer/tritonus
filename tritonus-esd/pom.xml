@@ -31,7 +31,7 @@
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>native-maven-plugin</artifactId>
-            <version>1.0-alpha-11</version>
+            <version>1.2.1</version>
             <extensions>true</extensions>
             <configuration>
               <javahClassNames>
@@ -68,6 +68,7 @@
               <linkerEndOptions>
                 <linkerEndOption>-o ${project.build.directory}/libtritonusesd.so</linkerEndOption>
               </linkerEndOptions>
+              <attach>false</attach> <!-- dylib is bundled in the jar; attaching it as the main artifact breaks maven-jar-plugin 3.x -->
             </configuration>
             <executions>
               <execution>
