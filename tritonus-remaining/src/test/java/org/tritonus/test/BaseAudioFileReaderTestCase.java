@@ -213,10 +213,17 @@ public class BaseAudioFileReaderTestCase extends BaseProviderTestCase {
         if (getCheckRealLengths() || realLengthExpected) {
             int expectedDataLength = (int) (expectedFrameLength * getFrameSize());
             byte[] retrievedData = new byte[expectedDataLength];
-            int read = audioInputStream.read(retrievedData);
-            if (read == -1) {
-                read = 0;
-            } // EOF
+            // a single read() may legitimately return fewer bytes than
+            // requested (JDK 27 caps ChannelInputStream reads at 128 KiB),
+            // so loop until the expected length or EOF
+            int read = 0;
+            while (read < expectedDataLength) {
+                int chunk = audioInputStream.read(retrievedData, read, expectedDataLength - read);
+                if (chunk == -1) {
+                    break; // EOF
+                }
+                read += chunk;
+            }
             assertEquals(expectedDataLength, read, messagePrefix + "reading data");
 // 			  for (int i = 0; i < expectedDataLength; i++) {
 // 			       assertEquals(messagePrefix + "data content", 0, retrievedData[i]);
