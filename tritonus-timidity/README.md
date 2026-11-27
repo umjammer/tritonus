@@ -1,11 +1,11 @@
 # tritonus-timidity
 
-a `javax.sound.midi.Synthesizer` SPI using [TiMidity++ (timidity41)](https://github.com/starg2/timidity41)
+a `javax.sound.midi.Synthesizer` SPI using [TiMidity++ (timidity41)](https://github.com/umjammer/timidity41)
 through the Foreign Function & Memory API (JEP 454). no JNI, no JNA.
 
 ## native library
 
-build `libtimidity41.dylib` from timidity41 (branch `vavi`), dependencies come from homebrew.
+build `libtimidity41.dylib` from timidity41 (branch `vavi`, hash `648776c`), dependencies come from homebrew.
 
 ```shell
 brew install cmake pkgconf flac libogg libvorbis opus speex mpg123 portaudio

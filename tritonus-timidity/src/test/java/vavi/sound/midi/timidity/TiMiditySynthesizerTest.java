@@ -24,6 +24,7 @@ import javax.sound.midi.Synthesizer;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import vavi.util.Debug;
 import vavi.util.properties.annotation.Property;
@@ -44,6 +45,7 @@ import static vavi.sound.midi.MidiUtil.volume;
  * @version 0.00 2026-11-26 nsano initial version <br>
  */
 @PropsEntity(url = "file:local.properties")
+@DisabledIfEnvironmentVariable(named = "GITHUB_WORKFLOW", matches = ".*") // TODO need to build the shared library on CI
 class TiMiditySynthesizerTest {
 
     static boolean localPropertiesExists() {
