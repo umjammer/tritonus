@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.tritonus</groupId>
     <artifactId>tritonus</artifactId>
-    <version>0.3.18</version>
+    <version>0.3.19</version>
   </parent>
 
   <artifactId>tritonus-saol</artifactId>
@@ -22,7 +22,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
-        <version>3.2.0</version>
+        <version>3.8.0</version>
         <executions>
           <execution>
             <id>add-source</id>
@@ -80,7 +80,7 @@
     <dependency>
       <groupId>org.apache.bcel</groupId>
       <artifactId>bcel</artifactId>
-      <version>6.13.0</version>
+      <version>6.14.0</version>
     </dependency>
 
     <dependency>

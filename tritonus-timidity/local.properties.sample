@@ -1,0 +1,9 @@
+# directory includes libtimidity41.dylib (cmake build output of timidity41)
+timidity.library.path=/path/to/timidity41/build/out/lib
+# timidity.cfg (optional)
+#tritonus.timidity.cfg=/opt/homebrew/share/timidity/timidity.cfg
+# soundfont (sf2, sf3, sfz, dls)
+tritonus.timidity.defaultsoundbank=/path/to/your.sf2
+
+#test.midi=/path/to/your.mid
+vavi.test.volume.midi=0.2

@@ -36,7 +36,7 @@ All modules are implemented in jna or pure Java.
 | aos           |   ✅    |                    |                         |                                                         |
 | saol          |   🚧   |                    |                         |                                                         |
 | test          |   🚧   |                    |                         |                                                         |
-| timidity      |   🚧   |                    |                         | [libtimidity](https://github.com/sezero/libtimidity)    |
+| timidity      |   ✅   |     `----D---`     | jep454                  | [timidity41](https://github.com/starg2/timidity41)    |
 
 <sub>[1] R: reader, W: writer, C: converter, M: mixer device, D: midi driver, I: midi reader, O: midi writer, B: sound bank SPI</sub><br/>
 

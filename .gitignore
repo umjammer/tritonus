@@ -21,3 +21,4 @@ eclipse_build.xml
 tmp/
 target/
 local.properties
+/SESSION.md

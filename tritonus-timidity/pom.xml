@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.tritonus</groupId>
+    <artifactId>tritonus</artifactId>
+    <version>0.3.19</version>
+  </parent>
+
+  <artifactId>tritonus-timidity</artifactId>
+
+  <name>Tritonus TiMidity++</name>
+  <description>a midi synthesizer spi using TiMidity++ (timidity41) via Foreign Function &amp; Memory API</description>
+
+  <properties>
+    <!-- directory includes libtimidity41.dylib, override in local.properties -->
+    <timidity.library.path>/usr/local/lib</timidity.library.path>
+    <tritonus.timidity.cfg/>
+    <tritonus.timidity.defaultsoundbank/>
+    <vavi.test.volume.midi>0.2</vavi.test.volume.midi>
+  </properties>
+
+  <profiles>
+    <profile>
+      <id>local</id>
+      <activation>
+        <file>
+          <exists>local.properties</exists>
+        </file>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>properties-maven-plugin</artifactId>
+            <version>1.4.0</version>
+            <executions>
+              <execution>
+                <id>read-properties</id>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>read-project-properties</goal>
+                </goals>
+                <configuration>
+                  <files>
+                    <file>local.properties</file>
+                  </files>
+                  <quiet>false</quiet>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <dependenciesToScan>
+            <dependency>org.tritonus:tritonus-midishare</dependency>
+          </dependenciesToScan>
+          <reuseForks>false</reuseForks>
+          <!-- mvn test -Dtimidity.library.path=dir_of_libtimidity41 -Dtritonus.timidity.defaultsoundbank=your_soundfont_path -->
+          <argLine>
+            --enable-native-access=ALL-UNNAMED
+            -Djava.util.logging.config.file=src/test/resources/logging.properties
+            -Djava.library.path=@{timidity.library.path}
+            -Dtritonus.timidity.cfg=@{tritonus.timidity.cfg}
+            -Dtritonus.timidity.defaultsoundbank=@{tritonus.timidity.defaultsoundbank}
+            -Dvavi.test.volume.midi=@{vavi.test.volume.midi}
+            -Djavax.sound.midi.Synthesizer=vavi.sound.midi.timidity.TiMiditySynthesizerProvider
+          </argLine>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <repositories>
+    <repository>
+      <id>jitpack.io</id>
+      <url>https://jitpack.io</url>
+    </repository>
+  </repositories>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.tritonus</groupId>
+      <artifactId>tritonus-share</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.platform</groupId>
+      <artifactId>junit-platform-commons</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.tritonus</groupId>
+      <artifactId>tritonus-share</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.tritonus</groupId>
+      <artifactId>tritonus-midishare</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.github.umjammer</groupId>
+      <artifactId>vavi-commons</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>${vavi-sound.groupId}</groupId>
+      <artifactId>vavi-sound</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>
